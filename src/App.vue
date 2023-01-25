@@ -20,7 +20,7 @@
       <div class="wrapper">
         <h2>Welcome to</h2>
         <h1> StudyBuddy! </h1>
-        <p> A place to study </p>
+        <p> Soon a place to study </p>
       </div>
     </v-main>
   </v-app>
@@ -44,7 +44,7 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-image: url("../../public/background.jpg");
+  background-image: url("/background.jpg");
 }
 .wrapper {
   background-color: #222222C0;
