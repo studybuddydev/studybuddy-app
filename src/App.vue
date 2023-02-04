@@ -12,7 +12,7 @@
         <!-- Navigation drawer  where i can add new item, each item is an exam, the click routes to /exam -->
         <v-navigation-drawer v-model="drawer" v-if="$route.name != 'exam'" app>
             <v-list dense>
-                <v-list-item v-for="exam in exams" :key="exam.text" link :to="`/exam`">{{ exam.text }}</v-list-item>
+                <v-list-item v-for="exam in exams" :key="exam.text" link :to="`/exam?name=${exam.text}`">{{ exam.text }}</v-list-item>
             </v-list>
             
         </v-navigation-drawer>
