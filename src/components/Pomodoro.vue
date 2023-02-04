@@ -29,7 +29,7 @@ export default defineComponent({
     },
     methods: {
         startTimer() {
-            this.intervalId = setInterval(() => {
+            setInterval(() => {
                 this.time -= 1000;
                 if (this.time <= 0) {
                     this.stopTimer();
