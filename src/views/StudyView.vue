@@ -16,7 +16,7 @@
                 <h1>{{ $route.query["name"] }}</h1>
 
                 <h2 v-if="selectedTopic">
-                    {{ selectedTopic.text }}
+                    {{ selectedTopic }}
                 </h2>
 
                 <Pomodoro />
@@ -39,7 +39,7 @@ export default defineComponent({
                 { text: "Topic 2" },
                 // ...
             ],
-            selectedTopic: null,
+            selectedTopic: '',
             time: 25 * 60 * 1000,
             intervalId: 0,
         };
