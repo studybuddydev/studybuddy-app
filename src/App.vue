@@ -1,5 +1,5 @@
 <template>
-    <v-app id="inspire">
+    <v-app>
         <v-app-bar app>
             <v-app-bar-nav-icon></v-app-bar-nav-icon>
             <v-toolbar-title>StudyBuddy</v-toolbar-title>
@@ -9,32 +9,26 @@
             <v-btn text>Contact</v-btn>
         </v-app-bar>
 
-        <div id="app">
-           
+        <!-- Navigation drawer  where i can add new item, each item is an exam, the click routes to /exam -->
+        <v-navigation-drawer v-model="drawer" app>
+            <v-list dense>
+                <v-list-item v-for="exam in exams" :key="exam.text" link :to="`/exam`">{{ exam.text }}</v-list-item>
+            </v-list>
+            
+        </v-navigation-drawer>
 
-            <v-navigation-drawer
-                color="#09151E"
-                permanent
-                expand-on-hover
-                app>
-              <v-divider></v-divider>
-              <v-list nav dense>
-                  <v-list-item link href="#">
-                    <v-list-item-icon> <v-icon color="white" small >mdi-lightbulb</v-icon></v-list-item-icon>
-                    <v-list-item-title class="title">Analisi</v-list-item-title>
-                  </v-list-item>
-              </v-list>
-            </v-navigation-drawer>
-     
-            <v-main class="main">
-                <div class="wrapper">
-                    <h2>Welcome to</h2>
-                    <h1>StudyBuddy!</h1>
-                    <h3>!Work in progress!</h3>
-                    <p>Soon a place to study</p>
-                </div>
-            </v-main>
-        </div>
+        <!-- Sizes your content based upon application components -->
+        <v-main>
+            <!-- Provides the application the proper gutter -->
+            <v-container fluid>
+                <!-- If using vue-router -->
+                <router-view></router-view>
+            </v-container>
+        </v-main>
+
+        <v-footer app>
+            <!-- -->
+        </v-footer>
     </v-app>
 </template>
 
@@ -44,6 +38,13 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
     name: "App",
+    data: function () {
+        return {
+            exams: [{ text: "Analisi" }, { text: "Geometria" }, { text: "Diritto Internazionale" }],
+            drawer: true,
+        };
+    },
+
 });
 </script>
 

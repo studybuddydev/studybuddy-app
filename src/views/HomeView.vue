@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+    <v-main class="main">
+        <div class="wrapper">
+            <h1>StudyBuddy!</h1>
+        </div>
+    </v-main>
 </template>
