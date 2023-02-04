@@ -1,5 +1,6 @@
 <template>
-        
+
+    navigation drawer
 
 
 
@@ -13,7 +14,7 @@ export default defineComponent({
     name: "StudyView",
     data: function () {
         return {
-            
+            drawer: false,
         };
     },
     components: {},
