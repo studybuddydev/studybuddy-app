@@ -14,6 +14,10 @@
             <v-list dense>
                 <v-list-item v-for="exam in exams" :key="exam.text" link :to="`/exam?name=${exam.text}`">{{ exam.text }}</v-list-item>
             </v-list>
+         
+        <!-- add button to the bottom with width 100% to add new item -->
+        <v-btn color="primary" width="100%" >Add new exam</v-btn>
+
             
         </v-navigation-drawer>
 
