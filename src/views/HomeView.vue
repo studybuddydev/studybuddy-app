@@ -2,7 +2,16 @@
 </script>
 
 <template>
-    <v-main class="main">
-        <v-calendar />
-    </v-main>
+        <v-calendar
+            class="custom-calendar max-w-full"
+            disable-page-swipe
+            is-expanded
+            is-dark
+        ></v-calendar>
+            
+
 </template>
+
+<style lang="ts">
+
+</style>
