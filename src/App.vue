@@ -65,8 +65,8 @@ export default defineComponent({
     data: function () {
         return {
             exams: [
-                { text: "Analisi" },
-                { text: "Geometria" },
+                { text: "Generale" },
+                { text: "Test" },
                 { text: "Diritto Internazionale" },
             ],
             drawer: true,
