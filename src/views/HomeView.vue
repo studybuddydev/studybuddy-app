@@ -1,6 +1,3 @@
-<script setup lang="ts">
-</script>
-
 <template>
         <v-calendar
             class="custom-calendar max-w-full"

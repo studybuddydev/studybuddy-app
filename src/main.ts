@@ -1,3 +1,5 @@
+import '@mdi/font/css/materialdesignicons.css'
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -15,9 +17,6 @@ import 'v-calendar/dist/style.css';
 import VCalendar from 'v-calendar';
 
 // Use plugin with defaults
-
-
-
 const vuetify = createVuetify({
     components,
     directives,
@@ -27,7 +26,7 @@ const vuetify = createVuetify({
         sets: { mdi }
     },
     theme: {
-        defaultTheme: 'dark'
+        defaultTheme: 'dark',
     }
 })
 
