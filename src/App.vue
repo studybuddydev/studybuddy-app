@@ -7,7 +7,7 @@
                     <v-list-item-content>
                         <v-list-item-title class="title">
                             <img
-                                src="images/logotxt.png"
+                                src="/images/logotxt.png"
                                 alt="Studubuddy logo"
                                 height="50">
                         </v-list-item-title>
@@ -118,7 +118,7 @@ export default defineComponent({
     //background-image: url("/background.jpg");
 }
 .wrapper {
-    background-color: #12454a;
+    background-color: rgb(18, 69, 74);
     backdrop-filter: blur(5px);
     padding: 1.5em 4em;
     border-radius: 1em;
