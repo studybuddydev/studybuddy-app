@@ -16,6 +16,22 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import 'v-calendar/dist/style.css';
 import VCalendar from 'v-calendar';
 
+const myDarkTheme = {
+    dark: false,
+    colors: {
+      background: '#207178',
+      surface: '#12454a',
+      primary: '#6c20d6',
+      'primary-darken-1': '#3700B3',
+      secondary: '#03DAC6',
+      'secondary-darken-1': '#018786',
+      error: '#B00020',
+      info: '#2196F3',
+      success: '#4CAF50',
+      warning: '#FB8C00',
+    }
+  }
+
 // Use plugin with defaults
 const vuetify = createVuetify({
     components,
@@ -26,7 +42,10 @@ const vuetify = createVuetify({
         sets: { mdi }
     },
     theme: {
-        defaultTheme: 'dark',
+        defaultTheme: 'myDarkTheme',
+        themes: {
+            myDarkTheme
+        }
     }
 })
 
