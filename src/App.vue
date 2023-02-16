@@ -1,66 +1,6 @@
 <template>
     <v-app id="inspire">
-        <v-navigation-drawer permanent >
-            <template v-slot:prepend>
-                <!--add logo img -->
-                <v-list-item>
-                    <v-list-item-content>
-                        <v-list-item-title class="title">
-                            <img
-                                src="/images/logotxt.png"
-                                alt="Studubuddy logo"
-                                height="50">
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-            </template>
-
-            <v-divider></v-divider>
-
-            <v-list nav density="compact">
-                <v-list-item
-                    v-for="exam in exams"
-                    link
-                    :key="exam.text"
-                    :to="`/exam?name=${exam.text}`"
-                    :prepend-icon="exam.icon"
-                    :title="exam.text"
-                    :value="exam.text"
-                />
-
-
-                <v-dialog v-model="dialog" width="auto">
-                    <v-sheet width="300" class="mx-auto">
-                        <v-form @submit.prevent>
-                            <v-text-field
-                                v-model="examName"
-                                :rules="rules"
-                                label="Exam name"
-                            ></v-text-field>
-                            <v-btn
-                                type="submit"
-                                @click="addExam"
-                                block
-                                class="mt-2"
-                                >Confirm</v-btn
-                            >
-                        </v-form>
-                    </v-sheet>
-                </v-dialog>
-                <v-btn color="primary" width="100%" @click="dialog = true"
-                    >Add new exam</v-btn
-                >
-            </v-list>
-
-            <template v-slot:append>
-                <v-list-item
-                    lines="two"
-                    prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
-                    title="Jane Smith"
-                    subtitle="Logged in"
-                ></v-list-item>
-            </template>
-        </v-navigation-drawer>
+        
 
         <v-main> 
             <router-view></router-view>

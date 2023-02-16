@@ -2,7 +2,7 @@
     <v-container>
         <v-row class="justify-center">
             <v-col cols="12" md="8">
-                <v-card :style="{backgroundColor: color}">
+                <v-card :style="{backgroundColor: color}" >
                     <v-card-title class="headline">Timer</v-card-title>
                     <v-card-text>
                         <h1>studio : {{ minutes }}:{{ seconds }}</h1>
@@ -30,7 +30,7 @@ export default defineComponent({
             minutes: 0,
             seconds: 0,
             interval: 0,
-            color: "blue",
+            color:'#CC5C29',
 
             pinterval: 0,
             pminutes: 0,
@@ -50,11 +50,11 @@ export default defineComponent({
                 }
             }, 1000);
             //change background color
-            this.color = "green";
+            this.color = "#207178";
         },
         stopTimer() {
             clearInterval(this.interval);
-            this.color = "red";
+            this.color = "#CC5C29";
 
             this.pinterval = setInterval(() => {
                 if (this.pseconds === 59) {
@@ -68,7 +68,7 @@ export default defineComponent({
         reset() {
             this.minutes = 0;
             this.seconds = 0;
-            this.color = "blue";
+            this.color = "#8BC4D9";
             clearInterval(this.interval);
 
             this.pminutes = 0;
