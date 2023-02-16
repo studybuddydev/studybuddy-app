@@ -1,14 +1,14 @@
 <template>
     <v-container>
         <v-row class="justify-center">
-            <v-col cols="12" md="8">
+            <v-col cols="10" md="4">
                 <v-card :style="{backgroundColor: color}" >
                     <v-card-title class="headline">Timer</v-card-title>
                     <v-card-text>
-                        <h1>studio : {{ minutes }}:{{ seconds }}</h1>
-                        <p></p>
-                        <h1>pausa : {{ pminutes }}:{{ pseconds }}</h1>
-                        <p>Click start to begin the timer</p>
+                        <h2>studio : {{ minutes }}:{{ seconds }}</h2>
+                    <br>
+                        <h2>pausa : {{ pminutes }}:{{ pseconds }}</h2>
+                        <br>
                         <v-btn @click="startTimer">Start</v-btn>
                         <v-btn @click="stopTimer">Pause</v-btn>
                         <v-btn @click="reset">Reset</v-btn>

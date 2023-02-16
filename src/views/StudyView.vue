@@ -57,8 +57,8 @@
             <template v-slot:append>
                 <v-list-item
                     lines="two"
-                    prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
-                    title="Jane Smith"
+                    prepend-avatar="/images/pippo.webp"
+                    title="Pippo"
                     subtitle="Logged in"
                 ></v-list-item>
             </template>
