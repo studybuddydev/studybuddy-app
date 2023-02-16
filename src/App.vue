@@ -1,6 +1,6 @@
 <template>
     <v-app id="inspire">
-        <v-navigation-drawer permanent>
+        <v-navigation-drawer permanent >
             <template v-slot:prepend>
                 <!--add logo img -->
                 <v-list-item>
@@ -62,7 +62,9 @@
             </template>
         </v-navigation-drawer>
 
-        <v-main> </v-main>
+        <v-main> 
+            <router-view></router-view>
+        </v-main>
     </v-app>
 </template>
 
