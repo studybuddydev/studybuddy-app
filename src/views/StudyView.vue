@@ -1,8 +1,11 @@
 <template>
     <v-container>
+        <!-- MENU  -->
         <v-navigation-drawer permanent >
+
+             <!--column header  -->
             <template v-slot:prepend>
-                <!--add logo img -->
+               
                 <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title class="title">
@@ -21,6 +24,7 @@
 
             <v-divider></v-divider>
 
+            <!--exam  list  -->
             <v-list nav density="compact">
                 <v-list-item
                     v-for="task in tasks"
@@ -30,7 +34,7 @@
                     :value="task.text"
                 />
 
-
+                <!--popup for adding item   -->
                 <v-dialog v-model="dialog" width="auto">
                     <v-sheet width="300" class="mx-auto">
                         <v-form @submit.prevent>
@@ -53,7 +57,7 @@
                     >Add new Chapter</v-btn
                 >
             </v-list>
-
+            <!--column footer  -->
             <template v-slot:append>
                 <v-list-item
                     lines="two"
@@ -64,6 +68,7 @@
             </template>
         </v-navigation-drawer>
 
+        <!-- MAIN CONTENT  -->
             
         <h1>{{ $route.query["name"] }}</h1>
 
@@ -71,15 +76,16 @@
             {{ selectedTopic }}
         </h2>
 
-        <Pomodoro />
-    
+        <Postit />
 
+        <Pomodoro />
     </v-container>
 </template>
   
 <script lang="ts">
 import { defineComponent } from "vue";
 import Pomodoro from "@/components/Timer.vue";
+import Postit from "@/components/Postit.vue";
 
 type Task = {
         text: string;
@@ -88,7 +94,7 @@ type Task = {
 
 export default defineComponent({
     name: "StudyView",
-    components: {Pomodoro},
+    components: {Pomodoro, Postit},
     data: function () {
         return {
             topics: [
