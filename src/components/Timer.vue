@@ -6,10 +6,10 @@
     </v-container>
 
     <div class="bottom-bar">
-        <div class="bottom-bar-buttons">
-            <v-btn @click="startTimer">{{ minutes }}:{{ seconds }} Studio</v-btn>
-            <v-btn @click="stopTimer">{{ pminutes }}:{{pseconds}} Pausa</v-btn>
-            <v-btn @click="reset">Reset</v-btn>
+        <div class="bottom-bar-buttons" >
+            <v-btn :style="{backgroundColor: color}" @click="startStudio">{{ minutes }}:{{ seconds }} Studio </v-btn>
+            <v-btn :style="{backgroundColor: color}" @click="startPausa">{{ pminutes }}:{{pseconds}} Pausa</v-btn>
+            <v-btn :style="{backgroundColor: color}" @click="reset">Reset</v-btn>
         </div>
     </div>
 </template>
@@ -26,17 +26,18 @@ export default defineComponent({
             seconds: 0,
             interval: 0,
             color: "#CC5C29",
-
             pinterval: 0,
             pminutes: 0,
             pseconds: 0,
         };
     },
     methods: {
-        startTimer() {
+        startStudio() {
+           
             clearInterval(this.pinterval);
             //start timer
-            this.interval = setInterval(() => {
+            
+                this.interval = setInterval(() => {
                 if (this.seconds === 59) {
                     this.seconds = 0;
                     this.minutes += 1;
@@ -44,21 +45,25 @@ export default defineComponent({
                     this.seconds += 1;
                 }
             }, 1000);
+            
+            
             //change background color
             this.color = "#207178";
         },
-        stopTimer() {
+        startPausa() {
             clearInterval(this.interval);
             this.color = "#CC5C29";
 
-            this.pinterval = setInterval(() => {
-                if (this.pseconds === 59) {
-                    this.pseconds = 0;
-                    this.pminutes += 1;
-                } else {
-                    this.pseconds += 1;
-                }
-            }, 1000);
+           
+                this.pinterval = setInterval(() => {
+                    if (this.pseconds === 59) {
+                        this.pseconds = 0;
+                        this.pminutes += 1;
+                    } else {
+                        this.pseconds += 1;
+                    }
+                }, 1000);
+            
         },
         reset() {
             this.minutes = 0;
