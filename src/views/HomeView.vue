@@ -1,4 +1,5 @@
 <template>
+    <!--   MENU-->
     <v-navigation-drawer permanent>
         <template v-slot:prepend>
             <!--add logo img -->
@@ -57,7 +58,8 @@
         </template>
     </v-navigation-drawer>
 
-    
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX3ChuoDUa3J5?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>    
+
         <v-date-picker 
         class="custom-calendar max-w-full"
         disable-page-swipe
@@ -66,7 +68,7 @@
         v-model="date"
         :attributes="attributes"
         />
-    
+
 
             
 
