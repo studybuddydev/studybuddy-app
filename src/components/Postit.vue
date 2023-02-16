@@ -26,6 +26,7 @@ export default defineComponent({
             editedText: "il testo dei testi ",
             text : 'se clicchi due volte sia il testo che il titolo li puoi modificare, invio per confermare',
             title : 'POSTIT',
+            color : 'yellow'
 
         };
     },
@@ -63,5 +64,6 @@ export default defineComponent({
   box-shadow: 3px 3px 10px #00000080;
   border-radius: 8px;
   font-size: 16px;
+  color: #7d8100;
 }
 </style>
