@@ -58,6 +58,7 @@
         </template>
     </v-navigation-drawer>
 
+    <h1>Pianifica il tuo studio</h1>
         <v-date-picker 
         class="custom-calendar"
         disable-page-swipe

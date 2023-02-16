@@ -113,7 +113,7 @@ export default defineComponent({
             ] as Task[],
             dialog: false,
             newTask: "",
-            rules: [(v: string) => !!v || "Task name is required"],
+            rules: [(v: string) => !!v || "Chapter name is required"],
 
         };
     },
