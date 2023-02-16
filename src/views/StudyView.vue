@@ -79,7 +79,7 @@
   
 <script lang="ts">
 import { defineComponent } from "vue";
-import Pomodoro from "@/components/Pomodoro.vue";
+import Pomodoro from "@/components/Timer.vue";
 
 type Task = {
         text: string;
