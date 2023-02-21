@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <!-- MENU  -->
-        <v-navigation-drawer permanent >
+        <v-navigation-drawer permanent  >
 
              <!--column header  -->
             <template v-slot:prepend>
@@ -78,7 +78,8 @@
 
         <Postit />
 
-        <Pomodoro />
+
+       <!-- <Pomodoro /> -->
     </v-container>
 </template>
   

@@ -4,13 +4,17 @@
 
         <v-main> 
             <router-view></router-view>
+            <Player  />
         </v-main>
+       
+
     </v-app>
 </template>
 
 
 <script lang="ts">
 import { defineComponent, ref, watch, onMounted } from "vue";
+import Player from "@/components/Player.vue";
 
 type Exam = {
     text: string;
@@ -22,6 +26,7 @@ console.log(newExamListElement);
 
 export default defineComponent({
     name: "App",
+    components: { Player },
     data: () => ({
         drawer: false,
         diocane: "ciao",
