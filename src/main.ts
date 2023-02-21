@@ -17,36 +17,36 @@ import 'v-calendar/dist/style.css';
 import VCalendar from 'v-calendar';
 
 const myDarkTheme = {
-    dark: false,
-    colors: {
-      background: '#207178',
-      surface: '#12454a',
-      primary: '#6c20d6',
-      'primary-darken-1': '#3700B3',
-      secondary: '#03DAC6',
-      'secondary-darken-1': '#018786',
-      error: '#B00020',
-      info: '#2196F3',
-      success: '#4CAF50',
-      warning: '#FB8C00',
-    }
+  dark: false,
+  colors: {
+    background: '#207178',
+    surface: '#12454a',
+    primary: '#FB8C00',
+    'primary-darken-1': '#FB8C00',
+    secondary: '#03DAC6',
+    'secondary-darken-1': '#018786',
+    error: '#B00020',
+    info: '#2196F3',
+    success: '#4CAF50',
+    warning: '#FB8C00',
   }
+}
 
 // Use plugin with defaults
 const vuetify = createVuetify({
-    components,
-    directives,
-    icons: {
-        defaultSet: 'mdi',
-        aliases,
-        sets: { mdi }
-    },
-    theme: {
-        defaultTheme: 'myDarkTheme',
-        themes: {
-            myDarkTheme
-        }
+  components,
+  directives,
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: { mdi }
+  },
+  theme: {
+    defaultTheme: 'myDarkTheme',
+    themes: {
+      myDarkTheme
     }
+  }
 })
 
 const app = createApp(App)

@@ -12,7 +12,7 @@ const router = createRouter({
     },
 
     {
-      path: '/exam',
+      path: '/exam/:exam',
       name: 'exam',
       component: StudyView
     }

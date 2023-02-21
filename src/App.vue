@@ -1,92 +1,87 @@
 <template>
-    <v-app id="inspire">
-        
+  <v-app id="inspire">
 
-        <v-main> 
-            <router-view></router-view>
-            <Player  />
-        </v-main>
-       
+    <v-footer app class="bg-black">
+      <Player />
+    </v-footer>
 
-    </v-app>
+    <v-navigation-drawer absolute :rail="rail">
+      <template v-slot:prepend>
+        <v-list-item
+          prepend-avatar="/images/logo.png"
+          title="StudyBuddy"
+          @click="rail = false"
+          to="/"
+          nav />
+      </template>
+
+      <v-divider></v-divider>
+
+      <v-list nav density="compact">
+        <v-list-item
+          v-for="exam in state.getExams()" :key="exam.name"
+          link :to="`/exam/${exam.name}`"
+          @click="rail = true"
+          :prepend-icon="exam.icon" :title="exam.name" :value="exam.name"
+          active-color="primary"
+          />
+
+        <v-list-item
+          @click="newExamDialog.open = true"
+          color="primary"
+          class="bg-primary"
+          prepend-icon="mdi-plus" title="Add exam" />
+
+      </v-list>
+
+      <template v-slot:append>
+        <v-list-item
+          prepend-avatar="/images/pippo.webp"
+          lines="two"
+          :title="state.getUsername()"
+          subtitle="Logged in"
+          nav />
+      </template>
+    </v-navigation-drawer>
+
+    <v-main>
+      <router-view></router-view>
+    </v-main>
+
+    <v-dialog v-model="newExamDialog.open" width="auto">
+      <v-sheet width="300" class="mx-auto">
+        <v-form @submit.prevent>
+          <v-text-field v-model="newExamDialog.name" :rules="new" label="Exam name"></v-text-field>
+          <v-btn type="submit" @click="addExam" block class="mt-2">Confirm</v-btn>
+        </v-form>
+      </v-sheet>
+    </v-dialog>
+  </v-app>
 </template>
 
 
-<script lang="ts">
-import { defineComponent, ref, watch, onMounted } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
 import Player from "@/components/Player.vue";
+import { useStateStore } from "@/stores/state";
+const state = useStateStore();
 
-type Exam = {
-    text: string;
-    icon: string;
+
+const rail = ref(false);
+
+const newExamDialog = ref({
+  open: false,
+  name: "",
+});
+
+function addExam() {
+  state.addExam({
+    name: newExamDialog.value.name,
+    icon: "mdi-math-integral",
+    chapters: []
+  })
+  newExamDialog.value.name = "";
+  newExamDialog.value.open = false;
 };
 
-const newExamListElement = ref(null);
-console.log(newExamListElement);
-
-export default defineComponent({
-    name: "App",
-    components: { Player },
-    data: () => ({
-        drawer: false,
-        diocane: "ciao",
-        exams: [
-            { text: "Matematica", icon: "mdi-math-integral" },
-            { text: "Fisica", icon: "mdi-cube" },
-            { text: "Informatica", icon: "mdi-laptop" },
-        ] as Exam[],
-        editingExam: null as Exam | null,
-        dialog: false,
-        examName: "",
-        rules: [(v: string) => !!v || "Exam name is required"],
-    }),
-    mounted() {
-        
-    },
-    methods: {
-        addExam() {
-            this.exams.push({ text: this.examName, icon: "mdi-math-integral"});
-            this.examName = "";
-            this.dialog = false;
-        },
-    },
-});
 </script>
-
-<style lang="scss">
-.main {
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #207178;
-    //background-image: url("/background.jpg");
-}
-.wrapper {
-    background-color: rgb(18, 69, 74);
-    backdrop-filter: blur(5px);
-    padding: 1.5em 4em;
-    border-radius: 1em;
-    border: 3px solid white;
-}
-h2,
-h1,
-h3,
-p {
-    text-align: center;
-}
-h1 {
-    font-size: 4em;
-}
-h2 {
-    font-size: 2em;
-}
-p {
-    border-top: 1px solid white;
-    margin-top: 2em;
-    padding: 2em;
-    font-size: 1.5em;
-}
-</style>

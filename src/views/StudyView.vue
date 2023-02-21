@@ -3,21 +3,11 @@
         <!-- MENU  -->
         <v-navigation-drawer permanent  >
 
-             <!--column header  -->
+            <!--column header  -->
             <template v-slot:prepend>
-               
                 <v-list-item>
                     <v-list-item-content>
-                        <v-list-item-title class="title">
-                            <a href="/">
-                                <img
-                                    src="/images/logotxt.png"
-                                    alt="Studubuddy logo"
-                                    height="50"
-                                />
-                            </a>
-                            
-                        </v-list-item-title>
+                        <h1 class="title text-h4 text-primary">StudyBuddy</h1>
                     </v-list-item-content>
                 </v-list-item>
             </template>
@@ -57,20 +47,11 @@
                     >Add new Chapter</v-btn
                 >
             </v-list>
-            <!--column footer  -->
-            <template v-slot:append>
-                <v-list-item
-                    lines="two"
-                    prepend-avatar="/images/pippo.webp"
-                    title="Pippo"
-                    subtitle="Logged in"
-                ></v-list-item>
-            </template>
         </v-navigation-drawer>
 
         <!-- MAIN CONTENT  -->
             
-        <h1>{{ $route.query["name"] }}</h1>
+        <h1>{{ $route.params.exam }}</h1>
 
         <h2 v-if="selectedTopic">
             {{ selectedTopic }}
