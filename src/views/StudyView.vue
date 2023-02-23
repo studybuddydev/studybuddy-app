@@ -6,9 +6,7 @@
             <!--column header  -->
             <template v-slot:prepend>
                 <v-list-item>
-                    <v-list-item-content>
-                        <h1 class="title text-h4 text-primary">StudyBuddy</h1>
-                    </v-list-item-content>
+                    <h1 class="title text-h4 text-primary">StudyBuddy</h1>
                 </v-list-item>
             </template>
 

@@ -7,6 +7,7 @@ export type Exam = {
   name: string;
   icon: string;
   chapters: Chapter[];
+  color?: string;
 }
 
 export type PomodoroSettings = {

@@ -2,12 +2,12 @@
 
   <h1>Pianifica il tuo studio</h1>
   <v-date-picker class="custom-calendar" disable-page-swipe is-expanded is-dark v-model="date" />
-
+<!-- 
   <iframe style="border-radius:12px"
     src="https://open.spotify.com/embed/playlist/37i9dQZF1DX3ChuoDUa3J5?utm_source=generator&theme=0" width="35%"
     height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
     loading="lazy">
-  </iframe>
+  </iframe> -->
 
   
 

@@ -28,6 +28,14 @@ export const useStateStore = defineStore('state', () => {
     state.value.exams?.push(exam);
     save();
   }
+  function editExam(exam: Exam, i: number) {
+    state.value.exams[i] = { ...exam };
+    save();
+  }
+  function removeExam(exam: Exam) {
+    state.value.exams?.splice(state.value.exams.indexOf(exam), 1);
+    save();
+  }
 
 
   // ========= Settings =========
@@ -53,7 +61,7 @@ export const useStateStore = defineStore('state', () => {
     state,
     save,
     getUsername,
-    getExams, addExam,
+    getExams, addExam, editExam, removeExam,
     getPomodoroSettings, setPomodoroSettings
   };
 
