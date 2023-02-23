@@ -88,9 +88,9 @@ function closeSettings() {
 
 function getTime(time: number): string {
   time = Math.floor(time);
-  const minutes = Math.floor(time / 60).toString();
-  const seconds = (time % 60).toString().padStart(2, '0');
-  return `${minutes}:${seconds}`;
+  const minutes = Math.floor(time / 60)//.toString();
+  const seconds = (time % 60)//.toString().padStart(2, '0');
+  return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
 }
 
 function barColor() {
