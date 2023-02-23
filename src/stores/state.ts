@@ -1,12 +1,13 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { State, Exam } from '@/types'
+import type { State, Exam, PomodoroSettings } from '@/types'
 
 
 export const useStateStore = defineStore('state', () => {
   const lsState = JSON.parse(localStorage.getItem('state') || '{}') as State ?? {};
   if (!lsState.exams) lsState.exams = [];
   if (!lsState.username) lsState.username = 'Anonymous';
+  if (!lsState.settings) lsState.settings = {};
   const state = ref(lsState);
 
   // ========= Generic =========
@@ -29,11 +30,31 @@ export const useStateStore = defineStore('state', () => {
   }
 
 
+  // ========= Settings =========
+
+  // Pomodoro
+  function getPomodoroSettings(): PomodoroSettings {
+    return state.value.settings?.pomodoro ?? {
+      studyLength: 25,
+      shortBreakLength: 5,
+      longBreakLength: 15,
+      nrShortBreaks: 4,
+    }
+  }
+
+  function setPomodoroSettings(pSettings: PomodoroSettings) {
+    console.log(state.value)
+    state.value.settings.pomodoro = { ...pSettings };
+    save();
+  }
+
+
   return {
     state,
     save,
     getUsername,
     getExams, addExam,
+    getPomodoroSettings, setPomodoroSettings
   };
 
 })

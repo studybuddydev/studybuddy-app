@@ -1,8 +1,8 @@
 <template>
   <v-app id="inspire">
 
-    <v-footer app class="bg-black">
-      <Player />
+    <v-footer app class="bg-black pa-0">
+      <TomatoFooterVue />
     </v-footer>
 
     <v-navigation-drawer absolute :rail="rail">
@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Player from "@/components/Player.vue";
+import TomatoFooterVue from './components/TomatoFooter.vue';
 import { useStateStore } from "@/stores/state";
 const state = useStateStore();
 

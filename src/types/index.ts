@@ -9,7 +9,18 @@ export type Exam = {
   chapters: Chapter[];
 }
 
+export type PomodoroSettings = {
+  studyLength: number;
+  shortBreakLength: number;
+  longBreakLength: number;
+  nrShortBreaks: number;
+}
+
 export type State = {
   username: string;
   exams: Exam[];
+
+  settings: {
+    pomodoro?: PomodoroSettings;
+  }
 }
