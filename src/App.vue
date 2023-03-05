@@ -1,6 +1,10 @@
 <template>
   <v-app id="inspire">
 
+    <v-footer app class="bg-black pa-0">
+      <TomatoFooterVue />
+    </v-footer>
+
     <v-navigation-drawer absolute :rail="rail">
       <template v-slot:prepend>
         <v-list-item
@@ -18,6 +22,7 @@
         @add="addExam"
         @edit="editExam"
         @remove="removeExam"
+        @rail="rail = true"
         />
 
       <template v-slot:append>
@@ -29,11 +34,6 @@
           nav />
       </template>
     </v-navigation-drawer>
-
-
-    <v-footer app class="bg-black pa-0">
-      <TomatoFooterVue />
-    </v-footer>
 
     <v-main>
       <router-view></router-view>

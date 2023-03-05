@@ -3,6 +3,7 @@
     <v-list-item
       v-for="e, i in props.menuElements" :key="e.name"
       link :to="e.to"
+      @click="rail()"
       :prepend-icon="e.icon" :title="e.name" :value="e.name"
       :active-color="e.color ?? 'primary'">
       <template v-slot:append>
@@ -82,7 +83,7 @@ const props = defineProps<{
   elementsName: string,
   menuElements: MenuElement[],
 }>()
-const emit = defineEmits(['add', 'edit', 'remove'])
+const emit = defineEmits(['add', 'edit', 'remove', 'rail'])
 
 const mdiIconsList = [
   'mdi-math-integral',
@@ -145,6 +146,10 @@ function saveElement() {
     emit('edit', newElementDialog.value.element, newElementDialog.value.index)
   }
   newElementDialog.value.open = false;
+}
+
+function rail() {
+  emit('rail')
 }
 
 

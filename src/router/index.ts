@@ -16,6 +16,12 @@ const router = createRouter({
       path: '/exam/:exam',
       name: 'exam',
       component: StudyView
+    },
+
+    {
+      path: '/exam/:exam/:chapter',
+      name: 'chapter',
+      component: StudyView
     }
   ]
 })

@@ -25,6 +25,7 @@
     <!-- MAIN CONTENT  -->
 
     <h1>{{ exam?.name }}</h1>
+    <h2 v-if="chapter">{{ chapter.name }}</h2>
 
 
     <Postit />
@@ -45,10 +46,11 @@ const route = useRoute()
 const state = useStateStore();
 
 const exam = computed(() => state.getExam(route.params.exam as string));
+const chapter = computed(() => route.params.chapter ? (exam.value?.chapters.find((c) => c.name === route.params.chapter) ?? null) : null);
 
 const menuElements = computed(() => exam.value?.chapters.map((c) => ({
   name: c.name,
-  to: `/exam/${c.name}/${c.name}`,
+  to: `/exam/${exam.value?.name}/${c.name}`,
 })));
 
 function addChapter(el: MenuElement) {
