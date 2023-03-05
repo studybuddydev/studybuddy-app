@@ -3,7 +3,7 @@ import HomeView from '@/views/HomeView.vue'
 import StudyView from '@/views/StudyView.vue'
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory(),  
   
   routes: [
     {

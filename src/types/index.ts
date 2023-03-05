@@ -1,5 +1,11 @@
+export type MenuElement = {
+  name: string;
+  to: string;
+  icon?: string;
+  color?: string;
+}
+
 export type Chapter = {
-  id: string;
   name: string;
 }
 

@@ -58,72 +58,60 @@
         <Postit />
 
 
-       <!-- <Pomodoro /> -->
     </v-container>
 </template>
-  
-<script lang="ts">
-import { defineComponent } from "vue";
-import Pomodoro from "@/components/Timer.vue";
+
+<script setup lang="ts">
+import { ref } from "vue";
 import Postit from "@/components/Postit.vue";
+import { useStateStore } from "@/stores/state";
+
+const state = useStateStore();
+
+// get path variable
 
 type Task = {
-        text: string;
-        weight: number;
-    };
+  text: string;
+  weight: number;
+};
 
-export default defineComponent({
-    name: "StudyView",
-    components: {Pomodoro, Postit},
-    data: function () {
-        return {
-            topics: [
-                { text: "Topic 1" },
-                { text: "Topic 2" },
-                // ...
-            ],
-            selectedTopic: '',
-            time: 25 * 60 * 1000,
-            intervalId: 0,
+const topics = [
+  { text: "Topic 1" },
+  { text: "Topic 2" },
+]
+const selectedTopic = ref('')
+const time = ref(25 * 60 * 1000)
+const intervalId = ref(0)
 
-            tasks: [
-                { text: "Chapter 1", weight: 1 },
-                { text: "Chapter 2", weight: 2 },
-                // ...
-            ] as Task[],
-            dialog: false,
-            newTask: "",
-            rules: [(v: string) => !!v || "Chapter name is required"],
+const tasks: Task[] = [
+  { text: "Chapter 1", weight: 1 },
+  { text: "Chapter 2", weight: 2 },
+];
+const dialog = ref(false)
+const newTask = ref("")
+const rules = [(v: string) => !!v || "Chapter name is required"]
 
-        };
-    },
-
-    created: async function () {},
-    methods: {
-        loadVotes: async function () {},
-        selectTopic: function (topic: any) {
-            this.selectedTopic = topic;
-        },
-        startTimer() {
-            this.intervalId = setInterval(() => {
-                this.time -= 1000;
-                if (this.time <= 0) {
-                    this.stopTimer();
-                }
-            }, 1000);
-        },
-        stopTimer() {
-            clearInterval(this.intervalId);
-            this.intervalId = 0;
-        },
-        addTask() {
-            this.tasks.push({ text: this.newTask, weight: 1 });
-            this.newTask = "";
-            this.dialog = false;
-        },
-    },
-    onMounted: async function () {},
-});
+async function loadVotes() {}
+function selectTopic(topic: any) {
+  selectedTopic.value = topic;
+}
+function startTimer() {
+  intervalId.value = setInterval(() => {
+  time.value -= 1000;
+  if (time.value <= 0) {
+    stopTimer();
+  }
+}, 1000);
+}
+function stopTimer() {
+  clearInterval(intervalId.value);
+  intervalId.value = 0;
+}
+function addTask() {
+    tasks.push({ text: newTask.value, weight: 1 });
+    newTask.value = "";
+    dialog.value = false;
+}
 </script>
   
 <style lang="scss">

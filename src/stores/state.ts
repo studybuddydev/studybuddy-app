@@ -24,16 +24,23 @@ export const useStateStore = defineStore('state', () => {
   function getExams() {
     return state.value.exams ?? [];
   }
+  function getExam(name: string) {
+    return state.value.exams?.find(e => e.name === name);
+  }
   function addExam(exam: Exam) {
     state.value.exams?.push(exam);
     save();
   }
-  function editExam(exam: Exam, i: number) {
+  function editExam(i: number, exam: Exam) {
     state.value.exams[i] = { ...exam };
     save();
   }
-  function removeExam(exam: Exam) {
-    state.value.exams?.splice(state.value.exams.indexOf(exam), 1);
+  function removeExam(i: number) {
+    state.value.exams?.splice(i, 1);
+    save();
+  }
+  function addChapter(exam: Exam, chapter: string) {
+    exam.chapters.push({ name: chapter });
     save();
   }
 
@@ -61,7 +68,7 @@ export const useStateStore = defineStore('state', () => {
     state,
     save,
     getUsername,
-    getExams, addExam, editExam, removeExam,
+    getExams, getExam, addExam, editExam, removeExam,
     getPomodoroSettings, setPomodoroSettings
   };
 
