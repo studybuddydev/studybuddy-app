@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { State, Exam, PomodoroSettings } from '@/types'
+import type { State, Exam, PomodoroSettings, Chapter } from '@/types'
 
 
 export const useStateStore = defineStore('state', () => {
@@ -39,8 +39,16 @@ export const useStateStore = defineStore('state', () => {
     state.value.exams?.splice(i, 1);
     save();
   }
-  function addChapter(exam: Exam, chapter: string) {
-    exam.chapters.push({ name: chapter });
+  function addChapter(exam: Exam, chapter: Chapter) {
+    exam.chapters.push(chapter);
+    save();
+  }
+  function editChapter(exam: Exam, i: number, chapter: Chapter) {
+    exam.chapters[i] = { ...chapter };
+    save();
+  }
+  function removeChapter(exam: Exam, i: number) {
+    exam.chapters.splice(i, 1);
     save();
   }
 
@@ -69,6 +77,7 @@ export const useStateStore = defineStore('state', () => {
     save,
     getUsername,
     getExams, getExam, addExam, editExam, removeExam,
+    addChapter, editChapter, removeChapter,
     getPomodoroSettings, setPomodoroSettings
   };
 

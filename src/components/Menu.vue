@@ -18,7 +18,7 @@
           </template>
           <v-list>
             <v-list-item @click="editElement(e, i)" title="Edit" />
-            <v-list-item @click="removeExam(i)" title="Delete" />
+            <v-list-item @click="removeElement(i)" title="Delete" />
           </v-list>
         </v-menu>
       </template>
@@ -28,7 +28,7 @@
       @click="addElement()"
       color="primary"
       class="bg-primary"
-      prepend-icon="mdi-plus" title="Add exam" />
+      prepend-icon="mdi-plus" :title="`Add ${props.elementsName}`" />
 
   </v-list>
     
@@ -36,14 +36,14 @@
     <v-card>
       <v-toolbar dark color="primary">
         <v-btn icon dark @click="newElementDialog.open = false"> <v-icon>mdi-close</v-icon> </v-btn>
-        <v-toolbar-title>Exam</v-toolbar-title>
+        <v-toolbar-title>{{ props.elementsName }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-toolbar-items> <v-btn variant="text" @click="saveExam()" > Save </v-btn> </v-toolbar-items>
+        <v-toolbar-items> <v-btn variant="text" @click="saveElement()" > Save </v-btn> </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12"> <v-text-field v-model="newElementDialog.element.name" label="Exam name" required></v-text-field> </v-col>
+            <v-col cols="12"> <v-text-field v-model="newElementDialog.element.name" :label="`${props.elementsName} name`" required></v-text-field> </v-col>
             <v-col cols="12">
               <v-select label="Icon" :items="mdiIconsList" v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
                 <template v-slot:item="{ props: item }">
@@ -78,7 +78,10 @@
 import { ref } from "vue";
 import type { MenuElement } from '../types';
 
-const props = defineProps<{ menuElements: MenuElement[] }>()
+const props = defineProps<{
+  elementsName: string,
+  menuElements: MenuElement[],
+}>()
 const emit = defineEmits(['add', 'edit', 'remove'])
 
 const mdiIconsList = [
@@ -131,11 +134,11 @@ function editElement(el: MenuElement, i: number) {
   newElementDialog.value.open = true;
 }
 
-function removeExam(i: number) {
+function removeElement(i: number) {
   emit('remove', i)
 }
 
-function saveExam() {
+function saveElement() {
   if (newElementDialog.value.index === -1) {
     emit('add', newElementDialog.value.element)
   } else {

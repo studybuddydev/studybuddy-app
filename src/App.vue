@@ -13,6 +13,7 @@
       <v-divider></v-divider>
       
       <Menu
+        elements-name="Exam"
         :menu-elements="menuElements"
         @add="addExam"
         @edit="editExam"
