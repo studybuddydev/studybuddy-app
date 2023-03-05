@@ -5,7 +5,7 @@
       link :to="e.to"
       @click="rail()"
       :prepend-icon="e.icon" :title="e.name" :value="e.name"
-      :active-color="e.color ?? 'primary'">
+      :active-color="e.color ?? props.color">
       <template v-slot:append>
         <v-menu>
           <template v-slot:activator="{ props }">
@@ -27,15 +27,14 @@
 
     <v-list-item
       @click="addElement()"
-      color="primary"
-      class="bg-primary"
-      prepend-icon="mdi-plus" :title="`Add ${props.elementsName}`" />
+      :class="`bg-${props.color}`"
+      prepend-icon="mdi-plus" :title="`Add ${props.elementsName} ${props.color}`" />
 
   </v-list>
     
   <v-dialog v-model="newElementDialog.open" width="500">
     <v-card>
-      <v-toolbar dark color="primary">
+      <v-toolbar dark :color="props.color">
         <v-btn icon dark @click="newElementDialog.open = false"> <v-icon>mdi-close</v-icon> </v-btn>
         <v-toolbar-title>{{ props.elementsName }}</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -45,7 +44,7 @@
         <v-container>
           <v-row>
             <v-col cols="12"> <v-text-field v-model="newElementDialog.element.name" :label="`${props.elementsName} name`" required></v-text-field> </v-col>
-            <v-col cols="12">
+            <v-col cols="12" v-if="props.chooseIcon">
               <v-select label="Icon" :items="mdiIconsList" v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
                 <template v-slot:item="{ props: item }">
                   <v-list-item v-bind="item" :prepend-icon="item.value" />
@@ -54,7 +53,7 @@
             </v-col>
           </v-row>
           <v-row>
-          <v-col cols="12">
+          <v-col cols="12" v-if="props.chooseColor">
             <v-select label="Icon" :items="colorList" v-model="newElementDialog.element.color" >
               <template v-slot:item="{ props: item }">
                 <v-list-item v-bind="item" >
@@ -78,11 +77,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { MenuElement } from '../types';
-
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   elementsName: string,
   menuElements: MenuElement[],
-}>()
+  chooseIcon?: boolean,
+  color?: string
+  chooseColor?: boolean,
+}>(), {
+  chooseIcon: true,
+  chooseColor: true,
+  color: 'primary',
+})
 const emit = defineEmits(['add', 'edit', 'remove', 'rail'])
 
 const mdiIconsList = [

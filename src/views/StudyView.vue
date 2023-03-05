@@ -12,8 +12,11 @@
 
       <v-divider></v-divider>
 
-      <Menu 
+      <Menu
         elements-name="Chapters"
+        :choose-color="false"
+        :choose-icon="false"
+        :color="exam?.color ?? 'primary'"
         :menu-elements="menuElements ?? []"
         @add="addChapter"
         @edit="editChapter"
@@ -47,6 +50,7 @@ const state = useStateStore();
 
 const exam = computed(() => state.getExam(route.params.exam as string));
 const chapter = computed(() => route.params.chapter ? (exam.value?.chapters.find((c) => c.name === route.params.chapter) ?? null) : null);
+
 
 const menuElements = computed(() => exam.value?.chapters.map((c) => ({
   name: c.name,
