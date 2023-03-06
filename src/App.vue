@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <Pomodoro />
+    <Pomodoro /> <!-- keep it on the top -->
     <Menu />
     <v-main>
       <router-view></router-view>
