@@ -80,12 +80,12 @@
 </template> 
 
 <script setup lang="ts">
-import MenuList from '@/components/MenuList.vue';
+import MenuList from '@/components/Menus/MenuList.vue';
 import { useRoute } from 'vue-router'
 import { ref, computed } from "vue";
 import { useStateStore } from "@/stores/state";
 import type { MenuElement } from '@/types';
-import UserSettings from '@/components/UserSettings.vue';
+import UserSettings from '@/components/Popup/UserSettings.vue';
 
 const route = useRoute()
 const state = useStateStore();

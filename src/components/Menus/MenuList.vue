@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import type { MenuElement } from '../types';
+import type { MenuElement } from '@/types';
 const props = withDefaults(defineProps<{
   elementsName: string,
   menuElements: MenuElement[],
