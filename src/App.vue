@@ -1,17 +1,10 @@
 <template>
   <v-app id="inspire">
-
-    <v-footer app class="bg-black pa-0">
-      <Pomodoro />
-    </v-footer>
-
+    <Pomodoro />
     <Menu />
-    
     <v-main>
       <router-view></router-view>
     </v-main>
-
-
   </v-app>
 </template>
 

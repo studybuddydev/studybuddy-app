@@ -1,46 +1,48 @@
 <template>
-  <div class="progress" :style="{
-      background: `linear-gradient(to right, ${ barColor() } ${cProgress.percentage}%, black ${cProgress.percentage}%)`,
-    }">
-    <p>
-      {{ cProgress.status === EStatus.Study ? 'Study' : 'Break' }}
-    </p>
-  </div>
+  <v-footer app class="bg-black pa-0">
+    <div class="progress" :style="{
+        background: `linear-gradient(to right, ${ barColor() } ${cProgress.percentage}%, black ${cProgress.percentage}%)`,
+      }">
+      <p>
+        {{ cProgress.status === EStatus.Study ? 'Study' : 'Break' }}
+      </p>
+    </div>
 
-  <div class="controls px-2 py-3">
-    <p class=" mx-3">{{ getTime(cProgress.seconds) }} / {{ getTime(getLength()) }}</p>
-    
-    <v-btn
-      class="btn-play-pause" color="secondary" icon="mdi-cog"
-      v-if="cProgress.paused" @click="settingsOpen = true" size="x-small"></v-btn>
-    <v-btn
-      class="btn-play-pause" color="secondary" icon="mdi-stop"
-      v-if="cProgress.paused" @click="stop()" size="x-small"></v-btn>
-    <v-btn
-      class="btn-play-pause" color="secondary" :icon="cProgress.goToNextStateAvailable ? 'mdi-skip-next' : (cProgress.paused ? 'mdi-play': 'mdi-pause')"
-      @click="toggle()"></v-btn>
-  </div>
+    <div class="controls px-2 py-3">
+      <p class=" mx-3">{{ getTime(cProgress.seconds) }} / {{ getTime(getLength()) }}</p>
+      
+      <v-btn
+        class="btn-play-pause" color="secondary" icon="mdi-cog"
+        v-if="cProgress.paused" @click="settingsOpen = true" size="x-small"></v-btn>
+      <v-btn
+        class="btn-play-pause" color="secondary" icon="mdi-stop"
+        v-if="cProgress.paused" @click="stop()" size="x-small"></v-btn>
+      <v-btn
+        class="btn-play-pause" color="secondary" :icon="cProgress.goToNextStateAvailable ? 'mdi-skip-next' : (cProgress.paused ? 'mdi-play': 'mdi-pause')"
+        @click="toggle()"></v-btn>
+    </div>
 
-  <v-dialog v-model="settingsOpen" width="500">
-    <v-card>
-        <v-toolbar dark color="primary">
-          <v-btn icon dark @click="closeSettings()"> <v-icon>mdi-close</v-icon> </v-btn>
-          <v-toolbar-title>Settings</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items> <v-btn variant="text" @click="saveSettings()" > Save </v-btn> </v-toolbar-items>
-        </v-toolbar>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12"> <v-text-field v-model="tempSettings.studyLength" type="number" label="Pomodoro Lenght in minutes" required></v-text-field> </v-col>
-              <v-col cols="12"> <v-text-field v-model="tempSettings.shortBreakLength" type="number" label="Short Break Lenght in minutes" required></v-text-field> </v-col>
-              <v-col cols="12"> <v-text-field v-model="tempSettings.longBreakLength" type="number" label="Long Break Lenght in minutes" required></v-text-field> </v-col>
-              <v-col cols="12"> <v-text-field v-model="tempSettings.nrShortBreaks" type="number" label="Long Break After" required></v-text-field> </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-      </v-card>
-  </v-dialog>
+    <v-dialog v-model="settingsOpen" width="500">
+      <v-card>
+          <v-toolbar dark color="primary">
+            <v-btn icon dark @click="closeSettings()"> <v-icon>mdi-close</v-icon> </v-btn>
+            <v-toolbar-title>Settings</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items> <v-btn variant="text" @click="saveSettings()" > Save </v-btn> </v-toolbar-items>
+          </v-toolbar>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12"> <v-text-field v-model="tempSettings.studyLength" type="number" label="Pomodoro Lenght in minutes" required></v-text-field> </v-col>
+                <v-col cols="12"> <v-text-field v-model="tempSettings.shortBreakLength" type="number" label="Short Break Lenght in minutes" required></v-text-field> </v-col>
+                <v-col cols="12"> <v-text-field v-model="tempSettings.longBreakLength" type="number" label="Long Break Lenght in minutes" required></v-text-field> </v-col>
+                <v-col cols="12"> <v-text-field v-model="tempSettings.nrShortBreaks" type="number" label="Long Break After" required></v-text-field> </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+        </v-card>
+    </v-dialog>
+  </v-footer>
 </template>
 
 <script setup lang="ts">

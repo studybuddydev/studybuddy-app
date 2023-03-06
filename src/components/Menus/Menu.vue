@@ -1,6 +1,6 @@
 <template>
   <!-- MAIN MENU -->
-  <v-navigation-drawer permanent :rail="rail">
+  <v-navigation-drawer permanent :rail="!!exam || rail">
     <template v-slot:prepend>
       <v-list-item
         prepend-avatar="/images/logo.png"
@@ -45,7 +45,6 @@
   </v-navigation-drawer>
 
   <!-- EXAM MENU -->
-
   <v-navigation-drawer permanent v-if="exam">
 
     <template v-slot:prepend>
@@ -92,6 +91,8 @@ const state = useStateStore();
 const rail = ref(false);
 const openUserSettings = ref(false);
 
+const exam = computed(() => route.params.exam ? state.getExam(route.params.exam as string) : undefined);
+
 // ----- EXAM
 const menuElements = computed(() => state.getExams().map((e) => ({
   name: e.name,
@@ -122,10 +123,7 @@ function removeExam(i: number) {
   state.removeExam(i);
 }
 
-
 // ----- CHAPTER
-const exam = computed(() => route.params.exam ? state.getExam(route.params.exam as string) : undefined);
-
 const menuElementsChapters = computed(() => exam.value?.chapters.map((c) => ({
   name: c.name,
   to: `/exam/${exam.value?.name}/${c.name}`,
