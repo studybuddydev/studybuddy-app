@@ -1,161 +1,150 @@
 <template>
-  <v-list nav density="compact">
-    <v-list-item
-      v-for="e, i in props.menuElements" :key="e.name"
-      link :to="e.to"
-      @click="rail()"
-      :prepend-icon="e.icon" :title="e.name" :value="e.name"
-      :active-color="e.color ?? props.color">
-      <template v-slot:append>
-        <v-menu>
-          <template v-slot:activator="{ props }">
+  <!-- MAIN MENU -->
+  <v-navigation-drawer permanent :rail="rail">
+    <template v-slot:prepend>
+      <v-list-item
+        prepend-avatar="/images/logo.png"
+        @click="rail = false"
+        to="/" nav >
+        <template v-slot>
+          <v-list-item class="pa-0">
+            <h1 class="title text-h5 font-weight-bold text-primary">StudyBuddy</h1>
+          </v-list-item>
+        </template>
+      </v-list-item>
+    </template>
+
+    <v-divider></v-divider>
+    
+    <MenuList
+      elements-name="Exam"
+      :menu-elements="menuElements"
+      @add="addExam"
+      @edit="editExam"
+      @remove="removeExam"
+      @rail="rail = true"
+      />
+
+    <template v-slot:append>
+      <v-list-item
+        prepend-avatar="/images/pippo.webp"
+        lines="two"
+        :title="state.getUserSettings().username"
+        subtitle="Logged in"
+        nav >
+          <template v-slot:append v-if="!rail">
             <v-btn
               color="grey-lighten-1"
-              icon="mdi-dots-vertical"
+              icon="mdi-cog"
               variant="text"
-              v-bind="props"
-              @click.prevent.stop="$event.preventDefault()"
+              @click="openUserSettings = true"
             ></v-btn>
           </template>
-          <v-list>
-            <v-list-item @click="editElement(e, i)" title="Edit" />
-            <v-list-item @click="removeElement(i)" title="Delete" />
-          </v-list>
-        </v-menu>
-      </template>
-    </v-list-item>
+      </v-list-item>
+    </template>
+  </v-navigation-drawer>
 
-    <v-list-item
-      @click="addElement()"
-      :class="`bg-${props.color}`"
-      prepend-icon="mdi-plus" :title="`Add ${props.elementsName}`" />
+  <!-- EXAM MENU -->
 
-  </v-list>
-    
-  <v-dialog v-model="newElementDialog.open" width="500">
-    <v-card>
-      <v-toolbar dark :color="props.color">
-        <v-btn icon dark @click="newElementDialog.open = false"> <v-icon>mdi-close</v-icon> </v-btn>
-        <v-toolbar-title>{{ props.elementsName }}</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-toolbar-items> <v-btn variant="text" @click="saveElement()" > Save </v-btn> </v-toolbar-items>
-      </v-toolbar>
-      <v-card-text>
-        <v-container>
-          <v-row>
-            <v-col cols="12"> <v-text-field v-model="newElementDialog.element.name" :label="`${props.elementsName} name`" required></v-text-field> </v-col>
-            <v-col cols="12" v-if="props.chooseIcon">
-              <v-select label="Icon" :items="mdiIconsList" v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
-                <template v-slot:item="{ props: item }">
-                  <v-list-item v-bind="item" :prepend-icon="item.value" />
-                </template>
-              </v-select>
-            </v-col>
-          </v-row>
-          <v-row>
-          <v-col cols="12" v-if="props.chooseColor">
-            <v-select label="Icon" :items="colorList" v-model="newElementDialog.element.color" >
-              <template v-slot:item="{ props: item }">
-                <v-list-item v-bind="item" >
-                  <template v-slot:prepend>
-                    <v-icon :color="item.value">mdi-circle</v-icon>
-                  </template>
-                </v-list-item>
-              </template>
-              <template v-slot:prepend>
-                <v-icon :color="newElementDialog.element.color">mdi-circle</v-icon>
-              </template>
-            </v-select>
-          </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
-</template>
+  <v-navigation-drawer permanent v-if="exam">
+
+    <template v-slot:prepend>
+      <v-list-item :to="`/exam/${exam.name}`" nav >
+        <h1 :class="`title text-h4 text-${exam?.color ?? 'primary'}`">{{exam?.name}}</h1>
+      </v-list-item>
+    </template>
+
+    <v-divider></v-divider>
+
+    <MenuList
+      elements-name="Chapters"
+      :choose-color="false"
+      :choose-icon="false"
+      :color="exam?.color ?? 'primary'"
+      :menu-elements="menuElementsChapters ?? []"
+      @add="addChapter"
+      @edit="editChapter"
+      @remove="removeChapter"
+    />
+<!-- 
+    <template v-slot:append>
+      <v-list-item>
+        <h1 class="title text-h4 text-primary">StudyBuddy</h1>
+      </v-list-item>
+    </template> -->
+
+  </v-navigation-drawer>
+
+  <UserSettings v-model="openUserSettings" />
+
+</template> 
 
 <script setup lang="ts">
-import { ref } from "vue";
-import type { MenuElement } from '../types';
-const props = withDefaults(defineProps<{
-  elementsName: string,
-  menuElements: MenuElement[],
-  chooseIcon?: boolean,
-  color?: string
-  chooseColor?: boolean,
-}>(), {
-  chooseIcon: true,
-  chooseColor: true,
-  color: 'primary',
-})
-const emit = defineEmits(['add', 'edit', 'remove', 'rail'])
+import MenuList from '@/components/MenuList.vue';
+import { useRoute } from 'vue-router'
+import { ref, computed } from "vue";
+import { useStateStore } from "@/stores/state";
+import type { MenuElement } from '@/types';
+import UserSettings from '@/components/UserSettings.vue';
 
-const mdiIconsList = [
-  'mdi-math-integral',
-  'mdi-math-compass',
-  'mdi-math-cos',
-  'mdi-math-sin',
-  'mdi-math-tan',
-  'mdi-math-norm',
-  'mdi-math-norm-box',
-  'mdi-math-log',
-  'mdi-math-exp',
-  'mdi-math-factorial',
-  'mdi-math-derive',
-  'mdi-math-integral-box',
-]
+const route = useRoute()
+const state = useStateStore();
+const rail = ref(false);
+const openUserSettings = ref(false);
 
-const colorList = [
-  'purple',
-  'pink',
-  'indigo',
-  'blue',
-  'teal',
-  'green',
-  'orange',
-  'deep-orange',
-  'brown',
-  'grey',
-  'blue-grey',
-  'black',
-  'white',
-];
+// ----- EXAM
+const menuElements = computed(() => state.getExams().map((e) => ({
+  name: e.name,
+  icon: e.icon,
+  color: e.color,
+  to: `/exam/${e.name}`,
+})));
 
-const defaultElement: MenuElement = { name: '', icon: 'mdi-math-integral', to: '' };
-const newElementDialog = ref({
-  open: false,
-  index: -1,
-  element: { ...defaultElement },
-});
-
-function addElement() {
-  newElementDialog.value.element =  { ...defaultElement };
-  newElementDialog.value.index = -1;
-  newElementDialog.value.open = true;
+function addExam(el: MenuElement) {
+  state.addExam({
+    name: el.name,
+    icon: el.icon  ?? 'mdi-book',
+    color: el.color,
+    chapters: []
+  });
 }
 
-function editElement(el: MenuElement, i: number) {
-  newElementDialog.value.element = { ...el };
-  newElementDialog.value.index = i;
-  newElementDialog.value.open = true;
+function editExam(el: MenuElement, index: number) {
+  state.editExam(index, {
+    name: el.name,
+    icon: el.icon ?? 'mdi-book',
+    color: el.color,
+    chapters: []
+  });
 }
 
-function removeElement(i: number) {
-  emit('remove', i)
+function removeExam(i: number) {
+  state.removeExam(i);
 }
 
-function saveElement() {
-  if (newElementDialog.value.index === -1) {
-    emit('add', newElementDialog.value.element)
-  } else {
-    emit('edit', newElementDialog.value.element, newElementDialog.value.index)
-  }
-  newElementDialog.value.open = false;
+
+// ----- CHAPTER
+const exam = computed(() => route.params.exam ? state.getExam(route.params.exam as string) : undefined);
+
+const menuElementsChapters = computed(() => exam.value?.chapters.map((c) => ({
+  name: c.name,
+  to: `/exam/${exam.value?.name}/${c.name}`,
+})));
+
+function addChapter(el: MenuElement) {
+  if (exam.value)
+    state.addChapter(exam.value, { name: el.name })
 }
 
-function rail() {
-  emit('rail')
+function editChapter(el: MenuElement, i: number) {
+  if (exam.value)
+    state.editChapter(exam.value, i, { name: el.name })
 }
 
+function removeChapter(i: number) {
+  if (exam.value)
+    state.removeChapter(exam.value, i)
+}
 
 </script>
+

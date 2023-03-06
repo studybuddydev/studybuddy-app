@@ -1,38 +1,7 @@
 <template>
   <v-container>
-    <!-- MENU  -->
-    <v-navigation-drawer permanent>
-
-      <!--column header  -->
-      <template v-slot:prepend>
-        <v-list-item>
-          <h1 class="title text-h4 text-primary">StudyBuddy</h1>
-        </v-list-item>
-      </template>
-
-      <v-divider></v-divider>
-
-      <Menu
-        elements-name="Chapters"
-        :choose-color="false"
-        :choose-icon="false"
-        :color="exam?.color ?? 'primary'"
-        :menu-elements="menuElements ?? []"
-        @add="addChapter"
-        @edit="editChapter"
-        @remove="removeChapter"
-      />
-
-    </v-navigation-drawer>
-
-    <!-- MAIN CONTENT  -->
-
-    <h1>{{ exam?.name }}</h1>
-    <h2 v-if="chapter">{{ chapter.name }}</h2>
-
 
     <Postit />
-
 
   </v-container>
 </template>
