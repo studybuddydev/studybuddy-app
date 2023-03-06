@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { State, Exam, PomodoroSettings, Chapter } from '@/types'
+import type { State, Exam, PomodoroSettings, Chapter, UserSettings } from '@/types'
 
 
 export const useStateStore = defineStore('state', () => {
@@ -64,13 +64,23 @@ export const useStateStore = defineStore('state', () => {
       nrShortBreaks: 4,
     }
   }
-
   function setPomodoroSettings(pSettings: PomodoroSettings) {
-    console.log(state.value)
     state.value.settings.pomodoro = { ...pSettings };
     save();
   }
 
+  // User
+  function getUserSettings(): UserSettings {
+    return state.value.settings?.user ?? {
+      icon: 'mdi-account',
+      theme: 'dark',
+      username: 'Anonymous'
+    }
+  }
+  function setUserSettings(uSettings: UserSettings) {
+    state.value.settings.user = { ...uSettings };
+    save();
+  }
 
   return {
     state,
@@ -78,7 +88,8 @@ export const useStateStore = defineStore('state', () => {
     getUsername,
     getExams, getExam, addExam, editExam, removeExam,
     addChapter, editChapter, removeChapter,
-    getPomodoroSettings, setPomodoroSettings
+    getPomodoroSettings, setPomodoroSettings,
+    getUserSettings, setUserSettings,
   };
 
-})
+});

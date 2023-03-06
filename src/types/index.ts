@@ -5,6 +5,7 @@ export type MenuElement = {
   color?: string;
 }
 
+// ---------- EXAM ----------
 export type Chapter = {
   name: string;
 }
@@ -16,11 +17,17 @@ export type Exam = {
   color?: string;
 }
 
+// ---------- SETTINGS ----------
 export type PomodoroSettings = {
   studyLength: number;
   shortBreakLength: number;
   longBreakLength: number;
   nrShortBreaks: number;
+}
+export type UserSettings = {
+  username: string;
+  theme: string;
+  icon: string;
 }
 
 export type State = {
@@ -29,5 +36,6 @@ export type State = {
 
   settings: {
     pomodoro?: PomodoroSettings;
+    user?: UserSettings;
   }
 }

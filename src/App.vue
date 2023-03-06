@@ -29,9 +29,18 @@
         <v-list-item
           prepend-avatar="/images/pippo.webp"
           lines="two"
-          :title="state.getUsername()"
+          :title="state.getUserSettings().username"
           subtitle="Logged in"
-          nav />
+          nav >
+            <template v-slot:append>
+              <v-btn
+                color="grey-lighten-1"
+                icon="mdi-cog"
+                variant="text"
+                @click="openUserSettings = true"
+              ></v-btn>
+            </template>
+        </v-list-item>
       </template>
     </v-navigation-drawer>
 
@@ -39,18 +48,22 @@
       <router-view></router-view>
     </v-main>
 
+    <UserSettings v-model="openUserSettings" />
+
   </v-app>
 </template>
 
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import TomatoFooterVue from './components/TomatoFooter.vue';
-import Menu from './components/Menu.vue';
+import TomatoFooterVue from '@/components/TomatoFooter.vue';
+import UserSettings from '@/components/UserSettings.vue';
+import Menu from '@/components/Menu.vue';
 import { useStateStore } from "@/stores/state";
 import type { MenuElement } from './types';
 const state = useStateStore();
 const rail = ref(false);
+const openUserSettings = ref(false);
 
 const menuElements = computed(() => state.getExams().map((e) => ({
   name: e.name,

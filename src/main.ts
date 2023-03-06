@@ -12,6 +12,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import { themes } from '@/assets/themes'
 
 import 'v-calendar/dist/style.css';
 import VCalendar from 'v-calendar';
@@ -42,11 +43,10 @@ const vuetify = createVuetify({
     sets: { mdi }
   },
   theme: {
-    defaultTheme: 'myDarkTheme',
-    themes: {
-      myDarkTheme
-    }
-  }
+    defaultTheme: JSON.parse(localStorage.getItem('state') ?? '{}')?.settings?.user?.theme ?? 'verdone',
+    themes: themes,
+  },
+  
 })
 
 const app = createApp(App)
