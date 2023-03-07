@@ -3,20 +3,23 @@
     <h1>{{ chapter.name }}</h1>
   </v-container>
   
-  <div class="link">
+  <!-- <div class="link">
     <h2>Link utili </h2>
     <v-btn v-for="(button, index) in buttons" :key="index" :class="button.class"  :href="button.href" variant="outlined" >
       {{ button.label }}
     </v-btn>
     <v-btn color="primary" @click="addButton">Add Button</v-btn>
-  </div>
+  </div> -->
+
+  <Links class="ma-4" :links="links" />
 
 </template>
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { useStateStore } from "@/stores/state";
-import {ref, nextTick} from 'vue'
+import type { Link } from '@/types';
+import Links from '@/components/Links/Links.vue'
 
 const state = useStateStore();
 const route = useRoute()
@@ -24,27 +27,21 @@ const route = useRoute()
 const exam = state.getExam(route.params.exam as string);
 const chapter = exam?.chapters.find(c => c.name === route.params.chapter) ?? undefined;
 
-const buttons = [
-  {
-    label: 'Moodle',
-    href: 'https://google.com',
-    class: 'mr-3'
-  },
-  {
-    label: 'Paper',
-    href: 'https://google.com/pippo',
-    class: 'mr-3'
-  }
-]
-
-
+const links: Link[] = [{
+  name: 'ISIS',
+  url: 'https://isis.tu-berlin.de/login/index.php'
+}, {
+  name: 'MOSES',
+  url: 'https://moseskonto.tu-berlin.de/moses/index.html'
+}, {
+  name: 'Email',
+  url: 'https://mail.tu-berlin.de/'
+}]
 
 const  addButton = () => {
-  console.log('add button')
-  buttons.push({
-    label: 'New',
-    href: 'https://google.com/pippo',
-    class: 'mr-3'
+  links.push({
+    name: 'New',
+    url: 'https://google.com/pippo',
   })
 
 }

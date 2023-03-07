@@ -110,11 +110,11 @@ const timerTime = computed(() => {
 const currentLength = computed(() => {
   switch (cProgress.value.status) {
     case EPomodoroStatus.Study:
-      return settings.value.studyLength * 6;
+      return settings.value.studyLength * 60;
     case EPomodoroStatus.ShortBreak:
-      return settings.value.shortBreakLength * 6;
+      return settings.value.shortBreakLength * 60;
     case EPomodoroStatus.LongBreak:
-      return settings.value.longBreakLength * 6;
+      return settings.value.longBreakLength * 60;
   }
 });
 const percentage = computed(() => {
@@ -175,6 +175,7 @@ function stop() {
   cProgress.value.paused = true;
   cProgress.value.status = EPomodoroStatus.Study;
   cProgress.value.shortBreaksDone = 0;
+  cProgress.value.pomodoriDone = 0;
   cProgress.value.pomodoroRunning = false;
   state.removeCurrentPomodoro();
 }

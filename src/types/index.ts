@@ -6,6 +6,11 @@ export type MenuElement = {
 }
 
 // ---------- EXAM ----------
+export type Link = {
+  name: string;
+  url: string;
+}
+
 export type Chapter = {
   name: string;
 }
