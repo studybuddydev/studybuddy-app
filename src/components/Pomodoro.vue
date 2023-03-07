@@ -3,13 +3,18 @@
     <div class="progress" :style="{
         background: `linear-gradient(to right, ${ barColor } ${percentage}%, black ${percentage}%)`,
       }">
+      <div class="pomodori">
+        <v-icon class="icon" v-for="i in cProgress.pomodoriDone" :key="i" color="#FFD700">mdi-food-apple</v-icon>
+        <v-icon class="icon" v-for="i in cProgress.shortBreaksDone" :key="i" color="red" size="x-small">mdi-food-apple</v-icon>
+      </div>
       <p>
-        {{ cProgress.status === EPomodoroStatus.Study ? 'Study' : 'Break' }}
+        {{ cProgress.status === EPomodoroStatus.Study ? 'Study' : (cProgress.status === EPomodoroStatus.ShortBreak ? 'Break' : 'Long Break') }}
       </p>
+      <p class="mx-3">{{ timerText }}</p>
     </div>
 
-    <div class="controls px-2 py-3">
-      <p class=" mx-3">{{ timerText }}</p>
+    <div class="controls px-5 py-3">
+
       
       <v-btn
         class="btn-play-pause" color="secondary" icon="mdi-cog"
@@ -49,8 +54,10 @@
 import { ref, computed } from 'vue';
 import { useStateStore } from "@/stores/state";
 import { EPomodoroStatus } from '@/types';
+import { useTheme } from 'vuetify'
 import type { CurrentPomodoro } from '@/types';
 const state = useStateStore();
+const theme = useTheme()
 
 // ---------- SETTINGS ------------
 const settings = ref(state.getPomodoroSettings());
@@ -73,8 +80,8 @@ function closeSettings() {
 }
 
 const barColor = computed(() => {
-  if (cProgress.value.paused) return 'blue';
-  return cProgress.value.status === EPomodoroStatus.Study ? 'green' : 'red';
+  if (cProgress.value.paused) return theme.current.value.colors.warning;
+  return cProgress.value.status === EPomodoroStatus.Study ? theme.current.value.colors.surface : theme.current.value.colors.secondary;
 });
 
 // ---------- TIMER ------------
@@ -85,12 +92,14 @@ const cProgress = ref<CurrentPomodoro>(state.getCurrentPomodoro() ?? {
   paused: true,
   status: EPomodoroStatus.Study,
   shortBreaksDone: 0,
+  pomodoriDone: 0,
 });
 
+const REFRESH_RATE = 25;
 const currentMs = ref(0);
 setInterval(() => {
   currentMs.value = new Date().getTime();
-}, 25);
+}, REFRESH_RATE);
 
 
 const timerTime = computed(() => {
@@ -101,15 +110,15 @@ const timerTime = computed(() => {
 const currentLength = computed(() => {
   switch (cProgress.value.status) {
     case EPomodoroStatus.Study:
-      return settings.value.studyLength * 60;
+      return settings.value.studyLength * 6;
     case EPomodoroStatus.ShortBreak:
-      return settings.value.shortBreakLength * 60;
+      return settings.value.shortBreakLength * 6;
     case EPomodoroStatus.LongBreak:
-      return settings.value.longBreakLength * 60;
+      return settings.value.longBreakLength * 6;
   }
 });
 const percentage = computed(() => {
-  return Math.floor(((timerTime.value / 1000) / currentLength.value) * 100);
+  return ((timerTime.value / 1000) / currentLength.value) * 100;
 });
 const nextStateAvailable = computed(() => timerTime.value / 1000 > currentLength.value);
 
@@ -130,6 +139,7 @@ function nextState() {
     if (cProgress.value.shortBreaksDone >= settings.value.nrShortBreaks) {
       cProgress.value.status = EPomodoroStatus.LongBreak;
       cProgress.value.shortBreaksDone = 0;
+      cProgress.value.pomodoriDone += 1;
     } else {
       cProgress.value.status = EPomodoroStatus.ShortBreak;
       cProgress.value.shortBreaksDone += 1;
@@ -187,9 +197,19 @@ function toggle() {
   flex-direction: row;
   transition: all 1s ease-in-out;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   position: relative;
   height: 1.5rem;
+
+  .icon {
+    text-shadow: 0 0 2px #000;
+  }
+
+  p {
+    padding: 0.2em;
+    text-shadow: 0 0 2px #000;
+    border-radius: 0.5em;
+  }
 }
 
 .controls {
@@ -204,7 +224,8 @@ function toggle() {
   align-items: center;
 
   .btn-play-pause {
-    margin-right: 0.5em;
+    margin-right: 0.3em;
+    margin-left: 0.3em;
 
   }
 }

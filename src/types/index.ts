@@ -36,6 +36,7 @@ export type CurrentPomodoro = {
   paused: boolean,
   status: EPomodoroStatus,
   shortBreaksDone: number,
+  pomodoriDone: number,
 }
 export type UserSettings = {
   username: string;

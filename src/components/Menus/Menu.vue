@@ -1,10 +1,9 @@
 <template>
   <!-- MAIN MENU -->
-  <v-navigation-drawer permanent :rail="!!exam || rail">
+  <v-navigation-drawer permanent :rail="!!exam">
     <template v-slot:prepend>
       <v-list-item
         prepend-avatar="/images/logo.png"
-        @click="rail = false"
         to="/" nav >
         <template v-slot>
           <v-list-item class="pa-0">
@@ -22,7 +21,6 @@
       @add="addExam"
       @edit="editExam"
       @remove="removeExam"
-      @rail="rail = true"
       />
 
     <template v-slot:append>
@@ -32,7 +30,7 @@
         :title="state.getUserSettings().username"
         subtitle="Logged in"
         nav >
-          <template v-slot:append v-if="!rail">
+          <template v-slot:append v-if="!exam">
             <v-btn
               color="grey-lighten-1"
               icon="mdi-cog"
@@ -88,7 +86,6 @@ import UserSettings from '@/components/Popup/UserSettings.vue';
 
 const route = useRoute()
 const state = useStateStore();
-const rail = ref(false);
 const openUserSettings = ref(false);
 
 const exam = computed(() => route.params.exam ? state.getExam(route.params.exam as string) : undefined);

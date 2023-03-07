@@ -66,5 +66,6 @@ export const themeList = [
   { value: 'dark', title: 'Dark', color: 'black' },
   { value: 'verdone', title: 'Verdone', color: '#207178' },
   { value: 'pastel', title: 'Pastellone', color: '#ffc6ff' },
+  { value: 'bio', title: 'Biologico', color: '#606c38' },
   { value: 'nord', title: 'Nordico', color: '#88C0D0' },
 ]
