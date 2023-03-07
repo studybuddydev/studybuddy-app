@@ -1,15 +1,15 @@
 <template>
   <v-footer app class="bg-black pa-0">
     <div class="progress" :style="{
-        background: `linear-gradient(to right, ${ barColor() } ${cProgress.percentage}%, black ${cProgress.percentage}%)`,
+        background: `linear-gradient(to right, ${ barColor } ${percentage}%, black ${percentage}%)`,
       }">
       <p>
-        {{ cProgress.status === EStatus.Study ? 'Study' : 'Break' }}
+        {{ cProgress.status === EPomodoroStatus.Study ? 'Study' : 'Break' }}
       </p>
     </div>
 
     <div class="controls px-2 py-3">
-      <p class=" mx-3">{{ getTime(cProgress.seconds) }} / {{ getTime(getLength()) }}</p>
+      <p class=" mx-3">{{ timerText }}</p>
       
       <v-btn
         class="btn-play-pause" color="secondary" icon="mdi-cog"
@@ -18,7 +18,7 @@
         class="btn-play-pause" color="secondary" icon="mdi-stop"
         v-if="cProgress.paused" @click="stop()" size="x-small"></v-btn>
       <v-btn
-        class="btn-play-pause" color="secondary" :icon="cProgress.goToNextStateAvailable ? 'mdi-skip-next' : (cProgress.paused ? 'mdi-play': 'mdi-pause')"
+        class="btn-play-pause" color="secondary" :icon="nextStateAvailable ? 'mdi-skip-next' : (cProgress.paused ? 'mdi-play': 'mdi-pause')"
         @click="toggle()"></v-btn>
     </div>
 
@@ -46,32 +46,16 @@
 </template>
 
 <script setup lang="ts">
-import type { PomodoroSettings } from '@/types';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useStateStore } from "@/stores/state";
+import { EPomodoroStatus } from '@/types';
+import type { CurrentPomodoro } from '@/types';
 const state = useStateStore();
 
-enum EStatus {
-  Study,
-  ShortBreak,
-  LongBreak,
-}
-
-const UPDATE_MS = 20;
-
+// ---------- SETTINGS ------------
 const settings = ref(state.getPomodoroSettings());
 const tempSettings = ref( { ...settings.value } );
 const settingsOpen = ref(false);
-
-const cProgress = ref({
-  interval: null as number | null,
-  percentage: 0,
-  seconds: 0,
-  status: EStatus.Study,
-  paused: true,
-  shortBreaksDone: 0,
-  goToNextStateAvailable: false,
-});
 
 function saveSettings() {
   tempSettings.value.studyLength = +tempSettings.value.studyLength;
@@ -88,88 +72,109 @@ function closeSettings() {
   settingsOpen.value = false;
 }
 
-function getTime(time: number): string {
-  time = Math.floor(time);
-  const minutes = Math.floor(time / 60)//.toString();
-  const seconds = (time % 60)//.toString().padStart(2, '0');
-  return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-}
-
-function barColor() {
+const barColor = computed(() => {
   if (cProgress.value.paused) return 'blue';
-  return cProgress.value.status === EStatus.Study ? 'green' : 'red';
-}
+  return cProgress.value.status === EPomodoroStatus.Study ? 'green' : 'red';
+});
+
+// ---------- TIMER ------------
+const cProgress = ref<CurrentPomodoro>(state.getCurrentPomodoro() ?? {
+  pomodoroRunning: false,
+  msPassed: 0,
+  msStarted: 0,
+  paused: true,
+  status: EPomodoroStatus.Study,
+  shortBreaksDone: 0,
+});
+
+const currentMs = ref(0);
+setInterval(() => {
+  currentMs.value = new Date().getTime();
+}, 25);
 
 
-function toggle() {
-  if (cProgress.value.goToNextStateAvailable) {
-    goToNextState();
-    return;
-  }
-  cProgress.value.paused = !cProgress.value.paused;
-  if (cProgress.value.interval === null) {
-    startPomodoro();
-  }
-}
-
-function stop() {
-  if (cProgress.value.interval !== null) clearInterval(cProgress.value.interval);
-  cProgress.value.interval = null;
-  cProgress.value.seconds = 0;
-  cProgress.value.paused = true;
-  cProgress.value.status = EStatus.Study;
-  cProgress.value.percentage = 0;
-  cProgress.value.goToNextStateAvailable = false;
-}
-
-function startPomodoro() {
-  cProgress.value.seconds = 0;
-  cProgress.value.paused = false;
-  cProgress.value.status = EStatus.Study;
-  cProgress.value.percentage = 0;
-
-  cProgress.value.interval = setInterval(() => updateProgress(), UPDATE_MS);
-}
-
-function getLength() {
+const timerTime = computed(() => {
+  if (cProgress.value.paused)
+    return cProgress.value.msPassed;
+  return (currentMs.value - cProgress.value.msStarted) + cProgress.value.msPassed
+});
+const currentLength = computed(() => {
   switch (cProgress.value.status) {
-    case EStatus.Study:
+    case EPomodoroStatus.Study:
       return settings.value.studyLength * 60;
-    case EStatus.ShortBreak:
+    case EPomodoroStatus.ShortBreak:
       return settings.value.shortBreakLength * 60;
-    case EStatus.LongBreak:
+    case EPomodoroStatus.LongBreak:
       return settings.value.longBreakLength * 60;
   }
-}
-  
-function updateProgress() {
-  if (!cProgress.value.paused) {
-    cProgress.value.seconds += UPDATE_MS / 1000;
-    const lenght = getLength();
-    if (cProgress.value.seconds > lenght) {
-      cProgress.value.goToNextStateAvailable = true;
-    }
+});
+const percentage = computed(() => {
+  return Math.floor(((timerTime.value / 1000) / currentLength.value) * 100);
+});
+const nextStateAvailable = computed(() => timerTime.value / 1000 > currentLength.value);
 
-    cProgress.value.percentage = (cProgress.value.seconds / lenght) * 100;
-  }
+function formatTime(time: number) {
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
+const timerText = computed(() => `${formatTime(Math.floor(timerTime.value / 1000))} / ${formatTime(currentLength.value)}`);
 
-function goToNextState() {
-  cProgress.value.seconds = 0;
-  cProgress.value.percentage = 0;
-  if (cProgress.value.status === EStatus.ShortBreak || cProgress.value.status === EStatus.LongBreak) {
-    cProgress.value.status = EStatus.Study;
-  } else if (cProgress.value.status === EStatus.Study) {
+
+
+
+function nextState() {
+  if (cProgress.value.status === EPomodoroStatus.ShortBreak || cProgress.value.status === EPomodoroStatus.LongBreak) {
+    cProgress.value.status = EPomodoroStatus.Study;
+  } else if (cProgress.value.status === EPomodoroStatus.Study) {
     if (cProgress.value.shortBreaksDone >= settings.value.nrShortBreaks) {
-      cProgress.value.status = EStatus.LongBreak;
+      cProgress.value.status = EPomodoroStatus.LongBreak;
       cProgress.value.shortBreaksDone = 0;
     } else {
-      cProgress.value.status = EStatus.ShortBreak;
+      cProgress.value.status = EPomodoroStatus.ShortBreak;
       cProgress.value.shortBreaksDone += 1;
     }
   }
 
-  cProgress.value.goToNextStateAvailable = false;
+  cProgress.value.msPassed = 0;
+  cProgress.value.msStarted = new Date().getTime();
+  cProgress.value.paused = false;
+}
+
+function startPomodoro() {
+  cProgress.value.msPassed = 0;
+  cProgress.value.status = EPomodoroStatus.Study;
+  cProgress.value.shortBreaksDone = 0;
+  play();
+  cProgress.value.pomodoroRunning = true;
+}
+
+function play() {
+  cProgress.value.msStarted = new Date().getTime();
+  cProgress.value.paused = false;
+}
+
+function pause() {
+  cProgress.value.msPassed += new Date().getTime() - cProgress.value.msStarted;
+  cProgress.value.paused = true;
+}
+
+function stop() {
+  cProgress.value.msPassed = 0;
+  cProgress.value.msStarted = 0;
+  cProgress.value.paused = true;
+  cProgress.value.status = EPomodoroStatus.Study;
+  cProgress.value.shortBreaksDone = 0;
+  cProgress.value.pomodoroRunning = false;
+  state.removeCurrentPomodoro();
+}
+
+function toggle() {
+  if (!cProgress.value.pomodoroRunning) startPomodoro();
+  else if (nextStateAvailable.value)    nextState();
+  else if (cProgress.value.paused)      play();
+  else                                  pause();
+  state.setCurrentPomodoro(cProgress.value);
 }
 
 </script>

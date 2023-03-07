@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { State, Exam, PomodoroSettings, Chapter, UserSettings } from '@/types'
+import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro } from '@/types'
 
 
 export const useStateStore = defineStore('state', () => {
@@ -28,10 +28,12 @@ export const useStateStore = defineStore('state', () => {
     return state.value.exams?.find(e => e.name === name);
   }
   function addExam(exam: Exam) {
-    state.value.exams?.push(exam);
+    if (!state.value.exams) state.value.exams = [exam];
+    else state.value.exams?.push(exam);
     save();
   }
   function editExam(i: number, exam: Exam) {
+    if (!state.value.exams) return;
     state.value.exams[i] = { ...exam };
     save();
   }
@@ -57,7 +59,7 @@ export const useStateStore = defineStore('state', () => {
 
   // Pomodoro
   function getPomodoroSettings(): PomodoroSettings {
-    return state.value.settings?.pomodoro ?? {
+    return state.value.settings?.pomodoro?.pomodoroSettings ?? {
       studyLength: 25,
       shortBreakLength: 5,
       longBreakLength: 15,
@@ -65,7 +67,23 @@ export const useStateStore = defineStore('state', () => {
     }
   }
   function setPomodoroSettings(pSettings: PomodoroSettings) {
-    state.value.settings.pomodoro = { ...pSettings };
+    if (!state.value.settings) state.value.settings = {};
+    if (!state.value.settings.pomodoro) state.value.settings.pomodoro = {};
+    state.value.settings.pomodoro.pomodoroSettings = { ...pSettings };
+    save();
+  }
+  function getCurrentPomodoro(): CurrentPomodoro | undefined {
+    return state.value.settings?.pomodoro?.currentPomodoro;
+  }
+  function setCurrentPomodoro(pomodoro: CurrentPomodoro) {
+    if (!state.value.settings) state.value.settings = {};
+    if (!state.value.settings.pomodoro) state.value.settings.pomodoro = {};
+    state.value.settings.pomodoro.currentPomodoro = { ...pomodoro };
+    save();
+  }
+  function removeCurrentPomodoro() {
+    if (state.value?.settings?.pomodoro?.currentPomodoro)
+      state.value.settings.pomodoro.currentPomodoro = undefined;
     save();
   }
 
@@ -78,6 +96,7 @@ export const useStateStore = defineStore('state', () => {
     }
   }
   function setUserSettings(uSettings: UserSettings) {
+    if (!state.value.settings) state.value.settings = {};
     state.value.settings.user = { ...uSettings };
     save();
   }
@@ -88,7 +107,7 @@ export const useStateStore = defineStore('state', () => {
     getUsername,
     getExams, getExam, addExam, editExam, removeExam,
     addChapter, editChapter, removeChapter,
-    getPomodoroSettings, setPomodoroSettings,
+    getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro,
     getUserSettings, setUserSettings,
   };
 
