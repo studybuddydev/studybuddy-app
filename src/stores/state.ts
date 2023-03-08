@@ -63,7 +63,7 @@ export const useStateStore = defineStore('state', () => {
       studyLength: 25,
       shortBreakLength: 5,
       longBreakLength: 15,
-      nrShortBreaks: 4,
+      nrStudy: 4,
     }
   }
   function setPomodoroSettings(pSettings: PomodoroSettings) {

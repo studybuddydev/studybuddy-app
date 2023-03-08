@@ -27,7 +27,7 @@ export type PomodoroSettings = {
   studyLength: number;
   shortBreakLength: number;
   longBreakLength: number;
-  nrShortBreaks: number;
+  nrStudy: number;
 }
 export enum EPomodoroStatus {
   Study,
@@ -40,7 +40,7 @@ export type CurrentPomodoro = {
   msStarted: number,
   paused: boolean,
   status: EPomodoroStatus,
-  shortBreaksDone: number,
+  studyDone: number,
   pomodoriDone: number,
 }
 export type UserSettings = {

@@ -5,7 +5,7 @@
       }">
       <div class="pomodori">
         <v-icon class="icon" v-for="i in cProgress.pomodoriDone" :key="i" color="#FFD700">mdi-food-apple</v-icon>
-        <v-icon class="icon" v-for="i in cProgress.shortBreaksDone" :key="i" color="red" size="x-small">mdi-food-apple</v-icon>
+        <v-icon class="icon" v-for="i in cProgress.studyDone" :key="i" color="red" size="x-small">mdi-food-apple</v-icon>
       </div>
       <p>
         {{ cProgress.status === EPomodoroStatus.Study ? 'Study' : (cProgress.status === EPomodoroStatus.ShortBreak ? 'Break' : 'Long Break') }}
@@ -41,7 +41,7 @@
                 <v-col cols="12"> <v-text-field v-model="tempSettings.studyLength" type="number" label="Pomodoro Lenght in minutes" required></v-text-field> </v-col>
                 <v-col cols="12"> <v-text-field v-model="tempSettings.shortBreakLength" type="number" label="Short Break Lenght in minutes" required></v-text-field> </v-col>
                 <v-col cols="12"> <v-text-field v-model="tempSettings.longBreakLength" type="number" label="Long Break Lenght in minutes" required></v-text-field> </v-col>
-                <v-col cols="12"> <v-text-field v-model="tempSettings.nrShortBreaks" type="number" label="Long Break After" required></v-text-field> </v-col>
+                <v-col cols="12"> <v-text-field v-model="tempSettings.nrStudy" type="number" label="Long Break After" required></v-text-field> </v-col>
               </v-row>
             </v-container>
           </v-card-text>
@@ -59,6 +59,12 @@ import type { CurrentPomodoro } from '@/types';
 const state = useStateStore();
 const theme = useTheme()
 
+enum ESound {
+  PomoDone = 'pomo.wav',
+  PomodoroDone = 'pomodoro.wav',
+  BreakDone = 'break.wav',
+}
+
 // ---------- SETTINGS ------------
 const settings = ref(state.getPomodoroSettings());
 const tempSettings = ref( { ...settings.value } );
@@ -68,7 +74,7 @@ function saveSettings() {
   tempSettings.value.studyLength = +tempSettings.value.studyLength;
   tempSettings.value.longBreakLength = +tempSettings.value.longBreakLength;
   tempSettings.value.shortBreakLength = +tempSettings.value.shortBreakLength;
-  tempSettings.value.nrShortBreaks = +tempSettings.value.nrShortBreaks;
+  tempSettings.value.nrStudy = +tempSettings.value.nrStudy;
   settings.value = { ...tempSettings.value };
   settingsOpen.value = false;
   state.setPomodoroSettings(settings.value);
@@ -91,22 +97,16 @@ const cProgress = ref<CurrentPomodoro>(state.getCurrentPomodoro() ?? {
   msStarted: 0,
   paused: true,
   status: EPomodoroStatus.Study,
-  shortBreaksDone: 0,
+  studyDone: 0,
   pomodoriDone: 0,
 });
 
 const REFRESH_RATE = 25;
 const currentMs = ref(0);
-setInterval(() => {
-  currentMs.value = new Date().getTime();
-}, REFRESH_RATE);
+const timerTime = ref(0);
+const percentage = ref(0);
+const nextStateAvailable = ref(false);
 
-
-const timerTime = computed(() => {
-  if (cProgress.value.paused)
-    return cProgress.value.msPassed;
-  return (currentMs.value - cProgress.value.msStarted) + cProgress.value.msPassed
-});
 const currentLength = computed(() => {
   switch (cProgress.value.status) {
     case EPomodoroStatus.Study:
@@ -117,11 +117,6 @@ const currentLength = computed(() => {
       return settings.value.longBreakLength * 60;
   }
 });
-const percentage = computed(() => {
-  return ((timerTime.value / 1000) / currentLength.value) * 100;
-});
-const nextStateAvailable = computed(() => timerTime.value / 1000 > currentLength.value);
-
 function formatTime(time: number) {
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
@@ -130,31 +125,55 @@ function formatTime(time: number) {
 const timerText = computed(() => `${formatTime(Math.floor(timerTime.value / 1000))} / ${formatTime(currentLength.value)}`);
 
 
+setInterval(() => {
 
+  currentMs.value = new Date().getTime();
 
-function nextState() {
-  if (cProgress.value.status === EPomodoroStatus.ShortBreak || cProgress.value.status === EPomodoroStatus.LongBreak) {
-    cProgress.value.status = EPomodoroStatus.Study;
-  } else if (cProgress.value.status === EPomodoroStatus.Study) {
-    if (cProgress.value.shortBreaksDone >= settings.value.nrShortBreaks) {
-      cProgress.value.status = EPomodoroStatus.LongBreak;
-      cProgress.value.shortBreaksDone = 0;
-      cProgress.value.pomodoriDone += 1;
-    } else {
-      cProgress.value.status = EPomodoroStatus.ShortBreak;
-      cProgress.value.shortBreaksDone += 1;
+  timerTime.value = cProgress.value.msPassed;
+  if (!cProgress.value.paused)
+    timerTime.value += currentMs.value - cProgress.value.msStarted;
+
+  percentage.value = ((timerTime.value / 1000) / currentLength.value) * 100;
+  if (!nextStateAvailable.value) {
+    if (timerTime.value / 1000 > currentLength.value) {
+      nextStateAvailable.value = true;
+      if (cProgress.value.status === EPomodoroStatus.Study) {
+        playSound(cProgress.value.studyDone + 1 >= settings.value.nrStudy ? ESound.PomodoroDone : ESound.PomoDone);
+      } else {
+        playSound(ESound.BreakDone);
+      }
     }
   }
 
+}, REFRESH_RATE);
+
+function nextState() {
+  switch (cProgress.value.status) {
+    case EPomodoroStatus.Study:
+      cProgress.value.studyDone += 1;
+      if (cProgress.value.studyDone >= settings.value.nrStudy) {
+        cProgress.value.status = EPomodoroStatus.LongBreak;
+        cProgress.value.pomodoriDone += 1;
+        cProgress.value.studyDone = 0;
+      } else {
+        cProgress.value.status = EPomodoroStatus.ShortBreak;
+      }
+      break;
+    case EPomodoroStatus.ShortBreak:
+    case EPomodoroStatus.LongBreak:
+      cProgress.value.status = EPomodoroStatus.Study;
+      break;
+  }
   cProgress.value.msPassed = 0;
   cProgress.value.msStarted = new Date().getTime();
   cProgress.value.paused = false;
+  nextStateAvailable.value = false;
 }
 
 function startPomodoro() {
   cProgress.value.msPassed = 0;
   cProgress.value.status = EPomodoroStatus.Study;
-  cProgress.value.shortBreaksDone = 0;
+  cProgress.value.studyDone = 0;
   play();
   cProgress.value.pomodoroRunning = true;
 }
@@ -174,7 +193,7 @@ function stop() {
   cProgress.value.msStarted = 0;
   cProgress.value.paused = true;
   cProgress.value.status = EPomodoroStatus.Study;
-  cProgress.value.shortBreaksDone = 0;
+  cProgress.value.studyDone = 0;
   cProgress.value.pomodoriDone = 0;
   cProgress.value.pomodoroRunning = false;
   state.removeCurrentPomodoro();
@@ -186,6 +205,11 @@ function toggle() {
   else if (cProgress.value.paused)      play();
   else                                  pause();
   state.setCurrentPomodoro(cProgress.value);
+}
+
+function playSound(sound: ESound) {
+  const audio = new Audio(`/sounds/${sound}`);
+  audio.play();
 }
 
 </script>
