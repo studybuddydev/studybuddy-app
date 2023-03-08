@@ -126,7 +126,7 @@ const percentage = ref(0);
 const nextStateAvailable = ref(false);
 
 const currentLength = computed(() => {
-  const mult = 2;
+  const mult = 60;
 
   switch (cProgress.value.status) {
     case EPomodoroStatus.Study:
