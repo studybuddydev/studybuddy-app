@@ -27,6 +27,17 @@
         @click="toggle()"></v-btn>
     </div>
 
+    <v-snackbar v-model="snackbar.show" vertical elevation="24" color="secondary" :timeout="60000">
+      <div class="text-h6 pb-2 d-flex align-center">
+        <v-icon :color="snackbar.pomodoro ? '#FFD700' : 'red'">mdi-food-apple</v-icon>
+        {{ snackbar.title }}
+      </div>
+      <p class="text-subtitle-1" v-for="t in snackbar.text" >{{ t }}</p>
+      <template v-slot:actions>
+        <v-btn variant="flat" @click="snackbar.show = false"> Ok </v-btn>
+      </template>
+    </v-snackbar>
+
     <v-dialog v-model="settingsOpen" width="500">
       <v-card>
           <v-toolbar dark color="primary">
@@ -57,7 +68,8 @@ import { EPomodoroStatus } from '@/types';
 import { useTheme } from 'vuetify'
 import type { CurrentPomodoro } from '@/types';
 const state = useStateStore();
-const theme = useTheme()
+const theme = useTheme();
+
 
 enum ESound {
   PomoDone = 'pomo.wav',
@@ -69,6 +81,12 @@ enum ESound {
 const settings = ref(state.getPomodoroSettings());
 const tempSettings = ref( { ...settings.value } );
 const settingsOpen = ref(false);
+const snackbar = ref({
+  show: false,
+  title: '',
+  text: [''],
+  pomodoro: false
+});
 
 function saveSettings() {
   tempSettings.value.studyLength = +tempSettings.value.studyLength;
@@ -108,13 +126,15 @@ const percentage = ref(0);
 const nextStateAvailable = ref(false);
 
 const currentLength = computed(() => {
+  const mult = 2;
+
   switch (cProgress.value.status) {
     case EPomodoroStatus.Study:
-      return settings.value.studyLength * 60;
+      return settings.value.studyLength * mult;
     case EPomodoroStatus.ShortBreak:
-      return settings.value.shortBreakLength * 60;
+      return settings.value.shortBreakLength * mult;
     case EPomodoroStatus.LongBreak:
-      return settings.value.longBreakLength * 60;
+      return settings.value.longBreakLength * mult;
   }
 });
 function formatTime(time: number) {
@@ -138,7 +158,13 @@ setInterval(() => {
     if (timerTime.value / 1000 > currentLength.value) {
       nextStateAvailable.value = true;
       if (cProgress.value.status === EPomodoroStatus.Study) {
-        playSound(cProgress.value.studyDone + 1 >= settings.value.nrStudy ? ESound.PomodoroDone : ESound.PomoDone);
+        if (cProgress.value.studyDone + 1 >= settings.value.nrStudy) {
+          showSnackbar(true);
+          playSound(ESound.PomodoroDone);
+        } else {
+          playSound(ESound.PomoDone);
+          showSnackbar(false);
+        }
       } else {
         playSound(ESound.BreakDone);
       }
@@ -205,6 +231,20 @@ function toggle() {
   else if (cProgress.value.paused)      play();
   else                                  pause();
   state.setCurrentPomodoro(cProgress.value);
+}
+
+function showSnackbar(pomodore = false) {
+  snackbar.value.show = true;
+  if (pomodore) {
+    snackbar.value.title = 'Pomo d\'oro!';
+    snackbar.value.text = ['Hai completato un pomo d\'oro.', 'Goditi la meritata pausa!'];
+    snackbar.value.pomodoro = true;
+  } else {
+    snackbar.value.title = 'Pomo!'
+    snackbar.value.text = ['Hai completato un pomo.', 'Ora di andare a fare una passegiata!'];
+    snackbar.value.pomodoro = false;
+  }
+
 }
 
 function playSound(sound: ESound) {
