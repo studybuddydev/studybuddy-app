@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro } from '@/types'
+import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro, WithLink, Link } from '@/types'
 
 
 export const useStateStore = defineStore('state', () => {
@@ -53,7 +53,11 @@ export const useStateStore = defineStore('state', () => {
     exam.chapters.splice(i, 1);
     save();
   }
-
+  function addLink(obj: WithLink, link: Link) {
+    if (!obj.links) obj.links = [];
+    obj.links.push(link);
+    save();
+  }
 
   // ========= Settings =========
 
@@ -107,6 +111,7 @@ export const useStateStore = defineStore('state', () => {
     getUsername,
     getExams, getExam, addExam, editExam, removeExam,
     addChapter, editChapter, removeChapter,
+    addLink,
     getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro,
     getUserSettings, setUserSettings,
   };

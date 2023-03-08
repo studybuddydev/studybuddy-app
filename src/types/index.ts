@@ -6,6 +6,10 @@ export type MenuElement = {
 }
 
 // ---------- EXAM ----------
+export type WithLink = {
+  links?: Link[];
+}
+
 export type Link = {
   name: string;
   url: string;
@@ -13,14 +17,14 @@ export type Link = {
 
 export type Chapter = {
   name: string;
-}
+} & WithLink;
 
 export type Exam = {
   name: string;
   icon: string;
   chapters: Chapter[];
   color?: string;
-}
+}  & WithLink;
 
 // ---------- SETTINGS ----------
 export type PomodoroSettings = {

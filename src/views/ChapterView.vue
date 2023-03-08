@@ -11,11 +11,15 @@
     <v-btn color="primary" @click="addButton">Add Button</v-btn>
   </div> -->
 
-  <Links class="ma-4" :links="links" />
+  <Links
+    :links="chapter?.links ?? []"
+    @add-link="addLink($event)"
+    />
 
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useRoute } from 'vue-router'
 import { useStateStore } from "@/stores/state";
 import type { Link } from '@/types';
@@ -27,26 +31,9 @@ const route = useRoute()
 const exam = state.getExam(route.params.exam as string);
 const chapter = exam?.chapters.find(c => c.name === route.params.chapter) ?? undefined;
 
-const links: Link[] = [{
-  name: 'ISIS',
-  url: 'https://isis.tu-berlin.de/login/index.php'
-}, {
-  name: 'MOSES',
-  url: 'https://moseskonto.tu-berlin.de/moses/index.html'
-}, {
-  name: 'Email',
-  url: 'https://mail.tu-berlin.de/'
-}]
-
-const  addButton = () => {
-  links.push({
-    name: 'New',
-    url: 'https://google.com/pippo',
-  })
-
+function addLink(link: Link) {
+  if (chapter) state.addLink(chapter, link);
 }
-
-
 </script>
 
 <style lang="scss">
