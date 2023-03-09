@@ -28,7 +28,7 @@
       @textChange="save()"
 
       />
-      <div :id="`my-toolbar-${index}`">
+      <div :id="`my-toolbar-${index}`" v-show="focus || selectingColor">
         <button class="ql-bold"></button>
         <button class="ql-italic"></button>
         <button class="ql-underline"></button>
