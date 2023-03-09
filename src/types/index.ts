@@ -6,25 +6,34 @@ export type MenuElement = {
 }
 
 // ---------- EXAM ----------
-export type WithLink = {
-  links?: Link[];
-}
-
 export type Link = {
   name: string;
   url: string;
 }
+export type PostIt = {
+  color: string;
+  content: string;
+}
+
+
+export type WithLink = {
+  links?: Link[];
+}
+
+export type WithPostIt = {
+  postIts?: PostIt[];
+}
 
 export type Chapter = {
   name: string;
-} & WithLink;
+} & WithLink & WithPostIt;
 
 export type Exam = {
   name: string;
   icon: string;
   chapters: Chapter[];
   color?: string;
-}  & WithLink;
+}  & WithLink & WithPostIt;
 
 // ---------- SETTINGS ----------
 export type PomodoroSettings = {

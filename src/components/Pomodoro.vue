@@ -40,23 +40,23 @@
 
     <v-dialog v-model="settingsOpen" width="500">
       <v-card>
-          <v-toolbar dark color="primary">
-            <v-btn icon dark @click="closeSettings()"> <v-icon>mdi-close</v-icon> </v-btn>
-            <v-toolbar-title>Settings</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items> <v-btn variant="text" @click="saveSettings()" > Save </v-btn> </v-toolbar-items>
-          </v-toolbar>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12"> <v-text-field v-model="tempSettings.studyLength" type="number" label="Pomodoro Lenght in minutes" required></v-text-field> </v-col>
-                <v-col cols="12"> <v-text-field v-model="tempSettings.shortBreakLength" type="number" label="Short Break Lenght in minutes" required></v-text-field> </v-col>
-                <v-col cols="12"> <v-text-field v-model="tempSettings.longBreakLength" type="number" label="Long Break Lenght in minutes" required></v-text-field> </v-col>
-                <v-col cols="12"> <v-text-field v-model="tempSettings.nrStudy" type="number" label="Long Break After" required></v-text-field> </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-        </v-card>
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="closeSettings()"> <v-icon>mdi-close</v-icon> </v-btn>
+          <v-toolbar-title>Settings</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items> <v-btn variant="text" @click="saveSettings()" > Save </v-btn> </v-toolbar-items>
+        </v-toolbar>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12"> <v-text-field v-model="tempSettings.studyLength" type="number" label="Pomodoro Lenght in minutes" required></v-text-field> </v-col>
+              <v-col cols="12"> <v-text-field v-model="tempSettings.shortBreakLength" type="number" label="Short Break Lenght in minutes" required></v-text-field> </v-col>
+              <v-col cols="12"> <v-text-field v-model="tempSettings.longBreakLength" type="number" label="Long Break Lenght in minutes" required></v-text-field> </v-col>
+              <v-col cols="12"> <v-text-field v-model="tempSettings.nrStudy" type="number" label="Long Break After" required></v-text-field> </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+      </v-card>
     </v-dialog>
   </v-footer>
 </template>

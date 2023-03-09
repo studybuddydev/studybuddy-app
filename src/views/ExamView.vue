@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import Postit from "@/components/Postit.vue";
+import Postit from "@/components/Postit_old.vue";
 import { useRoute } from 'vue-router'
 import { useStateStore } from "@/stores/state";
 

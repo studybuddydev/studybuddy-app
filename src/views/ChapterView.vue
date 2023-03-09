@@ -16,24 +16,56 @@
     @add-link="addLink($event)"
     />
 
+  <PostIt
+    v-for="postit, i in chapter?.postIts ?? []" :key="i"
+    :postit="postit" :index="i"
+    @save="state.save()"
+    @add="addPostIt()"
+    @delete="deletePostIt($event)"/>
+
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRoute } from 'vue-router'
 import { useStateStore } from "@/stores/state";
-import type { Link } from '@/types';
+import type { Link, PostIt as PostItType } from '@/types';
 import Links from '@/components/Links/Links.vue'
+import PostIt from '@/components/PostIt.vue'
 
 const state = useStateStore();
 const route = useRoute()
 
 const exam = state.getExam(route.params.exam as string);
-const chapter = exam?.chapters.find(c => c.name === route.params.chapter) ?? undefined;
+const chapter = ref(exam?.chapters.find(c => c.name === route.params.chapter) ?? undefined);
+if (chapter.value) {
+  if (!chapter.value.postIts || chapter.value.postIts.length === 0)
+    chapter.value.postIts = [{ color: '#e6b905', content: '' }];
+}
 
 function addLink(link: Link) {
-  if (chapter) state.addLink(chapter, link);
+  if (chapter.value) state.addLink(chapter.value, link);
 }
+
+function addPostIt() {
+  if (chapter.value) {
+    const postIt: PostItType = { color: '#e6b905', content: '' }
+    if (chapter.value?.postIts) {
+      chapter.value?.postIts.push(postIt)
+    } else {
+      chapter.value.postIts = [postIt]
+    }
+  }
+}
+
+function deletePostIt(index: number) {
+  if (chapter.value) {
+    chapter.value.postIts?.splice(index, 1);
+    state.save();
+  }
+}
+
+
 </script>
 
 <style lang="scss">

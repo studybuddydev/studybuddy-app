@@ -10,6 +10,7 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@vueup/vue-quill": "^1.1.1",
     "pinia": "^2.0.28",
     "v-calendar": "3.0.0-alpha.8",
     "vue": "^3.2.45",

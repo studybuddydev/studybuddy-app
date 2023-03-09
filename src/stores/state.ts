@@ -59,6 +59,7 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
 
+
   // ========= Settings =========
 
   // Pomodoro
