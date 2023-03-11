@@ -26,9 +26,6 @@
     </v-card>
   </v-container>
 
-
-
-
   <v-dialog v-model="newLinkOpen" width="500">
     <v-card>
         <v-toolbar dark color="primary">

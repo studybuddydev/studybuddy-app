@@ -35,6 +35,11 @@ export type Exam = {
   color?: string;
 }  & WithLink & WithPostIt;
 
+// ---------- STATS ----------
+export type Stats = {
+  
+}
+
 // ---------- SETTINGS ----------
 export type PomodoroSettings = {
   studyLength: number;
@@ -65,6 +70,7 @@ export type UserSettings = {
 export type State = {
   username?: string;
   exams?: Exam[];
+  stats?: Stats;
 
   settings?: {
     pomodoro?: {

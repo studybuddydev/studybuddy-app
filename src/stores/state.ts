@@ -59,6 +59,8 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
 
+  // ========= Stats =========
+
 
   // ========= Settings =========
 

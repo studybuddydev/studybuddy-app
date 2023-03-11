@@ -1,19 +1,19 @@
 
 <template>
-  <v-card class="postit">
+  <v-card class="postit" v-for="postit, index in postIts">
     <div :class="`postit-header ${ focus || selectingColor ? 'focus' : '' }`" :style="{ backgroundColor: postit.color }">
       <div v-if="focus || selectingColor">
         <div class="bar" v-if="!selectingColor">
           <v-icon color="white" size="2rem" @click="addPostIt()">mdi-plus</v-icon>
           <v-divider />
           <v-icon color="white" size="2rem" @click="selectingColor = true">mdi-palette</v-icon>
-          <v-icon color="white" size="2rem" @click="deletePostIt()" >mdi-close</v-icon>
+          <v-icon color="white" size="2rem" @click="deletePostIt(index)" >mdi-close</v-icon>
         </div>
         <div class="color-list" v-else>
           <div
             v-for="color in colors" :key="color"
             :style="{ backgroundColor: color }"
-            @click="selectColor(color)" >
+            @click="selectColor(postit, color)" >
               <v-icon v-if="postit.color === color" color="white">mdi-check</v-icon>
             </div>
         </div>
@@ -42,15 +42,20 @@
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import '@vueup/vue-quill/dist/vue-quill.bubble.css';
-import { ref } from 'vue';
-import type { PostIt } from '@/types';
-
-const emits = defineEmits(['add', 'delete', 'save'])
+import { computed, ref } from 'vue';
+import type { PostIt, WithPostIt } from '@/types';
+import { useStateStore } from "@/stores/state";
+const state = useStateStore();
 
 const props = defineProps<{
-  postit: PostIt,
-  index: number
+  element: WithPostIt,
 }>();
+if (props.element) {
+  if (!props.element.postIts || props.element.postIts.length === 0)
+    props.element.postIts = [{ color: '#e6b905', content: '' }];
+}
+
+const postIts = computed(() => props.element.postIts ?? []);
 
 const focus = ref(false);
 const selectingColor = ref(false);
@@ -65,24 +70,31 @@ const colors = [
   '#454545',
 ]
 
-function selectColor(color: string) {
-  props.postit.color = color;
+function selectColor(postit: PostIt, color: string) {
+  postit.color = color;
   selectingColor.value = false;
   focus.value = true;
-  save();
-}
-
-function deletePostIt() {
-  emits('delete', props.index)
-}
-
-function save() {
-  emits('save', props.postit)
+  save()
 }
 
 function addPostIt() {
-  emits('add')
+  if (!props.element.postIts) return;
+  const postIt: PostIt = { color: '#e6b905', content: '' }
+  props.element.postIts.push(postIt)
+  save()
 }
+
+
+function deletePostIt(index: number) {
+  if (!props.element.postIts) return;
+  props.element.postIts.splice(index, 1);
+  save()
+}
+
+function save() {
+  state.save()
+}
+
 </script>
 
 <style scoped lang="scss">
