@@ -14,6 +14,10 @@ export type PostIt = {
   color: string;
   content: string;
 }
+export type Task = {
+  name: string,
+  done: boolean,
+}
 
 
 export type WithLink = {
@@ -24,16 +28,21 @@ export type WithPostIt = {
   postIts?: PostIt[];
 }
 
+export type WithTask = {
+  tasks?: Task[];
+}
+
+
 export type Chapter = {
   name: string;
-} & WithLink & WithPostIt;
+} & WithLink & WithPostIt & WithTask;
 
 export type Exam = {
   name: string;
   icon: string;
   chapters: Chapter[];
   color?: string;
-}  & WithLink & WithPostIt;
+}  & WithLink & WithPostIt & WithTask;
 
 // ---------- STATS ----------
 export type Stats = {
