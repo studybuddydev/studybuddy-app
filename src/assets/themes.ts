@@ -2,11 +2,11 @@ export const themes = {
   verdone: {
     dark: false,
     colors: {
-      background: '#207178',
-      surface: '#12454a',
-      primary: '#FB8C00',
-      'primary-darken-1': '#FB8C00',
-      secondary: '#03DAC6',
+      background: '#009999',
+      surface: '#094D4E',
+      primary: '#FF7600',
+      'primary-darken-1': '#ffffff',
+      secondary: '#E7DB37',
       'secondary-darken-1': '#018786',
       error: '#B00020',
       info: '#2196F3',

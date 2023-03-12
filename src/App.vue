@@ -18,4 +18,7 @@ import Menu from '@/components/Menus/Menu.vue';
 html {
   overflow: hidden !important;
 }
+
+
+  
 </style>
