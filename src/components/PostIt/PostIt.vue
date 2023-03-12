@@ -78,7 +78,8 @@ function selectColor(postit: PostIt, color: string) {
 }
 
 function addPostIt() {
-  if (!props.element.postIts) return;
+  if (!props.element.postIts)
+    props.element.postIts = [];
   const postIt: PostIt = { color: '#e6b905', content: '' }
   props.element.postIts.push(postIt)
   save()

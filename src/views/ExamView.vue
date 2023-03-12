@@ -2,11 +2,7 @@
   <v-container v-if="exam">
     <h1>{{ exam.name }}</h1>
 
-    <Links
-      :links="exam?.links ?? []"
-      @add-link="addLink($event)"
-      />
-
+    <Links :element="exam" />
       <PostIt :element="exam" />
 
   </v-container>

@@ -3,7 +3,7 @@
   <v-container class="link-container">
     <v-card
       class="link-card d-flex justify-start align-center pa-2 ma-2"
-      v-for="card, i in props.links"
+      v-for="card, i in links"
       :key="card.name"
       :href="`//${card.url}`"
       target="_blank"
@@ -32,7 +32,7 @@
           <v-btn icon dark @click="closeNewLink()"> <v-icon>mdi-close</v-icon> </v-btn>
           <v-toolbar-title>Settings</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-toolbar-items> <v-btn variant="text" @click="addUrl()" > Save </v-btn> </v-toolbar-items>
+          <v-toolbar-items> <v-btn variant="text" @click="addLink()" > Save </v-btn> </v-toolbar-items>
         </v-toolbar>
         <v-card-text>
           <v-container>
@@ -51,14 +51,16 @@
 </template>
 
 <script setup lang="ts">
-import type { Link } from '@/types';
-import { ref } from 'vue';
-
+import type { Link, WithLink } from '@/types';
+import { ref, computed } from 'vue';
+import { useStateStore } from "@/stores/state";
+const state = useStateStore();
 
 const props = defineProps<{
-  links: Link[]
+  element: WithLink,
 }>();
-const emit = defineEmits(['addLink'])
+const links = computed(() => props.element.links ?? []);
+
 
 const newLink = ref<Link>({
   name: '',
@@ -75,10 +77,6 @@ function openNewLink() {
   newLinkOpen.value = true;
 }
 
-function openLink(url: string) {
-  window.open(url, '_blank')
-}
-
 function getDomain(url: string) {
   try {
     const domain = (new URL(url));
@@ -88,12 +86,22 @@ function getDomain(url: string) {
   }
 }
 
+function addLink() {
+  if (!props.element.links)
+    props.element.links = [];
+  const link: Link = { ...newLink.value }
+  props.element.links.push(link)
 
-function addUrl() {
-  emit('addLink', { ...newLink.value })
   newLinkOpen.value = false;
   newLink.value = { name: '', url: '' };
+
+  save()
 }
+
+function save() {
+  state.save()
+}
+
 </script>
 
 <style lang="scss">

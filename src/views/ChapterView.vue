@@ -2,12 +2,8 @@
   <v-container v-if="exam && chapter">
     <h1>{{ chapter.name }}</h1>
 
-    <Links
-      :links="chapter?.links ?? []"
-      @add-link="addLink($event)"
-      />
-
-      <PostIt :element="chapter" />
+    <Links :element="chapter" />
+    <PostIt :element="chapter" />
       
   </v-container>
 </template>
