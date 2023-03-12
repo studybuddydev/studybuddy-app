@@ -14,6 +14,10 @@
         width="32"
         height="32"/>
       <v-card-title class="pa-0 pl-4 text-white" v-text="card.name"></v-card-title>
+      <v-divider />
+      <v-btn variant="outlined" icon color="secondary" @click.prevent.stop.="deleteLink(i)">
+        <v-icon>mdi-delete</v-icon>
+      </v-btn>
     </v-card>
 
     <v-card
@@ -95,6 +99,12 @@ function addLink() {
   newLinkOpen.value = false;
   newLink.value = { name: '', url: '' };
 
+  save()
+}
+
+function deleteLink(index: number) {
+  if (!props.element.links) return;
+  props.element.links.splice(index, 1);
   save()
 }
 
