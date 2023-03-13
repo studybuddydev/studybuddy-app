@@ -8,14 +8,11 @@
     <template v-slot:append>
       <v-btn color="grey-lighten-1" icon="mdi-delete" variant="text" @click.prevent.stop="remove()"></v-btn>
     </template>
-    <v-list-item-content>
-      <v-list-item-title :class="task.done ? 'done' : ''">{{ task.name }}</v-list-item-title>
-    </v-list-item-content>
+    <v-list-item-title :class="task.done ? 'done' : ''">{{ task.name }}</v-list-item-title>
   </v-list-item>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import type { Task } from '@/types';
 
 
@@ -35,5 +32,4 @@ function toggle() {
 function remove() {
   emits('remove')
 }
-
 </script>
