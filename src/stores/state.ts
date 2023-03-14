@@ -32,9 +32,13 @@ export const useStateStore = defineStore('state', () => {
     else state.value.exams?.push(exam);
     save();
   }
-  function editExam(i: number, exam: Exam) {
+  function editExam(i: number, name: string, icon: string, color: string | undefined) {
     if (!state.value.exams) return;
-    state.value.exams[i] = { ...exam };
+    const exam = state.value.exams[i];
+    if (!exam) return;
+    exam.color = color;
+    exam.name = name;
+    exam.icon = icon;
     save();
   }
   function removeExam(i: number) {
@@ -57,6 +61,12 @@ export const useStateStore = defineStore('state', () => {
     if (!obj.links) obj.links = [];
     obj.links.push(link);
     save();
+  }
+
+  function checkValidExamName(name: string) {
+    if (!name) return false;
+    if (state.value.exams?.find(e => e.name === name)) return false;
+    return true;
   }
 
   // ========= Stats =========
@@ -115,6 +125,7 @@ export const useStateStore = defineStore('state', () => {
     getExams, getExam, addExam, editExam, removeExam,
     addChapter, editChapter, removeChapter,
     addLink,
+    checkValidExamName,
     getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro,
     getUserSettings, setUserSettings,
   };

@@ -7,7 +7,9 @@
         to="/" nav >
         <template v-slot>
           <v-list-item class="pa-0">
-            <h1 class="title text-h5 font-weight-bold text-primary">StudyBuddy</h1>
+            <h1 class="title font-weight-bold text-primary">StudyBuddy
+              <span class="bg-primary pa-1">BETA</span>
+            </h1>
           </v-list-item>
         </template>
       </v-list-item>
@@ -108,12 +110,8 @@ function addExam(el: MenuElement) {
 }
 
 function editExam(el: MenuElement, index: number) {
-  state.editExam(index, {
-    name: el.name,
-    icon: el.icon ?? 'mdi-book',
-    color: el.color,
-    chapters: []
-  });
+  console.log(el.name, el.icon, el.color);
+  state.editExam(index, el.name, el.icon ?? 'mdi-book', el.color);
 }
 
 function removeExam(i: number) {
@@ -143,3 +141,11 @@ function removeChapter(i: number) {
 
 </script>
 
+<style scoped lang="scss">
+.title {
+  font-size: 1.2rem !important;
+  span {
+    border-radius: 0.5rem;
+  }
+}
+</style>

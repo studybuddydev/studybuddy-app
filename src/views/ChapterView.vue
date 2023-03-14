@@ -22,8 +22,8 @@ import ToDo from '@/components/ToDo/ToDo.vue'
 const state = useStateStore();
 const route = useRoute()
 
-const exam = state.getExam(route.params.exam as string);
-const chapter = ref(exam?.chapters.find(c => c.name === route.params.chapter) ?? undefined);
+const exam = ref(state.getExam(route.params.exam as string));
+const chapter = ref(exam.value?.chapters.find(c => c.name === route.params.chapter) ?? undefined);
 
 function addLink(link: Link) {
   if (chapter.value) state.addLink(chapter.value, link);

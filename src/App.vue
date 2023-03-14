@@ -2,8 +2,8 @@
   <v-app id="inspire">
     <Pomodoro /> <!-- keep it on the top -->
     <Menu />
-    <v-main>
-      <router-view></router-view>
+    <v-main class="main">
+      <router-view :key="$route.fullPath"></router-view>
     </v-main>
   </v-app>
 </template>
@@ -14,11 +14,9 @@ import Pomodoro from '@/components/Pomodoro.vue';
 import Menu from '@/components/Menus/Menu.vue';
 </script>
 
-<style>
-html {
-  overflow: hidden !important;
+<style scoped lang="scss">
+.main {
+  height: 100vh;
+  overflow: auto;
 }
-
-
-  
 </style>

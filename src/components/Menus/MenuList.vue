@@ -43,7 +43,7 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12"> <v-text-field v-model="newElementDialog.element.name" :label="`${props.elementsName} name`" required></v-text-field> </v-col>
+            <v-col cols="12"> <v-text-field v-model="newElementDialog.element.name" :label="`${props.elementsName} name`" required :error-messages="state.checkValidExamName(newElementDialog.element.name) ? '' : 'Invalid exam name'"></v-text-field> </v-col>
             <v-col cols="12" v-if="props.chooseIcon">
               <v-select label="Icon" :items="mdiIconsList" v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
                 <template v-slot:item="{ props: item }">
@@ -54,7 +54,7 @@
           </v-row>
           <v-row>
           <v-col cols="12" v-if="props.chooseColor">
-            <v-select label="Icon" :items="colorList" v-model="newElementDialog.element.color" >
+            <v-select label="Color" :items="colorList" v-model="newElementDialog.element.color" >
               <template v-slot:item="{ props: item }">
                 <v-list-item v-bind="item" >
                   <template v-slot:prepend>
@@ -77,6 +77,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { MenuElement } from '@/types';
+import { useStateStore } from "@/stores/state";
+const state = useStateStore();
+
 const props = withDefaults(defineProps<{
   elementsName: string,
   menuElements: MenuElement[],
@@ -132,6 +135,7 @@ function addElement() {
   newElementDialog.value.element =  { ...defaultElement };
   newElementDialog.value.index = -1;
   newElementDialog.value.open = true;
+  newElementDialog.value.element.color = colorList[Math.floor(Math.random() * colorList.length)];
 }
 
 function editElement(el: MenuElement, i: number) {
@@ -145,12 +149,14 @@ function removeElement(i: number) {
 }
 
 function saveElement() {
-  if (newElementDialog.value.index === -1) {
-    emit('add', newElementDialog.value.element)
-  } else {
-    emit('edit', newElementDialog.value.element, newElementDialog.value.index)
+  if (state.checkValidExamName(newElementDialog.value.element.name)) {
+    if (newElementDialog.value.index === -1) {
+      emit('add', newElementDialog.value.element)
+    } else {
+      emit('edit', newElementDialog.value.element, newElementDialog.value.index)
+    }
+    newElementDialog.value.open = false;
   }
-  newElementDialog.value.open = false;
 }
 
 function rail() {
