@@ -13,6 +13,7 @@
     "@vueup/vue-quill": "^1.1.1",
     "pinia": "^2.0.28",
     "qalendar": "^2.1.3",
+    "uuid": "^9.0.0",
     "v-calendar": "3.0.0-alpha.8",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6",
@@ -20,7 +21,7 @@
   },
   "devDependencies": {
     "@mdi/font": "^7.1.96",
-    "@types/node": "^18.11.12",
+    "@types/node": "^18.11.18",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vue/tsconfig": "^0.1.3",
