@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@mdi/font': ^7.1.96
   '@types/node': ^18.11.18
+  '@types/uuid': ^9.0.1
   '@vitejs/plugin-vue': ^4.0.0
   '@vitejs/plugin-vue-jsx': ^3.0.0
   '@vue/tsconfig': ^0.1.3
@@ -33,6 +34,7 @@ dependencies:
 devDependencies:
   '@mdi/font': 7.1.96
   '@types/node': 18.11.18
+  '@types/uuid': 9.0.1
   '@vitejs/plugin-vue': 4.0.0_vite@4.0.4+vue@3.2.45
   '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.0.4+vue@3.2.45
   '@vue/tsconfig': 0.1.3_@types+node@18.11.18
@@ -632,6 +634,10 @@ packages:
 
   /@types/node/18.11.18:
     resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
+    dev: true
+
+  /@types/uuid/9.0.1:
+    resolution: {integrity: sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==}
     dev: true
 
   /@vitejs/plugin-vue-jsx/3.0.0_vite@4.0.4+vue@3.2.45:

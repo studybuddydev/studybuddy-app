@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Qalendar } from "qalendar";
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 const events = [
   {

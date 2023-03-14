@@ -22,6 +22,7 @@
   "devDependencies": {
     "@mdi/font": "^7.1.96",
     "@types/node": "^18.11.18",
+    "@types/uuid": "^9.0.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vue/tsconfig": "^0.1.3",
