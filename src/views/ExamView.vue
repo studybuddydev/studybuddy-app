@@ -22,8 +22,4 @@ const state = useStateStore();
 const route = useRoute()
 
 const exam = ref(state.getExam(route.params.exam as string));
-
-function addLink(link: Link) {
-  if (exam.value) state.addLink(exam.value, link);
-}
 </script>
