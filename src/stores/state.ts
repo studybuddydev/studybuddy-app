@@ -57,11 +57,6 @@ export const useStateStore = defineStore('state', () => {
     exam.chapters.splice(i, 1);
     save();
   }
-  function addLink(obj: WithLink, link: Link) {
-    if (!obj.links) obj.links = [];
-    obj.links.push(link);
-    save();
-  }
 
   function checkValidExamName(name: string) {
     if (!name) return false;
@@ -70,7 +65,6 @@ export const useStateStore = defineStore('state', () => {
   }
 
   // ========= Stats =========
-
 
   // ========= Settings =========
 
@@ -124,7 +118,6 @@ export const useStateStore = defineStore('state', () => {
     getUsername,
     getExams, getExam, addExam, editExam, removeExam,
     addChapter, editChapter, removeChapter,
-    addLink,
     checkValidExamName,
     getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro,
     getUserSettings, setUserSettings,

@@ -14,17 +14,15 @@
     </div>
 
     <div class="controls px-5 py-3">
-
-      
-      <v-btn
-        class="btn-play-pause" color="secondary" icon="mdi-cog"
-        v-if="cProgress.paused" @click="settingsOpen = true" size="x-small"></v-btn>
       <v-btn
         class="btn-play-pause" color="secondary" icon="mdi-stop"
         v-if="cProgress.paused" @click="stop()" size="x-small"></v-btn>
       <v-btn
         class="btn-play-pause" color="secondary" :icon="nextStateAvailable ? 'mdi-skip-next' : (cProgress.paused ? 'mdi-play': 'mdi-pause')"
         @click="toggle()"></v-btn>
+      <v-btn
+        class="btn-play-pause" color="secondary" icon="mdi-cog"
+        v-if="cProgress.paused" @click="settingsOpen = true" size="x-small"></v-btn>
     </div>
 
     <v-snackbar v-model="snackbar.show" vertical elevation="24" color="secondary" :timeout="60000">
@@ -278,20 +276,22 @@ function playSound(sound: ESound) {
 }
 
 .controls {
-  background-color: black;
-  border-radius: 1em 0 0 0;
   position: fixed;
   bottom: 1.5rem;
-  right: 0;
   margin: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: black;
+  border-radius: 1em 1em 0 0;
+
 
   .btn-play-pause {
     margin-right: 0.3em;
     margin-left: 0.3em;
-
   }
 }
 </style>

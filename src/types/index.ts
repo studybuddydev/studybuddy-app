@@ -30,6 +30,7 @@ export type WithPostIt = {
 
 export type WithTask = {
   tasks?: Task[];
+  showTasks?: boolean;
 }
 
 

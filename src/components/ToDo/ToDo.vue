@@ -1,5 +1,5 @@
 <template>
-  <v-card class="todo">
+  <v-card class="todo" v-if="element.showTasks">
     <v-toolbar dark color="primary">
       <v-toolbar-title>TODOs</v-toolbar-title>
       <v-text-field density="compact" v-model="newTodo" label="New Task" type="text" required :hide-details="true" :bg-color="'surface'" />
@@ -29,6 +29,10 @@ import type { Task, WithTask } from '@/types';
 import ToDoListItem from './ToDoListItem.vue'
 import { useStateStore } from "@/stores/state";
 const state = useStateStore();
+
+defineExpose({
+  showHideTodo
+})
 
 const newTodo = ref('')
 const props = defineProps<{
@@ -72,12 +76,16 @@ function save() {
 }
 
 
+function showHideTodo(value: boolean) {
+  props.element.showTasks = value;
+  save();
+}
+
 
 </script>
 
 <style scoped lang="scss">
 .todo {
-  max-width: 500px;
 }
 .done {
   text-decoration: line-through;

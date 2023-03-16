@@ -10,7 +10,7 @@
 
 
 <script setup lang="ts">
-import Pomodoro from '@/components/Pomodoro.vue';
+import Pomodoro from '@/components/Pomodoro/Pomodoro.vue';
 import Menu from '@/components/Menus/Menu.vue';
 </script>
 
