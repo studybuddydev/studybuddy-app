@@ -13,7 +13,6 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router'
 import { useStateStore } from "@/stores/state";
-import type { Link, PostIt as PostItType } from '@/types';
 import Links from '@/components/Links/Links.vue'
 import PostIt from '@/components/PostIt/PostIt.vue'
 import ToDo from '@/components/ToDo/ToDo.vue'

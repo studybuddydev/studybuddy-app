@@ -1,40 +1,41 @@
 <template>
   <v-footer app class="bg-black pa-0">
     <div class="progress" :style="{
-        background: `linear-gradient(to right, ${ barColor } ${percentage}%, black ${percentage}%)`,
+        background: `linear-gradient(to right, ${barColor} ${percentage}%, black ${percentage}%)`,
       }">
       <div class="pomodori">
         <v-icon class="icon" v-for="i in cProgress.pomodoriDone" :key="i" color="#FFD700">mdi-food-apple</v-icon>
         <v-icon class="icon" v-for="i in cProgress.studyDone" :key="i" color="red" size="x-small">mdi-food-apple</v-icon>
       </div>
-      <p>
-        {{ cProgress.status === EPomodoroStatus.Study ? 'Study' : (cProgress.status === EPomodoroStatus.ShortBreak ? 'Break' : 'Long Break') }}
-      </p>
+
+      <v-sheet
+        class="controls-popup d-flex"
+        :height="controlsMax ? (nextStateAvailable ? '6.2rem' : '4.5rem') : '0rem'"
+        :width="cProgress.paused ? '12rem' : '10rem'"
+        :color="pomodoroDone === null ? '' : (pomodoroDone ? '#AA5200' : 'red')">
+        <div class="controls">
+          <v-btn
+            class="control-btn btn-play-pause" color="secondary" icon="mdi-stop"
+            v-if="cProgress.paused" @click="stop()" size="x-small"></v-btn>
+          <v-btn
+            class="control-btn btn-play-pause"
+            :class="controlsMax ? '' : (cProgress.status === EPomodoroStatus.Study ? 'pause-btn' : 'coffee-btn')"
+            :color="disablePause ? 'brown' : 'secondary'"
+            :disabled="disablePause"
+            :icon="nextStateAvailable ? 'mdi-skip-next' : (cProgress.paused ? 'mdi-play': (cProgress.status === EPomodoroStatus.Study ? 'mdi-pause' : 'mdi-coffee'))"
+            @click="toggle()"
+            ></v-btn>
+          <v-btn
+            class="control-btn btn-play-pause" color="secondary" icon="mdi-cog"
+            v-if="cProgress.paused" @click="settingsOpen = true" size="x-small"></v-btn>
+        </div>
+        <div v-if="nextStateAvailable">
+          <p class="text-center">{{ pomodoroDone !== null ? (pomodoroDone ? 'Pomo d\'oro fatto!' : 'Pomo fatto!') : 'Inizia a lavorare' }}</p>
+        </div>
+      </v-sheet>
+
       <p class="mx-3">{{ timerText }}</p>
     </div>
-
-    <div class="controls px-5 py-3">
-      <v-btn
-        class="btn-play-pause" color="secondary" icon="mdi-stop"
-        v-if="cProgress.paused" @click="stop()" size="x-small"></v-btn>
-      <v-btn
-        class="btn-play-pause" color="secondary" :icon="nextStateAvailable ? 'mdi-skip-next' : (cProgress.paused ? 'mdi-play': 'mdi-pause')"
-        @click="toggle()"></v-btn>
-      <v-btn
-        class="btn-play-pause" color="secondary" icon="mdi-cog"
-        v-if="cProgress.paused" @click="settingsOpen = true" size="x-small"></v-btn>
-    </div>
-
-    <v-snackbar v-model="snackbar.show" vertical elevation="24" color="secondary" :timeout="60000">
-      <div class="text-h6 pb-2 d-flex align-center">
-        <v-icon :color="snackbar.pomodoro ? '#FFD700' : 'red'">mdi-food-apple</v-icon>
-        {{ snackbar.title }}
-      </div>
-      <p class="text-subtitle-1" v-for="t in snackbar.text" >{{ t }}</p>
-      <template v-slot:actions>
-        <v-btn variant="flat" @click="snackbar.show = false"> Ok </v-btn>
-      </template>
-    </v-snackbar>
 
     <v-dialog v-model="settingsOpen" width="500">
       <v-card>
@@ -79,12 +80,6 @@ enum ESound {
 const settings = ref(state.getPomodoroSettings());
 const tempSettings = ref( { ...settings.value } );
 const settingsOpen = ref(false);
-const snackbar = ref({
-  show: false,
-  title: '',
-  text: [''],
-  pomodoro: false
-});
 
 function saveSettings() {
   tempSettings.value.studyLength = +tempSettings.value.studyLength;
@@ -123,8 +118,12 @@ const timerTime = ref(0);
 const percentage = ref(0);
 const nextStateAvailable = ref(false);
 
+const controlsMax = computed(() => cProgress.value.paused || nextStateAvailable.value);
+const disablePause = computed(() => !nextStateAvailable.value && !cProgress.value.paused && cProgress.value.status !== EPomodoroStatus.Study);
+const pomodoroDone = ref<boolean | null>(null); // true d'oro, false pomo, null none
+
 const currentLength = computed(() => {
-  const mult = 60;
+  const mult = 6;
 
   switch (cProgress.value.status) {
     case EPomodoroStatus.Study:
@@ -157,11 +156,13 @@ setInterval(() => {
       nextStateAvailable.value = true;
       if (cProgress.value.status === EPomodoroStatus.Study) {
         if (cProgress.value.studyDone + 1 >= settings.value.nrStudy) {
-          showSnackbar(true);
+          // showSnackbar(true);
+          pomodoroDone.value = true;
           playSound(ESound.PomodoroDone);
         } else {
           playSound(ESound.PomoDone);
-          showSnackbar(false);
+          // showSnackbar(false);
+          pomodoroDone.value = false;
         }
       } else {
         playSound(ESound.BreakDone);
@@ -192,6 +193,7 @@ function nextState() {
   cProgress.value.msStarted = new Date().getTime();
   cProgress.value.paused = false;
   nextStateAvailable.value = false;
+  pomodoroDone.value = null;
 }
 
 function startPomodoro() {
@@ -231,20 +233,6 @@ function toggle() {
   state.setCurrentPomodoro(cProgress.value);
 }
 
-function showSnackbar(pomodore = false) {
-  snackbar.value.show = true;
-  if (pomodore) {
-    snackbar.value.title = 'Pomo d\'oro!';
-    snackbar.value.text = ['Hai completato un pomo d\'oro.', 'Goditi la meritata pausa!'];
-    snackbar.value.pomodoro = true;
-  } else {
-    snackbar.value.title = 'Pomo!'
-    snackbar.value.text = ['Hai completato un pomo.', 'Ora di andare a fare una passegiata!'];
-    snackbar.value.pomodoro = false;
-  }
-
-}
-
 function playSound(sound: ESound) {
   const audio = new Audio(`/sounds/${sound}`);
   audio.play();
@@ -254,6 +242,33 @@ function playSound(sound: ESound) {
 
 
 <style lang="scss">
+.controls-popup {
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease-out;
+  border-radius: 1rem 1rem 0 0 !important;
+
+  .controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .control-btn {
+      margin: 0.5em;
+    }
+    
+    .pause-btn, .coffee-btn {
+      transform: translateY(-3em);
+    }
+      
+    .pause-btn:hover {
+      transform: scale(1.2) perspective(1px) translateY(-3.1em);
+    }
+  }
+}
+
 .progress {
   width: 100%;
   display: flex;
@@ -273,25 +288,11 @@ function playSound(sound: ESound) {
     text-shadow: 0 0 2px #000;
     border-radius: 0.5em;
   }
-}
 
-.controls {
-  position: fixed;
-  bottom: 1.5rem;
-  margin: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: black;
-  border-radius: 1em 1em 0 0;
-
-
-  .btn-play-pause {
-    margin-right: 0.3em;
-    margin-left: 0.3em;
+  .pomodori {
+    display: flex;
+    align-items: center;
   }
 }
+
 </style>
