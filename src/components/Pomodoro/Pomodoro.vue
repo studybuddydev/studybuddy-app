@@ -123,7 +123,7 @@ const disablePause = computed(() => !nextStateAvailable.value && !cProgress.valu
 const pomodoroDone = ref<boolean | null>(null); // true d'oro, false pomo, null none
 
 const currentLength = computed(() => {
-  const mult = 6;
+  const mult = 60;
 
   switch (cProgress.value.status) {
     case EPomodoroStatus.Study:
