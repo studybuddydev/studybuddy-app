@@ -1,12 +1,13 @@
 <template>
   <div>
 
+    <!-- list od links-->
     <v-container class="link-container">
       <v-card
         class="link-card d-flex justify-start align-center pa-2 ma-2"
         v-for="card, i in links"
         :key="card.name"
-        :href="`//${card.url}`"
+        :href="card.url"
         target="_blank"
       >
         <v-img
@@ -22,6 +23,7 @@
       </v-card>
     </v-container>
 
+    <!-- add link dialog-->
     <v-dialog v-model="newLinkOpen" width="500">
       <v-card>
           <v-toolbar dark color="primary">
