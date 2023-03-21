@@ -35,9 +35,10 @@
           <v-card-text>
             <v-container>
               <v-row>
+                <!--
                 <v-col cols="12">
                   <v-text-field label="Name" v-model="newLink.name" type="string" required></v-text-field>
-                </v-col>
+                </v-col>-->
                 <v-col cols="12">
                   <v-text-field label="Url" v-model="newLink.url" type="string" required></v-text-field>
                 </v-col>
@@ -94,6 +95,7 @@ function addLink() {
   if (!props.element.links)
     props.element.links = [];
   const link: Link = { ...newLink.value }
+  link.name = link.name || getDomain(link.url);
   props.element.links.push(link)
 
   newLinkOpen.value = false;
