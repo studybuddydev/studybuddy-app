@@ -31,7 +31,8 @@
       prepend-icon="mdi-plus" :title="`Add ${props.elementsName}`" />
 
   </v-list>
-    
+
+  <!-- add exam/chapter dialog-->
   <v-dialog v-model="newElementDialog.open" width="500">
     <v-card>
       <v-toolbar dark :color="props.color">
@@ -42,8 +43,21 @@
       </v-toolbar>
       <v-card-text>
         <v-container>
+          
           <v-row>
+            <!-- Exam name -->
             <v-col cols="12"> <v-text-field v-model="newElementDialog.element.name" :label="`${props.elementsName} name`" required :error-messages="state.checkValidExamName(newElementDialog.element.name) ? '' : 'Invalid exam name'"></v-text-field> </v-col>
+            <!--Deadline-->
+            <v-col cols="12" v-if="props.elementsName === 'Exam'">
+              <v-text-field
+                v-model="newElementDialog.element.deadline"
+                label="Deadline"
+                type="date"
+
+              ></v-text-field>
+            </v-col>
+            
+            <!--  Icon-->
             <v-col cols="12" v-if="props.chooseIcon">
               <v-select label="Icon" :items="mdiIconsList" v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
                 <template v-slot:item="{ props: item }">
@@ -52,21 +66,22 @@
               </v-select>
             </v-col>
           </v-row>
+          <!-- Color -->
           <v-row>
-          <v-col cols="12" v-if="props.chooseColor">
-            <v-select label="Color" :items="colorList" v-model="newElementDialog.element.color" >
-              <template v-slot:item="{ props: item }">
-                <v-list-item v-bind="item" >
-                  <template v-slot:prepend>
-                    <v-icon :color="item.value">mdi-circle</v-icon>
-                  </template>
-                </v-list-item>
-              </template>
-              <template v-slot:prepend>
-                <v-icon :color="newElementDialog.element.color">mdi-circle</v-icon>
-              </template>
-            </v-select>
-          </v-col>
+            <v-col cols="12" v-if="props.chooseColor">
+              <v-select label="Color" :items="colorList" v-model="newElementDialog.element.color" >
+                <template v-slot:item="{ props: item }">
+                  <v-list-item v-bind="item" >
+                    <template v-slot:prepend>
+                      <v-icon :color="item.value">mdi-circle</v-icon>
+                    </template>
+                  </v-list-item>
+                </template>
+                <template v-slot:prepend>
+                  <v-icon :color="newElementDialog.element.color">mdi-circle</v-icon>
+                </template>
+              </v-select>
+            </v-col>
           </v-row>
         </v-container>
       </v-card-text>

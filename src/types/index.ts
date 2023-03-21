@@ -3,6 +3,7 @@ export type MenuElement = {
   to: string;
   icon?: string;
   color?: string;
+  deadline?: string;
 }
 
 // ---------- EXAM ----------
