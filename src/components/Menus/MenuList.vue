@@ -94,19 +94,27 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits(['add', 'edit', 'remove', 'rail'])
 
 const mdiIconsList = [
-  'mdi-math-integral',
-  'mdi-math-compass',
-  'mdi-math-cos',
-  'mdi-math-sin',
-  'mdi-math-tan',
-  'mdi-math-norm',
-  'mdi-math-norm-box',
-  'mdi-math-log',
-  'mdi-math-exp',
-  'mdi-math-factorial',
-  'mdi-math-derive',
-  'mdi-math-integral-box',
-]
+  "mdi-flask-outline",
+  "mdi-function-variant",
+  "mdi-atom-variant",
+  "mdi-book-open-page-variant",
+  "mdi-account-cowboy-hat",
+  "mdi-brain",
+  "mdi-globe-model",
+  "mdi-music-note",
+  "mdi-palette-outline",
+  "mdi-basketball-hoop-outline",
+  "mdi-format-list-bulleted",
+  "mdi-weather-sunny",
+  "mdi-account-tie",
+  "mdi-desktop-tower-monitor",
+  "mdi-puzzle-outline",
+  "mdi-animation-outline",
+  "mdi-microscope-variant",
+  "mdi-camera-outline",
+  "mdi-wallet-outline",
+  "mdi-account-supervisor-outline"
+];
 
 const colorList = [
   'purple',

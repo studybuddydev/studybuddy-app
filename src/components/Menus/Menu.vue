@@ -49,7 +49,7 @@
 
     <template v-slot:prepend>
       <v-list-item :to="`/exam/${exam.name}`" nav >
-        <h1 :class="`title text-h4 text-${exam?.color ?? 'primary'}`">{{exam?.name}}</h1>
+        <h1 >{{exam?.name}}</h1>
       </v-list-item>
     </template>
 
