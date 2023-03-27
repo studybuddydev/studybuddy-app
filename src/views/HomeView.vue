@@ -1,11 +1,13 @@
 <template>
-
-  <h1 class="text-center">Pianifica il tuo studio</h1>
-
-  <div style="height: 400px;" class="ma-6">
+  <div>
+    <h1 class="ma-4">Bentornato {{ state.getUsername() }}!</h1>
+    <Timeline class="ma-10" />
   </div>
 </template>
 
 <script setup lang="ts">
+import Timeline from "@/components/Timeline/Timeline.vue";
+import { useStateStore } from "@/stores/state";
+const state = useStateStore();
 
 </script>
