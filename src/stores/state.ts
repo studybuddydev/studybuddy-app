@@ -50,7 +50,9 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
   function editChapter(exam: Exam, i: number, chapter: Chapter) {
-    exam.chapters[i] = { ...chapter };
+    const ch = exam.chapters[i];
+    if (!ch) return;
+    ch.name = chapter.name;
     save();
   }
   function removeChapter(exam: Exam, i: number) {
