@@ -10,24 +10,23 @@
 
       <v-sheet
         class="controls-popup d-flex"
-        :height="controlsMax ? (nextStateAvailable ? '6.2rem' : '4.5rem') : '0rem'"
-        :width="cProgress.paused ? '12rem' : '10rem'"
-        :color="pomodoroDone === null ? '' : (pomodoroDone ? '#AA5200' : 'red')">
+        :height="controlHeight"
+        :width="controlWidth"
+        :color="controlColor">
         <div class="controls">
           <v-btn
-            class="control-btn btn-play-pause" color="secondary" icon="mdi-stop"
-            v-if="cProgress.paused" @click="stop()" size="x-small"></v-btn>
+            class="control-btn btn-play-pause" color="secondary" :icon="showBreakCommands ? 'mdi-skip-next' : 'mdi-stop'"
+            v-if="cProgress.paused || showBreakCommands" @click="showBreakCommands ? nextState() : stop()" size="x-small"></v-btn>
           <v-btn
             class="control-btn btn-play-pause"
             :class="controlsMax ? '' : (cProgress.status === EPomodoroStatus.Study ? 'pause-btn' : 'coffee-btn')"
-            :color="disablePause ? 'brown' : 'secondary'"
-            :disabled="disablePause"
-            :icon="nextStateAvailable ? 'mdi-skip-next' : (cProgress.paused ? 'mdi-play': (cProgress.status === EPomodoroStatus.Study ? 'mdi-pause' : 'mdi-coffee'))"
+            :color="inBreak ? 'brown' : 'secondary'"
+            :icon="mainControlIcon"
             @click="toggle()"
             ></v-btn>
           <v-btn
             class="control-btn btn-play-pause" color="secondary" icon="mdi-cog"
-            v-if="cProgress.paused" @click="settingsOpen = true" size="x-small"></v-btn>
+            v-if="cProgress.paused || showBreakCommands" @click="settingsOpen = true" size="x-small"></v-btn>
         </div>
         <div v-if="nextStateAvailable">
           <p class="text-center">{{ pomodoroDone !== null ? (pomodoroDone ? 'Pomo d\'oro fatto!' : 'Pomo fatto!') : 'Inizia a lavorare' }}</p>
@@ -117,10 +116,32 @@ const currentMs = ref(0);
 const timerTime = ref(0);
 const percentage = ref(0);
 const nextStateAvailable = ref(false);
+const showBreakCommands = ref(false);
 
-const controlsMax = computed(() => cProgress.value.paused || nextStateAvailable.value);
-const disablePause = computed(() => !nextStateAvailable.value && !cProgress.value.paused && cProgress.value.status !== EPomodoroStatus.Study);
+const controlsMax = computed(() => cProgress.value.paused || nextStateAvailable.value || showBreakCommands.value);
+const inBreak = computed(() => !nextStateAvailable.value && !cProgress.value.paused && cProgress.value.status !== EPomodoroStatus.Study);
 const pomodoroDone = ref<boolean | null>(null); // true d'oro, false pomo, null none
+
+const controlHeight = computed(() => {
+  if (!controlsMax.value) return '0rem';
+  if (nextStateAvailable.value) return '6.2rem';
+  return '4.5rem';
+});
+const controlWidth = computed(() => {
+  if (cProgress.value.paused) return '12rem';
+  return '10rem';
+});
+const controlColor = computed(() => {
+  if (pomodoroDone.value === null) return '';
+  if (pomodoroDone.value) '#AA5200'; 
+  return 'red';
+});
+const mainControlIcon = computed(() => {
+  if (nextStateAvailable.value) return 'mdi-skip-next';
+  if (cProgress.value.paused) return 'mdi-play';
+  if (cProgress.value.status === EPomodoroStatus.Study) return 'mdi-pause';
+  return 'mdi-coffee';
+});
 
 const currentLength = computed(() => {
   const mult = 60;
@@ -141,8 +162,14 @@ function formatTime(time: number) {
 }
 const timerText = computed(() => `${formatTime(Math.floor(timerTime.value / 1000))} / ${formatTime(currentLength.value)}`);
 
-
+const maxInactiveTime = 1000 * 60 * 60 * 8; // 8 hours
 setInterval(() => {
+
+
+  if (currentMs.value - cProgress.value.msStarted > maxInactiveTime) {
+    stop()
+    return;
+  }
 
   currentMs.value = new Date().getTime();
 
@@ -153,6 +180,7 @@ setInterval(() => {
   percentage.value = ((timerTime.value / 1000) / currentLength.value) * 100;
   if (!nextStateAvailable.value) {
     if (timerTime.value / 1000 > currentLength.value) {
+      showBreakCommands.value = false;
       nextStateAvailable.value = true;
       if (cProgress.value.status === EPomodoroStatus.Study) {
         if (cProgress.value.studyDone + 1 >= settings.value.nrStudy) {
@@ -173,6 +201,7 @@ setInterval(() => {
 }, REFRESH_RATE);
 
 function nextState() {
+  showBreakCommands.value = false;
   switch (cProgress.value.status) {
     case EPomodoroStatus.Study:
       cProgress.value.studyDone += 1;
@@ -226,6 +255,10 @@ function stop() {
 }
 
 function toggle() {
+  if (inBreak.value) {
+    showBreakCommands.value = !showBreakCommands.value;
+    return;
+  }
   if (!cProgress.value.pomodoroRunning) startPomodoro();
   else if (nextStateAvailable.value)    nextState();
   else if (cProgress.value.paused)      play();
