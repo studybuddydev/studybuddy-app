@@ -2,9 +2,11 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { createI18n } from "vue-i18n";
 
 import App from './App.vue'
 import router from './router'
+import messages from "@intlify/unplugin-vue-i18n/messages";
 
 // Vuetify
 import 'vuetify/styles'
@@ -14,26 +16,7 @@ import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import { themes } from '@/assets/themes'
 
-import 'v-calendar/dist/style.css';
-import VCalendar from 'v-calendar';
 
-const myDarkTheme = {
-  dark: false,
-  colors: {
-    background: '#207178',
-    surface: '#12454a',
-    primary: '#FB8C00',
-    'primary-darken-1': '#FB8C00',
-    secondary: '#03DAC6',
-    'secondary-darken-1': '#018786',
-    error: '#B00020',
-    info: '#2196F3',
-    success: '#4CAF50',
-    warning: '#FB8C00',
-  }
-}
-
-// Use plugin with defaults
 const vuetify = createVuetify({
   components,
   directives,
@@ -46,14 +29,20 @@ const vuetify = createVuetify({
     defaultTheme: JSON.parse(localStorage.getItem('state') ?? '{}')?.settings?.user?.theme ?? 'verdone',
     themes: themes,
   },
-  
 })
 
+const i18n = createI18n({
+  legacy: false,
+  globalInjection: true,
+  locale: "en",
+  fallbackLocale: "en",
+  availableLocales: ["en", "it"],
+  messages: messages,
+});
+
 const app = createApp(App)
-
-app.use(createPinia())
 app.use(router)
+app.use(createPinia())
 app.use(vuetify)
-app.use(VCalendar, {})
-
+app.use(i18n)
 app.mount('#app')

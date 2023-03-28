@@ -14,6 +14,9 @@
                 <v-text-field label="Username" v-model="userSettings.username" type="string" required></v-text-field>
               </v-col>
               <v-col cols="12">
+                <v-select :items="$i18n.availableLocales" v-model="$i18n.locale"></v-select>
+              </v-col>
+              <v-col cols="12">
                 <!-- theme selector -->
                 <v-select label="Theme" :items="themeList" item-title="title" item-value="value" v-model="userSettings.theme" @update:model-value="updateTheme($event)" >
                   <template v-slot:item="{ props, item }">

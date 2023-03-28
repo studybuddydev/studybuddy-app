@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h1 class="ma-4">Bentornato {{ state.getUsername() }}!</h1>
+    <h1 class="ma-4">{{ $t("welcome", { 'name': state.getUsername() } ) }}</h1>
+    <h2 class="ma-4">{{ $t("random.intro") }}</h2>
     <Timeline class="ma-10" />
   </div>
 </template>

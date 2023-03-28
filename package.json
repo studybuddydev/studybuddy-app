@@ -10,6 +10,7 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@intlify/unplugin-vue-i18n": "^0.10.0",
     "@popperjs/core": "^2.11.6",
     "@vueup/vue-quill": "^1.1.1",
     "pinia": "^2.0.28",
@@ -17,6 +18,7 @@
     "uuid": "^9.0.0",
     "v-calendar": "^3.0.1",
     "vue": "^3.2.45",
+    "vue-i18n": "^9.2.2",
     "vue-router": "^4.1.6",
     "vuetify": "^3.1.1"
   },

@@ -1,0 +1,6 @@
+{
+  "welcome": "Welcome {name}!",
+  "random": {
+    "intro": "This is a random text" 
+  }
+}
