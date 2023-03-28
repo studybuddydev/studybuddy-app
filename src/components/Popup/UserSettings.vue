@@ -14,7 +14,7 @@
                 <v-text-field label="Username" v-model="userSettings.username" type="string" required></v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-select :items="$i18n.availableLocales" v-model="$i18n.locale"></v-select>
+                <v-select label="Language" :items="$i18n.availableLocales" v-model="$i18n.locale" @update:model-value="updateLanguage($event)"></v-select>
               </v-col>
               <v-col cols="12">
                 <!-- theme selector -->
@@ -61,6 +61,10 @@ const model = computed({
     return emit('update:modelValue', value)
   }
 })
+
+function updateLanguage(newLanguage: string) {
+  state.saveLanguage(newLanguage);
+}
 
 function closeSettings() {
   model.value = false

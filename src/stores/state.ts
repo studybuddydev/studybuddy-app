@@ -14,6 +14,14 @@ export const useStateStore = defineStore('state', () => {
   function save() {
     localStorage.setItem('state', JSON.stringify(state.value));
   }
+
+  function saveLanguage(lang: string) {
+    localStorage.setItem('lang', lang);
+  }
+
+  function getLanguage() {
+    return localStorage.getItem('lang') ?? 'en';
+  }
   
   // ========= Username =========
   function getUsername() {
@@ -117,6 +125,7 @@ export const useStateStore = defineStore('state', () => {
   return {
     state,
     save,
+    saveLanguage, getLanguage,
     getUsername,
     getExams, getExam, addExam, editExam, removeExam,
     addChapter, editChapter, removeChapter,

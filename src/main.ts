@@ -34,7 +34,7 @@ const vuetify = createVuetify({
 const i18n = createI18n({
   legacy: false,
   globalInjection: true,
-  locale: "en",
+  locale: localStorage.getItem('lang') ?? 'en',
   fallbackLocale: "en",
   availableLocales: ["en", "it"],
   messages: messages,
