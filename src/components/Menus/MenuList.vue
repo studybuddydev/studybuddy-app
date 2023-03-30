@@ -28,7 +28,7 @@
     <v-list-item
       @click="addElement()"
       :class="`bg-${props.color}`"
-      prepend-icon="mdi-plus" :title="`Add ${props.elementsName}`" />
+      prepend-icon="mdi-plus" :title="$t('add',{ 'element' :props.elementsName })"  />
 
   </v-list>
 
