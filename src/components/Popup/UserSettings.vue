@@ -3,9 +3,9 @@
     <v-card>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="closeSettings()"> <v-icon>mdi-close</v-icon> </v-btn>
-          <v-toolbar-title>Settings</v-toolbar-title>
+          <v-toolbar-title>{{$t('popup.settings.title')}}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-toolbar-items> <v-btn variant="text" @click="saveSettings()" > Save </v-btn> </v-toolbar-items>
+          <v-toolbar-items> <v-btn variant="text" @click="saveSettings()" > {{  $t('save')}} </v-btn> </v-toolbar-items>
         </v-toolbar>
         <v-card-text>
           <v-container>
@@ -14,11 +14,11 @@
                 <v-text-field label="Username" v-model="userSettings.username" type="string" required></v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-select label="Language" :items="$i18n.availableLocales" v-model="$i18n.locale" @update:model-value="updateLanguage($event)"></v-select>
+                <v-select :label="$t('popup.settings.language')" :items="$i18n.availableLocales" v-model="$i18n.locale" @update:model-value="updateLanguage($event)"></v-select>
               </v-col>
               <v-col cols="12">
                 <!-- theme selector -->
-                <v-select label="Theme" :items="themeList" item-title="title" item-value="value" v-model="userSettings.theme" @update:model-value="updateTheme($event)" >
+                <v-select :label="$t('popup.settings.theme')" :items="themeList" item-title="title" item-value="value" v-model="userSettings.theme" @update:model-value="updateTheme($event)" >
                   <template v-slot:item="{ props, item }">
                     <v-list-item v-bind="props" >
                       <template v-slot:prepend>

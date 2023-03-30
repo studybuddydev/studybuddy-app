@@ -28,9 +28,9 @@
       <v-card>
           <v-toolbar dark color="primary">
             <v-btn icon dark @click="closeNewLink()"> <v-icon>mdi-close</v-icon> </v-btn>
-            <v-toolbar-title>Settings</v-toolbar-title>
+            <v-toolbar-title>{{$t('link.title')}}</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-toolbar-items> <v-btn variant="text" @click="addLink()" > Save </v-btn> </v-toolbar-items>
+            <v-toolbar-items> <v-btn variant="text" @click="addLink()" > {{$t('save')}} </v-btn> </v-toolbar-items>
           </v-toolbar>
           <v-card-text>
             <v-container>

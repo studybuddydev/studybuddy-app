@@ -29,7 +29,7 @@
             v-if="cProgress.paused || showBreakCommands" @click="settingsOpen = true" size="x-small"></v-btn>
         </div>
         <div v-if="nextStateAvailable">
-          <p class="text-center">{{ pomodoroDone !== null ? (pomodoroDone ? 'Pomo d\'oro fatto!' : 'Pomo fatto!') : 'Inizia a lavorare' }}</p>
+          <p class="text-center">{{ pomodoroDone !== null ? (pomodoroDone ? $t('pomodoro') : $t('pomo')) : $t('work') }}</p>
         </div>
       </v-sheet>
 
@@ -40,17 +40,17 @@
       <v-card>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="closeSettings()"> <v-icon>mdi-close</v-icon> </v-btn>
-          <v-toolbar-title>Settings</v-toolbar-title>
+          <v-toolbar-title>{{ $t('popup.settings.title') }}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-toolbar-items> <v-btn variant="text" @click="saveSettings()" > Save </v-btn> </v-toolbar-items>
+          <v-toolbar-items> <v-btn variant="text" @click="saveSettings()" > {{ $t('save') }} </v-btn> </v-toolbar-items>
         </v-toolbar>
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12"> <v-text-field v-model="tempSettings.studyLength" type="number" label="Pomodoro Lenght in minutes" required></v-text-field> </v-col>
-              <v-col cols="12"> <v-text-field v-model="tempSettings.shortBreakLength" type="number" label="Short Break Lenght in minutes" required></v-text-field> </v-col>
-              <v-col cols="12"> <v-text-field v-model="tempSettings.longBreakLength" type="number" label="Long Break Lenght in minutes" required></v-text-field> </v-col>
-              <v-col cols="12"> <v-text-field v-model="tempSettings.nrStudy" type="number" label="Long Break After" required></v-text-field> </v-col>
+              <v-col cols="12"> <v-text-field v-model="tempSettings.studyLength" type="number" :label="$t('pomo.studyLenght')" required></v-text-field> </v-col>
+              <v-col cols="12"> <v-text-field v-model="tempSettings.shortBreakLength" type="number" :label="$t('pomo.shortBreakLenght')" required></v-text-field> </v-col>
+              <v-col cols="12"> <v-text-field v-model="tempSettings.longBreakLength" type="number" :label="$t('pomo.longBreakLenght')" required></v-text-field> </v-col>
+              <v-col cols="12"> <v-text-field v-model="tempSettings.nrStudy" type="number" :label="$t('pomo.longBreakAfter')" required></v-text-field> </v-col>
             </v-row>
           </v-container>
         </v-card-text>

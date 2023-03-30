@@ -18,8 +18,8 @@
             ></v-btn>
           </template>
           <v-list>
-            <v-list-item @click="editElement(e, i)" title="Edit" />
-            <v-list-item @click="removeElement(i)" title="Delete" />
+            <v-list-item @click="editElement(e, i)" :title="$t('edit')" />
+            <v-list-item @click="removeElement(i)" :title="$t('delete')" />
           </v-list>
         </v-menu>
       </template>
@@ -39,16 +39,16 @@
         <v-btn icon dark @click="newElementDialog.open = false"> <v-icon>mdi-close</v-icon> </v-btn>
         <v-toolbar-title>{{ props.elementsName }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-toolbar-items> <v-btn variant="text" @click="saveElement()" > Save </v-btn> </v-toolbar-items>
+        <v-toolbar-items> <v-btn variant="text" @click="saveElement()" > {{ $t('save') }} </v-btn> </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
         <v-container>
           
           <v-row>
             <!-- Exam name -->
-            <v-col cols="12"> <v-text-field v-model="newElementDialog.element.name" :label="`${props.elementsName} name`" required :error-messages="state.checkValidExamName(newElementDialog.element.name) ? '' : 'Invalid exam name'"></v-text-field> </v-col>
+            <v-col cols="12"> <v-text-field v-model="newElementDialog.element.name" :label="$t('name',{ 'element': props.elementsName})" required :error-messages="state.checkValidExamName(newElementDialog.element.name) ? '' : $t('invalidName', {element: props.elementsName})"></v-text-field> </v-col>
             <!--Deadline-->
-            <v-col cols="12" v-if="props.elementsName === 'Exam'">
+            <v-col cols="12" v-if="props.elementsName === $t('exam')">
               <v-text-field
                 v-model="newElementDialog.element.deadline"
                 label="Deadline"
@@ -59,7 +59,7 @@
             
             <!--  Icon-->
             <v-col cols="12" v-if="props.chooseIcon">
-              <v-select label="Icon" :items="mdiIconsList" v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
+              <v-select :label="$t('icon')" :items="mdiIconsList" v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
                 <template v-slot:item="{ props: item }">
                   <v-list-item v-bind="item" :prepend-icon="item.value" />
                 </template>
@@ -69,7 +69,7 @@
           <!-- Color -->
           <v-row>
             <v-col cols="12" v-if="props.chooseColor">
-              <v-select label="Color" :items="colorList" v-model="newElementDialog.element.color" >
+              <v-select :label="$t('color')" :items="colorList" v-model="newElementDialog.element.color" >
                 <template v-slot:item="{ props: item }">
                   <v-list-item v-bind="item" >
                     <template v-slot:prepend>

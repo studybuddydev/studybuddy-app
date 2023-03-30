@@ -18,7 +18,7 @@
     <v-divider></v-divider>
     
     <MenuList
-      elements-name="Exam"
+      :elements-name="$t('exam')"
       :menu-elements="menuElements"
       @add="addExam"
       @edit="editExam"
@@ -56,7 +56,7 @@
     <v-divider></v-divider>
 
     <MenuList
-      elements-name="Chapters"
+      :elements-name="$t('chapter')"
       :choose-color="false"
       :choose-icon="false"
       :color="exam?.color ?? 'primary'"
