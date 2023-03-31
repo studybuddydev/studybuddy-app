@@ -43,7 +43,7 @@ const todoRef = ref<InstanceType<typeof ToDo> | null>(null);
 <style scoped lang="scss">
 .content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 3fr 1fr;
   grid-template-rows: auto auto;
 
 }

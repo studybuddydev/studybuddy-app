@@ -9,7 +9,7 @@
       <template v-slot:append>
         <v-btn color="grey-lighten-1" :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'" variant="text"></v-btn>
       </template>
-      <v-list-item-title :class="task.done ? 'done' : ''">{{ task.name }}</v-list-item-title>
+      <v-list-item-title :class="task.done ? 'done' : ''">{{ task.name }} {{ task.isDeadline ? 'Dead' : 'No dead'  }}</v-list-item-title>
     </v-list-item>
 
     <v-card class="ma-0 pa-5" v-if="expanded">
@@ -23,7 +23,9 @@
           <v-text-field clearable label="Deadline" type="date" v-model="task.deadline" @update:model-value="state.save()" @click:clear="task.isDeadline = false" />
         </v-col>
         <v-col cols="3">
-          <v-btn :disabled="!task.deadline" variant="tonal" color="primary" height="58" @click="task.isDeadline = true"> <span style="white-space: normal;"> {{ $t('Move to Deadline') }} </span> </v-btn>
+          <v-btn :disabled="!task.deadline" variant="tonal" color="primary" height="58" @click="task.isDeadline = !task.isDeadline">
+            <span style="white-space: normal;"> {{ task.isDeadline ? $t('Remove from Deadline') : $t('Move to Deadline') }} </span>
+          </v-btn>
         </v-col>
       </v-row>
       <!-- delete buttons -->
