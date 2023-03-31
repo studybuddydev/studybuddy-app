@@ -1,6 +1,45 @@
 {
   "welcome": "Welcome {name}!",
   "random": {
-    "intro": "This is a random text" 
+  "intro": "This is a random text"
+  },
+  "add": "Add {element}",
+  "edit": "Edit",
+  "delete": "Delete",
+  "save": "Save",
+  "color": "Color",
+  "icon": "Icon",
+  "name": "{element} name",
+  "invalidName": "Invalid {element} name",
+  "exam": "Exam",
+  "chapter": "Chapter",
+  "popup": {
+  "settings": {
+  "title": "Settings",
+  "language": "Language",
+  "theme": "Theme",
+  "save": "Save"
   }
-}
+  },
+  "pomo": {
+  "title": "Pomodoro",
+  "pomo": "Pomo done",
+  "pomodoro": "Golden pomo done",
+  "start": "Start",
+  "stop": "Stop",
+  "reset": "Reset",
+  "studyLenght": "Pomodoro duration in minutes",
+  "shortBreakLenght": "Short break duration in minutes",
+  "longBreakLenght": "Long break duration in minutes",
+  "longBreakAfter": "Number of pomodoros before long break"
+  },
+  "item": {
+  "showtodo": "Show ToDo",
+  "hidetodo": "Hide ToDo",
+  "link": "Add link",
+  "postit": "Add note"
+  },
+  "link": {
+  "title": "Add link"
+  }
+  }
