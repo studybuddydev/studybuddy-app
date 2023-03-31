@@ -85,8 +85,6 @@ function showHideTodo(value: boolean) {
 </script>
 
 <style scoped lang="scss">
-.todo {
-}
 .done {
   text-decoration: line-through;
 }

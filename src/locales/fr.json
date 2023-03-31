@@ -1,5 +1,5 @@
 {
-    "welcome": "Bienvenue {name} !",
+    "welcome": "Bienvenue {name}!",
     "random": {
     "intro": "Ceci est un texte aléatoire"
     },

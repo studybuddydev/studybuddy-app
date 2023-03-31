@@ -17,7 +17,10 @@ export type PostIt = {
 }
 export type Task = {
   name: string,
+  description?: string,
+  deadline?: Date,
   done: boolean,
+  isDeadline?: boolean,
 }
 
 
