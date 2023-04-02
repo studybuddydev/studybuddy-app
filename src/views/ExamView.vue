@@ -33,7 +33,6 @@ const route = useRoute()
 
 const exam = ref(state.getExam(route.params.exam as string));
 
-
 const linkRef = ref<InstanceType<typeof Links> | null>(null);
 const postitRef = ref<InstanceType<typeof PostIt> | null>(null);
 const todoRef = ref<InstanceType<typeof ToDo> | null>(null);

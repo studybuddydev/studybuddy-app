@@ -37,17 +37,20 @@ export type WithTask = {
   showTasks?: boolean;
 }
 
-
-export type Chapter = {
+export type StudyElement = {
   name: string;
 } & WithLink & WithPostIt & WithTask;
 
+
+export type Chapter = {
+} & StudyElement;	
+
+
 export type Exam = {
-  name: string;
   icon: string;
   chapters: Chapter[];
   color?: string;
-}  & WithLink & WithPostIt & WithTask;
+} & StudyElement;	
 
 // ---------- STATS ----------
 export type Stats = {
