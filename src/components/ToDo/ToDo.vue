@@ -5,20 +5,59 @@
       <v-text-field density="compact" v-model="newTodo" label="New Task" type="text" required :hide-details="true" :bg-color="'surface'" />
       <v-toolbar-items> <v-btn variant="text" @click="addTodo()" > Add </v-btn> </v-toolbar-items>
     </v-toolbar>
-    <div class="list-container" v-if="element.tasks">
-      <ToDoList
-        v-for="e in columns"
-        :tasks="e.tasks"
-        :title="e.title"
-      />
+    <div class="list-container">
+      <v-list select-strategy="classic" v-if="deadlineTasks.length > 0">
+        <v-list-group>
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props" prepend-icon="mdi-calendar-check" :title="`Deadlines (${noDeadlineTasks.length})`" />
+          </template>
+          <ToDoListItem
+            v-for="t in deadlineTasks"
+            :i="t.index" v-model="exapanedI"
+            :task="t.task"
+            @toggle="toggle(t.task, false)"
+            @remove="removeTask(t.task)" />
+          </v-list-group>
+        </v-list>
+      <v-list select-strategy="classic" v-if="noDeadlineTasks.length > 0">
+        <v-list-group>
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props" prepend-icon="mdi-format-list-bulleted-triangle" :title="`Tasks (${noDeadlineTasks.length})`" />
+          </template>
+          <ToDoListItem
+            v-for="t in noDeadlineTasks"
+            :i="t.index" v-model="exapanedI"
+            :task="t.task"
+            @toggle="toggle(t.task, false)"
+            @remove="removeTask(t.task)" />
+        </v-list-group>
+      </v-list>
     </div>
+
+    <v-list select-strategy="classic" v-if="doneTasks.length > 0">
+      <v-list-group>
+        <template v-slot:activator="{ props }">
+          <v-list-item
+            v-bind="props"
+            prepend-icon="mdi-check-bold"
+            :title="`Done (${doneTasks.length})`" />
+        </template>
+        <ToDoListItem
+          v-for="t in doneTasks"
+          :i="t.index" v-model="exapanedI"
+          :task="t.task"
+          @toggle="toggle(t.task, false)"
+          @remove="removeTask(t.task)" />
+      </v-list-group>
+    </v-list>
+
   </v-card>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import type { Task, WithTask } from '@/types';
-import ToDoList from './ToDoList.vue'
+import ToDoListItem from './ToDoListItem.vue'
 import { useStateStore } from "@/stores/state";
 const state = useStateStore();
 
@@ -26,6 +65,7 @@ defineExpose({
   showHideTodo
 })
 
+const exapanedI = ref(-1)
 const newTodo = ref('')
 const props = defineProps<{
   element: WithTask,
@@ -36,24 +76,10 @@ type ColumnData = {
   tasks: Task[],
 }
 
-const deadlineTasks = computed(() => props.element.tasks?.filter(t => t.isDeadline) ?? [])
-const noDeadlineTasks = computed(() => props.element.tasks?.filter(t => !t.isDeadline) ?? [])
-const columns = computed(() => {
-  const result: ColumnData[] = []
-  if (deadlineTasks.value.length > 0) {
-    result.push({
-      title: 'Deadline',
-      tasks: deadlineTasks.value,
-    })
-  }
-  if (noDeadlineTasks.value.length > 0) {
-    result.push({
-      title: 'Tasks',
-      tasks: noDeadlineTasks.value,
-    })
-  }
-  return result
-})
+const taskNumbered = computed(() => props.element.tasks?.map((t, i) => ({ task: t, index: i })) ?? [])
+const doneTasks = computed(() => taskNumbered.value.filter(t => t.task.done))
+const deadlineTasks = computed(() => taskNumbered.value.filter(t => !t.task.done && t.task.isDeadline))
+const noDeadlineTasks = computed(() => taskNumbered.value.filter(t => !t.task.done && !t.task.isDeadline))
 
 function addTodo() {
   if (newTodo.value) {
@@ -74,6 +100,20 @@ function showHideTodo(value: boolean) {
   state.save()
 }
 
+function toggle(task: Task, value: boolean) {
+  task.done = value;
+  state.save();
+}
+
+function removeTask(task: Task) {
+  if (!props.element.tasks) return;
+
+  const toRemoveIndex = props.element.tasks.findIndex(t => t === task);
+  if (toRemoveIndex >= 0) {
+    props.element.tasks.splice(toRemoveIndex, 1);
+  }
+  state.save();
+}
 
 </script>
 

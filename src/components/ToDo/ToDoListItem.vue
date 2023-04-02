@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-list-item @click.prevent.stop="expanded = !expanded">
+    <v-list-item @click.prevent.stop="toggleExpanded()">
       <template v-slot:prepend>
         <v-list-item-action start>
           <v-checkbox-btn :model-value="task.done" @click.prevent.stop="toggle()"></v-checkbox-btn>
@@ -9,7 +9,7 @@
       <template v-slot:append>
         <v-btn color="grey-lighten-1" :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'" variant="text"></v-btn>
       </template>
-      <v-list-item-title :class="task.done ? 'done' : ''">{{ task.name }} {{ task.deadline }}</v-list-item-title>
+      <v-list-item-title :class="task.done ? 'done' : ''">{{ task.name }} <span v-if="task.isDeadline" class="text-medium-emphasis">({{ task.deadline }})</span></v-list-item-title>
     </v-list-item>
 
     <v-card class="ma-0 pa-5" v-if="expanded">
@@ -40,21 +40,26 @@
 
 <script setup lang="ts">
 import type { Task } from '@/types';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useStateStore } from "@/stores/state";
 const state = useStateStore();
 
-const expanded = ref(false);
-
+const expanded = computed(() => props.modelValue === props.i);
 
 const props = defineProps<{
+  i: number
+  modelValue: number
   task: Task
 }>()
-// emits with done and remove
 const emits = defineEmits<{
+  (e: 'update:modelValue', value: number): void	
   (e: 'toggle'): void
   (e: 'remove'): void
 }>()
+
+function toggleExpanded() {
+  emits('update:modelValue', props.modelValue === props.i ? -1 : props.i)
+}
 
 
 function toggle() {
