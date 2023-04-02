@@ -9,7 +9,7 @@
       <template v-slot:append>
         <v-btn color="grey-lighten-1" :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'" variant="text"></v-btn>
       </template>
-      <v-list-item-title :class="task.done ? 'done' : ''">{{ task.name }} {{ task.isDeadline ? 'Dead' : 'No dead'  }}</v-list-item-title>
+      <v-list-item-title :class="task.done ? 'done' : ''">{{ task.name }} {{ task.deadline }}</v-list-item-title>
     </v-list-item>
 
     <v-card class="ma-0 pa-5" v-if="expanded">

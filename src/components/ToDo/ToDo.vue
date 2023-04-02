@@ -48,7 +48,7 @@ const columns = computed(() => {
   }
   if (noDeadlineTasks.value.length > 0) {
     result.push({
-      title: 'No Deadline',
+      title: 'Tasks',
       tasks: noDeadlineTasks.value,
     })
   }
