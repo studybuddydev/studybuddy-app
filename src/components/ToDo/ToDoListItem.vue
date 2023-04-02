@@ -66,6 +66,7 @@ function toggle() {
   emits('toggle')
 }
 function remove() {
+  emits('update:modelValue', -1)
   emits('remove')
 }
 </script>

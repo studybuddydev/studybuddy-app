@@ -9,13 +9,13 @@
       <v-list select-strategy="classic" v-if="deadlineTasks.length > 0">
         <v-list-group>
           <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props" prepend-icon="mdi-calendar-check" :title="`Deadlines (${noDeadlineTasks.length})`" />
+            <v-list-item v-bind="props" prepend-icon="mdi-calendar-check" :title="`Deadlines (${deadlineTasks.length})`" />
           </template>
           <ToDoListItem
             v-for="t in deadlineTasks"
             :i="t.index" v-model="exapanedI"
             :task="t.task"
-            @toggle="toggle(t.task, false)"
+            @toggle="toggle(t.task, true)"
             @remove="removeTask(t.task)" />
           </v-list-group>
         </v-list>
@@ -28,7 +28,7 @@
             v-for="t in noDeadlineTasks"
             :i="t.index" v-model="exapanedI"
             :task="t.task"
-            @toggle="toggle(t.task, false)"
+            @toggle="toggle(t.task, true)"
             @remove="removeTask(t.task)" />
         </v-list-group>
       </v-list>
