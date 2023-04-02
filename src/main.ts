@@ -16,6 +16,8 @@ import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import { themes } from '@/assets/themes'
 
+import { setupCalendar } from 'v-calendar';
+
 
 const vuetify = createVuetify({
   components,
@@ -45,4 +47,5 @@ app.use(router)
 app.use(createPinia())
 app.use(vuetify)
 app.use(i18n)
+app.use(setupCalendar, {})
 app.mount('#app')

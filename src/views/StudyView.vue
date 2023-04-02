@@ -1,6 +1,9 @@
 <template>
+
+  <SBalendar />
+
   <v-container>
-    <h1>{{ element.name }} StudyView</h1>
+    <h1>{{ element.name }}</h1>
   
     <div class="content">
       <ToDo   class="todo" :element="element" ref="todoRef" />
@@ -22,6 +25,7 @@
 
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
+import SBalendar from '@/components/SBalendar/SBalendar.vue'
 import Links from '@/components/Links/Links.vue'
 import PostIt from '@/components/PostIt/PostIt.vue'
 import ToDo from '@/components/ToDo/ToDo.vue'
