@@ -1,23 +1,45 @@
 <template>
   <Calendar view="weekly" is-dark="system" :first-day-of-week="2">
     <template v-slot:day-content="{ day, attributes}">
-      <div class="day-slot">
+      <div :class="(day.date as Date).getDay() === 1 ? 'day-slot first-day' : 'day-slot'">
         
         <div class="grid-structure times" v-if="(day.date as Date).getDay() === 1">
           <p class="text-center title" style="color: transparent">Time</p>
           <div class="grid">
-            <div v-for="t in timeSlots" class="time"><p>{{ t }}</p></div>
+            <div v-for="h in hours" class="time"><p>{{ h }}:00</p></div>
           </div>
         </div>
         
         <div class="grid-structure timeslots">
           <p class="text-center title day-number">{{ (day.date as Date).getDate() }}</p>
           <div class="grid borders">
-            <div v-for="t in timeSlots" class="timeslot borders">
-              <div></div>
-              <div></div>
+            <div v-for="h in hours" class="timeslot borders">
+              <div v-for="m in minutes" @click="clickOnTimeSlot((day.date as Date).getDay(), h,m)"></div>
             </div>
           </div>
+        </div>
+
+        <div class="events">
+          <v-menu :close-on-content-click="false" location="end" v-for="e in events[(day.date as Date).getDay()]">
+            <template v-slot:activator="{ props }">
+              <v-card
+                v-bind="props" class="pa-2 event"
+                :style="{ height: (cellHeight / 60) * e.length + 'px', top: e.start.hour*cellHeight + ((cellHeight / 60) * e.start.minute) + 'px' }"
+              >
+                <p>{{ e.title }}</p>
+              </v-card>
+            </template>
+
+            <v-card class="pa-2" min-width="300">
+              <v-text-field v-model="e.title" label="Nome" />
+              <v-text-field v-model="e.start.hour" label="Ore" type="number" />
+              <v-text-field v-model="e.start.minute" label="Minuti" type="number" />
+              <v-text-field v-model="e.length" label="Durata [m]" type="number" />
+            </v-card>
+
+          </v-menu>
+
+
         </div>
       </div>
       <!-- <v-card
@@ -32,7 +54,23 @@
 <script setup lang="ts">
 import 'v-calendar/style.css';
 import { Calendar } from 'v-calendar';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+
+const cellHeight = 60;
+const fav = true;
+const menu = false;
+const message = false;
+const hints = true;
+
+
+type Event = {
+  title: string;
+  start: {
+    hour: number;
+    minute: number;
+  },
+  length: number;
+}
 
 onMounted(() => {
   const calendar = document.querySelector(".vc-week");
@@ -40,11 +78,23 @@ onMounted(() => {
 });
 
 
-const timeSlots: string[] = []
-for (let h = 0; h < 24; h++) {
-  for (let m = 0; m < 60; m += 60) {
-    timeSlots.push(`${h}:${m < 10 ? '0' : ''}${m}`);
-  }
+// array of numbers from 0 to 24
+const hours: number[] = Array.from({ length: 24 }, (_, i) => i);
+const minutes: number[] = [ 0, 30 ];
+
+const events = ref<Event[][]>([
+  [], [], [], [], [], [], []
+]);
+
+function clickOnTimeSlot(day: number, h: number, m: number) {
+  events.value[day].push({
+    title: "New event",
+    start: {
+      hour: h,
+      minute: m
+    },
+    length: 60
+  })
 }
 
 </script>
@@ -106,6 +156,18 @@ $time-width: 35px;
       width: $cell-width;
     }
   }
+}
+.event {
+  position: absolute;
+  height: $cell-height;
+  width: calc($cell-width - 0.5em);
+  padding: 0;
+  margin: 0;
+  top: 0;
+  left: 0;
+}
+.first-day .event {
+  left: $time-width;
 }
 </style>
 <style lang="scss">

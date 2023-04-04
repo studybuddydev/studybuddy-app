@@ -53,13 +53,7 @@ const todoRef = ref<InstanceType<typeof ToDo> | null>(null);
   grid-template-rows: auto auto;
 
 }
-.todo {
-}
-
 .link {
   grid-column: 1 / 3;
-}
-
-.note {
 }
 </style>
