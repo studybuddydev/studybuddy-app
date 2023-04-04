@@ -1,6 +1,6 @@
 <template>
 
-  <SBalendar />
+  <!--<SBalendar /> -->
 
   <v-container>
     <h1>{{ element.name }}</h1>
