@@ -166,7 +166,7 @@ const maxInactiveTime = 1000 * 60 * 60 * 8; // 8 hours
 setInterval(() => {
 
 
-  if (currentMs.value - cProgress.value.msStarted > maxInactiveTime) {
+  if (cProgress.value.pomodoroRunning === true && currentMs.value - cProgress.value.msStarted > maxInactiveTime) {
     stop()
     return;
   }

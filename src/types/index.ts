@@ -1,3 +1,8 @@
+export enum EStudyView {
+  Dashboard, Exam, Chapter
+}
+
+
 export type MenuElement = {
   name: string;
   to: string;
@@ -85,11 +90,15 @@ export type UserSettings = {
 }
 
 export type State = {
-  username?: string;
-  exams?: Exam[];
-  stats?: Stats;
+  username: string;
+  stats: Stats;
 
-  settings?: {
+  data: {
+    exams: Exam[];
+    dashboard: StudyElement;
+  }
+
+  settings: {
     pomodoro?: {
       pomodoroSettings?: PomodoroSettings;
       currentPomodoro?: CurrentPomodoro;

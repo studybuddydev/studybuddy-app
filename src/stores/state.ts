@@ -1,17 +1,29 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro, WithLink, Link } from '@/types'
+import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro, WithLink, Link, StudyElement } from '@/types'
 
+const defaultData: State = {
+  username: 'Anonymous',
+  data: {
+    exams: [],
+    dashboard: { name: 'StudyBuddy', links: [], postIts: [], showTasks: false, tasks: [] }
+  },
+  settings: {},
+  stats: {}
+}
 
 export const useStateStore = defineStore('state', () => {
   const lsState = JSON.parse(localStorage.getItem('state') || '{}') as State ?? {};
-  if (!lsState.exams) lsState.exams = [];
-  if (!lsState.username) lsState.username = 'Anonymous';
-  if (!lsState.settings) lsState.settings = {};
+  if (!lsState.username) lsState.username = defaultData.username;
+  if (!lsState.data) lsState.data = defaultData.data;
+  if (!lsState.data.exams) lsState.data.exams = defaultData.data.exams;
+  if (!lsState.data.dashboard) lsState.data.dashboard = defaultData.data.dashboard;
+  if (!lsState.settings) lsState.settings = defaultData.settings;
   const state = ref(lsState);
 
   // ========= Generic =========
   function save() {
+    console.log('Saving localstorage')
     localStorage.setItem('state', JSON.stringify(state.value));
   }
 
@@ -29,20 +41,33 @@ export const useStateStore = defineStore('state', () => {
   }
 
   // ========= Exam =========
+  function getStudyElement(examName?: string, chapterName?: string): StudyElement {
+    if (examName) {
+      const exam = getExam(examName);
+      if (chapterName) {
+        const chapter = exam?.chapters.find(c => c.name === chapterName);
+        if (chapter) return chapter;
+      }
+      if (exam) return exam;
+    }
+
+    return state.value.data.dashboard;
+  }
+
   function getExams() {
-    return state.value.exams ?? [];
+    return state.value.data.exams ?? [];
   }
   function getExam(name: string) {
-    return state.value.exams?.find(e => e.name === name);
+    return state.value.data.exams?.find(e => e.name === name);
   }
   function addExam(exam: Exam) {
-    if (!state.value.exams) state.value.exams = [exam];
-    else state.value.exams?.push(exam);
+    if (!state.value.data.exams) state.value.data.exams = [exam];
+    else state.value.data.exams?.push(exam);
     save();
   }
   function editExam(i: number, name: string, icon: string, color: string | undefined) {
-    if (!state.value.exams) return;
-    const exam = state.value.exams[i];
+    if (!state.value.data.exams) return;
+    const exam = state.value.data.exams[i];
     if (!exam) return;
     exam.color = color;
     exam.name = name;
@@ -50,7 +75,7 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
   function removeExam(i: number) {
-    state.value.exams?.splice(i, 1);
+    state.value.data.exams?.splice(i, 1);
     save();
   }
   function addChapter(exam: Exam, chapter: Chapter) {
@@ -70,11 +95,9 @@ export const useStateStore = defineStore('state', () => {
 
   function checkValidExamName(name: string) {
     if (!name) return false;
-    if (state.value.exams?.find(e => e.name === name)) return false;
+    if (state.value.data.exams?.find(e => e.name === name)) return false;
     return true;
   }
-
-  // ========= Stats =========
 
   // ========= Settings =========
 
@@ -127,7 +150,7 @@ export const useStateStore = defineStore('state', () => {
     save,
     saveLanguage, getLanguage,
     getUsername,
-    getExams, getExam, addExam, editExam, removeExam,
+    getStudyElement, getExams, getExam, addExam, editExam, removeExam,
     addChapter, editChapter, removeChapter,
     checkValidExamName,
     getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro,

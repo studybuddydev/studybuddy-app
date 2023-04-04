@@ -1,6 +1,6 @@
 <template>
 
-  <!--<SBalendar /> -->
+  <SBalendar v-if="pageType === EStudyView.Dashboard" />
 
   <v-container>
     <h1>{{ element.name }}</h1>
@@ -30,34 +30,15 @@ import Links from '@/components/Links/Links.vue'
 import PostIt from '@/components/PostIt/PostIt.vue'
 import ToDo from '@/components/ToDo/ToDo.vue'
 import Add from '@/components/Add/Add.vue'
-import type { StudyElement } from '@/types';
+import { EStudyView } from '@/types';
 
 import { useRoute } from 'vue-router'
 import { useStateStore } from "@/stores/state";
 const state = useStateStore();
 const route = useRoute()
 
-
-function getElement(): StudyElement {
-  if (route.params.exam) {
-    const exam = state.getExam(route.params.exam as string);
-    if (route.params.chapter) {
-      const chapter = exam?.chapters.find(c => c.name === route.params.chapter);
-      if (chapter) return chapter;
-    }
-    if (exam) return exam;
-  }
-
-  return {
-    name: '',
-    links: [],
-    postIts: [],
-    showTasks: false,
-    tasks: [],
-  };
-}
-
-const element = ref(getElement());
+const pageType = route.meta.type as EStudyView;
+const element = ref(state.getStudyElement(route.params.exam as string, route.params.chapter as string));
 
 const linkRef = ref<InstanceType<typeof Links> | null>(null);
 const postitRef = ref<InstanceType<typeof PostIt> | null>(null);

@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router
 // import ExamView from '@/views/ExamView.vue'
 // import ChapterView from '@/views/ChapterView.vue'
 import StudyView from '@/views/StudyView.vue'
+import { EStudyView } from '@/types'
 
 const router = createRouter({
   history: createWebHashHistory(),  
@@ -11,19 +12,22 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: StudyView
+      component: StudyView,
+      meta: { type: EStudyView.Dashboard }
     },
 
     {
       path: '/exam/:exam',
       name: 'exam',
-      component: StudyView
+      component: StudyView,
+      meta: { type: EStudyView.Exam }
     },
 
     {
       path: '/exam/:exam/:chapter',
       name: 'chapter',
-      component: StudyView
+      component: StudyView,
+      meta: { type: EStudyView.Chapter }
     }
   ]
 })

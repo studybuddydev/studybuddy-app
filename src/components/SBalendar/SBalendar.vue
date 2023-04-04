@@ -3,16 +3,12 @@
     <template v-slot:day-content="{ day, attributes}">
       <div class="day-slot">
         
-        
         <div class="grid-structure times" v-if="(day.date as Date).getDay() === 1">
           <p class="text-center title" style="color: transparent">Time</p>
           <div class="grid">
             <div v-for="t in timeSlots" class="time"><p>{{ t }}</p></div>
           </div>
         </div>
-        
-        
-        
         
         <div class="grid-structure timeslots">
           <p class="text-center title day-number">{{ (day.date as Date).getDate() }}</p>
