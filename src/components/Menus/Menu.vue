@@ -110,7 +110,6 @@ function addExam(el: MenuElement) {
 }
 
 function editExam(el: MenuElement, index: number) {
-  console.log(el.name, el.icon, el.color);
   state.editExam(index, el.name, el.icon ?? 'mdi-book', el.color);
 }
 

@@ -33,7 +33,7 @@
         </div>
       </v-sheet>
 
-      <p class="mx-3">{{ timerText }}</p>
+      <p class="mx-3 timer">{{ timerText }}</p>
     </div>
 
     <v-dialog v-model="settingsOpen" width="500">
@@ -324,8 +324,17 @@ function playSound(sound: ESound) {
 
   .pomodori {
     display: flex;
-    align-items: center;
+    align-items: center;;
   }
+
+  .timer {
+    text-align: right;
+  }
+  
+  .pomodori, .timer {
+    width: 10rem;
+  }
+
 }
 
 </style>

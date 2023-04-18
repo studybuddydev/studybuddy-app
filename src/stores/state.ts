@@ -1,12 +1,13 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro, WithLink, Link, StudyElement } from '@/types'
+import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro, WithLink, Link, StudyElement, Event } from '@/types'
 
 const defaultData: State = {
   username: 'Anonymous',
   data: {
     exams: [],
-    dashboard: { name: 'StudyBuddy', links: [], postIts: [], showTasks: false, tasks: [] }
+    dashboard: { name: 'StudyBuddy', links: [], postIts: [], showTasks: false, tasks: [] },
+    events: {},
   },
   settings: {},
   stats: {}
@@ -18,6 +19,7 @@ export const useStateStore = defineStore('state', () => {
   if (!lsState.data) lsState.data = defaultData.data;
   if (!lsState.data.exams) lsState.data.exams = defaultData.data.exams;
   if (!lsState.data.dashboard) lsState.data.dashboard = defaultData.data.dashboard;
+  if (!lsState.data.events) lsState.data.events = defaultData.data.events;
   if (!lsState.settings) lsState.settings = defaultData.settings;
   const state = ref(lsState);
 
@@ -93,10 +95,34 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
 
-  function checkValidExamName(name: string) {
+  function checkValidExamName(name: string, index: number) {
     if (!name) return false;
-    if (state.value.data.exams?.find(e => e.name === name)) return false;
+    if (state.value.data.exams?.find((e, i) => i !== index && e.name === name)) return false;
     return true;
+  }
+
+  // ========= Events =========
+
+  function getEvents(days: string[]): { [key: string]: Event[] } {
+    return days.reduce((acc, day) => {
+      const events = state.value.data.events[day];
+      if (events) {
+        if (events.length > 0) {
+          acc[day] = events;
+        } else {
+          delete state.value.data.events[day]
+        }
+      }
+      return acc;
+    }, {} as { [key: string]: Event[] });
+  }
+
+  function saveEvents(events: { [key: string]: Event[] }) {
+    Object.keys(events).forEach(day => {
+      if (events[day].length > 0 && !state.value.data.events[day]) 
+        state.value.data.events[day] = events[day];
+    });
+    save();
   }
 
   // ========= Settings =========
@@ -153,6 +179,7 @@ export const useStateStore = defineStore('state', () => {
     getStudyElement, getExams, getExam, addExam, editExam, removeExam,
     addChapter, editChapter, removeChapter,
     checkValidExamName,
+    getEvents, saveEvents,
     getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro,
     getUserSettings, setUserSettings,
   };

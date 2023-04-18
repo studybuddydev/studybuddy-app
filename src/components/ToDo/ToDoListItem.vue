@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-list-item @click.prevent.stop="toggleExpanded()">
+    <v-list-item @click.prevent.stop="toggleExpanded()" :class="expanded ? 'bg-background' : ''">
       <template v-slot:prepend>
         <v-list-item-action start>
           <v-checkbox-btn :model-value="task.done" @click.prevent.stop="toggle()"></v-checkbox-btn>
@@ -14,11 +14,6 @@
 
     <v-card class="ma-0 pa-5" v-if="expanded">
       <v-row>
-        <v-col cols="12">
-          <v-textarea label="Description" v-model="task.description" @update:model-value="state.save()" />
-        </v-col>
-      </v-row>
-      <v-row>
         <v-col cols="9">
           <v-text-field clearable label="Deadline" type="date" v-model="task.deadline" @update:model-value="state.save()" @click:clear="task.isDeadline = false" />
         </v-col>
@@ -28,6 +23,13 @@
           </v-btn>
         </v-col>
       </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <v-textarea :rows="2" label="Note" v-model="task.notes" @update:model-value="state.save()" />
+        </v-col>
+      </v-row>
+
       <!-- delete buttons -->
       <v-card-actions class="justify-end">
         <v-btn color="error" @click="remove()" > {{ $t('delete') }} </v-btn>

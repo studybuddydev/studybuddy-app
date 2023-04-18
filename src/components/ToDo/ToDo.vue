@@ -6,8 +6,8 @@
       <v-toolbar-items> <v-btn variant="text" @click="addTodo()" > Add </v-btn> </v-toolbar-items>
     </v-toolbar>
     <div class="list-container">
-      <v-list select-strategy="classic" v-if="deadlineTasks.length > 0">
-        <v-list-group>
+      <v-list select-strategy="classic" v-if="deadlineTasks.length > 0" :opened="['deadlines']">
+        <v-list-group value="deadlines">
           <template v-slot:activator="{ props }">
             <v-list-item v-bind="props" prepend-icon="mdi-calendar-check" :title="`Deadlines (${deadlineTasks.length})`" />
           </template>
@@ -19,8 +19,8 @@
             @remove="removeTask(t.task)" />
           </v-list-group>
         </v-list>
-      <v-list select-strategy="classic" v-if="noDeadlineTasks.length > 0">
-        <v-list-group>
+      <v-list select-strategy="classic" v-if="noDeadlineTasks.length > 0" :opened="['tasks']">
+        <v-list-group value="tasks">
           <template v-slot:activator="{ props }">
             <v-list-item v-bind="props" prepend-icon="mdi-format-list-bulleted-triangle" :title="`Tasks (${noDeadlineTasks.length})`" />
           </template>
@@ -35,7 +35,7 @@
     </div>
 
     <v-list select-strategy="classic" v-if="doneTasks.length > 0">
-      <v-list-group>
+      <v-list-group value="done">
         <template v-slot:activator="{ props }">
           <v-list-item
             v-bind="props"
@@ -129,5 +129,10 @@ function removeTask(task: Task) {
   > div {
     flex: 1;
   } 
+}
+</style>
+<style lang="scss">
+.todo .v-list-group__items .v-list-item {
+  padding-inline-start: 16px !important;
 }
 </style>

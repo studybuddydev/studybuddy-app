@@ -22,7 +22,7 @@ export type PostIt = {
 }
 export type Task = {
   name: string,
-  description?: string,
+  notes?: string,
   deadline?: Date,
   done: boolean,
   isDeadline?: boolean,
@@ -89,6 +89,16 @@ export type UserSettings = {
   icon: string;
 }
 
+export type Event = {
+  title: string;
+  description: string;
+  start: {
+    hour: number;
+    minute: number;
+  },
+  length: number;
+}
+
 export type State = {
   username: string;
   stats: Stats;
@@ -96,6 +106,7 @@ export type State = {
   data: {
     exams: Exam[];
     dashboard: StudyElement;
+    events: { [key: string]: Event[] }
   }
 
   settings: {

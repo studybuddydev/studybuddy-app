@@ -46,15 +46,20 @@
           
           <v-row>
             <!-- Exam name -->
-            <v-col cols="12"> <v-text-field v-model="newElementDialog.element.name" :label="$t('name',{ 'element': props.elementsName})" required :error-messages="state.checkValidExamName(newElementDialog.element.name) ? '' : $t('invalidName', {element: props.elementsName})"></v-text-field> </v-col>
+            <v-col cols="12">
+              <v-text-field
+                v-model="newElementDialog.element.name"
+                :label="$t('name',{ 'element': props.elementsName})"
+                required
+                :error-messages="state.checkValidExamName(newElementDialog.element.name, newElementDialog.index) ? '' : $t('invalidName', {element: props.elementsName})" />
+            </v-col>
             <!--Deadline-->
             <v-col cols="12" v-if="props.elementsName === $t('exam')">
               <v-text-field
                 v-model="newElementDialog.element.deadline"
                 label="Deadline"
                 type="date"
-
-              ></v-text-field>
+              />
             </v-col>
             
             <!--  Icon-->
@@ -172,7 +177,7 @@ function removeElement(i: number) {
 }
 
 function saveElement() {
-  if (state.checkValidExamName(newElementDialog.value.element.name)) {
+  if (state.checkValidExamName(newElementDialog.value.element.name, newElementDialog.value.index)) {
     if (newElementDialog.value.index === -1) {
       emit('add', newElementDialog.value.element)
     } else {

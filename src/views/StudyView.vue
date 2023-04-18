@@ -1,9 +1,8 @@
 <template>
-
-  <SBalendar v-if="pageType === EStudyView.Dashboard" />
-
+  
   <v-container>
     <h1>{{ element.name }}</h1>
+    <SBalendar v-if="pageType === EStudyView.Dashboard" />
   
     <div class="content">
       <ToDo   class="todo" :element="element" ref="todoRef" />
