@@ -1,6 +1,5 @@
 <template>
 
-  {{  open }} ciao
   <Calendar view="weekly" is-dark="system" :first-day-of-week="2" @update:pages="($event) => changePage($event)">
     <template v-slot:day-content="{ day, attributes}">
       <div :class="(day.date as Date).getDay() === 1 ? 'day-slot first-day' : 'day-slot'">
@@ -35,7 +34,6 @@
               v-bind="props" class="pa-2 event"
               :style="{ height: (cellHeight / 60) * e.length + 'px', top: e.start.hour*cellHeight + ((cellHeight / 60) * e.start.minute) + 'px' }"
               >
-              {{ `${day.id}-${i}` }}
                 <p>{{ e.title }}</p>
                 <p class="text-medium-emphasis text-caption">
                   {{ e.start.hour }}:{{ e.start.minute < 10 ? '0'+e.start.minute : e.start.minute }} - {{ e.start.hour + Math.floor((e.start.minute + e.length) / 60) }}:{{ (e.start.minute + e.length) % 60 < 10 ? '0'+(e.start.minute + e.length) % 60 : (e.start.minute + e.length) % 60 }}
@@ -115,8 +113,8 @@ function clickOnTimeSlot(dayId: string, h: number, m: number) {
     events.value[dayId] = [];
   
   events.value[dayId].push({
-    title: "Eventissimo",
-    description: "Descrizionissima",
+    title: "Nuovo event",
+    description: "",
     start: {
       hour: h,
       minute: m

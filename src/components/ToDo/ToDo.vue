@@ -2,7 +2,7 @@
   <v-card class="todo" v-if="element.showTasks">
     <v-toolbar dark color="primary">
       <v-toolbar-title>TODOs</v-toolbar-title>
-      <v-text-field density="compact" v-model="newTodo" label="New Task" type="text" required :hide-details="true" :bg-color="'surface'" />
+      <v-text-field v-on:keyup.enter="addTodo()" density="compact" v-model="newTodo" label="New Task" type="text" required :hide-details="true" :bg-color="'surface'" />
       <v-toolbar-items> <v-btn variant="text" @click="addTodo()" > Add </v-btn> </v-toolbar-items>
     </v-toolbar>
     <div class="list-container">
