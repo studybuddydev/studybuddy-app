@@ -64,9 +64,13 @@
             
             <!--  Icon-->
             <v-col cols="12" v-if="props.chooseIcon">
-              <v-select :label="$t('icon')" :items="mdiIconsList" v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
+              <v-select :label="$t('icon')"
+                :items="mdiIconsList" item-title="title" item-value="icon"
+                v-model="newElementDialog.element.icon"
+                :prepend-icon="newElementDialog.element.icon"
+              >
                 <template v-slot:item="{ props: item }">
-                  <v-list-item v-bind="item" :prepend-icon="item.value" />
+                  <v-list-item v-bind="item" :prepend-icon="item.value" :title="item.title" />
                 </template>
               </v-select>
             </v-col>
@@ -74,7 +78,9 @@
           <!-- Color -->
           <v-row>
             <v-col cols="12" v-if="props.chooseColor">
-              <v-select :label="$t('color')" :items="colorList" v-model="newElementDialog.element.color" >
+              <v-select :label="$t('color')"
+                :items="colorList" item-title="title" item-value="color"
+                v-model="newElementDialog.element.color" >
                 <template v-slot:item="{ props: item }">
                   <v-list-item v-bind="item" >
                     <template v-slot:prepend>
@@ -113,46 +119,47 @@ const props = withDefaults(defineProps<{
 })
 const emit = defineEmits(['add', 'edit', 'remove', 'rail'])
 
-const mdiIconsList = [
-  "mdi-flask-outline",
-  "mdi-function-variant",
-  "mdi-atom-variant",
-  "mdi-book-open-page-variant",
-  "mdi-account-cowboy-hat",
-  "mdi-brain",
-  "mdi-globe-model",
-  "mdi-music-note",
-  "mdi-palette-outline",
-  "mdi-basketball-hoop-outline",
-  "mdi-format-list-bulleted",
-  "mdi-weather-sunny",
-  "mdi-account-tie",
-  "mdi-desktop-tower-monitor",
-  "mdi-puzzle-outline",
-  "mdi-animation-outline",
-  "mdi-microscope-variant",
-  "mdi-camera-outline",
-  "mdi-wallet-outline",
-  "mdi-account-supervisor-outline"
-];
+const mdiIconsList = ref([
+  { icon: "mdi-account-school", title: 'School' },
+  { icon: "mdi-flask-outline", title: 'Flask' },
+  { icon: "mdi-function-variant", title: 'Function' },
+  { icon: "mdi-atom-variant", title: 'Atom' },
+  { icon: "mdi-book-open-page-variant", title: 'Book' },
+  { icon: "mdi-account-cowboy-hat", title: 'Cowboy' },
+  { icon: "mdi-brain", title: 'Brain' },
+  { icon: "mdi-globe-model", title: 'Globe' },
+  { icon: "mdi-music-note", title: 'Music' },
+  { icon: "mdi-palette-outline", title: 'Palette' },
+  { icon: "mdi-basketball-hoop-outline", title: 'Basketball' },
+  { icon: "mdi-format-list-bulleted", title: 'Format' },
+  { icon: "mdi-weather-sunny", title: 'Weather' },
+  { icon: "mdi-account-tie", title: 'Account' },
+  { icon: "mdi-desktop-tower-monitor", title: 'Desktop' },
+  { icon: "mdi-puzzle-outline", title: 'Puzzle' },
+  { icon: "mdi-animation-outline", title: 'Animation' },
+  { icon: "mdi-microscope-variant", title: 'Microscope' },
+  { icon: "mdi-camera-outline", title: 'Camera' },
+  { icon: "mdi-wallet-outline", title: 'Wallet' },
+  { icon: "mdi-account-supervisor-outline", title: 'Account' },
+]);
 
 const colorList = [
-  'purple',
-  'pink',
-  'indigo',
-  'blue',
-  'teal',
-  'green',
-  'orange',
-  'deep-orange',
-  'brown',
-  'grey',
-  'blue-grey',
-  'black',
-  'white',
+  { color: 'purple', title: 'Purple' },
+  { color: 'pink', title: 'Pink' },
+  { color: 'indigo', title: 'Indigo' },
+  { color: 'blue', title: 'Blue' },
+  { color: 'teal', title: 'Teal' },
+  { color: 'green', title: 'Green' },
+  { color: 'orange', title: 'Orange' },
+  { color: 'deep-orange', title: 'Deep' },
+  { color: 'brown', title: 'Brown' },
+  { color: 'grey', title: 'Grey' },
+  { color: 'blue-grey', title: 'Blue' },
+  { color: 'black', title: 'Black' },
+  { color: 'white', title: 'White' },
 ];
 
-const defaultElement: MenuElement = { name: '', icon: 'mdi-math-integral', to: '' };
+const defaultElement: MenuElement = { name: '', icon: 'mdi-account-school', to: '' };
 const newElementDialog = ref({
   open: false,
   index: -1,
@@ -163,7 +170,7 @@ function addElement() {
   newElementDialog.value.element =  { ...defaultElement };
   newElementDialog.value.index = -1;
   newElementDialog.value.open = true;
-  newElementDialog.value.element.color = colorList[Math.floor(Math.random() * colorList.length)];
+  newElementDialog.value.element.color = colorList[Math.floor(Math.random() * colorList.length)].color;
 }
 
 function editElement(el: MenuElement, i: number) {
