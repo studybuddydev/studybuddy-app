@@ -1,29 +1,31 @@
 <template>
   <v-list nav density="compact">
-    <v-list-item
-      v-for="e, i in props.menuElements" :key="e.name"
-      link :to="e.to"
-      @click="rail()"
-      :prepend-icon="e.icon" :title="e.name" :value="e.name"
-      :active-color="e.color ?? props.color">
-      <template v-slot:append>
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-btn
-              color="grey-lighten-1"
-              icon="mdi-dots-vertical"
-              variant="text"
-              v-bind="props"
-              @click.prevent.stop="$event.preventDefault()"
-            ></v-btn>
+    <draggable item-key="name" :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" >
+      <template #item="{element}">
+        <v-list-item link :to="`/${baseUrl}/${element.name}`"
+          @click="rail()"
+          :prepend-icon="element.icon" :title="element.name" :value="element.name"
+          :active-color="element.color ?? props.color">
+          <template v-slot:append>
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="grey-lighten-1"
+                  icon="mdi-dots-vertical"
+                  variant="text"
+                  v-bind="props"
+                  @click.prevent.stop="$event.preventDefault()"
+                ></v-btn>
+              </template>
+              <v-list>
+                <v-list-item @click="editElement(element)" :title="$t('edit')" />
+                <v-list-item @click="removeElement(element)" :title="$t('delete')" />
+              </v-list>
+            </v-menu>
           </template>
-          <v-list>
-            <v-list-item @click="editElement(e, i)" :title="$t('edit')" />
-            <v-list-item @click="removeElement(i)" :title="$t('delete')" />
-          </v-list>
-        </v-menu>
+        </v-list-item>
       </template>
-    </v-list-item>
+    </draggable>
 
     <v-list-item
       @click="addElement()"
@@ -51,7 +53,7 @@
                 required autofocus
                 v-model="newElementDialog.element.name"
                 :label="$t('name',{ 'element': props.elementsName})"
-                :error-messages="state.checkValidExamName(newElementDialog.element.name, newElementDialog.index) ? '' : $t('invalidName', {element: props.elementsName})" />
+                :error-messages="state.checkValidExamName(newElementDialog.element.name, newElementDialog.original) ? '' : $t('invalidName', {element: props.elementsName})" />
             </v-col>
             <!--Deadline-->
             <v-col cols="12" v-if="props.elementsName === $t('exam')">
@@ -102,22 +104,70 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import type { MenuElement } from '@/types';
+import draggable from 'vuedraggable'
+import type { Chapter, Exam } from '@/types';
 import { useStateStore } from "@/stores/state";
 const state = useStateStore();
 
 const props = withDefaults(defineProps<{
+  modelValue: Exam[] | Chapter[],
+  baseUrl: string,
   elementsName: string,
-  menuElements: MenuElement[],
   chooseIcon?: boolean,
   color?: string
   chooseColor?: boolean,
+  areExams?: boolean,
 }>(), {
+  areExams: false,
   chooseIcon: true,
   chooseColor: true,
   color: 'primary',
 })
-const emit = defineEmits(['add', 'edit', 'remove', 'rail'])
+const emit = defineEmits(['rail', 'update:modelValue'])
+
+
+
+const defaultElement = props.areExams ? { name: '', icon: 'mdi-account-school', color: 'primary', deadline: undefined } : { name: '' };
+const newElementDialog = ref({
+  open: false,
+  original: undefined as Exam | Chapter | undefined,
+  element: { ...defaultElement },
+});
+
+function addElement() {
+  newElementDialog.value.element =  { ...defaultElement };
+  newElementDialog.value.original = undefined;
+  newElementDialog.value.open = true;
+  if (newElementDialog.value.element?.color)
+    newElementDialog.value.element.color = colorList[Math.floor(Math.random() * colorList.length)].color;
+}
+
+function editElement(el: any) {
+  newElementDialog.value.original = el;
+  newElementDialog.value.element = { ...el };
+  newElementDialog.value.open = true;
+}
+
+function removeElement(el: Exam | Chapter) {
+  emit('update:modelValue', props.modelValue.filter((e: Exam | Chapter) => e.name !== el.name))
+}
+
+function saveElement() {
+  if (state.checkValidExamName(newElementDialog.value.element.name, newElementDialog.value.original)) {
+    if (!newElementDialog.value.original) {
+      emit('update:modelValue', [...props.modelValue, newElementDialog.value.element])
+    } else {
+      emit('update:modelValue', props.modelValue.map((e: Exam | Chapter) => e.name === newElementDialog.value.original?.name ? newElementDialog.value.element : e))
+    }
+    newElementDialog.value.open = false;
+  }
+}
+
+function rail() {
+  emit('rail')
+}
+
+
 
 const mdiIconsList = ref([
   { icon: "mdi-account-school", title: 'School' },
@@ -158,45 +208,5 @@ const colorList = [
   { color: 'black', title: 'Black' },
   { color: 'white', title: 'White' },
 ];
-
-const defaultElement: MenuElement = { name: '', icon: 'mdi-account-school', to: '' };
-const newElementDialog = ref({
-  open: false,
-  index: -1,
-  element: { ...defaultElement },
-});
-
-function addElement() {
-  newElementDialog.value.element =  { ...defaultElement };
-  newElementDialog.value.index = -1;
-  newElementDialog.value.open = true;
-  newElementDialog.value.element.color = colorList[Math.floor(Math.random() * colorList.length)].color;
-}
-
-function editElement(el: MenuElement, i: number) {
-  newElementDialog.value.element = { ...el };
-  newElementDialog.value.index = i;
-  newElementDialog.value.open = true;
-}
-
-function removeElement(i: number) {
-  emit('remove', i)
-}
-
-function saveElement() {
-  if (state.checkValidExamName(newElementDialog.value.element.name, newElementDialog.value.index)) {
-    if (newElementDialog.value.index === -1) {
-      emit('add', newElementDialog.value.element)
-    } else {
-      emit('edit', newElementDialog.value.element, newElementDialog.value.index)
-    }
-    newElementDialog.value.open = false;
-  }
-}
-
-function rail() {
-  emit('rail')
-}
-
 
 </script>

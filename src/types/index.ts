@@ -2,15 +2,6 @@ export enum EStudyView {
   Dashboard, Exam, Chapter
 }
 
-
-export type MenuElement = {
-  name: string;
-  to: string;
-  icon?: string;
-  color?: string;
-  deadline?: string;
-}
-
 // ---------- EXAM ----------
 export type Link = {
   name: string;

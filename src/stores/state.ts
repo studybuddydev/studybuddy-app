@@ -59,6 +59,10 @@ export const useStateStore = defineStore('state', () => {
   function getExams() {
     return state.value.data.exams ?? [];
   }
+  function updateExams(exams: Exam[]) {
+    state.value.data.exams = exams;
+    save();
+  }
   function getExam(name: string) {
     return state.value.data.exams?.find(e => e.name === name);
   }
@@ -80,6 +84,10 @@ export const useStateStore = defineStore('state', () => {
     state.value.data.exams?.splice(i, 1);
     save();
   }
+  function updateChapters(exam: Exam, chapters: Chapter[]) {
+    exam.chapters = chapters;
+    save();
+  }
   function addChapter(exam: Exam, chapter: Chapter) {
     exam.chapters.push(chapter);
     save();
@@ -95,9 +103,9 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
 
-  function checkValidExamName(name: string, index: number) {
+  function checkValidExamName(name: string, original?: Exam | Chapter) {
     if (!name) return false;
-    if (state.value.data.exams?.find((e, i) => i !== index && e.name === name)) return false;
+    if (state.value.data.exams?.find(e => e !== original && e.name === name)) return false;
     return true;
   }
 
@@ -133,7 +141,7 @@ export const useStateStore = defineStore('state', () => {
 
     state.value.data.exams.map(e => [
       ...e.tasks?.filter(t => t.isDeadline) ?? [],
-      ...e.chapters.map(c => c.tasks?.filter(t => t.isDeadline) ?? [])
+      ...e.chapters?.map(c => c.tasks?.filter(t => t.isDeadline) ?? [])
     ]).flat(2).forEach(d => {
       if (d.deadline && deadlinesMap[d.deadline] !== undefined) {
         deadlinesMap[d.deadline].push({ name: d.name })
@@ -224,8 +232,8 @@ export const useStateStore = defineStore('state', () => {
     save,
     saveLanguage, getLanguage,
     getUsername,
-    getStudyElement, getExams, getExam, addExam, editExam, removeExam,
-    addChapter, editChapter, removeChapter,
+    getStudyElement, getExams, updateExams, getExam, addExam, editExam, removeExam,
+    updateChapters, addChapter, editChapter, removeChapter,
     checkValidExamName,
     getEvents, saveEvents, getDeadlines,
     getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro,

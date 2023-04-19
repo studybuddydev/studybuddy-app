@@ -18,11 +18,11 @@
     <v-divider></v-divider>
     
     <MenuList
+      :model-value="exams"
+      @update:model-value="updateExams($event)"
       :elements-name="$t('exam')"
-      :menu-elements="menuElements"
-      @add="addExam"
-      @edit="editExam"
-      @remove="removeExam"
+      :are-exams="true"
+      base-url="exam"
       />
 
     <template v-slot:append>
@@ -30,7 +30,7 @@
         prepend-avatar="/images/pippo.webp"
         lines="two"
         :title="state.getUserSettings().username"
-        subtitle="Logged in"
+        subtitle="Local account"
         nav >
           <template v-slot:append v-if="!exam">
 
@@ -63,16 +63,14 @@
     </template>
 
     <v-divider></v-divider>
-
     <MenuList
+      :model-value="chapters"
+      @update:model-value="updateChapters($event)"
       :elements-name="$t('chapter')"
       :choose-color="false"
       :choose-icon="false"
       :color="exam?.color ?? 'primary'"
-      :menu-elements="menuElementsChapters ?? []"
-      @add="addChapter"
-      @edit="editChapter"
-      @remove="removeChapter"
+      :base-url="`exam/${exam.name}`"
     />
 
   </v-navigation-drawer>
@@ -86,7 +84,7 @@ import MenuList from '@/components/Menus/MenuList.vue';
 import { useRoute } from 'vue-router'
 import { ref, computed } from "vue";
 import { useStateStore } from "@/stores/state";
-import type { MenuElement } from '@/types';
+import type { Chapter, Exam } from '@/types';
 import UserSettings from '@/components/Popup/UserSettings.vue';
 
 const route = useRoute()
@@ -94,51 +92,13 @@ const state = useStateStore();
 const openUserSettings = ref(false);
 
 const exam = computed(() => route.params.exam ? state.getExam(route.params.exam as string) : undefined);
-
-// ----- EXAM
-const menuElements = computed(() => state.getExams().map((e) => ({
-  name: e.name,
-  icon: e.icon,
-  color: e.color,
-  to: `/exam/${e.name}`,
-})));
-
-function addExam(el: MenuElement) {
-  state.addExam({
-    name: el.name,
-    icon: el.icon  ?? 'mdi-book',
-    color: el.color,
-    chapters: []
-  });
+const exams = computed(() => state.getExams());
+const chapters = computed(() => exam.value?.chapters ?? []);
+function updateExams(exams: Exam[]) {
+  state.updateExams(exams);
 }
-
-function editExam(el: MenuElement, index: number) {
-  state.editExam(index, el.name, el.icon ?? 'mdi-book', el.color);
-}
-
-function removeExam(i: number) {
-  state.removeExam(i);
-}
-
-// ----- CHAPTER
-const menuElementsChapters = computed(() => exam.value?.chapters.map((c) => ({
-  name: c.name,
-  to: `/exam/${exam.value?.name}/${c.name}`,
-})));
-
-function addChapter(el: MenuElement) {
-  if (exam.value)
-    state.addChapter(exam.value, { name: el.name })
-}
-
-function editChapter(el: MenuElement, i: number) {
-  if (exam.value)
-    state.editChapter(exam.value, i, { name: el.name })
-}
-
-function removeChapter(i: number) {
-  if (exam.value)
-    state.removeChapter(exam.value, i)
+function updateChapters(chapters: Chapter[]) {
+  if (exam.value) state.updateChapters(exam.value, chapters);
 }
 
 function exportData() {
