@@ -33,12 +33,21 @@
         subtitle="Logged in"
         nav >
           <template v-slot:append v-if="!exam">
-            <v-btn
-              color="grey-lighten-1"
-              icon="mdi-cog"
-              variant="text"
-              @click="openUserSettings = true"
-            ></v-btn>
+
+            <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn color="grey-lighten-1" icon="mdi-cog" variant="text" v-bind="props" />
+            </template>
+
+            <v-list>
+              <v-list-item title="Export data" @click="exportData()"/>
+              <v-list-item title="Import data" @click="importData()"/>
+              <v-list-item title="User Settings" @click="openUserSettings = true"/>
+            </v-list>
+          </v-menu>
+
+
+
           </template>
       </v-list-item>
     </template>
@@ -65,12 +74,6 @@
       @edit="editChapter"
       @remove="removeChapter"
     />
-<!-- 
-    <template v-slot:append>
-      <v-list-item>
-        <h1 class="title text-h4 text-primary">StudyBuddy</h1>
-      </v-list-item>
-    </template> -->
 
   </v-navigation-drawer>
 
@@ -136,6 +139,14 @@ function editChapter(el: MenuElement, i: number) {
 function removeChapter(i: number) {
   if (exam.value)
     state.removeChapter(exam.value, i)
+}
+
+function exportData() {
+  state.downloadData();
+}
+
+function importData() {
+  state.uploadData();
 }
 
 </script>

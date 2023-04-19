@@ -189,6 +189,36 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
 
+
+  function downloadData() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.value.data, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", `studybuddy_${new Date().toISOString().slice(0, 10)}.json`);
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  }
+
+  function uploadData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = e => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const data = JSON.parse(e.target?.result as string);
+        state.value.data = data;
+        save();
+        window.location.reload();
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+
   return {
     state,
     save,
@@ -200,6 +230,7 @@ export const useStateStore = defineStore('state', () => {
     getEvents, saveEvents, getDeadlines,
     getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro,
     getUserSettings, setUserSettings,
+    downloadData, uploadData
   };
 
 });
