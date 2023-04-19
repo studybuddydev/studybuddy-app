@@ -141,7 +141,7 @@ export const useStateStore = defineStore('state', () => {
 
     state.value.data.exams.map(e => [
       ...e.tasks?.filter(t => t.isDeadline) ?? [],
-      ...e.chapters?.map(c => c.tasks?.filter(t => t.isDeadline) ?? [])
+      ...(e.chapters?.map(c => c.tasks?.filter(t => t.isDeadline) ?? []) ?? [])
     ]).flat(2).forEach(d => {
       if (d.deadline && deadlinesMap[d.deadline] !== undefined) {
         deadlinesMap[d.deadline].push({ name: d.name })
