@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro, WithLink, Link, StudyElement, Event } from '@/types'
+import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro, WithLink, Link, StudyElement, Event, Deadline } from '@/types'
 
 const defaultData: State = {
   username: 'Anonymous',
@@ -125,6 +125,24 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
 
+  function getDeadlines(days: string[]) {
+    const deadlinesMap: { [id: string]: Deadline[] } = {}
+    for (const d of days) {
+      deadlinesMap[d] = [];
+    }
+
+    state.value.data.exams.map(e => [
+      ...e.tasks?.filter(t => t.isDeadline) ?? [],
+      ...e.chapters.map(c => c.tasks?.filter(t => t.isDeadline) ?? [])
+    ]).flat(2).forEach(d => {
+      if (d.deadline && deadlinesMap[d.deadline] !== undefined) {
+        deadlinesMap[d.deadline].push({ name: d.name })
+      }
+    });
+
+    return deadlinesMap;
+  }
+
   // ========= Settings =========
 
   // Pomodoro
@@ -179,7 +197,7 @@ export const useStateStore = defineStore('state', () => {
     getStudyElement, getExams, getExam, addExam, editExam, removeExam,
     addChapter, editChapter, removeChapter,
     checkValidExamName,
-    getEvents, saveEvents,
+    getEvents, saveEvents, getDeadlines,
     getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro,
     getUserSettings, setUserSettings,
   };

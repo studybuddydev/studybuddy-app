@@ -4,6 +4,8 @@
   "target": "esnext",
   "module": "esnext",
   "compilerOptions": {
+    "target": "es5",
+    "lib": [ "DOM", "ESNext" ],
     "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "paths": {

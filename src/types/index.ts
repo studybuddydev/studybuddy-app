@@ -23,7 +23,7 @@ export type PostIt = {
 export type Task = {
   name: string,
   notes?: string,
-  deadline?: Date,
+  deadline?: string,
   done: boolean,
   isDeadline?: boolean,
 }
@@ -97,6 +97,10 @@ export type Event = {
     minute: number;
   },
   length: number;
+}
+
+export type Deadline = {
+  name: string;
 }
 
 export type State = {

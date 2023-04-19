@@ -4,7 +4,6 @@
     <template v-slot:day-content="{ day, attributes}">
       <div :class="(day.date as Date).getDay() === 1 ? 'day-slot first-day' : 'day-slot'">
 
-        
         <div  v-if="(day.date as Date).getDate() === new Date().getDate()" >
           <div class="now-ball bg-primary" :style="{ top: `${nowHeight}px` }"  />
           <div class="now-bar bg-primary" :style="{ top: `${nowHeight}px` }" />
@@ -18,7 +17,12 @@
         </div>
         
         <div class="grid-structure timeslots">
-          <p class="text-center title day-number">{{ (day.date as Date).getDate() }}</p>
+          <div class="title day-number">
+            <p class="text-center">{{ (day.date as Date).getDate() }}</p>
+            <v-card class="deadline px-1 ma-1" v-for="d in deadlines[day.id]" color="secondary">
+              <p>{{ d.name }}</p>
+            </v-card>
+          </div>
           <div class="grid borders">
             <div v-for="h in hours" class="timeslot borders">
               <div v-for="m in minutes" @click="clickOnTimeSlot(day.id, h, m)"></div>
@@ -67,11 +71,6 @@
 
 
       </div>
-      <!-- <v-card
-        v-for="t in timeSlots"
-        width="200" class="mx-2 my-1"
-        :title="t"
-        subtitle="No events" /> -->
     </template>
   </Calendar>
 </template>
@@ -81,9 +80,10 @@ import 'v-calendar/style.css';
 import { Calendar } from 'v-calendar';
 import { onMounted, ref, computed } from 'vue';
 import { watch } from 'vue';
-import type { Event } from '@/types'
+import type { Deadline, Event } from '@/types'
 import { useStateStore } from "@/stores/state";
 const state = useStateStore();
+
 
 const nowHeight = computed(() => {
   const now = new Date();
@@ -96,12 +96,12 @@ function scrollToTime() {
 }
 onMounted(() => scrollToTime());
 
-
 // array of numbers from 0 to 24
 const hours: number[] = Array.from({ length: 24 }, (_, i) => i);
 const minutes: number[] = [ 0, 30 ];
 
 const events = ref<{ [key: string]: Event[] }>({});
+const deadlines = ref<{ [key: string]: Deadline[] }>({});
 const open = ref('');
 
 function clickOnTimeSlot(dayId: string, h: number, m: number) {
@@ -133,6 +133,7 @@ function deleteEvent(dayId: string, e: Event) {
 function changePage(e: any) {
   const days: string[] = e[0].viewDays.map((d: any) => d.id);
   events.value = state.getEvents(days);
+  deadlines.value = state.getDeadlines(days);
 
   setTimeout(() => scrollToTime(), 220);
 }
@@ -196,6 +197,7 @@ $time-width: 35px;
     }
 
     .day-number {
+      z-index: 100;
       position: fixed;
       width: $cell-width;
     }
@@ -246,5 +248,11 @@ $time-width: 35px;
 .vc-week {
   height: 600px;
   overflow-x: hidden;
+}
+
+.deadline {
+  p {
+    font-size: 0.8em;
+  }
 }
 </style>
