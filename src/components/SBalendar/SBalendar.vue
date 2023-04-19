@@ -40,7 +40,7 @@
               >
                 <p>{{ e.title }}</p>
                 <p class="text-medium-emphasis text-caption">
-                  {{ e.start.hour }}:{{ e.start.minute < 10 ? '0'+e.start.minute : e.start.minute }} - {{ e.start.hour + Math.floor((e.start.minute + e.length) / 60) }}:{{ (e.start.minute + e.length) % 60 < 10 ? '0'+(e.start.minute + e.length) % 60 : (e.start.minute + e.length) % 60 }}
+                  {{ e.start.hour }}:{{ e.start.minute.toString().padStart(2, '0') }} - {{ Math.floor(+e.start.hour + ((+e.start.minute + +e.length) / 60)) }}:{{ ((+e.start.minute + e.length) % 60).toString().padStart(2, '0') }}
                 </p>
               </v-card>
             </template>
@@ -51,9 +51,9 @@
                   <v-col cols="12" class="py-0 px-2"><v-text-field v-model="e.title" label="Nome" /></v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="4" class="py-0 px-2"><v-text-field v-model="e.start.hour" label="Ore" type="number" /></v-col>
-                  <v-col cols="4" class="py-0 px-2"><v-text-field v-model="e.start.minute" label="Minuti" type="number" /></v-col>
-                  <v-col cols="4" class="py-0 px-2"><v-text-field v-model="e.length" label="Durata [m]" type="number" /></v-col>
+                  <v-col cols="3" class="py-0 px-2"><v-text-field v-model="e.start.hour" label="Ore" type="number" min="0" max="23" /></v-col>
+                  <v-col cols="3" class="py-0 px-2"><v-text-field v-model="e.start.minute" label="Minuti" type="number" step="15" min="0" max="59" /></v-col>
+                  <v-col cols="6" class="py-0 px-2"><v-text-field v-model="e.length" label="Durata [m]" type="number" step="15" min="0" max="1440" /></v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="12" class="py-0 px-2"><v-textarea  v-model="e.description" label="Note" rows="2" /></v-col>

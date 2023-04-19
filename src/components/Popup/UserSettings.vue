@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="model" width="500">
-    <v-card>
+    <v-card  v-on:keyup.enter="saveSettings()">
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="closeSettings()"> <v-icon>mdi-close</v-icon> </v-btn>
           <v-toolbar-title>{{$t('popup.settings.title')}}</v-toolbar-title>

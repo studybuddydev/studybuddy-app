@@ -34,7 +34,7 @@
 
   <!-- add exam/chapter dialog-->
   <v-dialog v-model="newElementDialog.open" width="500">
-    <v-card>
+    <v-card v-on:keyup.enter="saveElement()">
       <v-toolbar dark :color="props.color">
         <v-btn icon dark @click="newElementDialog.open = false"> <v-icon>mdi-close</v-icon> </v-btn>
         <v-toolbar-title>{{ props.elementsName }}</v-toolbar-title>
@@ -48,9 +48,9 @@
             <!-- Exam name -->
             <v-col cols="12">
               <v-text-field
+                required autofocus
                 v-model="newElementDialog.element.name"
                 :label="$t('name',{ 'element': props.elementsName})"
-                required
                 :error-messages="state.checkValidExamName(newElementDialog.element.name, newElementDialog.index) ? '' : $t('invalidName', {element: props.elementsName})" />
             </v-col>
             <!--Deadline-->

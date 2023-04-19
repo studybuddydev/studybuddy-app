@@ -25,7 +25,7 @@
 
     <!-- add link dialog-->
     <v-dialog v-model="newLinkOpen" width="500">
-      <v-card>
+      <v-card v-on:keyup.enter="addLink()">
           <v-toolbar dark color="primary">
             <v-btn icon dark @click="closeNewLink()"> <v-icon>mdi-close</v-icon> </v-btn>
             <v-toolbar-title>{{$t('link.title')}}</v-toolbar-title>
@@ -40,7 +40,7 @@
                   <v-text-field label="Name" v-model="newLink.name" type="string" required></v-text-field>
                 </v-col>-->
                 <v-col cols="12">
-                  <v-text-field label="Url" v-model="newLink.url" type="string" required></v-text-field>
+                  <v-text-field autofocus label="Url" v-model="newLink.url" type="string" required></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
