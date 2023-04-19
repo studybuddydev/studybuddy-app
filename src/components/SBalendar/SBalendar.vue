@@ -35,8 +35,8 @@
           <v-menu :close-on-content-click="false" location="end" v-for="e, i in events[day.id]" :model-value="open === `${day.id}-${i}`" @update:model-value="$event ? open = `${day.id}-${i}` : open = ''">
             <template v-slot:activator="{ props }">
               <v-card
-              v-bind="props" class="pa-2 event"
-              :style="{ height: (cellHeight / 60) * e.length + 'px', top: e.start.hour*cellHeight + ((cellHeight / 60) * e.start.minute) + 'px' }"
+                v-bind="props" class="pa-2 event" :color="e.color ?? 'surface'"
+                :style="{ height: (cellHeight / 60) * e.length + 'px', top: e.start.hour*cellHeight + ((cellHeight / 60) * e.start.minute) + 'px' }"
               >
                 <p>{{ e.title }}</p>
                 <p class="text-medium-emphasis text-caption">
@@ -54,6 +54,9 @@
                   <v-col cols="3" class="py-0 px-2"><v-text-field v-model="e.start.hour" label="Ore" type="number" min="0" max="23" /></v-col>
                   <v-col cols="3" class="py-0 px-2"><v-text-field v-model="e.start.minute" label="Minuti" type="number" step="15" min="0" max="59" /></v-col>
                   <v-col cols="6" class="py-0 px-2"><v-text-field v-model="e.length" label="Durata [m]" type="number" step="15" min="0" max="1440" /></v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" class="py-0 px-2"><ColorPicker v-model="e.color" /></v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="12" class="py-0 px-2"><v-textarea  v-model="e.description" label="Note" rows="2" /></v-col>
@@ -80,6 +83,7 @@ import 'v-calendar/style.css';
 import { Calendar } from 'v-calendar';
 import { onMounted, ref, computed } from 'vue';
 import { watch } from 'vue';
+import ColorPicker from '../Inputs/ColorPicker.vue';
 import type { Deadline, Event } from '@/types'
 import { useStateStore } from "@/stores/state";
 const state = useStateStore();

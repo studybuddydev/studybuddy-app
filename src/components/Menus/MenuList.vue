@@ -80,20 +80,7 @@
           <!-- Color -->
           <v-row>
             <v-col cols="12" v-if="props.chooseColor">
-              <v-select :label="$t('color')"
-                :items="colorList" item-title="title" item-value="color"
-                v-model="newElementDialog.element.color" >
-                <template v-slot:item="{ props: item }">
-                  <v-list-item v-bind="item" >
-                    <template v-slot:prepend>
-                      <v-icon :color="item.value">mdi-circle</v-icon>
-                    </template>
-                  </v-list-item>
-                </template>
-                <template v-slot:prepend>
-                  <v-icon :color="newElementDialog.element.color">mdi-circle</v-icon>
-                </template>
-              </v-select>
+              <ColorPicker v-model="newElementDialog.element.color" />
             </v-col>
           </v-row>
         </v-container>
@@ -105,6 +92,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import draggable from 'vuedraggable'
+import ColorPicker from '../Inputs/ColorPicker.vue';
 import type { Chapter, Exam } from '@/types';
 import { useStateStore } from "@/stores/state";
 const state = useStateStore();

@@ -83,6 +83,7 @@ export type UserSettings = {
 export type Event = {
   title: string;
   description: string;
+  color?: string;
   start: {
     hour: number;
     minute: number;
