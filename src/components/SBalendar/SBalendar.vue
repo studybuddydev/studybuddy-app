@@ -32,11 +32,18 @@
 
         <div class="events">
         
-          <v-menu :close-on-content-click="false" location="end" v-for="e, i in events[day.id]" :model-value="open === `${day.id}-${i}`" @update:model-value="$event ? open = `${day.id}-${i}` : open = ''">
+          <v-menu
+            :close-on-content-click="false"
+            location="end" v-for="e, i in events[day.id]"
+            :model-value="open === `${day.id}-${i}`"
+            @update:model-value="$event ? open = `${day.id}-${i}` : open = ''">
             <template v-slot:activator="{ props }">
               <v-card
-                v-bind="props" class="pa-2 event" :color="e.color ?? 'surface'"
+                v-bind=" { ...props, onClick: () => {} }"
+                class="pa-2 event" :color="e.color ?? 'surface'"
                 :style="{ height: (cellHeight / 60) * e.length + 'px', top: e.start.hour*cellHeight + ((cellHeight / 60) * e.start.minute) + 'px' }"
+                @mousedown="mouseDownOnEvent(e)"
+                @mouseup="mouseUpOnEventInside(`${day.id}-${i}`)"
               >
                 <p>{{ e.title }}</p>
                 <p class="text-medium-emphasis text-caption">
@@ -48,7 +55,7 @@
             <v-card width="450" elevation="10" class="pa-4">
               <form class="pa-4">
                 <v-row>
-                  <v-col cols="12" class="py-0 px-2"><v-text-field v-model="e.title" label="Nome" /></v-col>
+                  <v-col cols="12" class="py-0 px-2"><v-text-field v-model="e.title" label="Nome" autofocus /></v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="3" class="py-0 px-2"><v-text-field v-model="e.start.hour" label="Ore" type="number" min="0" max="23" /></v-col>
@@ -86,8 +93,8 @@ import { watch } from 'vue';
 import ColorPicker from '../Inputs/ColorPicker.vue';
 import type { Deadline, Event } from '@/types'
 import { useStateStore } from "@/stores/state";
+import { onUnmounted } from 'vue';
 const state = useStateStore();
-
 
 const nowHeight = computed(() => {
   const now = new Date();
@@ -145,6 +152,47 @@ function changePage(e: any) {
 watch(events, (e) => {
   state.saveEvents(events.value);
 }, { deep: true })
+
+
+// dragevent
+let movingEvent: Event | null = null;
+let totalMovement = 0;
+function mouseDownOnEvent(event: Event) {
+  movingEvent = event;
+  totalMovement = 0;
+}
+function mouseMoveOnEvent(e: MouseEvent): any {
+  if (!movingEvent) return;
+
+  const m = Math.floor(e.movementY / cellHeight * 60);
+  totalMovement += m;
+  movingEvent.start.minute += m;
+  while (movingEvent.start.minute < 0) {
+    movingEvent.start.minute += 60;
+    movingEvent.start.hour -= 1;
+  }
+  while (movingEvent.start.minute >= 60) {
+    movingEvent.start.minute -= 60;
+    movingEvent.start.hour += 1;
+  }
+}
+function mouseUpOnEventInside(dayId: string) {
+  if (!movingEvent || totalMovement !== 0) return;
+  open.value = open.value === dayId ? '' : dayId;
+}
+function mouseUpOnEvent() {
+  movingEvent = null;
+}
+
+
+window.addEventListener('mouseup', mouseUpOnEvent, false);
+window.addEventListener('mousemove', mouseMoveOnEvent, false);
+
+onUnmounted(() => {
+  window.removeEventListener('mouseup', mouseUpOnEvent, false);
+  window.removeEventListener('mousemove', mouseMoveOnEvent, false);
+})
+
 
 </script>
 <style lang="scss" scoped>
@@ -215,6 +263,7 @@ $time-width: 35px;
   margin: 0;
   top: 0;
   left: 0;
+  user-select: none;
 }
 
 .now-bar {
