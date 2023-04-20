@@ -40,15 +40,18 @@
             <template v-slot:activator="{ props }">
               <v-card
                 v-bind=" { ...props, onClick: () => {} }"
-                class="pa-2 event" :color="e.color ?? 'surface'"
+                class="pa-0 event" :color="e.color ?? 'surface'"
                 :style="{ height: (cellHeight / 60) * e.length + 'px', top: e.start.hour*cellHeight + ((cellHeight / 60) * e.start.minute) + 'px' }"
                 @mousedown="mouseDownOnEvent(e)"
                 @mouseup="mouseUpOnEventInside(`${day.id}-${i}`)"
               >
-                <p>{{ e.title }}</p>
-                <p class="text-medium-emphasis text-caption">
-                  {{ e.start.hour }}:{{ e.start.minute.toString().padStart(2, '0') }} - {{ Math.floor(+e.start.hour + ((+e.start.minute + +e.length) / 60)) }}:{{ ((+e.start.minute + e.length) % 60).toString().padStart(2, '0') }}
-                </p>
+                <div class="pa-2">
+                  <p>{{ e.title }}</p>
+                  <p class="text-medium-emphasis text-caption">
+                    {{ e.start.hour }}:{{ e.start.minute.toString().padStart(2, '0') }} - {{ Math.floor(+e.start.hour + ((+e.start.minute + +e.length) / 60)) }}:{{ ((+e.start.minute + e.length) % 60).toString().padStart(2, '0') }}
+                  </p>
+                </div>
+                <v-divider class="bottom-bar" :thickness="3" @mousedown="mouseDownOnEventBottomBar()" />
               </v-card>
             </template>
 
@@ -154,34 +157,51 @@ watch(events, (e) => {
 }, { deep: true })
 
 
-// dragevent
-let movingEvent: Event | null = null;
-let totalMovement = 0;
+// Drag events around
+enum MovementType { Move, Extend }
+const draggingStatus: {
+  movingEvent: Event | null,
+  movementType: MovementType | null,
+  totalMovement: number
+} = { movingEvent: null, movementType: null, totalMovement: 0 };
+
 function mouseDownOnEvent(event: Event) {
-  movingEvent = event;
-  totalMovement = 0;
+  draggingStatus.movingEvent = event;
+  draggingStatus.totalMovement = 0;
+}
+function mouseDownOnEventBottomBar() {
+  draggingStatus.movementType = MovementType.Extend;
 }
 function mouseMoveOnEvent(e: MouseEvent): any {
-  if (!movingEvent) return;
+  if (!draggingStatus.movingEvent) return;
 
   const m = Math.floor(e.movementY / cellHeight * 60);
-  totalMovement += m;
-  movingEvent.start.minute += m;
-  while (movingEvent.start.minute < 0) {
-    movingEvent.start.minute += 60;
-    movingEvent.start.hour -= 1;
-  }
-  while (movingEvent.start.minute >= 60) {
-    movingEvent.start.minute -= 60;
-    movingEvent.start.hour += 1;
+  draggingStatus.totalMovement += m;
+
+  if (draggingStatus.movementType === MovementType.Extend) {
+    draggingStatus.movingEvent.length += m;
+
+  } else if (draggingStatus.movementType === MovementType.Move) {
+    draggingStatus.movingEvent.start.minute += m;
+    while (draggingStatus.movingEvent.start.minute < 0) {
+      draggingStatus.movingEvent.start.minute += 60;
+      draggingStatus.movingEvent.start.hour -= 1;
+    }
+    while (draggingStatus.movingEvent.start.minute >= 60) {
+      draggingStatus.movingEvent.start.minute -= 60;
+      draggingStatus.movingEvent.start.hour += 1;
+    }
+
   }
 }
 function mouseUpOnEventInside(dayId: string) {
-  if (!movingEvent || totalMovement !== 0) return;
+  if (!draggingStatus.movingEvent || draggingStatus.totalMovement !== 0) return;
   open.value = open.value === dayId ? '' : dayId;
 }
 function mouseUpOnEvent() {
-  movingEvent = null;
+  draggingStatus.movingEvent = null;
+  draggingStatus.movementType = null;
+  draggingStatus.movementType = MovementType.Move;
 }
 
 
@@ -264,6 +284,14 @@ $time-width: 35px;
   top: 0;
   left: 0;
   user-select: none;
+
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    cursor: ns-resize;
+  }
 }
 
 .now-bar {
