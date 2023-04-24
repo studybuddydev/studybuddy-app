@@ -7,7 +7,7 @@
         class="link-card d-flex justify-start align-center pa-2 ma-2"
         v-for="card, i in links"
         :key="card.name"
-        :href="card.url"
+        :href="`//${card.url}`"
         target="_blank"
       >
         <v-img
@@ -35,12 +35,11 @@
           <v-card-text>
             <v-container>
               <v-row>
-                <!--
-                <v-col cols="12">
-                  <v-text-field label="Name" v-model="newLink.name" type="string" required></v-text-field>
-                </v-col>-->
                 <v-col cols="12">
                   <v-text-field autofocus label="Url" v-model="newLink.url" type="string" required></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field label="Name" v-model="newLink.name" type="string" required></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -55,6 +54,8 @@
 import type { Link, WithLink } from '@/types';
 import { ref, computed } from 'vue';
 import { useStateStore } from "@/stores/state";
+import axios from 'axios';
+import { watch } from 'vue';
 const state = useStateStore();
 
 defineExpose({
@@ -72,6 +73,26 @@ const newLink = ref<Link>({
   url: ''
 })
 const newLinkOpen = ref(false)
+watch(newLinkOpen, (open) => {
+  if (open) {
+    newLink.value.url = '';
+    newLink.value.name = '';
+  }
+});
+
+let idleTimer = 0;
+watch(() => newLink.value.url, (url) => {
+  if (!url) {
+    newLink.value.name = '';
+    return;
+  }
+  
+  clearTimeout(idleTimer)
+  idleTimer = setTimeout(async () => {
+    newLink.value.name = await getUrlTitle(url);
+  }, 300)
+  
+})
 
 function closeNewLink() {
   newLinkOpen.value = false;
@@ -112,6 +133,15 @@ function deleteLink(index: number) {
 
 function save() {
   state.save()
+}
+
+async function getUrlTitle(url: string) {
+  try {
+    const response = await axios.get(`//${url}`);
+    return response.data.match(/<title[^>]*>([^<]+)<\/title>/)[1];
+  } catch (error) {
+    return url;
+  }
 }
 
 </script>
