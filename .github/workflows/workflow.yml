@@ -14,11 +14,6 @@ jobs:
         with:
           node-version: latest
 
-      - name: Node version
-        run: |
-          node -v
-          npm -v
-
       - name: Install and Build 🔧
         run: |
           npm install
