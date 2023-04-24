@@ -4,22 +4,23 @@
     <!-- list od links-->
     <v-container class="link-container">
       <v-card
-        class="link-card d-flex justify-start align-center pa-2 ma-2"
+        class="link-card pa-2 ma-2"
         v-for="card, i in links"
         :key="card.name"
         :href="`//${card.url}`"
         target="_blank"
       >
-        <v-img
+        <div class="link-card-content">
+          <v-img
           :src="`https://www.google.com/s2/favicons?sz=64&domain_url=${getDomain(card.url)}`"
           class="favicon"
           width="32"
           height="32"/>
-        <v-card-title class="pa-0 pl-4 text-white" v-text="card.name"></v-card-title>
-        <v-spacer />
-        <v-btn variant="outlined" icon color="secondary" @click.prevent.stop.="deleteLink(i)">
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
+          <v-card-title class="pa-0 px-4 title" v-text="card.name" />
+          <v-btn variant="outlined" icon color="secondary" @click.prevent.stop.="deleteLink(i)">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </div>
       </v-card>
     </v-container>
 
@@ -87,7 +88,7 @@ watch(() => newLink.value.url, (url) => {
     return;
   }
   
-  clearTimeout(idleTimer)
+  clearTimeout(idleTimer);
   idleTimer = setTimeout(async () => {
     newLink.value.name = await getUrlTitle(url);
   }, 300)
@@ -156,8 +157,18 @@ async function getUrlTitle(url: string) {
   padding: 0;
   margin: 0;
 
-  .link-card {
+  .link-card-content {
     width: 20rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    justify-content: center;
+
+    .title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
   .favicon {

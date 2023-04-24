@@ -5,14 +5,13 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
 
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: latest
 
       - name: Install and Build 🔧
         run: |
