@@ -27,25 +27,25 @@
     <!-- add link dialog-->
     <v-dialog v-model="newLinkOpen" width="500">
       <v-card v-on:keyup.enter="addLink()">
-          <v-toolbar dark color="primary">
-            <v-btn icon dark @click="closeNewLink()"> <v-icon>mdi-close</v-icon> </v-btn>
-            <v-toolbar-title>{{$t('link.title')}}</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items> <v-btn variant="text" @click="addLink()" > {{$t('save')}} </v-btn> </v-toolbar-items>
-          </v-toolbar>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field autofocus label="Url" v-model="newLink.url" type="string" required></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field label="Name" v-model="newLink.name" type="string" required></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-        </v-card>
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="closeNewLink()"> <v-icon>mdi-close</v-icon> </v-btn>
+          <v-toolbar-title>{{$t('link.title')}}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items> <v-btn variant="text" @click="addLink()" > {{$t('save')}} </v-btn> </v-toolbar-items>
+        </v-toolbar>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field autofocus label="Url" v-model="newLink.url" type="string" required></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field label="Name" v-model="newLink.name" type="string" required></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+      </v-card>
     </v-dialog>
 
   </div>
@@ -55,7 +55,6 @@
 import type { Link, WithLink } from '@/types';
 import { ref, computed } from 'vue';
 import { useStateStore } from "@/stores/state";
-import axios from 'axios';
 import { watch } from 'vue';
 const state = useStateStore();
 
@@ -91,8 +90,7 @@ watch(() => newLink.value.url, (url) => {
   clearTimeout(idleTimer);
   idleTimer = setTimeout(async () => {
     newLink.value.name = await getUrlTitle(url);
-  }, 300)
-  
+  }, 300);
 })
 
 function closeNewLink() {
