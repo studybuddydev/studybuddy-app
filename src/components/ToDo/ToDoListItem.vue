@@ -13,6 +13,13 @@
     </v-list-item>
 
     <v-card class="ma-0 pa-5" v-if="expanded">
+
+      <v-row>
+        <v-col cols="12">
+          <v-text-field :rows="2" label="Nome" v-model="task.name" @update:model-value="state.save()" />
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col cols="9">
           <v-text-field clearable label="Deadline" type="date" v-model="task.deadline" @update:model-value="state.save()" @click:clear="task.isDeadline = false" />
