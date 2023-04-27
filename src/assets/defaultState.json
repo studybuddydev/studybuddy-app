@@ -1,0 +1,216 @@
+{
+  "exams": [
+    {
+      "name": "Tutorial",
+      "icon": "mdi-account-school",
+      "color": "teal",
+      "chapters": [
+        {
+          "name": "Aggiunta esami e capitoli",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>Puoi aggiungere esami con il + nella colonna di sinistra.</p><p><br></p><p>Puoi decidere nome, icona, colore e data dell'esame. </p><p><br></p><p><br></p>"
+            },
+            {
+              "color": "#6ed261",
+              "content": "<p>All'interno dell'esame puoi creare i diversi capitoli, dentro i quali puoi ad esempio aggiungere note, todo list per gli argomenti e link utili. </p>"
+            }
+          ],
+          "showTasks": true,
+          "tasks": [
+            {
+              "name": "Aggiungi nuovo esame",
+              "done": false
+            },
+            {
+              "name": "Aggiungi capitolo",
+              "done": false
+            }
+          ]
+        },
+        {
+          "name": "Pomodoro",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>Nella barra in basso si può utilizzare un timer seguendo la famosa<strong> tecnica del pomodoro</strong>:</p><p><br></p><p>Una sessione di studio dura 2 ore divisa tra studio concentrato e piccoli break:</p><p><br></p><p><strong>25 min studio </strong></p><p><strong>5 min break </strong></p><p><br></p><p>ripetere questo per 4 volte</p><p><br></p><p>Alla fine pausa lunga: questa è la vera pausa, mentre le pause brevi <span style=\"color: rgba(var(--v-theme-on-surface),var(--v-high-emphasis-opacity));\">servono solo per rilassare gli occhi e sgranchirsi un attimo, fermarsi ma restando concentrati, dandosi il tempo di rielaborare ciò che si è fatto fino a quel momento.</span></p><p><br></p><p>E' inoltre possibile modificare le impostazioni se si desidera seguire tempistiche differenti.</p><p><br></p><p>Se vuoi scoprire di più su questa tecnica clicca sul link.</p>"
+            },
+            {
+              "color": "#e6b905",
+              "content": "<p><strong>Prossimi passi </strong></p><ul><li>pomodoro flessibile</li></ul>"
+            }
+          ],
+          "links": [
+            {
+              "name": "todoist.com",
+              "url": "https://todoist.com/productivity-methods/pomodoro-technique"
+            }
+          ],
+          "showTasks": true,
+          "tasks": [
+            {
+              "name": "provare a completare un pomo d'oro",
+              "done": false
+            },
+            {
+              "name": "modificare le impostazioni",
+              "done": false
+            }
+          ]
+        },
+        {
+          "name": "ToDo",
+          "showTasks": true,
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>esistono due tipi di Todo: </p><ul><li>Deadline: hanno una data e stanno nella colonna di sx </li><li>Senza Data: nella colonna di destra, di default, in ogni momento di può aggiungere una data e spostarlo tra le deadlines</li></ul><p><br></p><p>Quelli con deadline compaiono nel calendario in home page.</p><p><br></p><p>Una volta marcato come 'fatto'  verrà spostato nella lista \"done\".</p>"
+            },
+            {
+              "color": "#e6b905",
+              "content": "<p><strong>Prossimi passi </strong></p><ul><li>mettere priorità ai todo </li></ul>"
+            }
+          ],
+          "tasks": [
+            {
+              "name": "tutorial todo",
+              "done": true
+            },
+            {
+              "name": "tutorial post-it",
+              "done": false
+            },
+            {
+              "name": "tutorial link",
+              "done": false
+            },
+            {
+              "name": "esame analisi",
+              "done": false,
+              "deadline": "2023-06-25",
+              "isDeadline": true
+            },
+            {
+              "name": "tutorial calendario",
+              "done": false
+            }
+          ]
+        },
+        {
+          "name": "Link",
+          "links": [
+            {
+              "name": "studybuddy.it",
+              "url": "https://studybuddy.it/"
+            },
+            {
+              "name": "app.studybuddy.it",
+              "url": "https://app.studybuddy.it/"
+            },
+            {
+              "name": "google.com",
+              "url": "https://google.com"
+            }
+          ],
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>c'è la possibilità di aggiungere tutti i link che possono essere utili. Anche in questo caso basta premere il + in basso a destra.</p>"
+            }
+          ]
+        },
+        {
+          "name": "Post-it",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>Il funzionamento dei post-it è molto semplice, basta aggiungerli dal + in basso a destra.</p>"
+            },
+            {
+              "color": "#6ed261",
+              "content": "<p>cliccando sulla tavolozza si può cambiare colore.</p><p>Cliccando sulla x si elimina il post-it.</p>"
+            },
+            {
+              "color": "#5ac0e7",
+              "content": "<p>usando shortcut della tastiera si può anche formattare il testo:</p><p><br></p><ul><li>con - crea elenco puntato </li><li><strong>grassetto</strong> (ctrl o cmd + b)</li><li><em>corsivo </em>(ctrl o cmd + i)</li><li><em><u>sottolineato</u> </em>(ctrl o cmd + u)</li></ul>"
+            }
+          ]
+        },
+        {
+          "name": "Calendario",
+          "postIts": [
+            {
+              "color": "#5ac0e7",
+              "content": "<p>Nel calendario in home page puoi aggiungere un evento cliccando il punto in cui lo vorresti aggiungere. </p><p><br></p><p>Puoi quindi modificare il titolo, l'orario di inizio, la durata, il colore e aggiungere note relative all'evento. </p><p><br></p><p>Puoi anche trascinare verticalmente l'evento per spostarlo all'interno della stessa giornata e allungarlo per modificarne la durata.</p><p><br></p><p>In arrivo anche la vista mensile!</p><p><br></p>"
+            },
+            {
+              "color": "#e6b905",
+              "content": "<p><strong>Prossimi passi</strong></p><ul><li>vista mensile </li><li>mettere i pomodori fatti </li></ul>"
+            }
+          ],
+          "showTasks": true,
+          "tasks": [
+            {
+              "name": "Aggiungi evento al calendario",
+              "done": false
+            },
+            {
+              "name": "Modifica evento ",
+              "done": false
+            }
+          ]
+        },
+        {
+          "name": "Importa - esporta dati",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>Puoi importare ed esportare i dati inseriti su StudyBuddy tramite il<strong> </strong><u>tasto opzioni in basso a sinistra</u> nella home.</p><p><br></p><p>Esportando i dati, verrà scaricato il file in comodissimo formato .json contenente tutte le informazioni che hai inserito all'interno del sito.</p><p><br></p><p>In questo modo puoi inviare ad altre persone i tuoi contenuti o salvarli come backup.</p>"
+            },
+            {
+              "color": "#ea86c2",
+              "content": "<p><strong>ATTENZIONE</strong></p><p>nel momento in cui importerai un file, i tuoi dati andranno <strong>persi</strong> e sostituiti con quelli del file. </p><p><br></p><p>Stiamo lavorando sulla possibilità di importare ed esportare singoli esami</p>"
+            }
+          ]
+        }
+      ],
+      "postIts": [
+        {
+          "color": "#e6b905",
+          "content": "<p><strong>Benvenuto Tester</strong></p><p>In questo esame troverai tutte le informazioni necessarie per capire e usare al meglio la piattaforma.</p>"
+        },
+        {
+          "color": "#6ed261",
+          "content": "<p>nei vari capitoli di questo esame troverai le spiegazioni di ogni componente dell'app, verrà continuamente aggiornato.</p><p><br></p>"
+        },
+        {
+          "color": "#5ac0e7",
+          "content": "<p><br></p><p>Essendo una fase embrionale della piattaforma il tuo feedback è <u>fondamentale!</u></p><p><br></p><p>ogni volta che trovi un bug o vuoi suggerire una feature usa il foglio google nel link qui sotto</p>"
+        },
+        {
+          "color": "#c78eff",
+          "content": "<p>Entra nel server discord per parlare direttamente con noi in modo di essere parte attiva nella creazione di StudyBuddy!</p><p><br></p><p>Entra su telegram per restare aggiornato sulle novità, essendo una piattaforma in continuo sviluppo cambia in fretta.</p>"
+        }
+      ],
+      "links": [
+        {
+          "name": "docs.google.com",
+          "url": "https://docs.google.com/document/d/1QMzuLnIS8rkusg54XPoT0rYA4nBwY7_cVK7oouZ_hZY/edit#"
+        },
+        {
+          "name": "discord.gg",
+          "url": "https://discord.gg/wscTEHjhkW"
+        },
+        {
+          "name": "t.me",
+          "url": "https://t.me/stubud"
+        }
+      ],
+      "showTasks": false
+    }
+  ],
+  "dashboard": { "name": "StudyBuddy", "links": [], "postIts": [], "tasks": [], "showTasks": false },
+  "events": {
+  }
+}

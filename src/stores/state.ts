@@ -1,13 +1,14 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro, WithLink, Link, StudyElement, Event, Deadline } from '@/types'
+import defaultState from '@/assets/defaultState.json';
 
 const defaultData: State = {
   username: 'Anonymous',
   data: {
-    exams: [],
-    dashboard: { name: 'StudyBuddy', links: [], postIts: [], showTasks: false, tasks: [] },
-    events: {},
+    exams: defaultState.exams ??  [],
+    dashboard: defaultState.dashboard ?? { name: 'StudyBuddy', links: [], postIts: [], showTasks: false, tasks: [] },
+    events: defaultState.events ?? {},
   },
   settings: {},
   stats: {}
@@ -16,11 +17,11 @@ const defaultData: State = {
 export const useStateStore = defineStore('state', () => {
   const lsState = JSON.parse(localStorage.getItem('state') || '{}') as State ?? {};
   if (!lsState.username) lsState.username = defaultData.username;
+  if (!lsState.settings) lsState.settings = defaultData.settings;
   if (!lsState.data) lsState.data = defaultData.data;
   if (!lsState.data.exams) lsState.data.exams = defaultData.data.exams;
   if (!lsState.data.dashboard) lsState.data.dashboard = defaultData.data.dashboard;
   if (!lsState.data.events) lsState.data.events = defaultData.data.events;
-  if (!lsState.settings) lsState.settings = defaultData.settings;
   const state = ref(lsState);
 
   // ========= Generic =========
