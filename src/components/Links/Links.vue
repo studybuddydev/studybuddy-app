@@ -56,6 +56,7 @@ import type { Link, WithLink } from '@/types';
 import { ref, computed } from 'vue';
 import { useStateStore } from "@/stores/state";
 import { watch } from 'vue';
+import axios from 'axios';
 const state = useStateStore();
 
 defineExpose({

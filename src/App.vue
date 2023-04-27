@@ -5,13 +5,17 @@
     <v-main class="main">
       <router-view :key="$route.fullPath"></router-view>
     </v-main>
+
+    <CookieBanner />
   </v-app>
+
 </template>
 
 
 <script setup lang="ts">
 import Pomodoro from '@/components/Pomodoro/Pomodoro.vue';
 import Menu from '@/components/Menus/Menu.vue';
+import CookieBanner from '@/components/Cookie/CookieBanner.vue';
 </script>
 
 <style scoped lang="scss">

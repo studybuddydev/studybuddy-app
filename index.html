@@ -14,10 +14,17 @@
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-N4MJ25HBEX"></script>
   <script>
+    function gtag(){ dataLayer.push(arguments); }
+    function getCookieStatus() {
+      const cookieStatus = localStorage.getItem("cookie");
+      if (cookieStatus === null) return null;
+      return cookieStatus === "true" ? true : false;
+    }
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
-    gtag('config', 'G-N4MJ25HBEX');
+    gtag('config', 'G-FR9JDD39YJ');
+    const cookieStatus = getCookieStatus();
+    if (cookieStatus) gtag('consent', 'default', { 'ad_storage': 'granted', 'analytics_storage': 'granted'});
+    else gtag('consent', 'default', { 'ad_storage': 'denied', 'analytics_storage': 'denied' });
   </script>
 </html>
