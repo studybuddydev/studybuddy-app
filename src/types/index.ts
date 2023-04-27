@@ -46,7 +46,8 @@ export type Exam = {
   icon: string;
   chapters: Chapter[];
   color?: string;
-} & StudyElement;	
+  deadline?: string;
+} & StudyElement;
 
 // ---------- STATS ----------
 export type Stats = {
@@ -91,8 +92,13 @@ export type Event = {
   length: number;
 }
 
+export enum DeadlineType { Exam, Task }
+
 export type Deadline = {
   name: string;
+  deadline: string;
+  type: DeadlineType;
+  color?: string;
 }
 
 export type State = {

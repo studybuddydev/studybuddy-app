@@ -19,8 +19,8 @@
         <div class="grid-structure timeslots">
           <div class="title day-number">
             <p class="text-center">{{ (day.date as Date).getDate() }}</p>
-            <v-card class="deadline px-1 ma-1" v-for="d in deadlines[day.id]" color="secondary">
-              <p>{{ d.name }}</p>
+            <v-card class="deadline px-1 ma-1" v-for="d in deadlines[day.id]" :color="d.color ?? 'secondary'">
+              <p>{{ d.name }}<span v-if="d.type === DeadlineType.Exam">'s Exam</span> </p>
             </v-card>
           </div>
           <div class="grid borders">
@@ -94,7 +94,7 @@ import { Calendar } from 'v-calendar';
 import { onMounted, ref, computed } from 'vue';
 import { watch } from 'vue';
 import ColorPicker from '../Inputs/ColorPicker.vue';
-import type { Deadline, Event } from '@/types'
+import { type Deadline, type Event, DeadlineType } from '@/types'
 import { useStateStore } from "@/stores/state";
 import { onUnmounted } from 'vue';
 const state = useStateStore();

@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro, WithLink, Link, StudyElement, Event, Deadline } from '@/types'
+import { type State, type Exam, type PomodoroSettings, type Chapter, type UserSettings, type CurrentPomodoro, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType } from '@/types'
 import defaultState from '@/assets/defaultState.json';
 
 
@@ -147,22 +147,44 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
 
-  function getDeadlines(days: string[]) {
+  function mapDeadlines(deadlines: Deadline[], days: string[]): { [id: string]: Deadline[] } {
     const deadlinesMap: { [id: string]: Deadline[] } = {}
     for (const d of days) {
       deadlinesMap[d] = [];
     }
 
-    state.value.data.exams.map(e => [
-      ...e.tasks?.filter(t => t.isDeadline) ?? [],
-      ...(e.chapters?.map(c => c.tasks?.filter(t => t.isDeadline) ?? []) ?? [])
-    ]).flat(2).forEach(d => {
+    deadlines.forEach(d => {
       if (d.deadline && deadlinesMap[d.deadline] !== undefined) {
-        deadlinesMap[d.deadline].push({ name: d.name })
+        deadlinesMap[d.deadline].push(d)
       }
     });
 
     return deadlinesMap;
+
+  }
+
+  function getDeadlines(days: string[]): { [id: string]: Deadline[] } {
+    const deadlinesTasks = state.value.data.exams.map(e => [
+      ...e.tasks?.filter(t => t.isDeadline) ?? [],
+      ...(e.chapters?.map(c => c.tasks?.filter(t => t.isDeadline) ?? []) ?? [])
+    ]).flat(2)
+      .filter(d => d.deadline)
+      .map(d => ({
+        name: d.name,
+        deadline: d.deadline as string,
+        type: DeadlineType.Task
+      }));
+
+    const deadlinesExams = state.value.data.exams
+      .filter(e => e.deadline)
+      .map(e => ({
+        name: e.name,
+        deadline: e.deadline as string,
+        type: DeadlineType.Exam,
+        color: e.color ?? 'red',
+      }));
+
+    return mapDeadlines([ ...deadlinesTasks, ...deadlinesExams ], days);
   }
 
   // ========= Settings =========
@@ -210,7 +232,6 @@ export const useStateStore = defineStore('state', () => {
     state.value.settings.user = { ...uSettings };
     save();
   }
-
 
   function downloadData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.value.data, null, 2));
