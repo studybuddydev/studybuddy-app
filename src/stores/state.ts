@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 import type { State, Exam, PomodoroSettings, Chapter, UserSettings, CurrentPomodoro, WithLink, Link, StudyElement, Event, Deadline } from '@/types'
 import defaultState from '@/assets/defaultState.json';
 
+
+
 const defaultData: State = {
   username: 'Anonymous',
   data: {
@@ -24,6 +26,7 @@ export const useStateStore = defineStore('state', () => {
   if (!lsState.data.events) lsState.data.events = defaultData.data.events;
   const state = ref(lsState);
 
+
   // ========= Generic =========
   function save() {
     console.log('Saving localstorage')
@@ -36,6 +39,16 @@ export const useStateStore = defineStore('state', () => {
 
   function getLanguage() {
     return localStorage.getItem('lang') ?? 'en';
+  }
+
+  function resetTutorial() {
+    if (defaultState?.exams?.[0]) {
+      state.value.data.exams.unshift(defaultState.exams[0]);
+    }
+  }
+
+  function getTheme() {
+    return state.value.settings.user?.theme;
   }
   
   // ========= Username =========
@@ -232,6 +245,7 @@ export const useStateStore = defineStore('state', () => {
     state,
     save,
     saveLanguage, getLanguage,
+    resetTutorial, getTheme,
     getUsername,
     getStudyElement, getExams, updateExams, getExam, addExam, editExam, removeExam,
     updateChapters, addChapter, editChapter, removeChapter,

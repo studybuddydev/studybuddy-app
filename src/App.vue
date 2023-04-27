@@ -16,6 +16,11 @@
 import Pomodoro from '@/components/Pomodoro/Pomodoro.vue';
 import Menu from '@/components/Menus/Menu.vue';
 import CookieBanner from '@/components/Cookie/CookieBanner.vue';
+import { useTheme } from 'vuetify'
+import { useStateStore } from "@/stores/state";
+const t = useStateStore().getTheme();
+if (t) useTheme().global.name.value = t;
+
 </script>
 
 <style scoped lang="scss">

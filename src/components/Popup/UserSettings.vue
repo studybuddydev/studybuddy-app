@@ -13,9 +13,13 @@
               <v-col cols="12">
                 <v-text-field label="Username" v-model="userSettings.username" type="string" required></v-text-field>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="12">
                 <v-select :label="$t('popup.settings.language')" :items="$i18n.availableLocales" v-model="$i18n.locale" @update:model-value="updateLanguage($event)"></v-select>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="12">
                 <!-- theme selector -->
                 <v-select :label="$t('popup.settings.theme')" :items="themeList" item-title="title" item-value="value" v-model="userSettings.theme" @update:model-value="updateTheme($event)" >
@@ -32,6 +36,11 @@
                 </v-select>
               </v-col>
             </v-row>
+            <v-row>
+              <v-col>
+                <v-btn variant="tonal" @click="resetTutorial()">Reset Tutorial</v-btn>
+              </v-col>
+            </v-row>
           </v-container>
         </v-card-text>
       </v-card>
@@ -43,9 +52,7 @@ import { ref, computed } from 'vue'
 import { useStateStore } from "@/stores/state";
 import { useTheme } from 'vuetify'
 import { themeList } from '@/assets/themes'
-
 const theme = useTheme()
-
 const state = useStateStore();
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits(['update:modelValue'])
@@ -79,6 +86,10 @@ function saveSettings() {
 
 function updateTheme(newTheme: string) {
   theme.global.name.value = newTheme;
+}
+
+function resetTutorial() {
+  state.resetTutorial()
 }
 
 
