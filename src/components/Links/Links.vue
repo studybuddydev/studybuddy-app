@@ -17,9 +17,24 @@
           width="32"
           height="32"/>
           <v-card-title class="pa-0 px-4 title" v-text="card.name" />
-          <v-btn variant="outlined" icon color="secondary" @click.prevent.stop.="deleteLink(i)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
+
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn
+                color="grey-lighten-1"
+                icon="mdi-dots-vertical"
+                variant="text"
+                v-bind="props"
+                @click.prevent.stop="$event.preventDefault()"
+              ></v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click="editElement(i)" :title="$t('edit')" />
+              <v-list-item @click="deleteLink(i)" :title="$t('delete')" />
+            </v-list>
+          </v-menu>
+
+
         </div>
       </v-card>
     </v-container>
@@ -40,7 +55,7 @@
                 <v-text-field autofocus label="Url" v-model="newLink.url" type="string" required></v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-text-field label="Name" v-model="newLink.name" type="string" required></v-text-field>
+                <v-text-field :label="placeholderLinkName && !newLink.name ? placeholderLinkName : 'Name'" v-model="newLink.name" type="string" required></v-text-field>
               </v-col>
             </v-row>
           </v-container>
@@ -74,23 +89,22 @@ const newLink = ref<Link>({
   url: ''
 })
 const newLinkOpen = ref(false)
-watch(newLinkOpen, (open) => {
-  if (open) {
-    newLink.value.url = '';
-    newLink.value.name = '';
-  }
-});
+const placeholderLinkName = ref<string | null>(null);
+let newLinkIndex: number | null = null;
 
 let idleTimer = 0;
 watch(() => newLink.value.url, (url) => {
   if (!url) {
-    newLink.value.name = '';
+    placeholderLinkName.value = null;
     return;
   }
   
   clearTimeout(idleTimer);
   idleTimer = setTimeout(async () => {
-    newLink.value.name = await getUrlTitle(url);
+    const name = await getUrlTitle(url);
+    if (name) {
+      placeholderLinkName.value = name
+    }
   }, 300);
 })
 
@@ -113,19 +127,26 @@ function getDomain(url: string) {
   // }
 }
 
+function sanitizeUrl(url: string) {
+  url = url.trim();
+  return !/^https?:\/\//i.test(url) ? `http://${url}` : url;
+}
+
 function addLink() {
   if (!props.element.links)
     props.element.links = [];
 
-  newLink.value.url = newLink.value.url.trim();
-  if (!/^https?:\/\//i.test(newLink.value.url)) {
-    newLink.value.url = `http://${newLink.value.url}`;
-  }
+  newLink.value.url = sanitizeUrl(newLink.value.url);
 
   const link: Link = { ...newLink.value }
-  link.name = link.name || getDomain(link.url);
-  props.element.links.push(link)
+  link.name = link.name || placeholderLinkName.value || getDomain(link.url);
+  if (newLinkIndex !== null) {
+    props.element.links.splice(newLinkIndex, 1, link);
+  } else {
+    props.element.links.push(link)
+  }
 
+  newLinkIndex = null;
   newLinkOpen.value = false;
   newLink.value = { name: '', url: '' };
 
@@ -142,12 +163,19 @@ function save() {
   state.save()
 }
 
-async function getUrlTitle(url: string) {
+function editElement(index: number) {
+  if (!props.element.links) return;
+  newLink.value = { ...props.element.links[index] };
+  newLinkIndex = index;
+  newLinkOpen.value = true;
+}
+
+async function getUrlTitle(url: string): Promise<string | null> {
   try {
-    const response = await axios.get(`//${url}`);
+    const response = await axios.get(sanitizeUrl(url));
     return response.data.match(/<title[^>]*>([^<]+)<\/title>/)[1];
   } catch (error) {
-    return url;
+    return null;
   }
 }
 
