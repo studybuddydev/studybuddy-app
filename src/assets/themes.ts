@@ -59,6 +59,51 @@ export const themes = {
       warning: '#EBCB8B',
     }
   },
+  blallo: {
+    dark: true,
+    colors: {
+      background: '#3d58a7',
+      surface: '#223c88',
+      primary: '#fdd93d',
+      'primary-darken-1': '#d4b22e',
+      secondary: '#fdd93d',
+      'secondary-darken-1': '#d4b22e',
+      error: '#ff6868',
+      info: '#6dcff6',
+      success: '#82ca9c',
+      warning: '#bd8cbf',
+    }
+  },
+  gptday: {
+    dark: false,
+    colors: {
+      background: '#F5F5F5',
+      surface: '#FFFFFF',
+      primary: '#0077C2',
+      'primary-darken-1': '#005DA6',
+      secondary: '#FFA500',
+      'secondary-darken-1': '#FF8C00',
+      error: '#FF3333',
+      info: '#00BFFF',
+      success: '#00CC66',
+      warning: '#FFD700',
+    }
+  },
+  gptnight: {
+    dark: true,
+    colors: {
+      background: '#1C1C1C',
+      surface: '#252525',
+      primary: '#0077C2',
+      'primary-darken-1': '#005DA6',
+      secondary: '#FFA500',
+      'secondary-darken-1': '#FF8C00',
+      error: '#FF3333',
+      info: '#00BFFF',
+      success: '#00CC66',
+      warning: '#FFD700',
+    }
+  }
 }
 
 export const themeList = [
@@ -68,4 +113,7 @@ export const themeList = [
   { value: 'pastel', title: 'Pastellone', color: '#ffc6ff' },
   { value: 'bio', title: 'Biologico', color: '#606c38' },
   { value: 'nord', title: 'Nordico', color: '#88C0D0' },
+  { value: 'blallo', title: 'Blallo', color: '#fdd93d' },
+  { value: 'gptday', title: 'GPT Day', color: '#0077C2' },
+  { value: 'gptnight', title: 'GPT Night', color: '#005DA6' },
 ]
