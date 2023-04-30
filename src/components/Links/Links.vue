@@ -6,8 +6,8 @@
       <v-card
         class="link-card pa-2 ma-2"
         v-for="card, i in links"
-        :key="card.name"
-        :href="`//${card.url}`"
+        :key="card.url"
+        :href="card.url"
         target="_blank"
       >
         <div class="link-card-content">
@@ -104,17 +104,24 @@ function openNewLink() {
 }
 
 function getDomain(url: string) {
-  try {
-    const domain = (new URL(url));
-    return domain.hostname;
-  } catch (error) {
-    return url;
-  }
+  return url;
+  // try {
+  //   const domain = (new URL(url));
+  //   return domain.hostname;
+  // } catch (error) {
+  //   return url;
+  // }
 }
 
 function addLink() {
   if (!props.element.links)
     props.element.links = [];
+
+  newLink.value.url = newLink.value.url.trim();
+  if (!/^https?:\/\//i.test(newLink.value.url)) {
+    newLink.value.url = `http://${newLink.value.url}`;
+  }
+
   const link: Link = { ...newLink.value }
   link.name = link.name || getDomain(link.url);
   props.element.links.push(link)

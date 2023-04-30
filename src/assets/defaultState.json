@@ -44,7 +44,7 @@
           ],
           "links": [
             {
-              "name": "todoist.com",
+              "name": "The Pomodoro Technique",
               "url": "https://todoist.com/productivity-methods/pomodoro-technique"
             }
           ],
@@ -102,15 +102,15 @@
           "name": "Link",
           "links": [
             {
-              "name": "studybuddy.it",
+              "name": "StudyBuddy Website",
               "url": "https://studybuddy.it/"
             },
             {
-              "name": "app.studybuddy.it",
+              "name": "StudyBuddy",
               "url": "https://app.studybuddy.it/"
             },
             {
-              "name": "google.com",
+              "name": "Google",
               "url": "https://google.com"
             }
           ],
@@ -196,15 +196,15 @@
       ],
       "links": [
         {
-          "name": "docs.google.com",
+          "name": "Feedback",
           "url": "https://docs.google.com/document/d/1QMzuLnIS8rkusg54XPoT0rYA4nBwY7_cVK7oouZ_hZY/edit#"
         },
         {
-          "name": "discord.gg",
+          "name": "Discord",
           "url": "https://discord.gg/wscTEHjhkW"
         },
         {
-          "name": "t.me",
+          "name": "Telegram",
           "url": "https://t.me/stubud"
         }
       ],

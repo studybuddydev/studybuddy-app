@@ -3,6 +3,7 @@
     <draggable item-key="name" :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" >
       <template #item="{element}">
         <v-list-item link :to="`/${baseUrl}/${element.name}`"
+          class="rounded-lg my-2" :variant="element.tutorial ? 'outlined' : 'text'"
           @click="rail()"
           :prepend-icon="element.icon" :title="element.name" :value="element.name"
           :active-color="element.color ?? props.color">
