@@ -38,7 +38,12 @@
             </v-row>
             <v-row>
               <v-col>
-                <v-btn variant="tonal" @click="resetTutorial()">Reset Tutorial</v-btn>
+                <v-snackbar :timeout="2000" color="primary" elevation="24">
+                  <template v-slot:activator="{ props }">
+                    <v-btn variant="tonal" @click="resetTutorial()" v-bind="props">Reset Tutorial</v-btn>
+                  </template>
+                  Tutorial resetted
+                </v-snackbar>
               </v-col>
             </v-row>
           </v-container>

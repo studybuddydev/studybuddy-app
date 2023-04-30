@@ -1,6 +1,7 @@
 {
   "exams": [
     {
+      "tutorial": true,
       "name": "Tutorial",
       "icon": "mdi-account-school",
       "color": "teal",

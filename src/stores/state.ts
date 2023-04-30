@@ -3,8 +3,6 @@ import { defineStore } from 'pinia'
 import { type State, type Exam, type PomodoroSettings, type Chapter, type UserSettings, type CurrentPomodoro, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType } from '@/types'
 import defaultState from '@/assets/defaultState.json';
 
-
-
 const defaultData: State = {
   username: 'Anonymous',
   data: {
@@ -17,13 +15,16 @@ const defaultData: State = {
 }
 
 export const useStateStore = defineStore('state', () => {
+
+  const defaulDataCopy = JSON.parse(JSON.stringify(defaultData)) as State;
+
   const lsState = JSON.parse(localStorage.getItem('state') || '{}') as State ?? {};
-  if (!lsState.username) lsState.username = defaultData.username;
-  if (!lsState.settings) lsState.settings = defaultData.settings;
-  if (!lsState.data) lsState.data = defaultData.data;
-  if (!lsState.data.exams) lsState.data.exams = defaultData.data.exams;
-  if (!lsState.data.dashboard) lsState.data.dashboard = defaultData.data.dashboard;
-  if (!lsState.data.events) lsState.data.events = defaultData.data.events;
+  if (!lsState.username) lsState.username = defaulDataCopy.username;
+  if (!lsState.settings) lsState.settings = defaulDataCopy.settings;
+  if (!lsState.data) lsState.data = defaulDataCopy.data;
+  if (!lsState.data.exams) lsState.data.exams = defaulDataCopy.data.exams;
+  if (!lsState.data.dashboard) lsState.data.dashboard = defaulDataCopy.data.dashboard;
+  if (!lsState.data.events) lsState.data.events = defaulDataCopy.data.events;
   const state = ref(lsState);
 
 
@@ -42,8 +43,16 @@ export const useStateStore = defineStore('state', () => {
   }
 
   function resetTutorial() {
-    if (defaultState?.exams?.[0]) {
-      state.value.data.exams.unshift(defaultState.exams[0]);
+    const tutorial = defaultData.data?.exams?.find(e => e.tutorial);
+    if (!tutorial) {
+      return;
+    }
+    const tutorialCopy = JSON.parse(JSON.stringify(tutorial)) as Exam;
+    const tutorialIndex = state.value.data.exams.findIndex(e => e.tutorial);
+    if (tutorialIndex === -1) {
+      state.value.data.exams.unshift(tutorialCopy);
+    } else {
+      state.value.data.exams[tutorialIndex] = tutorialCopy;
     }
   }
 

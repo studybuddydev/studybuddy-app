@@ -47,6 +47,7 @@ export type Exam = {
   chapters: Chapter[];
   color?: string;
   deadline?: string;
+  tutorial?: boolean;
 } & StudyElement;
 
 // ---------- STATS ----------
