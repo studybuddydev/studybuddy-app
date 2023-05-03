@@ -60,6 +60,9 @@ devDependencies:
   '@vue/tsconfig':
     specifier: ^0.1.3
     version: 0.1.3(@types/node@18.15.11)
+  dotenv-cli:
+    specifier: ^7.2.1
+    version: 7.2.1
   npm-run-all:
     specifier: ^4.1.5
     version: 4.1.5
@@ -1738,6 +1741,26 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       is-obj: 2.0.0
+    dev: true
+
+  /dotenv-cli@7.2.1:
+    resolution: {integrity: sha512-ODHbGTskqRtXAzZapDPvgNuDVQApu4oKX8lZW7Y0+9hKA6le1ZJlyRS687oU9FXjOVEDU/VFV6zI125HzhM1UQ==}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+      dotenv: 16.0.3
+      dotenv-expand: 10.0.0
+      minimist: 1.2.8
+    dev: true
+
+  /dotenv-expand@10.0.0:
+    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
+    engines: {node: '>=12'}
+    dev: true
+
+  /dotenv@16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
     dev: true
 
   /eastasianwidth@0.2.0:
