@@ -1,9 +1,11 @@
 {
-  "github": {
-    "release": true
-  },
   "git": {
     "requireBranch": "main",
-    "commitMessage": "chore: release v${version}"
+    "commitMessage": "StudyBuddy version ${version}",
+    "tagAnnotation": "${version}"
+  },
+  "github": {
+    "release": true,
+    "releaseName": "StudyBuddy ${version}"
   }
 }
