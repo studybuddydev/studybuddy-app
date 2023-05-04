@@ -31,6 +31,7 @@
         lines="two"
         :title="state.getUserSettings().username"
         subtitle="Local account"
+        class="mb-5"
         nav >
           <template v-slot:append v-if="!exam">
 

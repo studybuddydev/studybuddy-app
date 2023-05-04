@@ -1,11 +1,11 @@
 <template>
   <v-app id="inspire">
-    <Pomodoro /> <!-- keep it on the top -->
+    <PomodoroFlex /> <!-- keep it on the top -->
     <Menu />
     <v-main class="main">
       <router-view :key="$route.fullPath"></router-view>
     </v-main>
-
+    
     <CookieBanner />
   </v-app>
 
@@ -13,7 +13,7 @@
 
 
 <script setup lang="ts">
-import Pomodoro from '@/components/Pomodoro/Pomodoro.vue';
+import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import Menu from '@/components/Menus/Menu.vue';
 import CookieBanner from '@/components/Cookie/CookieBanner.vue';
 import { useTheme } from 'vuetify'
