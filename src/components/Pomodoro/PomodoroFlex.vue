@@ -7,12 +7,11 @@
           backgroundColor: theme.current.value.colors.secondary,
           color: theme.current.value.colors.surface,
           width: `${percentage}%`,
-        }"></div>
-        <div v-for="index in settings.numberOfBreak" :key="index" class="break" :style="{
+        }"> ⦿ </div>
+        <div v-for="b in breaks" :key="b.start" class="break" :style="{
           backgroundColor: theme.current.value.colors.error,
-          marginLeft: `${breaksMargins[index - 1]}%`,
-          width: `${index === 1 ? settings.breakLenght + youAreTakingTooMuchBreak : settings.breakLenght}%`,
-          opacity: 0.5,
+          marginLeft: `${b.start}%`,
+          width: `${b.lenght}%`,
         }"></div>
       </div>
 
@@ -25,82 +24,110 @@ import { ref, computed } from 'vue';
 import { useTheme } from 'vuetify'
 const theme = useTheme();
 
+const BREAKS_MOVES = false;
+
 type FlexSettings = {
   numberOfBreak: number;
-  breakLenght: number;
+  breakLength: number;
+  totalLength: number;
 }
 
 const settings = ref<FlexSettings>({
   numberOfBreak: 3,
-  breakLenght: 5,
+  breakLength: 5,
+  totalLength: 2 * 60,
 });
 
+
+enum EBreakStatus {
+  DONE,
+  DOING,
+  TODO,
+}
+
+type Break = {
+  start: number;
+  lenght: number;
+  status: EBreakStatus;
+}
+
+const startMs = Date.now();
+const breakLengthPercentage = computed(() => settings.value.breakLength / settings.value.totalLength * 100);
+
+
+const breaks = ref<Break[]>(generateBreaks());
 const percentage = ref(0);
-const studyTime = ref(0);
-const isBreak = ref<null | number>(null);
-const studyPeriodStartedFrom = ref(0);
-const youAreTakingTooMuchBreak = ref(0);
-
-// start
-studyTime.value = ((100 -  percentage.value) - (settings.value.breakLenght * settings.value.numberOfBreak)) / (settings.value.numberOfBreak + 1);
 setInterval(() => {
-  if (percentage.value < 100)
-    percentage.value += 0.05;
+  const now = Date.now();
+  percentage.value = (now - startMs) / (settings.value.totalLength * 10);
+  if (percentage.value > 100)
+    percentage.value = 100;
+  updateBreaks();
+}, 15);
 
-  if (isBreak.value) {
-    const breakTime = percentage.value - isBreak.value - settings.value.breakLenght;
-    if (breakTime > 0) {
-      youAreTakingTooMuchBreak.value = breakTime;
+
+function updateBreaks() {
+
+  let capoTreno = percentage.value;
+
+  for (let i = 0; i < breaks.value.length; i++) {
+    const b = breaks.value[i];
+    if (b.status === EBreakStatus.DOING) {
+
+      const itHasBeingGoingFor = percentage.value - b.start;
+      if (b.lenght < itHasBeingGoingFor) {
+        b.lenght = itHasBeingGoingFor;
+      } else {
+        capoTreno = b.start + b.lenght;
+      }
+
+    } else if (b.status === EBreakStatus.TODO) {
+
+      if (b.start < capoTreno) {
+        const prev = breaks.value[i - 1];
+        if (prev && prev.status !== EBreakStatus.DONE) {
+          // JOIN
+          prev.lenght = b.start - prev.start + b.lenght;
+          breaks.value.splice(i, 1);
+          i--;
+        } else {
+          b.start = capoTreno;
+          capoTreno = b.start + b.lenght;
+        }
+      }
     }
-
   }
-}, 20);
+}
 
 
-const timeToFirtBreak = computed(() => {
-  if (isBreak.value) return isBreak.value;
-
-  return Math.max(percentage.value, studyTime.value + studyPeriodStartedFrom.value);
-})
-
-
-const breaksMargins = computed(() => {
-  const r = [ timeToFirtBreak.value ];
-
-  const usedTime = timeToFirtBreak.value + (settings.value.breakLenght * settings.value.numberOfBreak) + youAreTakingTooMuchBreak.value;
-  const studyTimeRelative = (100 - usedTime) / (settings.value.numberOfBreak);
+function generateBreaks(): Break[] {
+  const totalBreakTime = breakLengthPercentage.value * settings.value.numberOfBreak;
+  const leftTime = 100 - totalBreakTime;
   
+  const studyTime = leftTime / (settings.value.numberOfBreak + 1);
 
-  for (let i = 1; i < settings.value.numberOfBreak + 1; i++) {
-    r.push(timeToFirtBreak.value + (settings.value.breakLenght * i) + (studyTimeRelative * i) + youAreTakingTooMuchBreak.value)
-  }
-  return r;
-})
+  return new Array(settings.value.numberOfBreak).fill(0).map((_, i) => ({
+    start: studyTime * (i + 1) + (breakLengthPercentage.value * i),
+    lenght: breakLengthPercentage.value,
+    status: EBreakStatus.TODO
+  }));
+}
 
 function nextStep() {
-  if (isBreak.value === null) {
-    startBreak()
-  } else {
-    stopBreak();
+  for (const b of breaks.value) {
+    if (b.status === EBreakStatus.DOING) {
+      b.lenght = percentage.value - b.start;
+      b.status = EBreakStatus.DONE;
+      return;
+    }
+
+    if (b.status === EBreakStatus.TODO) {
+      b.start = percentage.value;
+      b.status = EBreakStatus.DOING;
+      return;
+    }
   }
-
 }
-
-function startBreak() {
-  isBreak.value = percentage.value;
-}
-
-function stopBreak() {
-  isBreak.value = null;
-  settings.value.numberOfBreak -= 1;
-  studyPeriodStartedFrom.value = percentage.value;
-  youAreTakingTooMuchBreak.value = 0;
-  
-  studyTime.value = ((100 -  percentage.value) - (settings.value.breakLenght * settings.value.numberOfBreak)) / (settings.value.numberOfBreak + 1);
-
-}
-
-
 
 
 </script>
@@ -118,7 +145,7 @@ function stopBreak() {
   
   .footer {
     height: 1em;
-    border-radius: 1em;
+    border-radius: 0.5em;
     background-color: #222;
     filter: drop-shadow(0 0 0.2em #000);
     overflow: hidden;
@@ -135,10 +162,14 @@ function stopBreak() {
 
       .break, .progress {
         height: 1em;
+        border-radius: 0.5em;
+        text-align: right;
+        line-height: 1em;
       }
 
       .break {
         position: absolute;
+        opacity: 0.7;
       }
 
     }
