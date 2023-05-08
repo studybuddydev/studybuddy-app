@@ -73,7 +73,7 @@
                 :prepend-icon="newElementDialog.element.icon"
               >
                 <template v-slot:item="{ props: item }">
-                  <v-list-item v-bind="item" :prepend-icon="item.value" :title="item.title" />
+                  <v-list-item v-bind="(item as any)" :prepend-icon="(item.value as any)" :title="item.title" />
                 </template>
               </v-select>
             </v-col>
