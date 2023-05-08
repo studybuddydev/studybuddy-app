@@ -1,13 +1,29 @@
 <template>
   <div class="pomodoro">
 
-    <div class="controls bg-primary">
+    <div class="controls bg-secondary">
       <div class="status">{{status}}</div>
-      <v-btn
+
+      <v-btn v-if="pomoInterval !== null && isBreak"
+        icon="mdi-stop"
+        variant="text" size="x-small"
+        @click="stopPomodoro()"
+      />
+      <v-btn v-if="pomoInterval !== null"
         :icon="isBreak ? 'mdi-play' : 'mdi-pause'"
         variant="text" size="small"
         @click="nextStep()"
-      ></v-btn>
+      />
+      <v-btn v-if="pomoInterval === null"
+        icon="mdi-cog"
+        variant="text" size="x-small"
+        @click="settingsOpen = true"
+      />
+      <v-btn v-if="pomoInterval === null"
+        icon="mdi-skip-next"
+        variant="text" size="small"
+        @click="startPomodoro()"
+      />
     </div>
 
     <div class="progress-bar">
@@ -27,25 +43,40 @@
 
     </div>
   </div>
+
+  <v-dialog v-model="settingsOpen" width="500">
+    <v-card v-on:keyup.enter="saveSettings()">
+      <v-toolbar dark color="primary">
+        <v-btn icon dark @click="closeSettings()"> <v-icon>mdi-close</v-icon> </v-btn>
+        <v-toolbar-title>{{ $t('popup.settings.title') }}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items> <v-btn variant="text" @click="saveSettings()" > {{ $t('save') }} </v-btn> </v-toolbar-items>
+      </v-toolbar>
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col cols="12"> <v-text-field v-model="tempSettings.totalLength" type="time" label="Pomodoro length" required step="300" /> </v-col>
+            <v-col cols="12"> <v-text-field v-model="tempSettings.numberOfBreak" type="number" label="Number of breaks" required /> </v-col>
+            <v-col cols="12"> <v-text-field v-model="tempSettings.breakLength" type="number" label="Break length [minutes]" required /> </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
+
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useTheme } from 'vuetify'
+import { useStateStore } from "@/stores/state";
+import type { FlexSettings } from '@/types';
+const state = useStateStore();
 const theme = useTheme();
 
-type FlexSettings = {
-  numberOfBreak: number;
-  breakLength: number;
-  totalLength: number;
+interface FlexSettingsTemp extends Omit<FlexSettings, 'totalLength'> {
+  totalLength: string
 }
-
-const settings = ref<FlexSettings>({
-  numberOfBreak: 3,
-  breakLength: 2,
-  totalLength: 1 * 30,
-});
-
 
 enum EBreakStatus {
   DONE,
@@ -59,21 +90,56 @@ type Break = {
   status: EBreakStatus;
 }
 
-const startMs = Date.now();
-const breakLengthPercentage = computed(() => settings.value.breakLength / settings.value.totalLength * 100);
+const settings = ref<FlexSettings>(state.getPomodoroFlexSettings() ?? {
+  totalLength: 120,
+  numberOfBreak: 3,
+  breakLength: 5,
+});
+const breakLengthPercentage = computed(() => (settings.value.breakLength * 60) / (settings.value.totalLength * 60) * 100);
 
 const isBreak = ref(false);
-const status = ref('STUDIA!');
+const status = ref('Inizia!');
 const breaks = ref<Break[]>(generateBreaks());
 const percentage = ref(0);
-setInterval(() => {
-  const now = Date.now();
-  percentage.value = (now - startMs) / (settings.value.totalLength * 10);
-  if (percentage.value > 100)
-    percentage.value = 100;
-  updateBreaks();
-}, 15);
+let startMs = Date.now();
+let pomoInterval: number | null = null;
 
+
+function stopPomodoro() {
+  if (pomoInterval !== null) {
+    clearInterval(pomoInterval);
+    pomoInterval = null;
+  }
+
+  status.value = 'Reinizia!';
+}
+
+function startPomodoro() {
+  isBreak.value = false;
+  status.value = 'STUDIA!';
+  breaks.value = generateBreaks();
+  percentage.value = 0;
+  pomoInterval = startInterval();
+}
+
+function startInterval() {
+  if (pomoInterval !== null)
+    clearInterval(pomoInterval);
+
+  startMs = Date.now();
+  return setInterval(() => {
+    const now = Date.now();
+    percentage.value = (now - startMs) / (settings.value.totalLength * 60 *  10);
+    if (percentage.value > 100) {
+      percentage.value = 100;
+      if (pomoInterval !== null) {
+        clearInterval(pomoInterval);
+        pomoInterval = null;
+      }
+    }
+    updateBreaks();
+  }, 15);
+}
 
 function updateBreaks() {
 
@@ -108,7 +174,6 @@ function updateBreaks() {
   }
 }
 
-
 function generateBreaks(): Break[] {
   const totalBreakTime = breakLengthPercentage.value * settings.value.numberOfBreak;
   const leftTime = 100 - totalBreakTime;
@@ -141,6 +206,42 @@ function nextStep() {
       return;
     }
   }
+
+  // add a new pause if none found
+  breaks.value.push({
+    start: percentage.value,
+    lenght: 0,
+    status: EBreakStatus.DOING
+  });
+  isBreak.value = true;
+  status.value = 'Relax';
+}
+
+// SETTINGS
+function parseSettings(settings: FlexSettings): FlexSettingsTemp {
+  return {
+    ...settings,
+    totalLength: `${Math.floor(settings.totalLength / 60).toString().padStart(2, '0')}:${(settings.totalLength % 60).toString().padStart(2, '0')}`
+  };
+}
+const tempSettings = ref<FlexSettingsTemp>( parseSettings(settings.value) );
+const settingsOpen = ref(false);
+
+function saveSettings() {
+  console.log(tempSettings.value)
+  const hm = tempSettings.value.totalLength.split(':').map(x => +x);
+  settings.value = { 
+    breakLength: +tempSettings.value.breakLength,
+    numberOfBreak: +tempSettings.value.numberOfBreak,
+    totalLength: hm[0] * 60 + hm[1]
+  };
+  settingsOpen.value = false;
+  state.setPomodoroFlexSettings(settings.value);
+}
+
+function closeSettings() {
+  tempSettings.value = parseSettings(settings.value);
+  settingsOpen.value = false;
 }
 
 
@@ -174,9 +275,6 @@ function nextStep() {
     .status {
       flex-grow: 1;
       padding: 0 1em;
-    }
-
-    .control {
     }
 
   }

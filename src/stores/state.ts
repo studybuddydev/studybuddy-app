@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { type State, type Exam, type PomodoroSettings, type Chapter, type UserSettings, type CurrentPomodoro, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType } from '@/types'
+import { type State, type Exam, type PomodoroSettings, type Chapter, type UserSettings, type CurrentPomodoro, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType, type FlexSettings } from '@/types'
 import defaultState from '@/assets/defaultState.json';
 
 const defaultData: State = {
@@ -228,6 +228,16 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
 
+  function getPomodoroFlexSettings(): FlexSettings | undefined {
+    return state.value.settings?.pomodoro?.pomodoroFlexSettings;
+  }
+  function setPomodoroFlexSettings(flexSettings: FlexSettings) {
+    if (!state.value.settings) state.value.settings = {};
+    if (!state.value.settings.pomodoro) state.value.settings.pomodoro = {};
+    state.value.settings.pomodoro.pomodoroFlexSettings = { ...flexSettings };
+    save();
+  }
+
   // User
   function getUserSettings(): UserSettings {
     return state.value.settings?.user ?? {
@@ -281,7 +291,7 @@ export const useStateStore = defineStore('state', () => {
     updateChapters, addChapter, editChapter, removeChapter,
     checkValidExamName,
     getEvents, saveEvents, getDeadlines,
-    getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro,
+    getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro, getPomodoroFlexSettings, setPomodoroFlexSettings,
     getUserSettings, setUserSettings,
     downloadData, uploadData
   };

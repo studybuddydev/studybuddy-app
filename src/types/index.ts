@@ -62,6 +62,11 @@ export type PomodoroSettings = {
   longBreakLength: number;
   nrStudy: number;
 }
+export type FlexSettings = {
+  numberOfBreak: number;
+  breakLength: number;
+  totalLength: number;
+}
 export enum EPomodoroStatus {
   Study,
   ShortBreak,
@@ -115,6 +120,7 @@ export type State = {
   settings: {
     pomodoro?: {
       pomodoroSettings?: PomodoroSettings;
+      pomodoroFlexSettings?: FlexSettings;
       currentPomodoro?: CurrentPomodoro;
     };
     user?: UserSettings;
