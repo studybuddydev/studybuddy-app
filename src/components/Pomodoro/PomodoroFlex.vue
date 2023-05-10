@@ -33,12 +33,17 @@
           backgroundColor: theme.current.value.colors.secondary,
           color: theme.current.value.colors.surface,
           width: `${percentage}%`,
-        }"> <v-icon icon="mdi-school" size="x-small" /> ⦿ </div>
-        <div v-for="b in breaks" :key="b.start" class="break" :style="{
-          backgroundColor: theme.current.value.colors.error,
-          marginLeft: `${b.start}%`,
-          width: `${b.lenght}%`,
+        }"> ⦿ </div>
+        <div v-for="b in breaks"
+          :title="getMinutesFromPercentage(b.lenght)"
+          :key="b.start"
+          class="break"
+          :style="{
+            backgroundColor: theme.current.value.colors.error,
+            marginLeft: `${b.start}%`,
+            width: `${b.lenght}%`,
         }"><v-icon size="x-small" icon="mdi-food-apple" /></div>
+        <p class="text-primary progress-text">	{{getMinutesFromPercentage(percentage)}} </p>
       </div>
 
     </div>
@@ -74,8 +79,16 @@ import type { FlexSettings } from '@/types';
 const state = useStateStore();
 const theme = useTheme();
 
+const MINUTE_MULTIPLIER = 60;
+
 interface FlexSettingsTemp extends Omit<FlexSettings, 'totalLength'> {
   totalLength: string
+}
+
+enum ESound {
+  BreakStart = 'pomo.wav',
+  BreakDone = 'break.wav',
+  PomodoroDone = 'pomodoro.wav',
 }
 
 enum EBreakStatus {
@@ -95,7 +108,17 @@ const settings = ref<FlexSettings>(state.getPomodoroFlexSettings() ?? {
   numberOfBreak: 3,
   breakLength: 5,
 });
-const breakLengthPercentage = computed(() => (settings.value.breakLength * 60) / (settings.value.totalLength * 60) * 100);
+const breakLengthPercentage = computed(() => (settings.value.breakLength * MINUTE_MULTIPLIER) / (settings.value.totalLength * MINUTE_MULTIPLIER) * 100);
+
+function getMinutesFromPercentage(n: number) {
+  const min = n * settings.value.totalLength / 100;
+  const sec = Math.round(min * MINUTE_MULTIPLIER);
+
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec / 60) % 60);
+  const s = (sec % 60).toString().padStart(2, '0');
+  return `${h > 0 ? h + ':' : ''}${m}:${s}`;
+}
 
 const isBreak = ref(false);
 const status = ref('Inizia!');
@@ -129,17 +152,21 @@ function startInterval() {
   startMs = Date.now();
   return setInterval(() => {
     const now = Date.now();
-    percentage.value = (now - startMs) / (settings.value.totalLength * 60 *  10);
+    percentage.value = (now - startMs) / (settings.value.totalLength * MINUTE_MULTIPLIER *  10);
     if (percentage.value > 100) {
       percentage.value = 100;
       if (pomoInterval !== null) {
         clearInterval(pomoInterval);
         pomoInterval = null;
+        playSound(ESound.PomodoroDone);
       }
     }
     updateBreaks();
-  }, 15);
+  }, 16);
 }
+
+let pauseStartHit = false;
+let pauseEndHIt = false;
 
 function updateBreaks() {
 
@@ -152,6 +179,10 @@ function updateBreaks() {
       const itHasBeingGoingFor = percentage.value - b.start;
       if (b.lenght < itHasBeingGoingFor) {
         b.lenght = itHasBeingGoingFor;
+        if (!pauseEndHIt) {
+          playSound(ESound.BreakDone);
+          pauseEndHIt = true;
+        }
       } else {
         capoTreno = b.start + b.lenght;
       }
@@ -168,6 +199,11 @@ function updateBreaks() {
         } else {
           b.start = capoTreno;
           capoTreno = b.start + b.lenght;
+
+          if (!pauseStartHit) {
+            playSound(ESound.BreakStart);
+            pauseStartHit = true;
+          }
         }
       }
     }
@@ -188,6 +224,9 @@ function generateBreaks(): Break[] {
 }
 
 function nextStep() {
+  pauseStartHit = false;
+  pauseEndHIt = false;
+
   for (const b of breaks.value) {
     if (b.status === EBreakStatus.DOING) {
       b.lenght = percentage.value - b.start;
@@ -215,6 +254,11 @@ function nextStep() {
   });
   isBreak.value = true;
   status.value = 'Relax';
+}
+
+function playSound(sound: ESound) {
+  const audio = new Audio(`/sounds/${sound}`);
+  audio.play();
 }
 
 // SETTINGS
@@ -248,7 +292,9 @@ function closeSettings() {
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
+$bar-height: 1.2em;
+
 .pomodoro {
   width: 100%;
   position: absolute;
@@ -261,7 +307,7 @@ function closeSettings() {
   align-items: center;
 
   .controls, .progress-bar {
-    border-radius: 0.5em;
+    border-radius: calc($bar-height / 2);
     overflow: hidden;
     margin: 0.4em 0.5em;
   }
@@ -280,7 +326,7 @@ function closeSettings() {
   }
   
   .progress-bar {
-    height: 1em;
+    height: $bar-height;
     background-color: #222;
     filter: drop-shadow(0 0 0.2em #000);
     flex-grow: 1;
@@ -296,8 +342,8 @@ function closeSettings() {
 
 
       .break, .progress {
-        height: 1em;
-        border-radius: 0.5em;
+        height: $bar-height;
+        border-radius: 0.6em;
         line-height: 1em;
       }
 
@@ -305,12 +351,30 @@ function closeSettings() {
         position: absolute;
         opacity: 0.7;
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       
       .progress {
         text-align: right;
+        line-height: $bar-height;
       }
 
+
+      .progress-text {
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        line-height: $bar-height;
+        padding: 0 0.5em;
+        transition: 0.15s opacity ease-in-out;
+      }
+      &:hover {
+        .progress-text {
+          opacity: 1;
+        }
+      }
     }
 
   }
