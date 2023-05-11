@@ -1,23 +1,50 @@
 <template>
-  <v-scroll-x-transition>
-    <div class="pause-screen" v-if="props.modelValue">
-      <p class="text-primary" >You are taking a</p>
-      <h2 class="text-primary" >BREAK</h2>
+  <div transition="fade-transition">
+    <v-scroll-x-transition>
+      <div class="pause-screen" v-if="pause">
+        <p class="text-primary">You are taking a</p>
+        <h2 class="text-primary">BREAK</h2>
 
-      <ul>
-        <li @click="emit('update:modelValue', false)">Resume</li>
-        <li>Settings</li>
-      </ul>
-    </div>
-  </v-scroll-x-transition>
+        <ul>
+          <li @click="resumePomodoro()">Resume</li>
+          <li>Settings</li>
+        </ul>
+      </div>
+    </v-scroll-x-transition>
+  </div>
 </template>
 
 <script lang="ts" setup>
-const props = withDefaults(defineProps<{
-  modelValue: boolean,
-}>(), {})
-const emit = defineEmits(['update:modelValue'])
+import { usePomodoroStore } from "@/stores/pomodoro";
+import { watch } from 'vue';
+import { computed } from 'vue';
+import { ref } from 'vue';
+const pomodoro = usePomodoroStore();
 
+const pause = ref(false);
+const pauseFromPomodoro = computed(() => pomodoro.status.isBreak && !!pomodoro.status.interval);
+
+watch(pauseFromPomodoro, (value) => {
+  pause.value = value;
+});
+
+document.addEventListener('keyup', function (evt) {
+  if (evt.key === 'Escape') {
+    if (pomodoro.going) {
+      pomodoro.nextStep();
+      pause.value = pauseFromPomodoro.value;
+    } else {
+      pause.value = !pause.value;
+    }
+  }
+});
+
+function resumePomodoro() {
+  if (pomodoro.going && pauseFromPomodoro.value) {
+    pomodoro.nextStep();
+  }
+  pause.value = false;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -29,7 +56,7 @@ const emit = defineEmits(['update:modelValue'])
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 10000;
+  z-index: 5000;
 
   background-color: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(30px);
@@ -39,11 +66,11 @@ const emit = defineEmits(['update:modelValue'])
   align-items: center;
   flex-direction: column;
   font-family: 'Press Start 2P', cursive;
-  
+
   h2 {
     font-size: 7rem;
   }
-  
+
   p {
     font-size: 1rem;
   }
@@ -67,5 +94,4 @@ const emit = defineEmits(['update:modelValue'])
     }
   }
 }
-
 </style>

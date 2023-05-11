@@ -144,7 +144,7 @@ function getStudyTime() {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 2000;
+  z-index: 6000;
   
   .footer {
     height: 1em;

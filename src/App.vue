@@ -8,7 +8,7 @@
     
     <CookieBanner />
 
-    <PauseScreen class="pause" transition="fade-transition" v-model="showPause" />
+    <PauseScreen />
   </v-app>
 
 </template>
@@ -24,13 +24,6 @@ import { useTheme } from 'vuetify'
 import { useStateStore } from "@/stores/state";
 const t = useStateStore().getTheme();
 if (t) useTheme().global.name.value = t;
-
-const showPause = ref(false);
-document.addEventListener('keyup', function (evt) {
-    if (evt.key === 'Escape') {
-      showPause.value = !showPause.value;
-    }
-});
 
 </script>
 
