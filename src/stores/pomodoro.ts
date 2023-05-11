@@ -20,7 +20,7 @@ enum ESound {
 
 export const usePomodoroStore = defineStore('pomodoro', () => {
 
-  const MINUTE_MULTIPLIER = 0.2;
+  const MINUTE_MULTIPLIER = 60;
   let pauseStartHit = false;
   let pauseEndHIt = false;
 
