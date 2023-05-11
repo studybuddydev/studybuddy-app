@@ -108,7 +108,7 @@ function getMinutesFromPercentage(n: number) {
   const sec = Math.round(min * MINUTE_MULTIPLIER);
 
   const h = Math.floor(sec / 3600);
-  const m = Math.floor((sec / 60) % 60).toString().padStart(2, '0');
+  const m = Math.floor((sec / 60) % 60).toString().padStart(h > 0 ? 2 : 1, '0');
   const s = (sec % 60).toString().padStart(2, '0');
   return `${h > 0 ? h + ':' : ''}${m}:${s}`;
 }
