@@ -1,6 +1,7 @@
+
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { type State, type Exam, type PomodoroSettings, type Chapter, type UserSettings, type CurrentPomodoro, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType, type FlexSettings } from '@/types'
+import { type State, type Exam, type PomodoroSettings, type Chapter, type UserSettings, type CurrentPomodoro, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType, type PomodoroFlexSettings, type PomodoroFlexStatus } from '@/types'
 import defaultState from '@/assets/defaultState.json';
 
 const defaultData: State = {
@@ -228,13 +229,22 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
 
-  function getPomodoroFlexSettings(): FlexSettings | undefined {
+  function getPomodoroFlexSettings(): PomodoroFlexSettings | undefined {
     return state.value.settings?.pomodoro?.pomodoroFlexSettings;
   }
-  function setPomodoroFlexSettings(flexSettings: FlexSettings) {
+  function setPomodoroFlexSettings(flexSettings: PomodoroFlexSettings) {
     if (!state.value.settings) state.value.settings = {};
     if (!state.value.settings.pomodoro) state.value.settings.pomodoro = {};
     state.value.settings.pomodoro.pomodoroFlexSettings = { ...flexSettings };
+    save();
+  }
+  function getPomodoroFlexStatus(): PomodoroFlexStatus | undefined {
+    return state.value.settings?.pomodoro?.pomodoroFlexStatus;
+  }
+  function setPomodoroFlexStatus(flexStatus: PomodoroFlexStatus) {
+    if (!state.value.settings) state.value.settings = {};
+    if (!state.value.settings.pomodoro) state.value.settings.pomodoro = {};
+    state.value.settings.pomodoro.pomodoroFlexStatus = { ...flexStatus };
     save();
   }
 
@@ -291,7 +301,7 @@ export const useStateStore = defineStore('state', () => {
     updateChapters, addChapter, editChapter, removeChapter,
     checkValidExamName,
     getEvents, saveEvents, getDeadlines,
-    getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro, getPomodoroFlexSettings, setPomodoroFlexSettings,
+    getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro, getPomodoroFlexSettings, setPomodoroFlexSettings, getPomodoroFlexStatus, setPomodoroFlexStatus,
     getUserSettings, setUserSettings,
     downloadData, uploadData
   };
