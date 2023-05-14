@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="500" v-model="modelValue">
+  <v-dialog width="500" v-model="model">
     <v-card  v-on:keyup.enter="save()">
       <v-toolbar dark color="primary">
         <v-btn icon dark @click="cancel()"> <v-icon>mdi-close</v-icon> </v-btn>
@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup generic="T extends {}">
-import { toRaw } from 'vue';
+import { computed, toRaw } from 'vue';
 import { ref } from 'vue';
 
 type Props<G> = {
@@ -37,6 +37,10 @@ const props = ref<Props<T>>({
   data: {} as T,
   ...propsND,
 });
+const model = computed({
+  get() { return propsND.modelValue },
+  set(value) { return emits('update:modelValue', value) }
+})
 // const emits = defineEmits<{
 //   close: () => void,
 //   save: (data?: T) => void,
