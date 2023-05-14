@@ -15,10 +15,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, watch, computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
-import { watch } from 'vue';
-import { computed } from 'vue';
-import { ref } from 'vue';
 const pomodoro = usePomodoroStore();
 
 const pause = ref(false);

@@ -106,7 +106,6 @@ const tempSettings = ref<FlexSettingsTemp>( parseSettings(pomodoro.settings) );
 const settingsOpen = ref(false);
 
 function saveSettings() {
-  console.log(tempSettings.value)
   const hm = tempSettings.value.totalLength.split(':').map(x => +x);
   pomodoro.settings = { 
     breakLength: +tempSettings.value.breakLength,
