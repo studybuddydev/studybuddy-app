@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="500" v-model="propsND.modelValue">
+  <v-dialog width="500" v-model="modelValue">
     <v-card  v-on:keyup.enter="save()">
       <v-toolbar dark color="primary">
         <v-btn icon dark @click="cancel()"> <v-icon>mdi-close</v-icon> </v-btn>
