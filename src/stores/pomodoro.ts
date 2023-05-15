@@ -27,7 +27,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const breakLengthPercentage = computed(() => (settings.value.breakLength * MINUTE_MULTIPLIER) / (settings.value.totalLength * MINUTE_MULTIPLIER) * 100);
   const going = computed(() => status.value.interval !== null);
 
-  const settings = ref<PomodoroFlexSettings>(getState().getPomodoroFlexSettings() ?? {
+  const settings = ref<PomodoroFlexSettings>(getState().pomodoroFlexSettings ?? {
     totalLength: 120,
     numberOfBreak: 3,
     breakLength: 5,

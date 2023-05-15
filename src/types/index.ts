@@ -117,6 +117,16 @@ export type Event = {
 
 export enum DeadlineType { Exam, Task }
 
+export type Settings = {
+  pomodoro?: {
+    pomodoroSettings?: PomodoroSettings;
+    pomodoroFlexSettings?: PomodoroFlexSettings;
+    pomodoroFlexStatus?: PomodoroFlexStatus;
+    currentPomodoro?: CurrentPomodoro;
+  };
+  user?: UserSettings;
+}
+
 export type Deadline = {
   name: string;
   deadline: string;
@@ -134,13 +144,5 @@ export type State = {
     events: { [key: string]: Event[] }
   }
 
-  settings: {
-    pomodoro?: {
-      pomodoroSettings?: PomodoroSettings;
-      pomodoroFlexSettings?: PomodoroFlexSettings;
-      pomodoroFlexStatus?: PomodoroFlexStatus;
-      currentPomodoro?: CurrentPomodoro;
-    };
-    user?: UserSettings;
-  }
+  settings: Settings;
 }

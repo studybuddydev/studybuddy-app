@@ -1,59 +1,73 @@
 <template>
   <BaseDialog
-    v-model="model"
     title="User Settings"
-    :data="userSettings"
-    v-slot="{ data }"
+    v-model="model"
+    :extension="true"
+    :data="settings"
     @save="saveSettings($event)"
-    @cancel="closeSettings()"
-  >
-    {{ $i18n.locale }}
-    <v-card-text>
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-text-field label="Username" v-model="data.username" type="string" required />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
-            <v-select
-              :label="$t('popup.settings.language')"
-              v-model="$i18n.locale" :items="$i18n.availableLocales"
-              @update:model-value="saveLanguage($event)" />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
-            <v-select
-              :label="$t('popup.settings.theme')"
-              v-model="data.theme" :items="themeList" item-title="title" item-value="value"
-              @update:model-value="setTheme($event)">
-              <template v-slot:item="{ props, item }" >
-                <v-list-item v-bind="props">
-                  <template v-slot:prepend>
-                    <v-icon :color="item.raw.color">mdi-circle</v-icon>
-                  </template>
-                </v-list-item>
-              </template>
-              <!-- <template v-slot:prepend><v-icon :color="data.theme">mdi-circle</v-icon></template> -->
-            </v-select>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-snackbar :timeout="2000" color="primary" elevation="24">
-              <template v-slot:activator="{ props }">
-                <v-btn variant="tonal" @click="resetTutorial()" v-bind="props">Reset Tutorial</v-btn>
-              </template>
-              Tutorial resetted
-            </v-snackbar>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card-text>
+    @cancel="closeSettings()">
+    <template #extension>
+      <v-tabs v-model="tab">
+        <v-tab value="general">General</v-tab>
+        <v-tab value="pomodoro">Pomodoro</v-tab>
+      </v-tabs>
+    </template>
+    <template #default="{ data }">
+      <v-card-text>
+        <v-container>
+          <v-window v-model="tab">
+            <v-window-item value="general">
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field label="Username" v-model="data!.user!.username" type="string" required />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-select :label="$t('popup.settings.language')" v-model="$i18n.locale" :items="$i18n.availableLocales"
+                    @update:model-value="saveLanguage($event)" />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-select :label="$t('popup.settings.theme')" v-model="data.user!.theme" :items="themeList" item-title="title"
+                    item-value="value" @update:model-value="setTheme($event)">
+                    <template #item="{ props, item }">
+                      <v-list-item v-bind="props">
+                        <template #prepend>
+                          <v-icon :color="item.raw.color">mdi-circle</v-icon>
+                        </template>
+                      </v-list-item>
+                    </template>
+                    <!-- <template v-slot:prepend><v-icon :color="data.theme">mdi-circle</v-icon></template> -->
+                  </v-select>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-snackbar :timeout="2000" color="primary" elevation="24">
+                    <template #activator="{ props }">
+                      <v-btn variant="tonal" @click="resetTutorial()" v-bind="props">Reset Tutorial</v-btn>
+                    </template>
+                    Tutorial resetted
+                  </v-snackbar>
+                </v-col>
+              </v-row>
+            </v-window-item>
 
-</BaseDialog>
+            <v-window-item value="pomodoro">
+              <v-row>
+                <v-col cols="12"> <v-text-field v-model="data!.pomodoro!.pomodoroFlexSettings!.totalLength" type="time" label="Pomodoro length" required step="300" min="0" /> </v-col>
+                <v-col cols="12"> <v-text-field v-model="data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak" type="number" label="Number of breaks" required min="0" /> </v-col>
+                <v-col cols="12"> <v-text-field v-model="data!.pomodoro!.pomodoroFlexSettings!.breakLength" type="number" label="Break length [minutes]" required min="0" /> </v-col>
+              </v-row>
+            </v-window-item>
+          </v-window>
+        </v-container>
+      </v-card-text>
+
+    </template>
+  </BaseDialog>
 </template>
 
 <script setup lang="ts">
@@ -64,6 +78,7 @@ import { themeList } from '@/assets/themes'
 import type { UserSettings } from '@/types';
 import BaseDialog from '@/components/common/BaseDialog.vue'
 import { useI18n } from 'vue-i18n';
+import type { Settings } from '@/types';
 
 const theme = useTheme()
 const state = useStateStore();
@@ -75,19 +90,44 @@ const model = computed({
   get() { return props.modelValue },
   set(value) { return emit('update:modelValue', value) }
 })
+const tab = ref('general');
 
-const userSettings = ref({ ...state.getUserSettings() })
+function getSettingsWithDefaults() {
+  const settings = state.settings ?? {};
+  if (!settings.user) {
+    settings.user = {
+      icon: 'mdi-account',
+      theme: 'dark',
+      username: 'Anonymous'
+    }
+  }
+
+  if (!settings.pomodoro) {
+    settings.pomodoro = {}
+  }
+  if (!settings.pomodoro.pomodoroFlexSettings) {
+    settings.pomodoro.pomodoroFlexSettings = {
+      totalLength: 120,
+      numberOfBreak: 3,
+      breakLength: 5,
+    }
+  }
+  return settings;
+}
+
+const settings = ref<Settings>(getSettingsWithDefaults())
 const originalLanguage = i18n.locale.value;
 
 function closeSettings() {
-  userSettings.value = { ...state.getUserSettings() }
+  settings.value = { ...state.settings }
 
   setLanguage(originalLanguage);
-  setTheme(userSettings.value.theme);
+  if (settings.value.user?.theme)
+    setTheme(settings.value.user.theme);
 }
 
-function saveSettings(data: UserSettings) {
-  state.setUserSettings(data)
+function saveSettings(s: Settings) {
+  state.setSettings(s)
 }
 
 function setLanguage(newLanguage: string) {

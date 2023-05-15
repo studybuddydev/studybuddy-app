@@ -1,7 +1,7 @@
 
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { type State, type Exam, type PomodoroSettings, type Chapter, type UserSettings, type CurrentPomodoro, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType, type PomodoroFlexSettings, type PomodoroFlexStatus } from '@/types'
+import { type State, type Exam, type PomodoroSettings, type Chapter, type UserSettings, type CurrentPomodoro, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType, type PomodoroFlexSettings, type PomodoroFlexStatus, type Settings } from '@/types'
 import defaultState from '@/assets/defaultState.json';
 
 const defaultData: State = {
@@ -199,7 +199,19 @@ export const useStateStore = defineStore('state', () => {
 
   // ========= Settings =========
 
+  // Generics
+  function getSettings(): Settings {
+    return state.value.settings ?? {};
+  }
+  function setSettings(settings: Settings) {
+    state.value.settings = settings;
+    save();
+  }
+
   // Pomodoro
+  const pomodoroFlexSettings = computed(() => state.value.settings?.pomodoro?.pomodoroFlexSettings);
+  const settings = computed(() => state.value.settings);
+
   function getPomodoroSettings(): PomodoroSettings {
     return state.value.settings?.pomodoro?.pomodoroSettings ?? {
       studyLength: 25,
@@ -292,6 +304,7 @@ export const useStateStore = defineStore('state', () => {
   }
 
   return {
+    settings, pomodoroFlexSettings,
     state,
     save,
     saveLanguage, getLanguage,
@@ -301,6 +314,7 @@ export const useStateStore = defineStore('state', () => {
     updateChapters, addChapter, editChapter, removeChapter,
     checkValidExamName,
     getEvents, saveEvents, getDeadlines,
+    getSettings, setSettings,
     getPomodoroSettings, setPomodoroSettings, getCurrentPomodoro, setCurrentPomodoro, removeCurrentPomodoro, getPomodoroFlexSettings, setPomodoroFlexSettings, getPomodoroFlexStatus, setPomodoroFlexStatus,
     getUserSettings, setUserSettings,
     downloadData, uploadData

@@ -4,10 +4,13 @@
       <v-toolbar dark color="primary">
         <v-btn icon dark @click="cancel()"> <v-icon>mdi-close</v-icon> </v-btn>
         <v-toolbar-title>{{ props.title }}</v-toolbar-title>
-      </v-toolbar>
-      {{ clonedData }}
-      <slot :data="clonedData" />
 
+        <template v-slot:extension v-if="extension">
+          <slot name="extension" />
+        </template>
+      </v-toolbar>
+
+      <slot :data="clonedData">CIAO</slot>
       <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="cancel()">Cancel</v-btn>
@@ -23,20 +26,19 @@ import { ref } from 'vue';
 
 type Props<G> = {
   modelValue: boolean,
+  extension?: boolean,
   title: string,
   data: G,
 }
 
-const propsND = defineProps<{
-  modelValue: boolean,
-  title: string,
-  data: T,
-}>()
+const propsND = defineProps<Props<T>>()
 const props = ref<Props<T>>({
   title: 'Dialog',
   data: {} as T,
+  modelTab: '',
   ...propsND,
 });
+const emits = defineEmits(['update:modelValue', 'save', 'cancel'])
 const model = computed({
   get() { return propsND.modelValue },
   set(value) { return emits('update:modelValue', value) }
@@ -46,7 +48,6 @@ const model = computed({
 //   save: (data?: T) => void,
 //   modelValue: (value: boolean) => void,
 // }>();
-const emits = defineEmits(['update:modelValue', 'save', 'cancel'])
 const clonedData = toRaw(props.value.data);
 
 function cancel() {
