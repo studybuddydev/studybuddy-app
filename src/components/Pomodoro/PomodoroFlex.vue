@@ -15,11 +15,6 @@
         @click="pomodoro.nextStep()"
       />
       <v-btn v-if="pomodoro.status.interval === null"
-        icon="mdi-cog"
-        variant="text" size="x-small"
-        @click="settingsOpen = true"
-      />
-      <v-btn v-if="pomodoro.status.interval === null"
         icon="mdi-skip-next"
         variant="text" size="small"
         @click="pomodoro.startPomodoro()"
@@ -48,41 +43,16 @@
 
     </div>
   </div>
-
-  <v-dialog v-model="settingsOpen" width="500">
-    <v-card v-on:keyup.enter="saveSettings()">
-      <v-toolbar dark color="primary">
-        <v-btn icon dark @click="closeSettings()"> <v-icon>mdi-close</v-icon> </v-btn>
-        <v-toolbar-title>{{ $t('popup.settings.title') }}</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-toolbar-items> <v-btn variant="text" @click="saveSettings()" > {{ $t('save') }} </v-btn> </v-toolbar-items>
-      </v-toolbar>
-      <v-card-text>
-        <v-container>
-          <v-row>
-            <v-col cols="12"> <v-text-field v-model="tempSettings.totalLength" type="time" label="Pomodoro length" required step="300" min="0" /> </v-col>
-            <v-col cols="12"> <v-text-field v-model="tempSettings.numberOfBreak" type="number" label="Number of breaks" required min="0" /> </v-col>
-            <v-col cols="12"> <v-text-field v-model="tempSettings.breakLength" type="number" label="Break length [minutes]" required min="0" /> </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
-
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useTheme } from 'vuetify'
-import { useStateStore } from "@/stores/state";
 import { usePomodoroStore } from "@/stores/pomodoro";
-import type { PomodoroFlexSettings } from '@/types';
-const state = useStateStore();
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
 
 function getMinutesFromPercentage(n: number) {
-  const min = n * pomodoro.settings.totalLength / 100;
+  const min = n * pomodoro.totalLength / 100;
   const sec = Math.round(min * pomodoro.MINUTE_MULTIPLIER);
 
   const h = Math.floor(sec / 3600);
@@ -91,35 +61,6 @@ function getMinutesFromPercentage(n: number) {
   return `${h > 0 ? h + ':' : ''}${m}:${s}`;
 }
 
-// SETTINGS
-interface FlexSettingsTemp extends Omit<PomodoroFlexSettings, 'totalLength'> {
-  totalLength: string
-}
-
-function parseSettings(settings: PomodoroFlexSettings): FlexSettingsTemp {
-  return {
-    ...settings,
-    totalLength: `${Math.floor(settings.totalLength / 60).toString().padStart(2, '0')}:${(settings.totalLength % 60).toString().padStart(2, '0')}`
-  };
-}
-const tempSettings = ref<FlexSettingsTemp>( parseSettings(pomodoro.settings) );
-const settingsOpen = ref(false);
-
-function saveSettings() {
-  const hm = tempSettings.value.totalLength.split(':').map(x => +x);
-  pomodoro.settings = { 
-    breakLength: +tempSettings.value.breakLength,
-    numberOfBreak: +tempSettings.value.numberOfBreak,
-    totalLength: hm[0] * 60 + hm[1]
-  };
-  settingsOpen.value = false;
-  state.setPomodoroFlexSettings(pomodoro.settings);
-}
-
-function closeSettings() {
-  tempSettings.value = parseSettings(pomodoro.settings);
-  settingsOpen.value = false;
-}
 </script>
 
 

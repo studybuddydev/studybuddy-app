@@ -3,9 +3,9 @@
     title="User Settings"
     v-model="model"
     :extension="true"
-    :data="settings"
+    :data="settingsStore.settingsWithDefaults"
     @save="saveSettings($event)"
-    @cancel="closeSettings()">
+    @cancel="cancelSettings()">
     <template #extension>
       <v-tabs v-model="tab">
         <v-tab value="general">General</v-tab>
@@ -25,7 +25,7 @@
               <v-row>
                 <v-col cols="12">
                   <v-select :label="$t('popup.settings.language')" v-model="$i18n.locale" :items="$i18n.availableLocales"
-                    @update:model-value="saveLanguage($event)" />
+                    @update:model-value="($event) => data!.user!.lang = $event" />
                 </v-col>
               </v-row>
               <v-row>
@@ -58,8 +58,8 @@
             <v-window-item value="pomodoro">
               <v-row>
                 <v-col cols="12"> <v-text-field v-model="data!.pomodoro!.pomodoroFlexSettings!.totalLength" type="time" label="Pomodoro length" required step="300" min="0" /> </v-col>
-                <v-col cols="12"> <v-text-field v-model="data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak" type="number" label="Number of breaks" required min="0" /> </v-col>
-                <v-col cols="12"> <v-text-field v-model="data!.pomodoro!.pomodoroFlexSettings!.breakLength" type="number" label="Break length [minutes]" required min="0" /> </v-col>
+                <v-col cols="12"> <v-text-field v-model.number="data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak" type="number" label="Number of breaks" required min="0" /> </v-col>
+                <v-col cols="12"> <v-text-field v-model.number="data!.pomodoro!.pomodoroFlexSettings!.breakLength" type="number" label="Break length [minutes]" required min="0" /> </v-col>
               </v-row>
             </v-window-item>
           </v-window>
@@ -72,17 +72,14 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useStateStore } from "@/stores/state";
+import { useSettingsStore } from "@/stores/settings";
 import { useTheme } from 'vuetify'
 import { themeList } from '@/assets/themes'
-import type { UserSettings } from '@/types';
 import BaseDialog from '@/components/common/BaseDialog.vue'
-import { useI18n } from 'vue-i18n';
 import type { Settings } from '@/types';
 
-const theme = useTheme()
-const state = useStateStore();
-const i18n = useI18n();
+const theme = useTheme();
+const settingsStore = useSettingsStore();
 
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits(['update:modelValue'])
@@ -92,57 +89,18 @@ const model = computed({
 })
 const tab = ref('general');
 
-function getSettingsWithDefaults() {
-  const settings = state.settings ?? {};
-  if (!settings.user) {
-    settings.user = {
-      icon: 'mdi-account',
-      theme: 'dark',
-      username: 'Anonymous'
-    }
-  }
-
-  if (!settings.pomodoro) {
-    settings.pomodoro = {}
-  }
-  if (!settings.pomodoro.pomodoroFlexSettings) {
-    settings.pomodoro.pomodoroFlexSettings = {
-      totalLength: 120,
-      numberOfBreak: 3,
-      breakLength: 5,
-    }
-  }
-  return settings;
+function cancelSettings() {
+  settingsStore.updateLanguage();
+  settingsStore.updateTheme();
 }
-
-const settings = ref<Settings>(getSettingsWithDefaults())
-const originalLanguage = i18n.locale.value;
-
-function closeSettings() {
-  settings.value = { ...state.settings }
-
-  setLanguage(originalLanguage);
-  if (settings.value.user?.theme)
-    setTheme(settings.value.user.theme);
-}
-
 function saveSettings(s: Settings) {
-  state.setSettings(s)
-}
-
-function setLanguage(newLanguage: string) {
-  i18n.locale.value = newLanguage;
-  saveLanguage(newLanguage);
-}
-
-function saveLanguage(newLanguage: string) {
-  state.saveLanguage(newLanguage);
+  settingsStore.updateSettings(s);
 }
 function setTheme(newTheme: string) {
   theme.global.name.value = newTheme;
 }
 function resetTutorial() {
-  state.resetTutorial()
+  // state.resetTutorial()
 }
 
 

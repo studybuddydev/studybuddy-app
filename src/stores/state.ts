@@ -35,14 +35,6 @@ export const useStateStore = defineStore('state', () => {
     localStorage.setItem('state', JSON.stringify(state.value));
   }
 
-  function saveLanguage(lang: string) {
-    localStorage.setItem('lang', lang);
-  }
-
-  function getLanguage() {
-    return localStorage.getItem('lang') ?? 'en';
-  }
-
   function resetTutorial() {
     const tutorial = defaultData.data?.exams?.find(e => e.tutorial);
     if (!tutorial) {
@@ -265,7 +257,8 @@ export const useStateStore = defineStore('state', () => {
     return state.value.settings?.user ?? {
       icon: 'mdi-account',
       theme: 'dark',
-      username: 'Anonymous'
+      username: 'Anonymous',
+      lang: 'en'
     }
   }
   function setUserSettings(uSettings: UserSettings) {
@@ -307,7 +300,6 @@ export const useStateStore = defineStore('state', () => {
     settings, pomodoroFlexSettings,
     state,
     save,
-    saveLanguage, getLanguage,
     resetTutorial, getTheme,
     getUsername,
     getStudyElement, getExams, updateExams, getExam, addExam, editExam, removeExam,

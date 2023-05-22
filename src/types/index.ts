@@ -65,7 +65,7 @@ export type PomodoroSettings = {
 export type PomodoroFlexSettings = {
   numberOfBreak: number;
   breakLength: number;
-  totalLength: number;
+  totalLength: string;
 }
 export enum EPomodoroBreakStatus {
   DONE,
@@ -102,6 +102,7 @@ export type UserSettings = {
   username: string;
   theme: string;
   icon: string;
+  lang: string;
 }
 
 export type Event = {

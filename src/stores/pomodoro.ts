@@ -1,16 +1,8 @@
 import { defineStore } from 'pinia'
 import { type PomodoroFlexSettings, type PomodoroFlexStatus, type PomodoroBreak, EPomodoroBreakStatus } from '@/types';
 import { useStateStore } from "@/stores/state";
+import { useSettingsStore } from "@/stores/settings";
 import { computed, ref } from 'vue';
-
-let _state = null as any;
-function getState() {
-  if (_state === null)
-    _state = useStateStore();
-
-  return _state;
-}
-
 
 enum ESound {
   BreakStart = 'pomo.wav',
@@ -20,20 +12,25 @@ enum ESound {
 
 export const usePomodoroStore = defineStore('pomodoro', () => {
 
+  const settingsStore = useSettingsStore();
+  const stateStore = useStateStore();
+
+
   const MINUTE_MULTIPLIER = 60;
   let pauseStartHit = false;
   let pauseEndHIt = false;
 
-  const breakLengthPercentage = computed(() => (settings.value.breakLength * MINUTE_MULTIPLIER) / (settings.value.totalLength * MINUTE_MULTIPLIER) * 100);
+  const totalLength = computed(() => {
+    const hm = settings.value.totalLength.split(':').map(x => +x);
+    return hm[0] * 60 + hm[1];
+  });
+  const breakLengthPercentage = computed(() => (settings.value.breakLength * MINUTE_MULTIPLIER) / (totalLength.value * MINUTE_MULTIPLIER) * 100);
   const going = computed(() => status.value.interval !== null);
 
-  const settings = ref<PomodoroFlexSettings>(getState().pomodoroFlexSettings ?? {
-    totalLength: 120,
-    numberOfBreak: 3,
-    breakLength: 5,
-  });
+
+  const settings = computed<PomodoroFlexSettings>(() => settingsStore.pomodoroFlexSettings);
   const status = ref<PomodoroFlexStatus>(
-    getState().getPomodoroFlexStatus() ?? {
+    stateStore.getPomodoroFlexStatus() ?? {
       isBreak: false,
       status: 'Inizia!',
       breaks: generateBreaks(),
@@ -76,7 +73,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   
     return setInterval(() => {
       const now = Date.now();
-      percentage.value = (now - status.value.startMs) / (settings.value.totalLength * MINUTE_MULTIPLIER *  10);
+      percentage.value = (now - status.value.startMs) / (totalLength.value * MINUTE_MULTIPLIER *  10);
       if (percentage.value > 100) {
         percentage.value = 100;
         if (status.value.interval !== null) {
@@ -179,15 +176,16 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     
     const studyTime = leftTime / (settings.value.numberOfBreak + 1);
   
-    return new Array(settings.value.numberOfBreak).fill(0).map((_, i) => ({
+    const res = new Array(settings.value.numberOfBreak).fill(0).map((_, i) => ({
       start: studyTime * (i + 1) + (breakLengthPercentage.value * i),
       lenght: breakLengthPercentage.value,
       status: EPomodoroBreakStatus.TODO
     }));
+    return res;
   }
 
   function saveStatus() {
-    getState().setPomodoroFlexStatus(status.value);
+    stateStore.setPomodoroFlexStatus(status.value);
   }
 
   function playSound(sound: ESound) {
@@ -198,7 +196,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   return {
     MINUTE_MULTIPLIER,
-    breakLengthPercentage, going,
+    breakLengthPercentage, going, totalLength,
     settings, percentage, status,
     startPomodoro, stopPomodoro, nextStep
   }

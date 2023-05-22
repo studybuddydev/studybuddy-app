@@ -10,7 +10,7 @@
         </template>
       </v-toolbar>
 
-      <slot :data="clonedData">CIAO</slot>
+      <slot :data="clonedData"></slot>
       <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="cancel()">Cancel</v-btn>
@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts" setup generic="T extends {}">
+import { watch } from 'vue';
 import { computed, toRaw } from 'vue';
 import { ref } from 'vue';
 
@@ -28,13 +29,12 @@ type Props<G> = {
   modelValue: boolean,
   extension?: boolean,
   title: string,
-  data: G,
+  data?: G,
 }
 
 const propsND = defineProps<Props<T>>()
 const props = ref<Props<T>>({
   title: 'Dialog',
-  data: {} as T,
   modelTab: '',
   ...propsND,
 });
@@ -48,7 +48,12 @@ const model = computed({
 //   save: (data?: T) => void,
 //   modelValue: (value: boolean) => void,
 // }>();
-const clonedData = toRaw(props.value.data);
+const clonedData = ref<T>({} as T);
+watch(() => propsND.modelValue, (value) => {
+  if (value) {
+    clonedData.value = JSON.parse(JSON.stringify((propsND as any).data));
+  }
+})
 
 function cancel() {
   emits('cancel');
@@ -56,7 +61,7 @@ function cancel() {
 }
 
 function save() {
-  emits('save', structuredClone(clonedData));
+  emits('save', JSON.parse(JSON.stringify(clonedData.value)));
   emits('update:modelValue', false);
 }
 
