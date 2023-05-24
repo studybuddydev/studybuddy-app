@@ -27,6 +27,7 @@ const pomodoro = usePomodoroStore();
 
 <style lang="scss" scoped>
   .controls {
+    z-index: 2000;
     border-radius: 0.6rem;
     overflow: hidden;
     margin: 0.4em 0.5em;

@@ -37,6 +37,6 @@ function closeCookie(cookies: boolean) {
   width: 400px !important;
   top: 0;
   right: 0;
-  z-index: 10000;
+  z-index: 3000;
 }
 </style>

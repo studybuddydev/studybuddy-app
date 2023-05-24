@@ -43,7 +43,16 @@
                   </v-select>
                 </v-col>
               </v-row>
+
               <v-row>
+                <v-spacer />
+                <v-col> <v-btn variant="tonal" @click="exportData()">Export data</v-btn> </v-col>
+                <v-col> <v-btn variant="tonal" @click="importData()">Import data</v-btn> </v-col>
+                <v-spacer />
+              </v-row>
+
+              <v-row>
+                <v-spacer />
                 <v-col>
                   <v-snackbar :timeout="2000" color="primary" elevation="24">
                     <template #activator="{ props }">
@@ -52,7 +61,9 @@
                     Tutorial resetted
                   </v-snackbar>
                 </v-col>
+                <v-spacer />
               </v-row>
+              
             </v-window-item>
 
             <v-window-item value="pomodoro">
@@ -72,6 +83,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { useTheme } from 'vuetify'
 import { themeList } from '@/assets/themes'
@@ -79,6 +91,7 @@ import BaseDialog from '@/components/common/BaseDialog.vue'
 import type { Settings } from '@/types';
 
 const theme = useTheme();
+const state = useStateStore();
 const settingsStore = useSettingsStore();
 
 const props = defineProps<{ modelValue: boolean }>()
@@ -100,7 +113,15 @@ function setTheme(newTheme: string) {
   theme.global.name.value = newTheme;
 }
 function resetTutorial() {
-  // state.resetTutorial()
+  state.resetTutorial()
+}
+
+function exportData() {
+  state.downloadData();
+}
+
+function importData() {
+  state.uploadData();
 }
 
 

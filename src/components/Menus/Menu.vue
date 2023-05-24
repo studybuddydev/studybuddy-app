@@ -32,17 +32,7 @@
         :title="settings.settings.user?.username ?? 'Pippo'"
         subtitle="Local account" nav >
           <template v-slot:append v-if="!exam">
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-btn color="grey-lighten-1" icon="mdi-cog" variant="text" v-bind="props" />
-              </template>
-
-              <v-list>
-                <v-list-item title="Export data" @click="exportData()"/>
-                <v-list-item title="Import data" @click="importData()"/>
-                <v-list-item title="User Settings" @click="openUserSettings = true"/>
-              </v-list>
-            </v-menu>
+            <v-btn color="grey-lighten-1" icon="mdi-cog" variant="text" @click="openUserSettings = true" />
           </template>
       </v-list-item>
 

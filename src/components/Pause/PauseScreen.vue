@@ -6,22 +6,30 @@
         <h2 class="text-primary">BREAK</h2>
 
         <ul>
-          <li @click="resumePomodoro()">Resume</li>
-          <li>Settings</li>
+          <li @click="startPomodoro()" v-if="!pomodoroGoing">Start Pomodoro</li>
+          <li @click="resumePomodoro()" v-if="pomodoroGoing">Resume</li>
+          <li @click="stopPomodoro()" v-if="pomodoroGoing">Stop Pomodoro</li>
+          <li @click="openUserSettings = true">Settings</li>
         </ul>
       </div>
     </v-scroll-x-transition>
   </div>
+
+  <UserSettings class="settings" v-model="openUserSettings" />
+
 </template>
 
 <script lang="ts" setup>
+import UserSettings from '@/components/Popup/UserSettings.vue';
 import { ref, watch, computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 const pomodoro = usePomodoroStore();
 
+const openUserSettings = ref(false);
+
 const pause = ref(false);
 const pauseFromPomodoro = computed(() => pomodoro.status.isBreak && !!pomodoro.status.interval);
-
+const pomodoroGoing = computed(() => pomodoro.going);
 watch(pauseFromPomodoro, (value) => {
   pause.value = value;
 });
@@ -43,10 +51,24 @@ function resumePomodoro() {
   }
   pause.value = false;
 }
+
+function stopPomodoro() {
+  pomodoro.stopPomodoro();
+  pause.value = false;
+}
+
+function startPomodoro() {
+  pomodoro.startPomodoro();
+  pause.value = false;
+}
 </script>
 
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.settings {
+  z-index: 2001;
+}
 
 .pause-screen {
   position: absolute;
@@ -54,7 +76,7 @@ function resumePomodoro() {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 5000;
+  z-index: 1500;
 
   background-color: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(30px);

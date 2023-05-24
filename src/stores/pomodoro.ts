@@ -59,6 +59,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   function stopPomodoro() {
     if (status.value.interval !== null) {
+      console.log(status.value.interval)
       clearInterval(status.value.interval);
       status.value.interval = null;
     }
