@@ -62,10 +62,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useStateStore } from "@/stores/state";
+import { useSettingsStore } from "@/stores/settings";
 import { EPomodoroStatus } from '@/types';
 import { useTheme } from 'vuetify'
-import type { CurrentPomodoro } from '@/types';
+import type { PomodotoStatus } from '@/types';
 const state = useStateStore();
+const settingsStore = useSettingsStore();
 const theme = useTheme();
 
 
@@ -76,7 +78,7 @@ enum ESound {
 }
 
 // ---------- SETTINGS ------------
-const settings = ref(state.getPomodoroSettings());
+const settings = ref(settingsStore.settingsWithDefaults.pomodoro!.pomodoroSettings!);
 const tempSettings = ref( { ...settings.value } );
 const settingsOpen = ref(false);
 
@@ -87,7 +89,7 @@ function saveSettings() {
   tempSettings.value.nrStudy = +tempSettings.value.nrStudy;
   settings.value = { ...tempSettings.value };
   settingsOpen.value = false;
-  state.setPomodoroSettings(settings.value);
+  settingsStore.updatePomodoroSettings(settings.value);
 }
 
 function closeSettings() {
@@ -101,7 +103,7 @@ const barColor = computed(() => {
 });
 
 // ---------- TIMER ------------
-const cProgress = ref<CurrentPomodoro>(state.getCurrentPomodoro() ?? {
+const cProgress = ref<PomodotoStatus>(state.getPomodoroStatus() ?? {
   pomodoroRunning: false,
   msPassed: 0,
   msStarted: 0,
@@ -251,7 +253,7 @@ function stop() {
   cProgress.value.studyDone = 0;
   cProgress.value.pomodoriDone = 0;
   cProgress.value.pomodoroRunning = false;
-  state.removeCurrentPomodoro();
+  state.removePomodoroStatus();
 }
 
 function toggle() {
@@ -263,7 +265,7 @@ function toggle() {
   else if (nextStateAvailable.value)    nextState();
   else if (cProgress.value.paused)      play();
   else                                  pause();
-  state.setCurrentPomodoro(cProgress.value);
+  state.setPomodoroStatus(cProgress.value);
 }
 
 function playSound(sound: ESound) {

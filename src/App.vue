@@ -20,11 +20,6 @@ import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import Menu from '@/components/Menus/Menu.vue';
 import CookieBanner from '@/components/Cookie/CookieBanner.vue';
 import PauseScreen from '@/components/Pause/PauseScreen.vue';
-import { useTheme } from 'vuetify'
-import { useStateStore } from "@/stores/state";
-import BaseDialog from '@/components/common/BaseDialog.vue'
-const t = useStateStore().getTheme();
-if (t) useTheme().global.name.value = t;
 
 </script>
 

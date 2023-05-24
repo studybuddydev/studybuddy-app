@@ -19,7 +19,6 @@ export type Task = {
   isDeadline?: boolean,
 }
 
-
 export type WithLink = {
   links?: Link[];
 }
@@ -50,23 +49,25 @@ export type Exam = {
   tutorial?: boolean;
 } & StudyElement;
 
-// ---------- STATS ----------
-export type Stats = {
-  
+export type Event = {
+  title: string;
+  description: string;
+  color?: string;
+  start: {
+    hour: number;
+    minute: number;
+  },
+  length: number;
 }
+export type Deadline = {
+  name: string;
+  deadline: string;
+  type: DeadlineType;
+  color?: string;
+}
+export enum DeadlineType { Exam, Task }
 
-// ---------- SETTINGS ----------
-export type PomodoroSettings = {
-  studyLength: number;
-  shortBreakLength: number;
-  longBreakLength: number;
-  nrStudy: number;
-}
-export type PomodoroFlexSettings = {
-  numberOfBreak: number;
-  breakLength: number;
-  totalLength: string;
-}
+// ---------- POMODORO ----------
 export enum EPomodoroBreakStatus {
   DONE,
   DOING,
@@ -89,7 +90,7 @@ export enum EPomodoroStatus {
   ShortBreak,
   LongBreak,
 }
-export type CurrentPomodoro = {
+export type PomodotoStatus = {
   pomodoroRunning: boolean,
   msPassed: number,
   msStarted: number,
@@ -98,6 +99,19 @@ export type CurrentPomodoro = {
   studyDone: number,
   pomodoriDone: number,
 }
+
+// ---------- SETTINGS ----------
+export type PomodoroSettings = {
+  studyLength: number;
+  shortBreakLength: number;
+  longBreakLength: number;
+  nrStudy: number;
+}
+export type PomodoroFlexSettings = {
+  numberOfBreak: number;
+  breakLength: number;
+  totalLength: string;
+}
 export type UserSettings = {
   username: string;
   theme: string;
@@ -105,45 +119,24 @@ export type UserSettings = {
   lang: string;
 }
 
-export type Event = {
-  title: string;
-  description: string;
-  color?: string;
-  start: {
-    hour: number;
-    minute: number;
-  },
-  length: number;
-}
-
-export enum DeadlineType { Exam, Task }
 
 export type Settings = {
   pomodoro?: {
     pomodoroSettings?: PomodoroSettings;
     pomodoroFlexSettings?: PomodoroFlexSettings;
-    pomodoroFlexStatus?: PomodoroFlexStatus;
-    currentPomodoro?: CurrentPomodoro;
   };
   user?: UserSettings;
 }
 
-export type Deadline = {
-  name: string;
-  deadline: string;
-  type: DeadlineType;
-  color?: string;
-}
 
 export type State = {
-  username: string;
-  stats: Stats;
-
   data: {
     exams: Exam[];
     dashboard: StudyElement;
-    events: { [key: string]: Event[] }
+    events: { [key: string]: Event[] },
+    pomodoro: {
+      pomodoroStatus?: PomodotoStatus;
+      pomodoroFlexStatus?: PomodoroFlexStatus;
+    }
   }
-
-  settings: Settings;
 }

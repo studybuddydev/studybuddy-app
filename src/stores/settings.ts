@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { Settings } from '@/types'
+import type { PomodoroSettings, Settings } from '@/types'
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify'
 
@@ -56,6 +56,12 @@ export const useSettingsStore = defineStore('settings', () => {
     save();
   }
 
+  function updatePomodoroSettings(newSettings: PomodoroSettings) {
+    if (settings.value.pomodoro)
+      settings.value.pomodoro.pomodoroSettings = newSettings;
+    save();
+  }
+
   function save() {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings.value));
   }
@@ -73,7 +79,7 @@ export const useSettingsStore = defineStore('settings', () => {
   return {
     settings, settingsWithDefaults,
     userSettings, pomodoroSettings, pomodoroFlexSettings,
-    updateSettings,
+    updateSettings, updatePomodoroSettings,
     updateTheme, updateLanguage
   };
 });

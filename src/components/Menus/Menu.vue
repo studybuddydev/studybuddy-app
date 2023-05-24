@@ -29,7 +29,7 @@
       <v-list-item
         prepend-avatar="/images/pippo.webp"
         lines="two"
-        :title="state.getUserSettings().username"
+        :title="settings.settings.user?.username ?? 'Pippo'"
         subtitle="Local account"
         class="mb-10"
         nav >
@@ -85,11 +85,13 @@ import MenuList from '@/components/Menus/MenuList.vue';
 import { useRoute } from 'vue-router'
 import { ref, computed } from "vue";
 import { useStateStore } from "@/stores/state";
+import { useSettingsStore } from "@/stores/settings";
 import type { Chapter, Exam } from '@/types';
 import UserSettings from '@/components/Popup/UserSettings.vue';
 
 const route = useRoute()
 const state = useStateStore();
+const settings = useSettingsStore();
 const openUserSettings = ref(false);
 
 const exam = computed(() => route.params.exam ? state.getExam(route.params.exam as string) : undefined);
