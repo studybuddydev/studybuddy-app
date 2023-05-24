@@ -30,27 +30,23 @@
         prepend-avatar="/images/pippo.webp"
         lines="two"
         :title="settings.settings.user?.username ?? 'Pippo'"
-        subtitle="Local account"
-        class="mb-10"
-        nav >
+        subtitle="Local account" nav >
           <template v-slot:append v-if="!exam">
-
             <v-menu>
-            <template v-slot:activator="{ props }">
-              <v-btn color="grey-lighten-1" icon="mdi-cog" variant="text" v-bind="props" />
-            </template>
+              <template v-slot:activator="{ props }">
+                <v-btn color="grey-lighten-1" icon="mdi-cog" variant="text" v-bind="props" />
+              </template>
 
-            <v-list>
-              <v-list-item title="Export data" @click="exportData()"/>
-              <v-list-item title="Import data" @click="importData()"/>
-              <v-list-item title="User Settings" @click="openUserSettings = true"/>
-            </v-list>
-          </v-menu>
-
-
-
+              <v-list>
+                <v-list-item title="Export data" @click="exportData()"/>
+                <v-list-item title="Import data" @click="importData()"/>
+                <v-list-item title="User Settings" @click="openUserSettings = true"/>
+              </v-list>
+            </v-menu>
           </template>
       </v-list-item>
+
+      <PomodoroControls v-if="!exam" />
     </template>
   </v-navigation-drawer>
 
@@ -74,6 +70,10 @@
       :base-url="`exam/${exam.name}`"
     />
 
+    <template v-slot:append>
+      <PomodoroControls />
+    </template>
+
   </v-navigation-drawer>
 
   <UserSettings v-model="openUserSettings" />
@@ -88,6 +88,7 @@ import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import type { Chapter, Exam } from '@/types';
 import UserSettings from '@/components/Popup/UserSettings.vue';
+import PomodoroControls from '../Pomodoro/PomodoroControls.vue';
 
 const route = useRoute()
 const state = useStateStore();

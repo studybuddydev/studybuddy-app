@@ -1,46 +1,18 @@
 <template>
   <div class="pomodoro">
-
-    <div class="controls bg-secondary">
-      <div class="status">{{pomodoro.status.status}}</div>
-
-      <v-btn v-if="pomodoro.status.interval !== null && pomodoro.status.isBreak"
-        icon="mdi-stop"
-        variant="text" size="x-small"
-        @click="pomodoro.stopPomodoro()"
-      />
-      <v-btn v-if="pomodoro.status.interval !== null"
-        :icon="pomodoro.status.isBreak ? 'mdi-play' : 'mdi-pause'"
-        variant="text" size="small"
-        @click="pomodoro.nextStep()"
-      />
-      <v-btn v-if="pomodoro.status.interval === null"
-        icon="mdi-skip-next"
-        variant="text" size="small"
-        @click="pomodoro.startPomodoro()"
-      />
-    </div>
-
     <div class="progress-bar">
-
-      <div class="blocks-container">
-        <div class="progress" :style="{
-          backgroundColor: theme.current.value.colors.secondary,
-          color: theme.current.value.colors.surface,
-          width: `${pomodoro.percentage}%`,
-        }"> ⦿ </div>
-        <div v-for="b in pomodoro.status.breaks"
-          :title="getMinutesFromPercentage(b.lenght)"
-          :key="b.start"
-          class="break"
-          :style="{
-            backgroundColor: theme.current.value.colors.error,
-            marginLeft: `${b.start}%`,
-            width: `${b.lenght}%`,
+      <div class="progress" :style="{
+        backgroundColor: theme.current.value.colors.secondary,
+        color: theme.current.value.colors.surface,
+        width: `${pomodoro.percentage}%`,
+      }"> ⦿ </div>
+      <div v-for="b in pomodoro.status.breaks" :title="getMinutesFromPercentage(b.lenght)" :key="b.start" class="break"
+        :style="{
+          backgroundColor: theme.current.value.colors.error,
+          marginLeft: `${b.start}%`,
+          width: `${b.lenght}%`,
         }"><v-icon size="x-small" icon="mdi-food-apple" /></div>
-        <p class="text-primary progress-text">	{{getMinutesFromPercentage(pomodoro.percentage)}} </p>
-      </div>
-
+      <p class="text-primary progress-text"> {{ getMinutesFromPercentage(pomodoro.percentage) }} </p>
     </div>
   </div>
 </template>
@@ -68,87 +40,66 @@ function getMinutesFromPercentage(n: number) {
 $bar-height: 1.2em;
 
 .pomodoro {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   z-index: 6000;
   display: flex;
-  width: 100%;
   align-items: center;
+  border-radius: calc($bar-height / 2);
+  overflow: hidden;
+  margin: 0.4em 0.5em;
+  height: $bar-height;
+  background-color: #222;
+  filter: drop-shadow(0 0 0.2em #000);
+  flex-grow: 1;
 
-  .controls, .progress-bar {
-    border-radius: calc($bar-height / 2);
-    overflow: hidden;
-    margin: 0.4em 0.5em;
-  }
 
-  .controls {
+  .progress-bar {
     display: flex;
-    width: calc(256px - 2em);
-    margin: 0.3em 1em;
     align-items: center;
+    width: 100%;
 
-    .status {
-      flex-grow: 1;
-      padding: 0 1em;
+    .breaks-container {
+      display: flex;
+      justify-content: space-between;
     }
 
-  }
-  
-  .progress-bar {
-    height: $bar-height;
-    background-color: #222;
-    filter: drop-shadow(0 0 0.2em #000);
-    flex-grow: 1;
 
-    .blocks-container {
+    .break,
+    .progress {
+      height: $bar-height;
+      border-radius: 0.6em;
+      line-height: 1em;
+    }
+
+    .break {
+      position: absolute;
+      opacity: 0.7;
+      text-align: center;
       display: flex;
       align-items: center;
-
-      .breaks-container {
-        display: flex;
-        justify-content: space-between;
-      }
-
-
-      .break, .progress {
-        height: $bar-height;
-        border-radius: 0.6em;
-        line-height: 1em;
-      }
-
-      .break {
-        position: absolute;
-        opacity: 0.7;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      
-      .progress {
-        text-align: right;
-        line-height: $bar-height;
-      }
-
-
-      .progress-text {
-        opacity: 0;
-        position: absolute;
-        right: 0;
-        line-height: $bar-height;
-        padding: 0 0.5em;
-        transition: 0.15s opacity ease-in-out;
-      }
-      &:hover {
-        .progress-text {
-          opacity: 1;
-        }
-      }
+      justify-content: center;
     }
 
+    .progress {
+      text-align: right;
+      line-height: $bar-height;
+    }
+
+
+    .progress-text {
+      opacity: 0;
+      position: absolute;
+      right: 0;
+      line-height: $bar-height;
+      padding: 0 0.5em;
+      transition: 0.15s opacity ease-in-out;
+    }
+
+    &:hover {
+      .progress-text {
+        opacity: 1;
+      }
+    }
   }
+
 }
 </style>
