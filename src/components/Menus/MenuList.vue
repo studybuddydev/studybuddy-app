@@ -6,7 +6,7 @@
           class="rounded-lg my-2" :variant="element.tutorial ? 'outlined' : 'text'"
           @click="rail()"
           :prepend-icon="element.icon" :title="element.name" :value="element.name"
-          :active-color="element.color ?? props.color">
+          :color="element.color ?? props.color">
           <template v-slot:append>
             <v-menu>
               <template v-slot:activator="{ props }">
