@@ -5,7 +5,7 @@
         <v-btn icon dark @click="cancel()"> <v-icon>mdi-close</v-icon> </v-btn>
         <v-toolbar-title>{{ props.title }}</v-toolbar-title>
 
-        <template v-slot:extension v-if="extension">
+        <template v-slot:extension v-if="props.extension">
           <slot name="extension" />
         </template>
       </v-toolbar>
@@ -28,7 +28,7 @@ import { ref } from 'vue';
 type Props<G> = {
   modelValue: boolean,
   extension?: boolean,
-  title: string,
+  title?: string,
   data?: G,
 }
 
