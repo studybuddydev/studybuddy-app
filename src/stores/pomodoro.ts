@@ -52,9 +52,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     status.value.breaks = generateBreaks();
     percentage.value = 0;
     status.value.startMs = Date.now();
-  
-    saveStatus();
     status.value.interval = startInterval();
+    saveStatus();
   }
 
   function stopPomodoro() {

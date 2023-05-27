@@ -2,11 +2,18 @@
   <div transition="fade-transition">
     <v-scroll-x-transition>
       <div class="pause-screen" v-if="pause">
-        <p class="text-primary">You are taking a</p>
-        <h2 class="text-primary">BREAK</h2>
+        <div v-if="firstStart">
+          <p class="text-primary">Welcome to</p>
+          <h2 class="text-primary">Study Buddy</h2>
+        </div>
+        <div v-else>
+          <p class="text-primary">You are taking a</p>
+          <h2 class="text-primary">BREAK</h2>
+        </div>
 
         <ul>
-          <li @click="startPomodoro()" v-if="!pomodoroGoing">Start Pomodoro</li>
+          <li @click="startPomodoro()" v-if="!pomodoroGoing">Study</li>
+          <li @click="openTutorial()" v-if="firstStart">Tutorial</li>
           <li @click="resumePomodoro()" v-if="pomodoroGoing">Resume</li>
           <li @click="stopPomodoro()" v-if="pomodoroGoing">Stop Pomodoro</li>
           <li @click="openUserSettings = true">Settings</li>
@@ -23,13 +30,16 @@
 import UserSettings from '@/components/Popup/UserSettings.vue';
 import { ref, watch, computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
+import router from '@/router';
 const pomodoro = usePomodoroStore();
 
 const openUserSettings = ref(false);
 
-const pause = ref(false);
 const pauseFromPomodoro = computed(() => pomodoro.status.isBreak && !!pomodoro.status.interval);
 const pomodoroGoing = computed(() => pomodoro.going);
+const pause = ref(!pomodoroGoing.value);
+const firstStart = ref(!pomodoroGoing.value);
+console.log(pomodoroGoing.value)
 watch(pauseFromPomodoro, (value) => {
   pause.value = value;
 });
@@ -42,25 +52,36 @@ document.addEventListener('keyup', function (evt) {
     } else {
       pause.value = !pause.value;
     }
+    firstStart.value = false;
   }
 });
+
+function close() {
+  pause.value = false;
+  firstStart.value = false;
+}
 
 function resumePomodoro() {
   if (pomodoro.going && pauseFromPomodoro.value) {
     pomodoro.nextStep();
   }
-  pause.value = false;
+  close();
 }
 
 function stopPomodoro() {
   pomodoro.stopPomodoro();
-  pause.value = false;
+  close();
 }
 
 function startPomodoro() {
   pomodoro.startPomodoro();
-  pause.value = false;
+  close();
 }
+function openTutorial() {
+  router.push('/exam/Tutorial');
+  close();
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -88,10 +109,14 @@ function startPomodoro() {
   font-family: 'Press Start 2P', cursive;
 
   h2 {
+    text-align: center;
     font-size: 7rem;
+    max-width: 700px;
   }
-
+  
   p {
+    max-width: 700px;
+    text-align: center;
     font-size: 1rem;
   }
 
