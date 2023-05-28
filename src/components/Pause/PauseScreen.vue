@@ -18,6 +18,13 @@
           <li @click="stopPomodoro()" v-if="pomodoroGoing">Stop Pomodoro</li>
           <li @click="openUserSettings = true">Settings</li>
         </ul>
+
+        <div class="report" v-if="pomodoro.getReport.reportDone">
+          <p>Hai fatto <br />
+            {{ msTominutes(pomodoro.getReport.studyLength) }} minuti di studio <br />
+            {{ msTominutes(pomodoro.getReport.breakLength) }} minuti di pause
+          </p>
+        </div>
       </div>
     </v-scroll-x-transition>
   </div>
@@ -35,7 +42,7 @@ const pomodoro = usePomodoroStore();
 
 const openUserSettings = ref(false);
 
-const pauseFromPomodoro = computed(() => pomodoro.status.isBreak && !!pomodoro.status.interval);
+const pauseFromPomodoro = computed(() => pomodoro.status.isBreak && !!pomodoro.status.interval || pomodoro.itsStopped);
 const pomodoroGoing = computed(() => pomodoro.going);
 const pause = ref(!pomodoroGoing.value);
 const firstStart = ref(!pomodoroGoing.value);
@@ -80,6 +87,12 @@ function startPomodoro() {
 function openTutorial() {
   router.push('/exam/Tutorial');
   close();
+}
+
+function msTominutes(ms: number): string {
+  const minutes = Math.floor(ms / 1000 / 60);
+  const seconds = Math.floor((ms / 1000) % 60).toString().padStart(2, '0');
+  return `${minutes}:${seconds}`;
 }
 
 </script>
@@ -137,6 +150,13 @@ function openTutorial() {
         text-decoration: underline;
       }
     }
+  }
+
+  .report {
+    border: 1px solid rgb(var(--v-theme-primary));
+    padding: 2rem;
+    margin-top: 2rem;
+    border-radius: 1rem;
   }
 }
 </style>

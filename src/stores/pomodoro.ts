@@ -10,15 +10,35 @@ enum ESound {
   PomodoroDone = 'pomodoro.wav',
 }
 
+type PomodoroReport = {
+  reportDone: boolean;
+  studyLength: number;
+  breakLength: number;
+}
+
 export const usePomodoroStore = defineStore('pomodoro', () => {
 
   const settingsStore = useSettingsStore();
   const stateStore = useStateStore();
 
 
-  const MINUTE_MULTIPLIER = 60;
+  const currentReport = ref<PomodoroReport>({
+    reportDone: false,
+    studyLength: 0,
+    breakLength: 0,
+  });
+  
+  let breakStartTime: number | null = null;
+  const MINUTE_MULTIPLIER = 1;
   let pauseStartHit = false;
   let pauseEndHIt = false;
+  const timeToBreak = ref(false);
+  const finished = ref(false);
+  const stopped = ref(false);
+  const itsTimeToBreak = computed(() => timeToBreak.value);
+  const itsFinished = computed(() => finished.value);
+  const itsStopped = computed(() => stopped.value);
+  const getReport = computed(() => currentReport.value);
 
   const totalLength = computed(() => {
     const hm = settings.value.totalLength.split(':').map(x => +x);
@@ -47,12 +67,21 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
 
   function startPomodoro() {
+    currentReport.value = {
+      reportDone: false,
+      studyLength: 0,
+      breakLength: 0,
+    }
+    breakStartTime = null;
+    timeToBreak.value = false;
+    finished.value = false;
     status.value.isBreak = false;
     status.value.status = 'STUDIA!';
     status.value.breaks = generateBreaks();
     percentage.value = 0;
     status.value.startMs = Date.now();
     status.value.interval = startInterval();
+    stopped.value = false;
     saveStatus();
   }
 
@@ -62,8 +91,15 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       clearInterval(status.value.interval);
       status.value.interval = null;
     }
+
+    currentReport.value.studyLength += Date.now() - (status.value.startMs ?? Date.now());
+    if (status.value.isBreak) {
+      currentReport.value.breakLength += Date.now() - (breakStartTime ?? Date.now());
+    }
+    currentReport.value.reportDone = true;
   
     status.value.status = 'Reinizia!';
+    stopped.value = true;
     saveStatus();
   }
 
@@ -75,6 +111,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       const now = Date.now();
       percentage.value = (now - status.value.startMs) / (totalLength.value * MINUTE_MULTIPLIER *  10);
       if (percentage.value > 100) {
+        finished.value = true;
         percentage.value = 100;
         if (status.value.interval !== null) {
           clearInterval(status.value.interval);
@@ -91,12 +128,18 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     pauseStartHit = false;
     pauseEndHIt = false;
+    timeToBreak.value = false;
+
   
     for (const b of status.value.breaks) {
       if (b.status === EPomodoroBreakStatus.DOING) {
         b.lenght = percentage.value - b.start;
         b.status = EPomodoroBreakStatus.DONE;
         status.value.isBreak = false;
+        currentReport.value.breakLength += Date.now() - (breakStartTime ?? Date.now());
+        console.log(breakStartTime)
+        console.log(currentReport.value.breakLength)
+        breakStartTime = null;
         status.value.status = 'STUDIA!';
         saveStatus();
         return;
@@ -107,6 +150,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
         b.status = EPomodoroBreakStatus.DOING;
   
         status.value.isBreak = true;
+        breakStartTime = Date.now();
         status.value.status = 'Relax';
         saveStatus();
         return;
@@ -120,6 +164,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       status: EPomodoroBreakStatus.DOING
     });
     status.value.isBreak = true;
+    breakStartTime = Date.now();
     status.value.status = 'Relax';
     saveStatus();
   
@@ -158,10 +203,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
           } else {
             b.start = capoTreno;
             capoTreno = b.start + b.lenght;
+            if (!timeToBreak.value) timeToBreak.value = true;
   
             if (!pauseStartHit) {
               playSound(ESound.BreakStart);
-              pauseStartHit = true;
               saveStatus();
             }
           }
@@ -196,7 +241,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   return {
     MINUTE_MULTIPLIER,
-    breakLengthPercentage, going, totalLength,
+    breakLengthPercentage, going, totalLength, itsTimeToBreak, itsFinished, getReport, itsStopped,
     settings, percentage, status,
     startPomodoro, stopPomodoro, nextStep
   }
