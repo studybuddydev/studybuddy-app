@@ -26,7 +26,7 @@
       />
 
     <template v-slot:append>
-      <v-list-item
+      <!-- <v-list-item
         prepend-avatar="/images/pippo.webp"
         lines="two"
         :title="settings.settings.user?.username ?? 'Pippo'"
@@ -34,7 +34,7 @@
           <template v-slot:append v-if="!exam">
             <v-btn color="grey-lighten-1" icon="mdi-cog" variant="text" @click="openUserSettings = true" />
           </template>
-      </v-list-item>
+      </v-list-item> -->
 
       <PomodoroControls v-if="!exam" />
     </template>

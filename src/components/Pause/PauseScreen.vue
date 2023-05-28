@@ -6,6 +6,10 @@
           <p class="text-primary">Welcome to</p>
           <h2 class="text-primary">Study Buddy</h2>
         </div>
+        <div v-else-if="pomodoro.getReport.reportDone">
+          <p class="text-primary">You finished a pomodoro</p>
+          <h2 class="text-primary">GOOD JOB</h2>
+        </div>
         <div v-else>
           <p class="text-primary">You are taking a</p>
           <h2 class="text-primary">BREAK</h2>
@@ -123,7 +127,7 @@ function msTominutes(ms: number): string {
 
   h2 {
     text-align: center;
-    font-size: 7rem;
+    font-size: 5rem;
     max-width: 700px;
   }
   
