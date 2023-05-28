@@ -29,7 +29,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   });
   
   let breakStartTime: number | null = null;
-  const MINUTE_MULTIPLIER = 60;
+  const MINUTE_MULTIPLIER = 1;
   let pauseStartHit = false;
   let pauseEndHIt = false;
   const timeToBreak = ref(false);
@@ -204,6 +204,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   
             if (!pauseStartHit) {
               playSound(ESound.BreakStart);
+              pauseStartHit = true;
               saveStatus();
             }
           }
