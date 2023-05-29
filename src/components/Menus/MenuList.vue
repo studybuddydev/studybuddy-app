@@ -176,7 +176,7 @@ const mdiIconsList = ref([
   { icon: "mdi-desktop-tower-monitor", title: 'Desktop' },
   { icon: "mdi-puzzle-outline", title: 'Puzzle' },
   { icon: "mdi-animation-outline", title: 'Animation' },
-  { icon: "mdi-microscope-variant", title: 'Microscope' },
+  { icon: "mdi-microscope", title: 'Microscope' },
   { icon: "mdi-camera-outline", title: 'Camera' },
   { icon: "mdi-wallet-outline", title: 'Wallet' },
   { icon: "mdi-account-supervisor-outline", title: 'Account' },
