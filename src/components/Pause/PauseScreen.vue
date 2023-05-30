@@ -139,6 +139,10 @@ function msTominutes(ms: number): string {
     font-size: 1rem;
   }
 
+  ul, .report {
+    color: rgb(var(--v-theme-secondary));
+  }
+
   ul {
     list-style: none;
     margin-top: 2rem;
@@ -149,7 +153,6 @@ function msTominutes(ms: number): string {
       text-align: center;
       cursor: pointer;
       padding: 0.5rem;
-      color: rgb(var(--v-theme-secondary));
 
       // text-shadow: -1px -1px 0 rgb(var(--v-theme-primary)), 1px -1px 0 rgb(var(--v-theme-primary)), -1px 1px 0 rgb(var(--v-theme-primary)), 1px 1px 0 rgb(var(--v-theme-primary));
 
