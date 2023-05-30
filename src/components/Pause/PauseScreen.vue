@@ -19,7 +19,7 @@
           <li @click="startPomodoro()" v-if="!pomodoroGoing">Study</li>
           <li @click="openTutorial()" v-if="firstStart">Tutorial</li>
           <li @click="resumePomodoro()" v-if="pomodoroGoing">Resume</li>
-          <li @click="stopPomodoro()" v-if="pomodoroGoing">Stop Pomodoro</li>
+          <li @click="restartPomodoro()" v-if="pomodoroGoing">Restart</li>
           <li @click="openUserSettings = true">Settings</li>
         </ul>
 
@@ -46,7 +46,7 @@ const pomodoro = usePomodoroStore();
 
 const openUserSettings = ref(false);
 
-const pauseFromPomodoro = computed(() => pomodoro.status.isBreak && !!pomodoro.status.interval || pomodoro.itsStopped);
+const pauseFromPomodoro = computed(() => (pomodoro.status.isBreak && !!pomodoro.status.interval) || pomodoro.itsStopped);
 const pomodoroGoing = computed(() => pomodoro.going);
 const pause = ref(!pomodoroGoing.value);
 const firstStart = ref(!pomodoroGoing.value);
@@ -79,8 +79,9 @@ function resumePomodoro() {
   close();
 }
 
-function stopPomodoro() {
+function restartPomodoro() {
   pomodoro.stopPomodoro();
+  pomodoro.startPomodoro();
   close();
 }
 
@@ -89,6 +90,7 @@ function startPomodoro() {
   close();
 }
 function openTutorial() {
+  pomodoro.startPomodoro();
   router.push('/exam/Tutorial');
   close();
 }
@@ -147,6 +149,9 @@ function msTominutes(ms: number): string {
       text-align: center;
       cursor: pointer;
       padding: 0.5rem;
+      color: rgb(var(--v-theme-secondary));
+
+      // text-shadow: -1px -1px 0 rgb(var(--v-theme-primary)), 1px -1px 0 rgb(var(--v-theme-primary)), -1px 1px 0 rgb(var(--v-theme-primary)), 1px 1px 0 rgb(var(--v-theme-primary));
 
 
       &:hover {

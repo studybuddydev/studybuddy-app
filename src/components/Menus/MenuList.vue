@@ -127,6 +127,8 @@ function addElement() {
   newElementDialog.value.element =  { ...defaultElement };
   newElementDialog.value.original = undefined;
   newElementDialog.value.open = true;
+  if (newElementDialog.value.element?.icon)
+    newElementDialog.value.element.icon = mdiIconsList.value[Math.floor(Math.random() * mdiIconsList.value.length)].icon;
   if (newElementDialog.value.element?.color)
     newElementDialog.value.element.color = colorList[Math.floor(Math.random() * colorList.length)].color;
 }

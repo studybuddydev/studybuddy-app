@@ -9,7 +9,7 @@
     <template #extension>
       <v-tabs v-model="tab">
         <v-tab value="general">General</v-tab>
-        <v-tab value="pomodoro">Pomodoro</v-tab>
+        <v-tab value="pomodoro">Timer</v-tab>
       </v-tabs>
     </template>
     <template #default="{ data }">
