@@ -3,10 +3,13 @@
     <draggable item-key="name" :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" >
       <template #item="{element}">
         <v-list-item link :to="`/${baseUrl}/${element.name}`"
-          class="rounded-lg my-2" :variant="element.tutorial ? 'outlined' : 'text'"
+          class="rounded-lg my-2 " :variant="element.tutorial ? 'outlined' : 'text'"
           @click="rail()"
-          :prepend-icon="element.icon" :title="element.name" :value="element.name"
+          :prepend-icon="element.icon" :value="element.name"
           :color="element.color ?? props.color">
+          <v-list-item-title :class="areExams ? 'text-uppercase exam-title' : ''">
+            {{element.name}}
+          </v-list-item-title>
           <template v-slot:append>
             <v-menu>
               <template v-slot:activator="{ props }">
@@ -201,3 +204,9 @@ const colorList = [
 ];
 
 </script>
+
+<style scoped>
+.exam-title {
+  font-weight: bold;
+}
+</style>
