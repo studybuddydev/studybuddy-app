@@ -1,6 +1,6 @@
 <template>
 
-  <Calendar view="weekly" is-dark="system" :first-day-of-week="2" @update:pages="($event) => changePage($event)">
+  <Calendar view="weekly" is-dark :first-day-of-week="2" @update:pages="($event) => changePage($event)">
     <template v-slot:day-content="{ day, attributes}">
       <div :class="(day.date as Date).getDay() === 1 ? 'day-slot first-day' : 'day-slot'">
 

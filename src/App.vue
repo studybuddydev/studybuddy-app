@@ -1,25 +1,27 @@
 <template>
-  <v-app id="inspire">
-    <Pomodoro /> <!-- keep it on the top -->
+  <v-app id="inspire" >
     <Menu />
     <v-main class="main">
-      <router-view :key="$route.fullPath"></router-view>
+      <div class="main-wrapper">
+        <router-view :key="$route.fullPath"></router-view>
+        <PomodoroFlex class="pomodoro" />
+      </div>
     </v-main>
-
+    
     <CookieBanner />
+
+    <PauseScreen />
+
   </v-app>
 
 </template>
 
 
 <script setup lang="ts">
-import Pomodoro from '@/components/Pomodoro/Pomodoro.vue';
+import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import Menu from '@/components/Menus/Menu.vue';
 import CookieBanner from '@/components/Cookie/CookieBanner.vue';
-import { useTheme } from 'vuetify'
-import { useStateStore } from "@/stores/state";
-const t = useStateStore().getTheme();
-if (t) useTheme().global.name.value = t;
+import PauseScreen from '@/components/Pause/PauseScreen.vue';
 
 </script>
 
@@ -27,5 +29,17 @@ if (t) useTheme().global.name.value = t;
 .main {
   height: 100vh;
   overflow: auto;
+
+  .main-wrapper {
+    height: 100%;
+    position: relative;
+
+    .pomodoro {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  } 
 }
 </style>

@@ -3,10 +3,13 @@
     <draggable item-key="name" :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" >
       <template #item="{element}">
         <v-list-item link :to="`/${baseUrl}/${element.name}`"
-          class="rounded-lg my-2" :variant="element.tutorial ? 'outlined' : 'text'"
+          class="rounded-lg my-2 " :variant="element.tutorial ? 'outlined' : 'text'"
           @click="rail()"
-          :prepend-icon="element.icon" :title="element.name" :value="element.name"
-          :active-color="element.color ?? props.color">
+          :prepend-icon="element.icon" :value="element.name"
+          :color="element.color ?? props.color">
+          <v-list-item-title :class="areExams ? 'text-uppercase exam-title' : ''">
+            {{element.name}}
+          </v-list-item-title>
           <template v-slot:append>
             <v-menu>
               <template v-slot:activator="{ props }">
@@ -73,7 +76,7 @@
                 :prepend-icon="newElementDialog.element.icon"
               >
                 <template v-slot:item="{ props: item }">
-                  <v-list-item v-bind="item" :prepend-icon="item.value" :title="item.title" />
+                  <v-list-item v-bind="(item as any)" :prepend-icon="(item.value as any)" :title="item.title" />
                 </template>
               </v-select>
             </v-col>
@@ -127,6 +130,8 @@ function addElement() {
   newElementDialog.value.element =  { ...defaultElement };
   newElementDialog.value.original = undefined;
   newElementDialog.value.open = true;
+  if (newElementDialog.value.element?.icon)
+    newElementDialog.value.element.icon = mdiIconsList.value[Math.floor(Math.random() * mdiIconsList.value.length)].icon;
   if (newElementDialog.value.element?.color)
     newElementDialog.value.element.color = colorList[Math.floor(Math.random() * colorList.length)].color;
 }
@@ -176,7 +181,7 @@ const mdiIconsList = ref([
   { icon: "mdi-desktop-tower-monitor", title: 'Desktop' },
   { icon: "mdi-puzzle-outline", title: 'Puzzle' },
   { icon: "mdi-animation-outline", title: 'Animation' },
-  { icon: "mdi-microscope-variant", title: 'Microscope' },
+  { icon: "mdi-microscope", title: 'Microscope' },
   { icon: "mdi-camera-outline", title: 'Camera' },
   { icon: "mdi-wallet-outline", title: 'Wallet' },
   { icon: "mdi-account-supervisor-outline", title: 'Account' },
@@ -199,3 +204,9 @@ const colorList = [
 ];
 
 </script>
+
+<style scoped>
+.exam-title {
+  font-weight: bold;
+}
+</style>

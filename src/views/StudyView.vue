@@ -1,23 +1,18 @@
 <template>
-  
   <v-container>
     <h1>{{ element.name }}</h1>
     <SBalendar v-if="pageType === EStudyView.Dashboard" />
-  
+
     <div class="content">
-      <ToDo   class="todo" :element="element" ref="todoRef" />
+      <ToDo class="todo" :element="element" ref="todoRef" />
       <PostIt class="note" :element="element" ref="postitRef" />
-      <Links  class="link" :element="element" ref="linkRef" />
+      <Links class="link" :element="element" ref="linkRef" />
     </div>
 
   </v-container>
 
-  <Add
-    @addLink="linkRef?.openNewLink()"
-    @addPostIt="postitRef?.addPostIt()"
-    @addTodo="todoRef?.showHideTodo($event)"
-    :showTodo="!!element?.showTasks"
-  />
+  <Add @addLink="linkRef?.openNewLink()" @addPostIt="postitRef?.addPostIt()" @addTodo="todoRef?.showHideTodo($event)"
+    :showTodo="!!element?.showTasks" />
 </template>
 
 
@@ -30,6 +25,9 @@ import PostIt from '@/components/PostIt/PostIt.vue'
 import ToDo from '@/components/ToDo/ToDo.vue'
 import Add from '@/components/Add/Add.vue'
 import { EStudyView } from '@/types';
+import BaseDialog from '@/components/common/BaseDialog.vue'
+const baseDialog = ref(true);
+
 
 import { useRoute } from 'vue-router'
 import { useStateStore } from "@/stores/state";
@@ -52,6 +50,7 @@ const todoRef = ref<InstanceType<typeof ToDo> | null>(null);
   grid-template-rows: auto auto;
 
 }
+
 .link {
   grid-column: 1 / 3;
 }

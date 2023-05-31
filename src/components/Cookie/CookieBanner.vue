@@ -5,8 +5,8 @@
     </template>
 
     <v-banner-text>
-      <h3>Vuoi i biscottini?</h3>
-      I biscottini ci aiutano a far andare meglio il nostro sito, mangiali!
+      <h3>Vuoi i biscotti?</h3>
+      I biscotti servono per avere statistiche sul vostro uso della piattaforma!
     </v-banner-text>
 
     <v-banner-actions>
@@ -37,6 +37,6 @@ function closeCookie(cookies: boolean) {
   width: 400px !important;
   top: 0;
   right: 0;
-  z-index: 10000;
+  z-index: 3000;
 }
 </style>

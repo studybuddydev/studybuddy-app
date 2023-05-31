@@ -26,30 +26,17 @@
       />
 
     <template v-slot:append>
-      <v-list-item
+      <!-- <v-list-item
         prepend-avatar="/images/pippo.webp"
         lines="two"
-        :title="state.getUserSettings().username"
-        subtitle="Local account"
-        nav >
+        :title="settings.settings.user?.username ?? 'Pippo'"
+        subtitle="Local account" nav >
           <template v-slot:append v-if="!exam">
-
-            <v-menu>
-            <template v-slot:activator="{ props }">
-              <v-btn color="grey-lighten-1" icon="mdi-cog" variant="text" v-bind="props" />
-            </template>
-
-            <v-list>
-              <v-list-item title="Export data" @click="exportData()"/>
-              <v-list-item title="Import data" @click="importData()"/>
-              <v-list-item title="User Settings" @click="openUserSettings = true"/>
-            </v-list>
-          </v-menu>
-
-
-
+            <v-btn color="grey-lighten-1" icon="mdi-cog" variant="text" @click="openUserSettings = true" />
           </template>
-      </v-list-item>
+      </v-list-item> -->
+
+      <PomodoroControls v-if="!exam" />
     </template>
   </v-navigation-drawer>
 
@@ -73,6 +60,10 @@
       :base-url="`exam/${exam.name}`"
     />
 
+    <template v-slot:append>
+      <PomodoroControls />
+    </template>
+
   </v-navigation-drawer>
 
   <UserSettings v-model="openUserSettings" />
@@ -84,11 +75,14 @@ import MenuList from '@/components/Menus/MenuList.vue';
 import { useRoute } from 'vue-router'
 import { ref, computed } from "vue";
 import { useStateStore } from "@/stores/state";
+import { useSettingsStore } from "@/stores/settings";
 import type { Chapter, Exam } from '@/types';
 import UserSettings from '@/components/Popup/UserSettings.vue';
+import PomodoroControls from '../Pomodoro/PomodoroControls.vue';
 
 const route = useRoute()
 const state = useStateStore();
+const settings = useSettingsStore();
 const openUserSettings = ref(false);
 
 const exam = computed(() => route.params.exam ? state.getExam(route.params.exam as string) : undefined);

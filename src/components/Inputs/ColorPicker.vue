@@ -3,7 +3,7 @@
     :items="colorList" item-title="title" item-value="color"
     :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" >
   <template v-slot:item="{ props: item }">
-    <v-icon class="ma-1 pa-2" v-bind="item" :color="item.value">mdi-circle</v-icon>
+    <v-icon class="ma-1 pa-2" v-bind="(item as any)" :color="item.value">mdi-circle</v-icon>
   </template>
   <template v-slot:prepend>
     <v-icon :color="modelValue">mdi-circle</v-icon>
