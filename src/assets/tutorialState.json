@@ -1,0 +1,285 @@
+{
+  "exams": [
+    {
+      "name": "Benvenuto",
+      "icon": "mdi-account-school",
+      "color": "indigo",
+      "postIts": [
+        {
+          "color": "#e6b905",
+          "content": "<p>Ciao! grazie di essere qui a testare <strong>StudyBuddy</strong></p><p><br></p><p>la piattaforma è in una fase ancora embrionale e in costante evoluzione, il tuo supporto e feedback è necessario per costruire l'applicazione nel migliore dei modi ed aiutare più studenti possibile.</p>"
+        }
+      ]
+    },
+    {
+      "name": "TIMER",
+      "icon": "mdi-atom-variant",
+      "color": "deep-orange",
+      "postIts": [
+        {
+          "color": "#e6b905",
+          "content": "<p><strong>INTRO</strong></p><p>In basso nella pagina puoi vedere un timer che scorre rappresentato da un serpente verde. </p><p>L'obiettivo è arrivare in fondo alla sessione di studio, nel mezzo della quale si hanno a disposizione delle pause (le mele) che si possono fare in qualsiasi momento.</p>"
+        },
+        {
+          "color": "#6ed261",
+          "content": "<p><strong>LE PAUSE</strong></p><p>Di default durano 5 minuti. Le pause brevi servono per prendere un po' d'aria, mangiare una mela e riposare gli occhi, rimanendo però concentrati e rielaborando inconsciamente quanto si è studiato fino a quel momento.</p><p><br></p><p>Ti consigliamo di non abbandonarti alle distrazioni dei social e simili e di goderti al meglio questi meritati 5 minuti. Piuttosto fai una passeggiata verso il bagno o bevi dell'acqua.</p><p>La pausa può essere interrotta in qualsiasi momento.</p>"
+        },
+        {
+          "color": "#ea86c2",
+          "content": "<p><strong>MOTIVAZIONE</strong></p><p><strong>tracciare il tempo di studio e di pausa ha molteplici pro:</strong></p><p><br></p><ul><li>chiarezza mentale tra momento di studio e di pausa </li><li>consapevolezza di come hai gestito il tempo</li><li>resistenza alle distrazioni (telefono ecc...) durante la fase di studio </li></ul>"
+        }
+      ],
+      "chapters": [
+        {
+          "name": "Tenica del pomodoro ",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>Il timer è stato pensato per seguire la famosa<strong> tecnica del pomodoro</strong>:</p><p><br></p><p>Una sessione di studio dura 2 ore divisa tra studio concentrato e piccoli break:</p><p><br></p><p><strong>25 min studio </strong></p><p><strong>5 min break </strong></p><p><br></p><p>ripetere questo per 4 volte</p><p><br></p><p>Alla fine pausa lunga: questa è la vera pausa in cui finalmente si può tornare a scrollare (se proprio necessario) o farsi una passeggiata e tornare più carichi di prima.</p><p><br></p><p>E' inoltre possibile modificare le impostazioni se si desidera seguire tempistiche differenti.</p><p><br></p><p>Se vuoi scoprire di più su questa tecnica clicca sul link.</p>"
+            }
+          ]
+        },
+        {
+          "name": "Pomodoro flessibile",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>Abbiamo notato, intervistando diverse persone, che la tecnica del pomodoro ha  alcuni limiti, tra cui:</p><ul><li>25 minuti sono pochi per molte persone</li><li>confusionaria </li><li> c'è chi preferisce fare 1 ora di seguito (o più)</li><li>non si vuole interrompere l'esercizio/capitolo a metà per fare pausa</li></ul>"
+            },
+            {
+              "color": "#6ed261",
+              "content": "<p>Per questa ragione abbiamo ideato il <strong>pomodoro flessibile</strong>, con l'obbiettivo di provare a risolvere queste criticità.</p><p>Adesso si ragiona a<u> sessioni si studio</u>: una sessione normalmente dura due ore e ha 3 pause da 5 minuti in mezzo (stessi intervalli del pomodoro classico). Quando sarebbe prevista la pausa verrà suggerito graficamente e con un suono, ma si può mettere in pausa quando si vuole secondo le proprie esigenze.</p>"
+            }
+          ]
+        },
+        {
+          "name": "Timer libero",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>Ancora da implementare, è un'opzione per tutti quelli che vogliono studiare senza le costrizioni temporali imposte dalle tecniche precedenti. </p><p><br></p><p>L'obiettivo è quindi quello di avere un resoconto di quanto tempo si è effettivamente impiegato a studiare rispetto alle pause, eventualmente confrontandolo con le proprie aspettative.</p>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TODO",
+      "icon": "mdi-book-open-page-variant",
+      "color": "orange",
+      "postIts": [],
+      "chapters": [
+        {
+          "name": "Spiegazione",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>La ToDo list può essere mostrata tramite il tasto + in basso a destra nella schermata.</p><p><br></p><p>Esistono due tipi di Todo: </p><ul><li>Deadline: hanno una scadenza e stanno nella colonna di sinistra</li><li>Senza Data: nella colonna di destra, di default, in ogni momento di può aggiungere una data e spostarlo tra le deadlines</li></ul><p><br></p><p>Quelli con deadline compaiono nel calendario in home page.</p><p><br></p><p>Una volta marcato come 'fatto'  verrà spostato nella lista \"done\".</p>"
+            }
+          ]
+        },
+        {
+          "name": "Todo semplice ",
+          "showTasks": true,
+          "tasks": [
+            {
+              "name": "ecco un todo ",
+              "done": false
+            },
+            {
+              "name": "eccone un altro ",
+              "done": false
+            },
+            {
+              "name": "eccone un altro ancora completato",
+              "done": true
+            }
+          ]
+        },
+        {
+          "name": "Deadlines",
+          "showTasks": true,
+          "tasks": [
+            {
+              "name": "un task normale può diventare una deadline",
+              "done": false,
+              "notes": "basta cliccarci sopra, aprire questo specchietto (che farei di un altro colore) e dopo aver aggiunto una data cliccare sul bottone move to deadline",
+              "deadline": "2023-05-30",
+              "isDeadline": true
+            },
+            {
+              "name": "e finisce in una colonna diversa",
+              "done": false
+            }
+          ]
+        }
+      ],
+      "showTasks": true
+    },
+    {
+      "name": "POST-IT",
+      "icon": "mdi-format-list-bulleted",
+      "color": "green",
+      "postIts": [
+        {
+          "color": "#e6b905",
+          "content": "<p>Anche il funzionamento dei post-it è molto semplice: basta aggiungerli dal + in basso a destra.</p>"
+        },
+        {
+          "color": "#6ed261",
+          "content": "<p>cliccando sulla tavolozza si può cambiare colore.</p><p>Cliccando sulla X si elimina il post-it.</p>"
+        },
+        {
+          "color": "#e6b905",
+          "content": "<p>usando le shortcut della tastiera si può anche formattare il testo:</p><p><br></p><ul><li>con - si crea un elenco puntato</li><li><strong>grassetto</strong> (ctrl o cmd + b)</li><li><em>corsivo</em> (ctrl o cmd + i)</li><li><u>sottolineato</u> (ctrl o cmd + u)</li></ul>"
+        }
+      ]
+    },
+    {
+      "name": "LINK",
+      "icon": "mdi-brain",
+      "color": "blue-grey",
+      "postIts": [
+        {
+          "color": "#e6b905",
+          "content": "<p>C'è la possibilità di aggiungere tutti i link che possono essere utili. Anche in questo caso basta premere il + in basso a destra.</p>"
+        }
+      ],
+      "links": [
+        {
+          "name": "Welcome to StudyBuddy",
+          "url": "https://studybuddy.it"
+        },
+        {
+          "name": "Google",
+          "url": "https://www.google.it/"
+        }
+      ]
+    },
+    {
+      "name": "CALENDARIO",
+      "icon": "mdi-wallet-outline",
+      "color": "brown",
+      "postIts": [
+        {
+          "color": "#e6b905",
+          "content": "<p>Nel calendario in home page puoi aggiungere un evento cliccando il punto in cui lo vorresti aggiungere.&nbsp;</p><p><br></p><p><br></p><p>Puoi quindi modificare il titolo, l'orario di inizio, la durata, il colore e aggiungere note relative all'evento.&nbsp;</p><p><br></p><p><br></p><p>Puoi anche trascinare verticalmente l'evento per spostarlo all'interno della stessa giornata e allungarlo per modificarne la durata.</p><p><br></p><p><strong>Prossimi passi</strong></p><ul><li>vista mensile</li><li>mettere i pomodori fatti</li></ul>"
+        }
+      ],
+      "chapters": [
+        {
+          "name": "v0.3 vista mensile ",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>ad ogni aggiornamento del componente qua in cima compare un nuovo elemento</p>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ESAMI",
+      "icon": "mdi-puzzle-outline",
+      "color": "grey",
+      "postIts": [
+        {
+          "color": "#e6b905",
+          "content": "<p>Questo è un esame vuoto in cui puoi provare tutti i componenti che vuoi</p>"
+        }
+      ]
+    }
+  ],
+  "dashboard": {
+    "name": "StudyBuddy",
+    "links": [],
+    "postIts": [],
+    "tasks": [],
+    "showTasks": false
+  },
+  "events": {
+    "2023-05-17": [
+      {
+        "title": "Nuovo event",
+        "description": "",
+        "start": {
+          "hour": 14,
+          "minute": 30
+        },
+        "length": 60
+      }
+    ],
+    "2023-05-27": [
+      {
+        "title": "fare tutorial DtudySuddy",
+        "description": "",
+        "start": {
+          "hour": 9,
+          "minute": 0
+        },
+        "length": 60,
+        "color": "teal"
+      },
+      {
+        "title": "pranzo pollo del mercato",
+        "description": "",
+        "start": {
+          "hour": 13,
+          "minute": 0
+        },
+        "length": 60,
+        "color": "deep-orange"
+      },
+      {
+        "title": "Sessione di studio",
+        "description": "",
+        "start": {
+          "hour": 10,
+          "minute": 30
+        },
+        "length": 120
+      },
+      {
+        "title": "Sessione di studio ",
+        "description": "",
+        "start": {
+          "hour": 14,
+          "minute": 30
+        },
+        "length": 90
+      }
+    ],
+    "2023-05-26": [
+      {
+        "title": "Nuovo event",
+        "description": "",
+        "start": {
+          "hour": 8,
+          "minute": 30
+        },
+        "length": 60
+      }
+    ],
+    "2023-05-31": [
+      {
+        "title": "Fare Tutorial Buddy Study",
+        "description": "",
+        "start": {
+          "hour": 10,
+          "minute": 46
+        },
+        "length": 60
+      },
+      {
+        "title": "sessione di studio ",
+        "description": "",
+        "start": {
+          "hour": 12,
+          "minute": 31
+        },
+        "length": 120,
+        "color": "teal"
+      }
+    ]
+  }
+}

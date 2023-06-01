@@ -3,31 +3,40 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { type State, type Exam, type PomodoroSettings, type Chapter, type PomodotoStatus, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType, type PomodoroFlexSettings, type PomodoroFlexStatus, type Settings } from '@/types'
 import defaultState from '@/assets/defaultState.json';
+import tutorialState from '@/assets/tutorialState.json';
 
 const defaultData: State = {
   data: {
     exams: defaultState.exams ??  [],
     dashboard: defaultState.dashboard ?? { name: 'StudyBuddy', links: [], postIts: [], showTasks: false, tasks: [] },
     events: defaultState.events ?? {},
-    pomodoro: {},
   },
+  pomodoro: {},
 }
+const defaulDataCopy = JSON.parse(JSON.stringify(defaultData)) as State;
 
 export const useStateStore = defineStore('state', () => {
 
-  const defaulDataCopy = JSON.parse(JSON.stringify(defaultData)) as State;
 
-  const lsState = JSON.parse(localStorage.getItem('state') || '{}') as State ?? {};
-  if (!lsState.data) lsState.data = defaulDataCopy.data;
-  if (!lsState.data.exams) lsState.data.exams = defaulDataCopy.data.exams;
-  if (!lsState.data.dashboard) lsState.data.dashboard = defaulDataCopy.data.dashboard;
-  if (!lsState.data.events) lsState.data.events = defaulDataCopy.data.events;
-  if (!lsState.data.pomodoro) lsState.data.pomodoro = defaulDataCopy.data.pomodoro;
-  const state = ref(lsState);
+  const state = ref(loadState());
+  const isTutorial = ref(false);
+  const isInTutorial = computed(() => isTutorial.value);
+
+  function loadState(): State {
+    const lsState = JSON.parse(localStorage.getItem('state') || '{}') as State ?? {};
+    if (!lsState.data) lsState.data = defaulDataCopy.data;
+    if (!lsState.data.exams) lsState.data.exams = defaulDataCopy.data.exams;
+    if (!lsState.data.dashboard) lsState.data.dashboard = defaulDataCopy.data.dashboard;
+    if (!lsState.data.events) lsState.data.events = defaulDataCopy.data.events;
+    if (!lsState.pomodoro) lsState.pomodoro = defaulDataCopy.pomodoro;
+
+    return lsState;
+  }
 
 
   // ========= Generic =========
   function save() {
+    if (isTutorial.value) return;
     console.log('Saving localstorage')
     localStorage.setItem('state', JSON.stringify(state.value));
   }
@@ -51,7 +60,7 @@ export const useStateStore = defineStore('state', () => {
     if (examName) {
       const exam = getExam(examName);
       if (chapterName) {
-        const chapter = exam?.chapters.find(c => c.name === chapterName);
+        const chapter = exam?.chapters?.find(c => c.name === chapterName);
         if (chapter) return chapter;
       }
       if (exam) return exam;
@@ -93,17 +102,18 @@ export const useStateStore = defineStore('state', () => {
     save();
   }
   function addChapter(exam: Exam, chapter: Chapter) {
+    if (!exam.chapters) exam.chapters = [];
     exam.chapters.push(chapter);
     save();
   }
   function editChapter(exam: Exam, i: number, chapter: Chapter) {
-    const ch = exam.chapters[i];
+    const ch = exam.chapters?.[i];
     if (!ch) return;
     ch.name = chapter.name;
     save();
   }
   function removeChapter(exam: Exam, i: number) {
-    exam.chapters.splice(i, 1);
+    exam.chapters?.splice(i, 1);
     save();
   }
 
@@ -177,23 +187,23 @@ export const useStateStore = defineStore('state', () => {
 
   // Pomodoro
   function getPomodoroStatus(): PomodotoStatus | undefined {
-    return state.value.data.pomodoro.pomodoroStatus;
+    return state.value.pomodoro.pomodoroStatus;
   }
   function setPomodoroStatus(pomodoro: PomodotoStatus) {
-    state.value.data.pomodoro.pomodoroStatus = { ...pomodoro };
+    state.value.pomodoro.pomodoroStatus = { ...pomodoro };
     save();
   }
   function removePomodoroStatus() {
-    if (state.value.data.pomodoro.pomodoroStatus)
-      delete state.value.data.pomodoro.pomodoroStatus;
+    if (state.value.pomodoro.pomodoroStatus)
+      delete state.value.pomodoro.pomodoroStatus;
     save();
   }
 
   function getPomodoroFlexStatus(): PomodoroFlexStatus | undefined {
-    return state.value.data.pomodoro.pomodoroFlexStatus;
+    return state.value.pomodoro.pomodoroFlexStatus;
   }
   function setPomodoroFlexStatus(flexStatus: PomodoroFlexStatus) {
-    state.value.data.pomodoro.pomodoroFlexStatus = { ...flexStatus };
+    state.value.pomodoro.pomodoroFlexStatus = { ...flexStatus };
     save();
   }
 
@@ -226,6 +236,17 @@ export const useStateStore = defineStore('state', () => {
     input.click();
   }
 
+  function startTutorial() {
+    save();
+    state.value.data = tutorialState;
+    isTutorial.value = true;
+  }
+
+  function closeTutorial() {
+    state.value.data = loadState().data;
+    isTutorial.value = false;
+  }
+
   return {
     state,
     save,
@@ -235,7 +256,8 @@ export const useStateStore = defineStore('state', () => {
     checkValidExamName,
     getEvents, saveEvents, getDeadlines,
     getPomodoroStatus, setPomodoroStatus, removePomodoroStatus, getPomodoroFlexStatus, setPomodoroFlexStatus,
-    downloadData, uploadData
+    downloadData, uploadData,
+    startTutorial, closeTutorial, isInTutorial
   };
 
 });

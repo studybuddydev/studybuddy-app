@@ -43,7 +43,7 @@ export type Chapter = {
 
 export type Exam = {
   icon: string;
-  chapters: Chapter[];
+  chapters?: Chapter[];
   color?: string;
   deadline?: string;
   tutorial?: boolean;
@@ -134,9 +134,9 @@ export type State = {
     exams: Exam[];
     dashboard: StudyElement;
     events: { [key: string]: Event[] },
-    pomodoro: {
-      pomodoroStatus?: PomodotoStatus;
-      pomodoroFlexStatus?: PomodoroFlexStatus;
-    }
+  },
+  pomodoro: {
+    pomodoroStatus?: PomodotoStatus;
+    pomodoroFlexStatus?: PomodoroFlexStatus;
   }
 }

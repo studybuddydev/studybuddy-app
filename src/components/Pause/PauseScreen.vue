@@ -17,9 +17,10 @@
 
         <ul>
           <li @click="startPomodoro()" v-if="!pomodoroGoing">Study</li>
-          <li @click="openTutorial()" v-if="firstStart">Tutorial</li>
           <li @click="resumePomodoro()" v-if="pomodoroGoing">Resume</li>
           <li @click="restartPomodoro()" v-if="pomodoroGoing">Restart</li>
+          <li @click="openTutorial()" v-if="!state.isInTutorial">Tutorial</li>
+          <li @click="closeTutorial()" v-else>Exit Tutorial</li>
           <li @click="openUserSettings = true">Settings</li>
         </ul>
 
@@ -41,8 +42,10 @@
 import UserSettings from '@/components/Popup/UserSettings.vue';
 import { ref, watch, computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
+import { useStateStore } from "@/stores/state";
 import router from '@/router';
 const pomodoro = usePomodoroStore();
+const state = useStateStore();
 
 const openUserSettings = ref(false);
 
@@ -90,8 +93,16 @@ function startPomodoro() {
   close();
 }
 function openTutorial() {
+  state.startTutorial();
   pomodoro.startPomodoro();
-  router.push('/exam/Tutorial');
+  router.push('/');
+  close();
+}
+function closeTutorial() {
+  state.closeTutorial();
+  pomodoro.stopPomodoro();
+  pomodoro.startPomodoro();
+  router.push('/');
   close();
 }
 
