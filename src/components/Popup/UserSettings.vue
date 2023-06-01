@@ -68,7 +68,7 @@
 
             <v-window-item value="pomodoro">
               <v-row>
-                <v-col cols="12"> <v-text-field v-model="data!.pomodoro!.pomodoroFlexSettings!.totalLength" type="time" label="Pomodoro length" required step="300" min="0" /> </v-col>
+                <v-col cols="12"> <v-text-field v-model="data!.pomodoro!.pomodoroFlexSettings!.totalLength" type="time" label="Session length [hh:mm]" required step="300" min="0" /> </v-col>
                 <v-col cols="12"> <v-text-field v-model.number="data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak" type="number" label="Number of breaks" required min="0" /> </v-col>
                 <v-col cols="12"> <v-text-field v-model.number="data!.pomodoro!.pomodoroFlexSettings!.breakLength" type="number" label="Break length [minutes]" required min="0" /> </v-col>
               </v-row>
