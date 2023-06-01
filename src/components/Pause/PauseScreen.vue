@@ -4,7 +4,7 @@
       <div class="pause-screen" v-if="pause">
         <div v-if="firstStart">
           <p class="text-primary">Welcome to</p>
-          <h2 class="text-primary">Study Buddy</h2>
+          <h2 class="text-primary">StudyBuddy</h2>
         </div>
         <div v-else-if="pomodoro.getReport.reportDone">
           <p class="text-primary">You finished a pomodoro</p>
@@ -19,6 +19,8 @@
           <li @click="startPomodoro()" v-if="!pomodoroGoing">Study</li>
           <li @click="resumePomodoro()" v-if="pomodoroGoing">Resume</li>
           <li @click="restartPomodoro()" v-if="pomodoroGoing">Restart</li>
+          <li @click="endSession()" v-if="pomodoroGoing">End Session</li>
+          <v-divider class="my-5" :thickness="2"></v-divider>
           <li @click="openTutorial()" v-if="!state.isInTutorial">Tutorial</li>
           <li @click="closeTutorial()" v-else>Exit Tutorial</li>
           <li @click="openUserSettings = true">Settings</li>
@@ -105,6 +107,9 @@ function closeTutorial() {
   router.push('/');
   close();
 }
+function endSession() {
+  pomodoro.stopPomodoro();
+}
 
 function msTominutes(ms: number): string {
   const minutes = Math.floor(ms / 1000 / 60);
@@ -163,7 +168,7 @@ function msTominutes(ms: number): string {
       margin: 0.5rem 0;
       text-align: center;
       cursor: pointer;
-      padding: 0.5rem;
+      padding: 0.5rem 4rem;
 
       // text-shadow: -1px -1px 0 rgb(var(--v-theme-primary)), 1px -1px 0 rgb(var(--v-theme-primary)), -1px 1px 0 rgb(var(--v-theme-primary)), 1px 1px 0 rgb(var(--v-theme-primary));
 
