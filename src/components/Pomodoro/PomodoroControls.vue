@@ -1,4 +1,9 @@
 <template>
+  <div v-if="state.isInTutorial" class="tutorial-discalimer bg-background">
+    <b class="text-error">Sei nel Tutorial</b>
+    <p>Niente verrá salvato</p>
+    <p>Per uscire premi ESC e "Exit Tutorial"</p>
+  </div>
   <div class="controls">
     <!-- <div class="status">
       {{pomodoro.status.status}}
@@ -42,7 +47,9 @@
 
 <script lang="ts" setup>
 import { usePomodoroStore } from "@/stores/pomodoro";
+import { useStateStore } from "@/stores/state";
 const pomodoro = usePomodoroStore();
+const state = useStateStore();
 
 function btnClick() {
   if (pomodoro.itsFinished) {
@@ -54,11 +61,20 @@ function btnClick() {
   }
 
 }
-
-
 </script>
 
 <style lang="scss" scoped>
+  .tutorial-discalimer {
+    min-width: 200px;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem;
+    text-align: center;
+    border: 1px solid rgb(var(--v-theme-error));
+    p {
+      margin: 0.5rem 0;
+    }
+  }
   .controls {
     z-index: 2000;
     border-radius: 0.6rem;
