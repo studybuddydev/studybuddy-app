@@ -4,6 +4,8 @@ import { defineStore } from 'pinia'
 import { type State, type Exam, type PomodoroSettings, type Chapter, type PomodotoStatus, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType, type PomodoroFlexSettings, type PomodoroFlexStatus, type Settings } from '@/types'
 import defaultState from '@/assets/defaultState.json';
 import tutorialState from '@/assets/tutorialState.json';
+import { createEvent } from 'ics';
+import { saveAs } from "file-saver";
 
 const defaultData: State = {
   data: {
@@ -122,7 +124,6 @@ export const useStateStore = defineStore('state', () => {
     if (state.value.data.exams?.find(e => e !== original && e.name === name)) return false;
     return true;
   }
-
   // ========= Events =========
   function getEvents(days: string[]): { [key: string]: Event[] } {
     return days.reduce((acc, day) => {
@@ -166,7 +167,7 @@ export const useStateStore = defineStore('state', () => {
       ...e.tasks?.filter(t => t.isDeadline) ?? [],
       ...(e.chapters?.map(c => c.tasks?.filter(t => t.isDeadline) ?? []) ?? [])
     ]).flat(2)
-      .filter(d => d.deadline)
+      .filter(d => d.deadline && d.deadline)
       .map(d => ({
         name: d.name,
         deadline: d.deadline as string,
@@ -183,6 +184,38 @@ export const useStateStore = defineStore('state', () => {
       }));
 
     return mapDeadlines([ ...deadlinesTasks, ...deadlinesExams ], days);
+  }
+
+  function getEventsForDay(day: string) {
+    let events = state.value.data.events[day];
+    if (events === undefined) {
+      events = []
+      state.value.data.events[day] = events
+    }
+    return events;
+  }
+  function getDeadlinesForDay(day: string): Deadline[] {
+    const deadlinesTasks = state.value.data.exams.map(e => [
+      ...e.tasks?.filter(t => t.isDeadline) ?? [],
+      ...(e.chapters?.map(c => c.tasks?.filter(t => t.isDeadline) ?? []) ?? [])
+    ]).flat(2)
+      .filter(d => d.deadline && d.deadline === day)
+      .map(d => ({
+        name: d.name,
+        deadline: d.deadline as string,
+        type: DeadlineType.Task
+      }));
+
+    const deadlinesExams = state.value.data.exams
+      .filter(e => e.deadline && e.deadline === day)
+      .map(e => ({
+        name: e.name,
+        deadline: e.deadline as string,
+        type: DeadlineType.Exam,
+        color: e.color ?? 'red',
+      }));
+
+    return [ ...deadlinesTasks, ...deadlinesExams ];
   }
 
   // Pomodoro
@@ -215,6 +248,31 @@ export const useStateStore = defineStore('state', () => {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  }
+
+  function saveCalendar() {
+    const event = {
+      start: [2018, 5, 30, 6, 30],
+      duration: { hours: 6, minutes: 30 },
+      title: 'Bolder Boulder',
+      description: 'Annual 10-kilometer run in Boulder, Colorado',
+      location: 'Folsom Field, University of Colorado (finish line)',
+      url: 'http://www.bolderboulder.com/',
+      geo: { lat: 40.0095, lon: 105.2669 },
+      categories: ['10k races', 'Memorial Day Weekend', 'Boulder CO'],
+      status: 'CONFIRMED',
+      busyStatus: 'BUSY',
+      organizer: { name: 'Admin', email: 'Race@BolderBOULDER.com' },
+      attendees: [
+        { name: 'Adam Gibbons', email: 'adam@example.com', rsvp: true, partstat: 'ACCEPTED', role: 'REQ-PARTICIPANT' },
+        { name: 'Brittany Seaton', email: 'brittany@example2.org', dir: 'https://linkedin.com/in/brittanyseaton', role: 'OPT-PARTICIPANT' }
+      ]
+    } as any
+
+    createEvent(event, (error, value) => {
+      const blob = new Blob([value], { type: "text/plain;charset=utf-8" });
+      saveAs(blob, "event-schedule.ics");
+    });
   }
 
   function uploadData() {
@@ -254,7 +312,7 @@ export const useStateStore = defineStore('state', () => {
     getStudyElement, getExams, updateExams, getExam, addExam, editExam, removeExam,
     updateChapters, addChapter, editChapter, removeChapter,
     checkValidExamName,
-    getEvents, saveEvents, getDeadlines,
+    getEvents, saveEvents, getDeadlines, getEventsForDay, getDeadlinesForDay,
     getPomodoroStatus, setPomodoroStatus, removePomodoroStatus, getPomodoroFlexStatus, setPomodoroFlexStatus,
     downloadData, uploadData,
     startTutorial, closeTutorial, isInTutorial
