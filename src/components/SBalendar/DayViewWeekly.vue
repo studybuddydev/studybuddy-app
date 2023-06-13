@@ -32,15 +32,15 @@
       <v-menu
         :close-on-content-click="false"
         location="end" v-for="e, i in events"
-        :model-value="open === `${day.id}-${i}`"
-        @update:model-value="$event ? open = `${day.id}-${i}` : open = ''">
+        :model-value="modelValue === `${dayId}-${i}`"
+        @update:model-value="updateModelValue($event ? `${dayId}-${i}` : '')">
         <template v-slot:activator="{ props }">
           <v-card
             v-bind=" { ...props, onClick: () => {} }"
             class="pa-0 event" :color="e.color ?? 'surface'"
             :style="{ height: (cellHeight / 60) * e.length + 'px', top: e.start.hour*cellHeight + ((cellHeight / 60) * e.start.minute) + 'px' }"
             @mousedown="mouseDownOnEvent(e)"
-            @mouseup="mouseUpOnEventInside(`${day.id}-${i}`)"
+            @mouseup="mouseUpOnEventInside(`${dayId}-${i}`)"
           >
             <div class="pa-2">
               <p>{{ e.title }}</p>
@@ -91,15 +91,20 @@ import ColorPicker from '../Inputs/ColorPicker.vue';
 const state = useStateStore();
 
 const props = defineProps<{
-  day: any,
+  modelValue: string,
+  dayId: string,
   date: Date,
 }>();
+const emit = defineEmits(['update:modelValue'])
+
+function updateModelValue(value: string) {
+  emit('update:modelValue', value)
+}
 
 const events = ref<Event[]>([])
 const deadlines = ref<Deadline[]>([])
-events.value = state.getEventsForDay(props.day.id);
-deadlines.value = state.getDeadlinesForDay(props.day.id);
-const open = ref('');
+events.value = state.getEventsForDay(props.dayId);
+deadlines.value = state.getDeadlinesForDay(props.dayId);
 
 
 const cellHeight = 60;
@@ -118,8 +123,8 @@ const minutes: number[] = [ 0, 30 ];
 
 
 function clickOnTimeSlot(h: number, m: number) {
-  if (open.value) {
-    open.value = '';
+  if (props.modelValue) {
+    updateModelValue('');
     return;
   }
   events.value.push({
@@ -129,11 +134,11 @@ function clickOnTimeSlot(h: number, m: number) {
     length: 60,
   })
 
-  open.value = `${props.day.id}-${events.value.length - 1}`;
+  updateModelValue(`${props.dayId}-${events.value.length - 1}`);
 }
 function deleteEvent(e: Event) {
   events.value.splice(events.value.indexOf(e), 1);
-  open.value = '';
+  updateModelValue('');
 }
 
 watch(events, (e) => {
@@ -181,7 +186,7 @@ function mouseMoveOnEvent(e: MouseEvent): any {
 }
 function mouseUpOnEventInside(dayId: string) {
   if (!draggingStatus.movingEvent || draggingStatus.totalMovement !== 0) return;
-  open.value = open.value === dayId ? '' : dayId;
+  updateModelValue(props.modelValue === dayId ? '' : dayId)
 }
 function mouseUpOnEvent() {
   draggingStatus.movingEvent = null;
