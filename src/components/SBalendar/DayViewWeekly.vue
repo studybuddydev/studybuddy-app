@@ -84,7 +84,7 @@
 
 <script setup lang="ts">
 import { type Deadline, type Event, DeadlineType } from '@/types'
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { computed, onMounted, onUnmounted, watch } from 'vue';
 import { useStateStore } from "@/stores/state";
 import ColorPicker from '../Inputs/ColorPicker.vue';
 
@@ -94,6 +94,8 @@ const props = defineProps<{
   modelValue: string,
   dayId: string,
   date: Date,
+  events: Event[]
+  deadlines: Deadline[]
 }>();
 const emit = defineEmits(['update:modelValue'])
 
@@ -101,21 +103,11 @@ function updateModelValue(value: string) {
   emit('update:modelValue', value)
 }
 
-const events = ref<Event[]>([])
-const deadlines = ref<Deadline[]>([])
-events.value = state.getEventsForDay(props.dayId);
-deadlines.value = state.getDeadlinesForDay(props.dayId);
-
-
 const cellHeight = 60;
 const nowHeight = computed(() => {
   const now = new Date();
   return now.getHours() * cellHeight + (now.getMinutes() / 60) * cellHeight;
 })
-function scrollToTime() {
-  document.querySelector(".vc-week")?.scrollTo({top:  8*60 });
-}
-onMounted(() => scrollToTime());
 
 // array of numbers from 0 to 24
 const hours: number[] = Array.from({ length: 24 }, (_, i) => i);
@@ -127,22 +119,22 @@ function clickOnTimeSlot(h: number, m: number) {
     updateModelValue('');
     return;
   }
-  events.value.push({
+  props.events.push({
     title: "Nuovo event",
     description: "",
     start: { hour: h, minute: m },
     length: 60,
   })
 
-  updateModelValue(`${props.dayId}-${events.value.length - 1}`);
+  updateModelValue(`${props.dayId}-${props.events.length - 1}`);
 }
 function deleteEvent(e: Event) {
-  events.value.splice(events.value.indexOf(e), 1);
+  props.events.splice(props.events.indexOf(e), 1);
   updateModelValue('');
 }
 
-watch(events, (e) => {
-  state.save();
+watch(props.events, (e) => {
+  state.saveEventsForDate(props.dayId, props.events);
 }, { deep: true })
 
 
@@ -307,21 +299,27 @@ $time-width: 35px;
 <style lang="scss">
 $cell-width: 10vw;
 $time-width: 35px;
-.vc-week, .vc-weekdays {
-  grid-template-columns: calc($cell-width + $time-width)  repeat(6, $cell-width);
-  .vc-weekday-2 {
-    margin-left: $time-width;
+
+.weekly-calendar {
+
+  .vc-week, .vc-weekdays {
+    grid-template-columns: calc($cell-width + $time-width)  repeat(6, $cell-width);
+    .vc-weekday-2 {
+      margin-left: $time-width;
+    }
   }
+
+  .vc-week {
+    height: 600px;
+    overflow-x: hidden;
+  }
+
+  .deadline {
+    p {
+      font-size: 0.8em;
+    }
+  }
+
 }
 
-.vc-week {
-  height: 600px;
-  overflow-x: hidden;
-}
-
-.deadline {
-  p {
-    font-size: 0.8em;
-  }
-}
 </style>

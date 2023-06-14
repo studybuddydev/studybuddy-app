@@ -133,10 +133,20 @@ export const useStateStore = defineStore('state', () => {
           acc[day] = events;
         } else {
           delete state.value.data.events[day]
+          acc[day] = [];
         }
+      } else {
+        acc[day] = [];
       }
       return acc;
     }, {} as { [key: string]: Event[] });
+  }
+
+  function saveEventsForDate(day: string, events: Event[]) {
+    if (!state.value.data.events[day])
+      state.value.data.events[day] = events;
+    console.log(state.value.data.events[day])
+    save();
   }
 
   function saveEvents(events: { [key: string]: Event[] }) {
@@ -312,7 +322,7 @@ export const useStateStore = defineStore('state', () => {
     getStudyElement, getExams, updateExams, getExam, addExam, editExam, removeExam,
     updateChapters, addChapter, editChapter, removeChapter,
     checkValidExamName,
-    getEvents, saveEvents, getDeadlines, getEventsForDay, getDeadlinesForDay,
+    getEvents, saveEvents, getDeadlines, getEventsForDay, getDeadlinesForDay, saveEventsForDate,
     getPomodoroStatus, setPomodoroStatus, removePomodoroStatus, getPomodoroFlexStatus, setPomodoroFlexStatus,
     downloadData, uploadData,
     startTutorial, closeTutorial, isInTutorial
