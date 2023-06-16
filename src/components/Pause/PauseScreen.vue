@@ -55,7 +55,7 @@ const pauseFromPomodoro = computed(() => (pomodoro.status.isBreak && !!pomodoro.
 const pomodoroGoing = computed(() => pomodoro.going);
 const pause = ref(!pomodoroGoing.value);
 const firstStart = ref(!pomodoroGoing.value);
-console.log(pomodoroGoing.value)
+
 watch(pauseFromPomodoro, (value) => {
   pause.value = value;
 });

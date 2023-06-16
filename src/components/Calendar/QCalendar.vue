@@ -49,11 +49,9 @@ const events = ref<Event[]>([{
 }])
 
 function dayClick(day: string) {
-  console.log("Day", day);
 }
 
 function intervalClick(interval: Interval) {
-  console.log("Interval", interval);
 
   const start = interval.intervalStart
   const end = interval.intervalEnd

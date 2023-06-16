@@ -145,7 +145,6 @@ export const useStateStore = defineStore('state', () => {
   function saveEventsForDate(day: string, events: Event[]) {
     if (!state.value.data.events[day])
       state.value.data.events[day] = events;
-    console.log(state.value.data.events[day])
     save();
   }
 

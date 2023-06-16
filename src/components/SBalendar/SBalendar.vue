@@ -15,6 +15,9 @@
         :dayId="day.id"
         :events="events[day.id]"
         :deadlines="deadlines[day.id]"
+
+        @addEvent="($event: any) => addEvent(day.id, $event.h, $event.m)"
+        @deleteEvent="($event: Event) => deleteEvent(day.id, $event)"
       />
       <DayViewWeekly
         v-else
@@ -23,6 +26,9 @@
         :dayId="day.id"
         :events="events[day.id]"
         :deadlines="deadlines[day.id]"
+
+        @addEvent="($event: any) => addEvent(day.id, $event.h, $event.m)"
+        @deleteEvent="($event: Event) => deleteEvent(day.id, $event)"
       />
     </template>
   </Calendar>
@@ -48,6 +54,28 @@ const monthly = ref(true);
 function scrollToTime() {
   document.querySelector(".vc-week")?.scrollTo({top:  8*60 });
 }
+
+function addEvent(dayId: string, h: number, m: number, length: number = 60) {
+  if (open.value) {
+    open.value = '';
+    return;
+  }
+  events.value[dayId].push({
+    title: "Nuovo event",
+    description: "",
+    start: { hour: h, minute: m },
+    length: length,
+  })
+
+  open.value = `${dayId}-${events.value[dayId].length - 1}`;
+}
+
+function deleteEvent(dayId: string, e: Event) {
+  events.value[dayId].splice(events.value[dayId].indexOf(e), 1);
+  open.value = '';
+}
+
+
 onMounted(() => scrollToTime());
 function changePage(e: any) {
   const days: string[] = e[0].viewDays.map((d: any) => d.id);
