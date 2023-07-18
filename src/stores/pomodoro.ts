@@ -40,17 +40,14 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const itsStopped = computed(() => stopped.value);
   const getReport = computed(() => currentReport.value);
 
-  const totalLength = computed(() => {
-    const hm = settings.value.totalLength.split(':').map(x => +x);
-    return hm[0] * 60 + hm[1];
-  });
-  const breakLengthPercentage = computed(() => (settings.value.breakLength * MINUTE_MULTIPLIER) / (totalLength.value * MINUTE_MULTIPLIER) * 100);
+  const breakLengthPercentage = computed(() => (settings.value.breakLength * MINUTE_MULTIPLIER) / (settings.value.totalLength * MINUTE_MULTIPLIER) * 100);
   const going = computed(() => status.value.interval !== null);
 
   const tutorialPomodoroSettings: PomodoroFlexSettings = {
-    totalLength: '00:15',
+    totalLength: 15,
     breakLength: 1,
     numberOfBreak: 3,
+    soundVolume: 50,
   }
   const settings = computed<PomodoroFlexSettings>(() => stateStore.isInTutorial ? tutorialPomodoroSettings : settingsStore.pomodoroFlexSettings);
   const status = ref<PomodoroFlexStatus>(
@@ -112,7 +109,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   
     return setInterval(() => {
       const now = Date.now();
-      percentage.value = (now - status.value.startMs) / (totalLength.value * MINUTE_MULTIPLIER *  10);
+      percentage.value = (now - status.value.startMs) / (settings.value.totalLength * MINUTE_MULTIPLIER *  10);
       if (percentage.value > 100) {
         finished.value = true;
         percentage.value = 100;
@@ -237,13 +234,16 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   function playSound(sound: ESound) {
     const audio = new Audio(`/sounds/${sound}`);
+    let volume = settings.value.soundVolume;
+    if (volume === undefined) volume = 0.5;
+    audio.volume = volume / 100;
     audio.play();
   }
 
 
   return {
     MINUTE_MULTIPLIER,
-    breakLengthPercentage, going, totalLength, itsTimeToBreak, itsFinished, getReport, itsStopped,
+    breakLengthPercentage, going, itsTimeToBreak, itsFinished, getReport, itsStopped,
     settings, percentage, status,
     startPomodoro, stopPomodoro, nextStep
   }

@@ -24,7 +24,7 @@ const pomodoro = usePomodoroStore();
 const theme = useTheme();
 
 function getMinutesFromPercentage(n: number) {
-  const min = n * pomodoro.totalLength / 100;
+  const min = n * pomodoro.settings.totalLength / 100;
   const sec = Math.round(min * pomodoro.MINUTE_MULTIPLIER);
 
   const h = Math.floor(sec / 3600);

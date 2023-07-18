@@ -23,9 +23,10 @@ const defaultSettings: Settings = {
     },
 
     pomodoroFlexSettings: {
-      totalLength: "02:00",
+      totalLength: 120,
       numberOfBreak: 3,
       breakLength: 5,
+      soundVolume: 50,
     },
   }
 };
@@ -79,6 +80,7 @@ export const useSettingsStore = defineStore('settings', () => {
   return {
     settings, settingsWithDefaults,
     userSettings, pomodoroSettings, pomodoroFlexSettings,
+    defaultSettings,
     updateSettings, updatePomodoroSettings,
     updateTheme, updateLanguage
   };

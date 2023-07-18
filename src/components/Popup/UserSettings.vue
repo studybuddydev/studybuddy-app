@@ -67,11 +67,49 @@
             </v-window-item>
 
             <v-window-item value="pomodoro">
+
+              <div class="text-h6"> Sessions of {{ Math.floor(data!.pomodoro!.pomodoroFlexSettings!.totalLength / 60) }} hours {{ data!.pomodoro!.pomodoroFlexSettings!.totalLength % 60 }} minutes</div>
+              <v-slider
+                v-model="data!.pomodoro!.pomodoroFlexSettings!.totalLength"
+                :min="20" :max="240" :step="1" thumb-label class="pr-4"
+                prepend-icon="mdi-timer"
+              >
+                <template v-slot:thumb-label="{ modelValue }">
+                  {{ Math.floor(modelValue / 60) }}h{{ modelValue % 60 }}m
+                </template>
+              </v-slider>
+
+              <div class="text-h6">{{ data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak }} breaks</div>
+              <v-slider
+                v-model="data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak"
+                :min="0" :max="10" :step="1" thumb-label show-ticks="always" class="pr-4"
+                prepend-icon="mdi-tally-mark-5"
+              />
+
+              <div class="text-h6">{{ data!.pomodoro!.pomodoroFlexSettings!.breakLength }} minutes of break</div>
+              <v-slider
+                v-model="data!.pomodoro!.pomodoroFlexSettings!.breakLength"
+                :min="1" :max="20" :step="1" thumb-label class="pr-4"
+                prepend-icon="mdi-coffee"
+              />
+
+              <div class="text-h6">Notification volume</div>
+              <v-slider
+                v-model="data!.pomodoro!.pomodoroFlexSettings!.soundVolume"
+                :min="0" :max="100" :step="1" thumb-label class="pr-4"
+                :prepend-icon="volumeIcon(data!.pomodoro!.pomodoroFlexSettings!.soundVolume)"
+              />
+
               <v-row>
-                <v-col cols="12"> <v-text-field v-model="data!.pomodoro!.pomodoroFlexSettings!.totalLength" type="time" label="Session length [hh:mm]" required step="300" min="0" /> </v-col>
-                <v-col cols="12"> <v-text-field v-model.number="data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak" type="number" label="Number of breaks" required min="0" /> </v-col>
-                <v-col cols="12"> <v-text-field v-model.number="data!.pomodoro!.pomodoroFlexSettings!.breakLength" type="number" label="Break length [minutes]" required min="0" /> </v-col>
+                <v-spacer />
+                <v-col> <v-btn variant="tonal" @click="() => {
+                  data!.pomodoro!.pomodoroFlexSettings!.totalLength = settingsStore.defaultSettings.pomodoro!.pomodoroFlexSettings!.totalLength;
+                  data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak = settingsStore.defaultSettings.pomodoro!.pomodoroFlexSettings!.numberOfBreak;
+                  data!.pomodoro!.pomodoroFlexSettings!.breakLength = settingsStore.defaultSettings.pomodoro!.pomodoroFlexSettings!.breakLength;
+                }">Reset Timer to defaults</v-btn> </v-col>
+                <v-spacer />
               </v-row>
+
             </v-window-item>
           </v-window>
         </v-container>
@@ -102,6 +140,8 @@ const model = computed({
 })
 const tab = ref('general');
 
+const tt = ref(20);
+
 function cancelSettings() {
   settingsStore.updateLanguage();
   settingsStore.updateTheme();
@@ -124,5 +164,18 @@ function importData() {
   state.uploadData();
 }
 
+//// ---- ////
+const volumeIcon = computed(() => ((volume: number) => {
+  if (!volume) return 'mdi-volume-off';
+  if (volume < 33) return 'mdi-volume-low';
+  if (volume < 66) return 'mdi-volume-medium';
+  return 'mdi-volume-high';
+}))
+
+let _sessionLenght = 20;
+const sessionLenght = computed({
+  get() { return props.modelValue },
+  set(value) { return emit('update:modelValue', value) }
+})
 
 </script>

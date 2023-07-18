@@ -110,7 +110,8 @@ export type PomodoroSettings = {
 export type PomodoroFlexSettings = {
   numberOfBreak: number;
   breakLength: number;
-  totalLength: string;
+  totalLength: number;
+  soundVolume: number;
 }
 export type UserSettings = {
   username: string;

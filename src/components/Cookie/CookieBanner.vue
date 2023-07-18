@@ -18,8 +18,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-const cookieStatus = localStorage.getItem("cookie");
-const showCookie = ref(cookieStatus === null);
+// const cookieStatus = localStorage.getItem("cookie");
+const showCookie = ref(false); // ref(cookieStatus === null);
 
 function closeCookie(cookies: boolean) {
   if (cookies) {
