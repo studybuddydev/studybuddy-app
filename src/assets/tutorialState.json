@@ -3,11 +3,35 @@
     {
       "name": "Benvenuto",
       "icon": "mdi-account-school",
-      "color": "indigo",
+      "color": "grey",
       "postIts": [
         {
           "color": "#e6b905",
-          "content": "<p>Ciao! grazie di essere qui a testare <strong>StudyBuddy</strong></p><p><br></p><p>la piattaforma è in una fase ancora embrionale e in costante evoluzione, il tuo supporto e feedback è necessario per costruire l'applicazione nel migliore dei modi ed aiutare più studenti possibile.</p>"
+          "content": "<p>Ciao! grazie di essere qui a testare <strong>StudyBuddy</strong></p><p><br></p><p>la piattaforma è ancora in fase embrionale e in costante evoluzione. Il tuo supporto e feedback è necessario per costruire l'applicazione nel migliore dei modi ed aiutare più studenti possibile.</p>"
+        },
+        {
+          "color": "#6ed261",
+          "content": "<p>La piattaforma è strutturata in <u>Esami</u> e <u>Capitoli</u> </p><p><br></p><p>Questo post-it si trova nella pagina generale dell' <u>Esame</u><em>  'Benvenuto', </em>mentre sulla sinistra puoi trovare i diversi <u>capitoli</u> di questo esame</p><p><br></p><p>una volta aperto un capitolo, puoi tornare a questa schermata cliccando il nome dell'esame in alto</p><p><br></p><p>premendo il logo di StudyBuddy in alto a sinistra invece puoi tornare alla home.</p>"
+        }
+      ],
+      "chapters": [
+        {
+          "name": "Come funziona il tutorial",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>In questo tutorial ogni esame rappresenta una funzionalità dell'app.</p><p>Giocaci, prendi dimestichezza con i comandi e le varie funzionalità, scopri cosa funziona bene e cosa non va per farcelo sapere!</p><p><br></p><p>Puoi fare tutte le modifiche che vuoi al tutorial e non verranno salvate.</p>"
+            }
+          ]
+        },
+        {
+          "name": "La barra in basso",
+          "postIts": [
+            {
+              "color": "#e6b905",
+              "content": "<p>Come puoi vedere in basso nella schermata c'è una barra con delle mele e un serpente verde che si avanza: quello è il<strong> timer</strong> che è partito nel iniziare il tutorial. Verrà spiegato meglio nel capitolo apposito.</p><p><br></p><p>In basso a destra c'è il tasto<strong> +</strong> che ti permette di aggiungere elementi e widget alla schermata, anche questi vengono spiegati con precisione più avanti.</p>"
+            }
+          ]
         }
       ]
     },
@@ -18,7 +42,7 @@
       "postIts": [
         {
           "color": "#e6b905",
-          "content": "<p><strong>INTRO</strong></p><p>In basso nella pagina puoi vedere un timer che scorre rappresentato da un serpente verde. </p><p>L'obiettivo è arrivare in fondo alla sessione di studio, nel mezzo della quale si hanno a disposizione delle pause (le mele) che si possono fare in qualsiasi momento.</p>"
+          "content": "<p><strong>INTRO</strong></p><p>In basso nella pagina puoi vedere il timer che scorre rappresentato da un serpente verde. </p><p>L'obiettivo è arrivare in fondo alla sessione di studio, nel mezzo della quale si hanno a disposizione delle pause (le mele) che si possono fare in qualsiasi momento.</p>"
         },
         {
           "color": "#6ed261",
@@ -35,7 +59,7 @@
           "postIts": [
             {
               "color": "#e6b905",
-              "content": "<p>Il timer è stato pensato per seguire la famosa<strong> tecnica del pomodoro</strong>:</p><p><br></p><p>Una sessione di studio dura 2 ore divisa tra studio concentrato e piccoli break:</p><p><br></p><p><strong>25 min studio </strong></p><p><strong>5 min break </strong></p><p><br></p><p>ripetere questo per 4 volte</p><p><br></p><p>Alla fine pausa lunga: questa è la vera pausa in cui finalmente si può tornare a scrollare (se proprio necessario) o farsi una passeggiata e tornare più carichi di prima.</p><p><br></p><p>E' inoltre possibile modificare le impostazioni se si desidera seguire tempistiche differenti.</p><p><br></p><p>Se vuoi scoprire di più su questa tecnica clicca sul link.</p>"
+              "content": "<p>Il timer è stato pensato per seguire la famosa<strong> tecnica del pomodoro</strong>:</p><p><br></p><p>Una sessione di studio dura 2 ore divisa tra studio concentrato e piccoli break:</p><p><br></p><p><strong>25 min studio </strong></p><p><strong>5 min break </strong></p><p><br></p><p>ripetere questo per <u>4 volte</u></p><p><br></p><p>Alla fine pausa lunga: questa è la vera pausa in cui finalmente si può tornare a scrollare (se proprio necessario) o farsi una passeggiata e tornare più carichi di prima.</p><p><br></p><p>E' inoltre possibile modificare le impostazioni se si desidera seguire tempistiche differenti.</p><p><br></p><p>Se vuoi scoprire di più su questa tecnica clicca sul link.</p>"
             }
           ]
         },
@@ -44,11 +68,11 @@
           "postIts": [
             {
               "color": "#e6b905",
-              "content": "<p>Abbiamo notato, intervistando diverse persone, che la tecnica del pomodoro ha  alcuni limiti, tra cui:</p><ul><li>25 minuti sono pochi per molte persone</li><li>confusionaria </li><li> c'è chi preferisce fare 1 ora di seguito (o più)</li><li>non si vuole interrompere l'esercizio/capitolo a metà per fare pausa</li></ul>"
+              "content": "<p>Abbiamo notato, intervistando diverse persone, che la tecnica del pomodoro ha  alcuni limiti, tra cui:</p><ul><li>25 minuti sono pochi per molte persone</li><li>confusionaria </li><li> c'è chi preferisce fare 1 ora di seguito (o più)</li><li>non si vuole interrompere l'esercizio/capitolo a metà per fare pausa</li><li>troppo limitante</li></ul>"
             },
             {
               "color": "#6ed261",
-              "content": "<p>Per questa ragione abbiamo ideato il <strong>pomodoro flessibile</strong>, con l'obbiettivo di provare a risolvere queste criticità.</p><p>Adesso si ragiona a<u> sessioni si studio</u>: una sessione normalmente dura due ore e ha 3 pause da 5 minuti in mezzo (stessi intervalli del pomodoro classico). Quando sarebbe prevista la pausa verrà suggerito graficamente e con un suono, ma si può mettere in pausa quando si vuole secondo le proprie esigenze.</p>"
+              "content": "<p>Per questa ragione abbiamo ideato il <strong>pomodoro flessibile</strong>, con l'obiettivo di provare a risolvere queste criticità.</p><p><br></p><p>Adesso si ragiona a<u> sessioni si studio</u>: una sessione normalmente dura due ore e ha 3 pause da 5 minuti in mezzo (stessi intervalli del pomodoro classico). </p><p><br></p><p>Quando sarebbe prevista la pausa verrà suggerito graficamente e con un suono, ma si può mettere in pausa quando si vuole secondo le proprie esigenze.</p>"
             }
           ]
         },
@@ -57,7 +81,7 @@
           "postIts": [
             {
               "color": "#e6b905",
-              "content": "<p>Ancora da implementare, è un'opzione per tutti quelli che vogliono studiare senza le costrizioni temporali imposte dalle tecniche precedenti. </p><p><br></p><p>L'obiettivo è quindi quello di avere un resoconto di quanto tempo si è effettivamente impiegato a studiare rispetto alle pause, eventualmente confrontandolo con le proprie aspettative.</p>"
+              "content": "<p>Ancora da implementare, è un'opzione per tutti quelli che vogliono studiare senza le costrizioni temporali imposte dalle tecniche precedenti. </p><p><br></p><p>L'obiettivo è quindi quello di avere un resoconto di quanto tempo si è effettivamente impiegato a studiare rispetto alle pause, eventualmente confrontandolo con le proprie aspettative.</p><p><br></p><p>Torna alla home con il logo di StudyBuddy o clicca sul prossimo capitolo per continuare l'esplorazione!</p>"
             }
           ]
         }
@@ -74,7 +98,7 @@
           "postIts": [
             {
               "color": "#e6b905",
-              "content": "<p>La ToDo list può essere mostrata tramite il tasto + in basso a destra nella schermata.</p><p><br></p><p>Esistono due tipi di Todo: </p><ul><li>Deadline: hanno una scadenza e stanno nella colonna di sinistra</li><li>Senza Data: nella colonna di destra, di default, in ogni momento di può aggiungere una data e spostarlo tra le deadlines</li></ul><p><br></p><p>Quelli con deadline compaiono nel calendario in home page.</p><p><br></p><p>Una volta marcato come 'fatto'  verrà spostato nella lista \"done\".</p>"
+              "content": "<p>La ToDo list può essere mostrata tramite il tasto + in basso a destra nella schermata.</p><p><br></p><p>Esistono due tipi di Todo: </p><ul><li><strong>Deadline</strong>: hanno una scadenza e stanno nella colonna di sinistra</li><li><strong>Todo</strong>: nella colonna di destra, di default, in ogni momento di può aggiungere una data e spostarlo tra le deadlines</li></ul><p><br></p><p>Quelli con deadline compaiono nel calendario in home page.</p><p><br></p><p>Una volta marcato come 'fatto'  verrà spostato nella lista \"done\".</p>"
             }
           ]
         },
@@ -131,7 +155,7 @@
         },
         {
           "color": "#e6b905",
-          "content": "<p>usando le shortcut della tastiera si può anche formattare il testo:</p><p><br></p><ul><li>con - si crea un elenco puntato</li><li><strong>grassetto</strong> (ctrl o cmd + b)</li><li><em>corsivo</em> (ctrl o cmd + i)</li><li><u>sottolineato</u> (ctrl o cmd + u)</li></ul>"
+          "content": "<p>usando le shortcut della tastiera si può anche formattare il testo:</p><p><br></p><ul><li>con - si crea un elenco puntato</li><li><strong>grassetto</strong> (ctrl o cmd + B)</li><li><em>corsivo</em> (ctrl o cmd + i)</li><li><u>sottolineato</u> (ctrl o cmd + U)</li></ul>"
         }
       ]
     },
@@ -151,8 +175,12 @@
           "url": "https://studybuddy.it"
         },
         {
-          "name": "Google",
-          "url": "https://www.google.it/"
+          "name": "Università di Brescia",
+          "url": "https://www.unibs.it/it"
+        },
+        {
+          "name": "Università di Trento",
+          "url": "https://www.unitn.it/"
         }
       ]
     },
@@ -163,7 +191,11 @@
       "postIts": [
         {
           "color": "#e6b905",
-          "content": "<p>Nel calendario in home page puoi aggiungere un evento cliccando il punto in cui lo vorresti aggiungere.&nbsp;</p><p><br></p><p><br></p><p>Puoi quindi modificare il titolo, l'orario di inizio, la durata, il colore e aggiungere note relative all'evento.&nbsp;</p><p><br></p><p><br></p><p>Puoi anche trascinare verticalmente l'evento per spostarlo all'interno della stessa giornata e allungarlo per modificarne la durata.</p><p><br></p><p><strong>Prossimi passi</strong></p><ul><li>vista mensile</li><li>mettere i pomodori fatti</li></ul>"
+          "content": "<p>Nel calendario in home page puoi aggiungere un evento cliccando il punto in cui lo vorresti aggiungere.&nbsp;</p><p><br></p><p><br></p><p>Puoi quindi modificare il titolo, l'orario di inizio, la durata, il colore e aggiungere note relative all'evento.&nbsp;</p><p><br></p><p><br></p><p>Puoi anche trascinare verticalmente l'evento per spostarlo all'interno della stessa giornata e allungarlo per modificarne la durata.</p><p><br></p><p><strong>Prossimi passi</strong></p><ul><li>vista mensile</li><li>registro dei pomodori fatti</li></ul>"
+        },
+        {
+          "color": "#5ac0e7",
+          "content": "<p>Il tutorial è finito, se manca qualcosa o vuoi più informazioni contattaci.</p><p>Prova tutte le funzioni liberamente nell'<em>esame</em> chiamato \"parco giochi\" o crea i tuoi esami e capitoli per cominciare a studiare.</p><p><br></p><p>A presto!</p><p><br></p><p><em>Il team di StudyBuddy</em></p>"
         }
       ],
       "chapters": [
@@ -172,20 +204,20 @@
           "postIts": [
             {
               "color": "#e6b905",
-              "content": "<p>ad ogni aggiornamento del componente qua in cima compare un nuovo elemento</p>"
+              "content": "<p>ad ogni aggiornamento di questo componente qua in cima compare un nuovo elemento con le novità.</p><p><br></p><p>E' possibile passare da vista settimanale a mensile con l'interruttore in basso in home page.</p>"
             }
           ]
         }
       ]
     },
     {
-      "name": "ESAMI",
+      "name": "parco giochi",
       "icon": "mdi-puzzle-outline",
       "color": "grey",
       "postIts": [
         {
           "color": "#e6b905",
-          "content": "<p>Questo è un esame vuoto in cui puoi provare tutti i componenti che vuoi</p>"
+          "content": "<p>Questo è un esame vuoto in cui puoi provare tutti i componenti che vuoi.</p><p>Divertiti e buono studio!</p>"
         }
       ]
     }
