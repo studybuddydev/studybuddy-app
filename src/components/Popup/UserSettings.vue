@@ -74,8 +74,8 @@
                 :min="20" :max="240" :step="1" thumb-label class="pr-4"
                 prepend-icon="mdi-timer"
               >
-                <template v-slot:thumb-label="{ modelValue }">
-                  {{ Math.floor(modelValue / 60) }}h{{ modelValue % 60 }}m
+                <template v-slot:thumb-label>
+                  {{ Math.floor(data!.pomodoro!.pomodoroFlexSettings!.totalLength / 60) }}h{{ data!.pomodoro!.pomodoroFlexSettings!.totalLength % 60 }}m
                 </template>
               </v-slider>
 
