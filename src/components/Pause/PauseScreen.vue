@@ -18,7 +18,7 @@
         <ul>
           <li @click="startPomodoro()" v-if="!pomodoroGoing">Study</li>
           <li @click="resumePomodoro()" v-if="pomodoroGoing">Resume</li>
-          <li @click="restartPomodoro()" v-if="pomodoroGoing">Restart</li>
+
           <li @click="endSession()" v-if="pomodoroGoing">End Session</li>
           <v-divider class="my-5" :thickness="2"></v-divider>
           <li @click="openTutorial()" v-if="!state.isInTutorial">Tutorial</li>
