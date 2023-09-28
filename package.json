@@ -11,6 +11,7 @@
     "release": "dotenv release-it --"
   },
   "dependencies": {
+    "@hotjar/browser": "^1.0.9",
     "@intlify/unplugin-vue-i18n": "^0.10.1",
     "@popperjs/core": "^2.11.8",
     "@vueup/vue-quill": "^1.2.0",

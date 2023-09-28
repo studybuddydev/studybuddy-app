@@ -18,7 +18,12 @@ import { themes } from '@/assets/themes'
 
 import { setupCalendar } from 'v-calendar';
 
+import Hotjar from '@hotjar/browser';
 
+const siteId = 3579956;
+const hotjarVersion = 6;
+
+Hotjar.init(siteId, hotjarVersion);
 
 const vuetify = createVuetify({
   components,

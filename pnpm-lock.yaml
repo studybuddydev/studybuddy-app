@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@hotjar/browser':
+    specifier: ^1.0.9
+    version: 1.0.9
   '@intlify/unplugin-vue-i18n':
     specifier: ^0.10.1
     version: 0.10.1(vue-i18n@9.2.2)
@@ -636,6 +639,10 @@ packages:
     dependencies:
       '@fortawesome/fontawesome-svg-core': 6.4.0
       vue: 3.3.4
+    dev: false
+
+  /@hotjar/browser@1.0.9:
+    resolution: {integrity: sha512-n9akDMod8BLGpYEQCrHwlYWWd63c1HlhUSXNIDfClZtKYXbUjIUOFlNZNNcUxgHTCsi4l2i+SWKsGsO0t93S8w==}
     dev: false
 
   /@iarna/toml@2.2.5:
