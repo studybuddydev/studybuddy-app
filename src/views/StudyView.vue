@@ -27,7 +27,7 @@
     </div>
     <div class="footer" location="end">
    
-      <v-btn class="add-button" icon="mdi-eye" color="primary" :elevation="12" size="x-large" @click="isPro = true" />
+     <!-- <v-btn class="add-button" icon="mdi-eye" color="primary" :elevation="12" size="x-large" @click="isPro = true" /> -->
 
     </div>
   </v-container>

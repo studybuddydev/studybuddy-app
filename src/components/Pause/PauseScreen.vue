@@ -21,8 +21,8 @@
 
           <li @click="endSession()" v-if="pomodoroGoing">End Session</li>
           <v-divider class="my-5" :thickness="2"></v-divider>
-          <li @click="openTutorial()" v-if="!state.isInTutorial">Tutorial</li>
-          <li @click="closeTutorial()" v-else>Exit Tutorial</li>
+         <!-- <li @click="openTutorial()" v-if="!state.isInTutorial">Tutorial</li> -->
+           <!--  <li @click="closeTutorial()" v-else>Exit Tutorial</li> -->
           <li @click="openUserSettings = true">Settings</li>
         </ul>
 
