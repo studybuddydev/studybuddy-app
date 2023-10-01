@@ -43,11 +43,11 @@
 
     </div>
   </v-container>
+  -->
 
 
-
-  <Add v-if="isPro"  @addLink="linkRef?.openNewLink()" @addPostIt="postitRef?.addPostIt()" @addTodo="todoRef?.showHideTodo($event)"
-    :showTodo="!!element?.showTasks" /> -->
+  <Add v-if="pageType != EStudyView.Dashboard" @addLink="linkRef?.openNewLink()" @addPostIt="postitRef?.addPostIt()" @addTodo="todoRef?.showHideTodo($event)"
+    :showTodo="!!element?.showTasks" /> 
 
 
 </template>
