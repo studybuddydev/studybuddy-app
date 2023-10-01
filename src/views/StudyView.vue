@@ -8,7 +8,7 @@
       <PostIt class="note" :element="element" ref="postitRef" />
       <Links class="link" :element="element" ref="linkRef" />
 
-      <div class="content" v-if="pageType === EStudyView.Dashboard">
+      <div class="content_card" v-if="pageType === EStudyView.Dashboard">
       <v-card class="custom-card" max-width="400">
         <v-card-text>
           Buono studio! qui sotto è appena partito il timer, rappresentato da un serpente verde, quando ti fermi premi il tasto pausa
@@ -117,7 +117,7 @@ const isPro = ref(true);
 }
 
 /* Content (Card) style */
-.content {
+.content_card {
   flex-grow: 1;
   /* center */
   display: flex;
@@ -127,6 +127,13 @@ const isPro = ref(true);
   text-align: center;
 
 }
+.content {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-template-rows: auto auto;
+
+}
+
 
 /* Footer (Button) style */
 .footer {
