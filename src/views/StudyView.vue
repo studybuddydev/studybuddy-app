@@ -1,20 +1,32 @@
 <template>
   <v-container class= "" v-if="isPro">
     <h1>{{ element.name }}</h1>
-    <SBalendar v-if="pageType === EStudyView.Dashboard" />
+    <!-- <SBalendar v-if="pageType === EStudyView.Dashboard" /> -->
 
     <div class="content"  >
       <ToDo class="todo" :element="element" ref="todoRef" />
       <PostIt class="note" :element="element" ref="postitRef" />
       <Links class="link" :element="element" ref="linkRef" />
+
+      <div class="content" v-if="pageType === EStudyView.Dashboard">
+      <v-card class="custom-card" max-width="400">
+        <v-card-text>
+          Buono studio! qui sotto è appena partito il timer, rappresentato da un serpente verde, quando ti fermi premi il tasto pausa
+        </v-card-text>
+      </v-card>
     </div>
+  
+
+    </div>
+
 
   </v-container>
 
 
 
 
-  <v-container fill-height v-else class="custom-container">
+  <!-- this is if we wantt the not pro version
+    <v-container fill-height v-else class="custom-container">
     <div class="header">
       <h1>{{ element.name }}</h1>
     </div>
@@ -27,30 +39,17 @@
     </div>
     <div class="footer" location="end">
    
-     <!-- <v-btn class="add-button" icon="mdi-eye" color="primary" :elevation="12" size="x-large" @click="isPro = true" /> -->
+     <v-btn class="add-button" icon="mdi-eye" color="primary" :elevation="12" size="x-large" @click="isPro = true" /> 
 
     </div>
   </v-container>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   <Add v-if="isPro"  @addLink="linkRef?.openNewLink()" @addPostIt="postitRef?.addPostIt()" @addTodo="todoRef?.showHideTodo($event)"
-    :showTodo="!!element?.showTasks" />
+    :showTodo="!!element?.showTasks" /> -->
+
+
 </template>
 
 
@@ -79,7 +78,7 @@ const linkRef = ref<InstanceType<typeof Links> | null>(null);
 const postitRef = ref<InstanceType<typeof PostIt> | null>(null);
 const todoRef = ref<InstanceType<typeof ToDo> | null>(null);
 const isBlurred = ref(true);
-const isPro = ref(false);
+const isPro = ref(true);
 
 
 

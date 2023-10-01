@@ -49,6 +49,7 @@ const i18n = createI18n({
 });
 
 const app = createApp(App)
+
 app.use(router)
 app.use(createPinia())
 app.use(vuetify)

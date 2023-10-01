@@ -135,7 +135,7 @@ function msTominutes(ms: number): string {
   z-index: 1500;
 
   background-color: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(30px);
+  backdrop-filter: blur(50px);
 
   display: flex;
   justify-content: center;
