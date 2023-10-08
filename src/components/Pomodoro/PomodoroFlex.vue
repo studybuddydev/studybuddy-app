@@ -2,13 +2,13 @@
   <div class="pomodoro">
     <div class="progress-bar">
       <div class="progress" :style="{
-        backgroundColor: theme.current.value.colors.secondary,
+        backgroundColor: theme.current.value.colors.snake,
         color: theme.current.value.colors.surface,
         width: `${pomodoro.percentage}%`,
       }"> ⦿ </div>
       <div v-for="b in pomodoro.status.breaks" :title="getMinutesFromPercentage(b.lenght)" :key="b.start" class="break"
         :style="{
-          backgroundColor: theme.current.value.colors.error,
+          backgroundColor: theme.current.value.colors.apple,
           marginLeft: `${b.start}%`,
           width: `${b.lenght}%`,
         }"><v-icon size="x-small" icon="mdi-food-apple" /></div>

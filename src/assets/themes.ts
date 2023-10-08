@@ -12,21 +12,25 @@ export const themes = {
       info: '#2196F3',
       success: '#4CAF50',
       warning: '#FB8C00',
+      snake: '#96f97b',
+      apple: '#BE0119',
     }
   },
   pastel: {
     dark: false,
     colors: {
-      background: '#fffffc',
-      surface: '#fffff0',
-      primary: '#ffc6ff',
+      background: '#fcfae8',   
+      surface: '#f9f3cc',
+      primary: '#caa0ff',
       'primary-darken-1': '#bdb2ff',
       secondary: '#caffbf',
       'secondary-darken-1': '#9bf6ff',
-      error: '#ffadad',
+      error: '#ff6b6b',
       info: '#9bf6ff',
       success: '#caffbf',
       warning: '#ffd6a5',
+      snake: '#96f97b',
+      apple: '#db5856',
     }
   },
   bio: {
@@ -42,6 +46,8 @@ export const themes = {
       info: '#2196F3',
       success: '#4CAF50',
       warning: '#FB8C00',
+      snake: '#606c38',
+      apple: '#b30000',
     }
   },
   nord: {
@@ -57,6 +63,8 @@ export const themes = {
       info: '#B48EAD',
       success: '#A3BE8C',
       warning: '#EBCB8B',
+      snake: '#88C0D0',
+      apple: '#ff9900',
     }
   },
   blallo: {
@@ -68,10 +76,13 @@ export const themes = {
       'primary-darken-1': '#d4b22e',
       secondary: '#71e943',
       'secondary-darken-1': '#45a421',
-      error: '#ff6868',
+      error: '#ff3333',
       info: '#6dcff6',
       success: '#82ca9c',
       warning: '#bd8cbf',
+      snake: '#71e943',
+      apple: '#e50000',
+
     }
   },
   gptday: {
@@ -87,6 +98,8 @@ export const themes = {
       info: '#00BFFF',
       success: '#00CC66',
       warning: '#FFD700',
+      snake: '#0077c2',
+      apple: '#ff9900',
     }
   },
   gptnight: {
@@ -102,6 +115,8 @@ export const themes = {
       info: '#00BFFF',
       success: '#00CC66',
       warning: '#FFD700',
+      snake: '#71e943',
+      apple: '#e50000',
     }
   }
 }
