@@ -26,7 +26,7 @@
         </v-col>
         <v-col cols="3">
           <v-btn :disabled="!task.deadline" variant="tonal" color="primary" height="58" @click="task.isDeadline = !task.isDeadline">
-            <span style="white-space: normal;"> {{ task.isDeadline ? $t('Remove from Deadline') : $t('Move to Deadline') }} </span>
+            <span style="white-space: normal;"> {{ task.isDeadline ? $t('study.removeFromDeadline') : $t('study.moveToDeadline') }} </span>
           </v-btn>
         </v-col>
       </v-row>
@@ -39,7 +39,7 @@
 
       <!-- delete buttons -->
       <v-card-actions class="justify-end">
-        <v-btn color="error" @click="remove()" > {{ $t('delete') }} </v-btn>
+        <v-btn color="error" @click="remove()" > {{ $t('study.delete') }} </v-btn>
       </v-card-actions>
       <v-divider />
     </v-card>

@@ -2,8 +2,8 @@
   <v-card class="todo" v-if="element.showTasks">
     <v-toolbar dark color="primary">
       <v-toolbar-title>TODOs</v-toolbar-title>
-      <v-text-field v-on:keyup.enter="addTodo()" density="compact" v-model="newTodo" label="New Task" type="text" required :hide-details="true" :bg-color="'surface'" />
-      <v-toolbar-items> <v-btn variant="text" @click="addTodo()" > Add </v-btn> </v-toolbar-items>
+      <v-text-field v-on:keyup.enter="addTodo()" density="compact" v-model="newTodo" :label="$t('study.newTask')" type="text" required :hide-details="true" :bg-color="'surface'" />
+      <v-toolbar-items> <v-btn variant="text" @click="addTodo()" >{{$t('study.addTask')}}</v-btn> </v-toolbar-items>
     </v-toolbar>
     <div class="list-container">
       <v-list select-strategy="classic" v-if="deadlineTasks.length > 0" :opened="['deadlines']">
