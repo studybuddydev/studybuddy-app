@@ -12,7 +12,7 @@
       <v-list-item-title :class="task.done ? 'done' : ''">{{ task.name }} <span v-if="task.isDeadline" class="text-medium-emphasis">({{ task.deadline }})</span></v-list-item-title>
     </v-list-item>
 
-    <v-card class="ma-0 pa-5" v-if="expanded">
+    <v-card class="ma-0 pa-5"   v-if="expanded">
 
       <v-row>
         <v-col cols="12">
