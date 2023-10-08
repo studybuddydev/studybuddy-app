@@ -1,45 +1,93 @@
 {
-    "welcome": "Bienvenue {name}!",
-    "random": {
-    "intro": "Ceci est un texte aléatoire"
-    },
-    "add": "Ajouter {element}",
-    "edit": "Modifier",
-    "delete": "Supprimer",
     "save": "Enregistrer",
-    "color": "Couleur",
-    "icon": "Icône",
-    "name": "Nom de {element}",
-    "invalidName": "Nom de {element} invalide",
-    "exam": "Examen",
-    "chapter": "Chapitre",
-    "popup": {
-    "settings": {
-    "title": "Paramètres",
-    "language": "Langue",
-    "theme": "Thème",
-    "save": "Enregistrer"
-    }
+    "cancel": "Annuler",
+    "pause": {
+      "welcome": "Bienvenue sur",
+      "study": "Étude",
+      "tutorial": "Didacticiel",
+      "settings": "Paramètres",
+      "userSettings": "Paramètres de l'Utilisateur",
+      "resume": "Reprendre l'Étude",
+      "endSession": "Terminer la Session",
+      "youare": "Vous êtes dans",
+      "break": "PAUSE",
+      "pomoDone": "Vous avez terminé un Pomodoro",
+      "goodjob": "Excellent Travail !",
+      "youdid": "Vous avez accompli",
+      "studyMin": " minutes d'étude",
+      "pauseMin": " minutes de pause",
+      "general": {
+        "general": "Général",
+        "username": "Nom d'Utilisateur",
+        "language": "Langue",
+        "theme": "Thème",
+        "exportData": "Export Données",
+        "importData": "Import Données",
+        "resetTutorial": "Réinitialiser le Didacticiel",
+        "resetted": "Le didacticiel a été réinitialisé"
+      },
+      "timer": {
+        "timer": "Minuteur",
+        "sessionOf": " Session de",
+        "hours": "heures et",
+        "minutes": "minutes",
+        "sessionLength": "Durée de la Session",
+        "breaksNumber": "pauses",
+        "breakLength": "minutes par pause",
+        "volume": "Volume de notification",
+        "default": "Restaurer les Valeurs par Défaut"
+      }
     },
-    "pomo": {
-    "title": "Pomodoro",
-    "pomo": "Pomo effectué",
-    "pomodoro": "Pomo d'or effectué",
-    "start": "Commencer",
-    "stop": "Arrêter",
-    "reset": "Réinitialiser",
-    "studyLenght": "Durée du pomodoro en minutes",
-    "shortBreakLenght": "Durée de la courte pause en minutes",
-    "longBreakLenght": "Durée de la longue pause en minutes",
-    "longBreakAfter": "Nombre de pomodoros avant la longue pause"
-    },
-    "item": {
-    "showtodo": "Afficher ToDo",
-    "hidetodo": "Masquer ToDo",
-    "link": "Ajouter un lien",
-    "postit": "Ajouter une note"
-    },
-    "link": {
-    "title": "Ajouter un lien"
+    "study": {
+      "showTodo": "Afficher les Tâches à Faire",
+      "hideTodo": "Masquer les Tâches à Faire",
+      "addLink":"Ajouter un Lien",
+      "addNote": "Ajouter une Note",
+      "invalidName": "Nom {element} Invalide !",
+      "examDate": "Date de l'Examen",
+      "icon": "Icône",
+      "color": "Couleur",
+      "newTask": "Nouvelle Tâche",
+      "add": "Ajouter {element}",
+      "todoName": "Nom",
+      "todoDate": "Date d'Échéance",
+      "note": "Notes",
+      "moveToDeadline": "Déplacer vers les Échéances",
+      "removeFromDeadline": "Retirer des Échéances",
+      "Delete": "Supprimer",
+      "tasks": "Tâches",
+      "deadlines": "Échéances",
+      "name": "nom {element}",
+      "exam": "Examen",
+      "chapter": "Chapitre",
+      "save": "Enregistrer",
+      "edit": "Éditer",
+      "delete": "Supprimer",
+      "newEvent": "Nouvel Événement",
+      "hour": "Heures",
+      "minute": "Minutes",
+      "duration": "Durée [m]",
+      "time": {
+        "jan": "janv",
+        "feb": "févr",
+        "mar": "mars",
+        "apr": "avr",
+        "may": "mai",
+        "jun": "juin",
+        "jul": "juil",
+        "aug": "août",
+        "sep": "sept",
+        "oct": "oct",
+        "nov": "nov",
+        "dec": "déc",
+        "year": "année",
+        "month": "Mois",
+        "week": "Semaine",
+        "day": "jour",
+        "dd": "jj",
+        "mm": "mm",
+        "yyyy": "aaaa"
+      },
+      "introMessage": "Bonjour ! Ci-dessous, le minuteur représenté par un serpent vert vient de démarrer. Appuyez sur le bouton pause lorsque vous prenez une pause. Bonne étude !"
     }
-    }
+  }

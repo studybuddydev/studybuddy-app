@@ -1,46 +1,105 @@
 {
-  "welcome": "Benvenuto {name}!",
-  "random": {
-    "intro": "Questo è un testo casuale" 
-  },
-  "add" : "Aggiungi {element}",
-  "edit" : "Modifica",
-  "delete" : "Elimina",
-  "save" : "Salva",
-  "color" : "Colore",
-  "icon" : "Icona",
-  "name" : "Nome dell'{element}",
-  "invalidName" : "Nome dell'{element} non va bene",
-  "exam": "esame",
-  "chapter" : "capitolo",
-  "popup":{
-    "settings": {
-      "title": "Impostazioni",
-      "language": "Lingua",
-      "theme": "Tema",
-      "save": "Salva"
-    }
-  },
-  "pomo": {
-    "title": "Pomodoro",
-    "pomo": "Pomo fatto",
-    "pomodoro": "pomo d'oro fatto",
-    "start": "Inizia",
-    "stop": "Ferma",
-    "reset": "Reset",
-    "studyLenght": "Durata del pomodoro in minuti",
-    "shortBreakLenght": "Durata della pausa breve in minuti",
-    "longBreakLenght": "Durata della pausa lunga in minuti",
-    "longBreakAfter": "Numero di pomodori prima della pausa lunga"
-  },
-  "item": {
-    "showtodo": "Mostra ToDo",
-    "hidetodo": "Nascondi ToDo",
-    "link": "Aggiungi link",
-    "postit": "Aggiungi nota"
-  },
-  "link":{
-    "title": "Aggiungi link"
-  }
+  
+  
+"save":"Salva",
+"cancel":"Annulla",
+     "pause":{
+  
+
+          "welcome":"Benvenuto su",
+          "study": "Studia", 
+          "tutorial": "Tutorial",
+          "settings":"Impostazioni",
+          "userSettings":"Impostazioni Utente",
+          "resume":"Torna a studiare",
+          "endSession":"Termina",
+          "youare":"Sei in",
+          "break":"PAUSA",
+          "pomoDone":"Hai fatto un Pomodoro",
+          "goodjob":"Ottimo Lavoro!",
+          "youdid":"Hai fatto",
+          "studyMin":" minuti di studio",
+          "pauseMin":" minuti di pausa",
+          "general":{
+                   "general":"Generale",
+                   "username":"Nome Utente",
+                   "language":"Lingua",
+                   "theme":"Tema",
+                   "exportData":"Esporta Dati",
+                   "importData":"Importa Dati",
+                   "resetTutorial":"Ripristina Tutorial",
+                   "resetted":"Il tutorial è stato ripristinato"
+                    },
+            "timer":{
+                   "timer":"Timer",
+                   "sessionOf":" Sessione di ",
+                   "hours":"ore e",
+                   "minutes":"minuti",
+                   "sessionLength":"Durata sessione",
+                   "breaksNumber":"pause",
+                   "breakLength":"minuti per pausa",
+                   "volume":"Volume notifica",
+                   "default":"Ripristina valori predefiniti"
+                    }
+                },
+  "study":{
+               "showTodo":"Mostra ToDo",
+               "hideTodo":"Nascondi ToDo",
+               "addLink":"Aggiungi Link",
+               "addNote":"Aggiungi Nota",
+               "invalidName":"Nome {element} non valido!",
+               "examDate":"data Esame",
+               "icon":"Icona",
+               "color":"Colore",
+               "newTask":"Nuova Task",
+               "add":"Aggiungi {element}",
+               "todoName":"Nome",
+               "todoDate":"Scadenza",
+               "note":"Note",
+               "moveToDeadline":"Aggiungi a scadenze",
+               "removeFromDeadline":"Rimuovi da scadenze",
+               "Delete":"Elimina",
+               "tasks":"Task",
+               "deadlines":"Scadenze",
+               "name":"nome {element}",
+               "exam":"Esame",
+               "chapter":"capitolo",
+               "save":"Salva",
+               "edit":"Modifica",
+               "delete":"Elimina",
+               "newEvent":"Nuovo Evento",
+               "hour":"Ore",
+               "minute":"Minuti",
+               "duration":"durata [m]",
+               "monthly":"Mese",
+               "weekly":"Settimana",
+               
+               "time":{
+                      "jan":"gen",
+                      "feb":"feb",
+                      "mar":"mar",
+                      "apr":"apr",
+                      "may":"mag",
+                      "jun":"giu",
+                      "jul":"lug",
+                      "aug":"ago",
+                      "sep":"set",
+                      "oct":"ott",
+                      "nov":"nov",
+                      "dec":"dic",
+                      "year":"anno",
+                      "month":"Mese",
+                      "week":"Settimana",
+                      "day":"giorno",
+                      "dd":"gg",
+                      "mm":"mm",
+                      "yyyy":"aaaa"
+                      },
+             
+               "introMessage":"Ciao! Qui sotto è appena partito il timer rappresentato da un serpente verde. Premi il tasto pausa quando ti fermi. Buono Studio!"
+              }
 }
+      
+  
+  
   

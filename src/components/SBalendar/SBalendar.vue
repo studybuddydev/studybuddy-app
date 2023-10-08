@@ -32,7 +32,7 @@
       />
     </template>
   </Calendar>
-  <v-switch v-model="monthly" :label="monthly ? 'Monthly' : 'Weekly'"></v-switch>
+  <v-switch v-model="monthly" :label="monthly ? $t('study.monthly') : $t('study.weekly')"></v-switch>
 </template>
 
 <script setup lang="ts">
@@ -61,7 +61,7 @@ function addEvent(dayId: string, h: number, m: number, length: number = 60) {
     return;
   }
   events.value[dayId].push({
-    title: "Nuovo event",
+    title: "Nuovo evento",
     description: "",
     start: { hour: h, minute: m },
     length: length,

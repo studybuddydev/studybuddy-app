@@ -1,45 +1,93 @@
 {
-  "welcome": "Welcome {name}!",
-  "random": {
-  "intro": "This is a random text"
-  },
-  "add": "Add {element}",
-  "edit": "Edit",
-  "delete": "Delete",
   "save": "Save",
-  "color": "Color",
-  "icon": "Icon",
-  "name": "{element} name",
-  "invalidName": "Invalid {element} name",
-  "exam": "Exam",
-  "chapter": "Chapter",
-  "popup": {
-  "settings": {
-  "title": "Settings",
-  "language": "Language",
-  "theme": "Theme",
-  "save": "Save"
-  }
+  "cancel": "Cancel",
+  "pause": {
+    "welcome": "Welcome to",
+    "study": "Study",
+    "tutorial": "Tutorial",
+    "settings": "Settings",
+    "userSettings": "User Settings",
+    "resume": "Resume Studying",
+    "endSession": "End Session",
+    "youare": "You are in",
+    "break": "BREAK",
+    "pomoDone": "You have completed a Pomodoro",
+    "goodjob": "Great Job!",
+    "youdid": "You have completed",
+    "studyMin": " minutes of study",
+    "pauseMin": " minutes of break",
+    "general": {
+      "general": "General",
+      "username": "Username",
+      "language": "Language",
+      "theme": "Theme",
+      "exportData": "Export Data",
+      "importData": "Import Data",
+      "resetTutorial": "Reset Tutorial",
+      "resetted": "The tutorial has been reset"
+    },
+    "timer": {
+      "timer": "Timer",
+      "sessionOf": " Session of",
+      "hours": "hours and",
+      "minutes": "minutes",
+      "sessionLength": "Session Length",
+      "breaksNumber": "breaks",
+      "breakLength": "minutes per break",
+      "volume": "Notification Volume",
+      "default": "Restore Default Values"
+    }
   },
-  "pomo": {
-  "title": "Pomodoro",
-  "pomo": "Pomo done",
-  "pomodoro": "Golden pomo done",
-  "start": "Start",
-  "stop": "Stop",
-  "reset": "Reset",
-  "studyLenght": "Pomodoro duration in minutes",
-  "shortBreakLenght": "Short break duration in minutes",
-  "longBreakLenght": "Long break duration in minutes",
-  "longBreakAfter": "Number of pomodoros before long break"
-  },
-  "item": {
-  "showtodo": "Show ToDo",
-  "hidetodo": "Hide ToDo",
-  "link": "Add link",
-  "postit": "Add note"
-  },
-  "link": {
-  "title": "Add link"
+  "study": {
+    "showTodo": "Show ToDo",
+    "hideTodo": "Hide ToDo",
+    "addLink":"Add Link",
+    "addNote": "Add Note",
+    "invalidName": "Invalid {element} Name!",
+    "examDate": "Exam Date",
+    "icon": "Icon",
+    "color": "Color",
+    "newTask": "New Task",
+    "add": "Add {element}",
+    "todoName": "Name",
+    "todoDate": "Due Date",
+    "note": "Notes",
+    "moveToDeadline": "Move to Deadlines",
+    "removeFromDeadline": "Remove from Deadlines",
+    "Delete": "Delete",
+    "tasks": "Tasks",
+    "deadlines": "Deadlines",
+    "name": "Name {element}",
+    "exam": "Exam",
+    "chapter": "Chapter",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "newEvent": "New Event",
+    "hour": "Hours",
+    "minute": "Minutes",
+    "duration": "Duration [m]",
+    "time": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec",
+      "year": "year",
+      "month": "Month",
+      "week": "Week",
+      "day": "day",
+      "dd": "dd",
+      "mm": "mm",
+      "yyyy": "yyyy"
+    },
+    "introMessage": "Hello! Below, the timer represented by a green snake has just started. Press the pause button when you take a break. Happy studying!"
   }
-  }
+}

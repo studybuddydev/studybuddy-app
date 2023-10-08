@@ -13,8 +13,8 @@
       <slot :data="clonedData"></slot>
       <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="cancel()">Cancel</v-btn>
-          <v-btn @click="save()" color="primary">Save</v-btn>
+          <v-btn @click="cancel()">{{$t("cancel")}}</v-btn>
+          <v-btn @click="save()" color="primary">{{$t("save")}}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -11,7 +11,7 @@
       <div class="content_card" v-if="pageType === EStudyView.Dashboard">
       <v-card class="custom-card" max-width="400">
         <v-card-text>
-          Buono studio! qui sotto è appena partito il timer, rappresentato da un serpente verde, quando ti fermi premi il tasto pausa
+          {{$t("study.introMessage")}}
         </v-card-text>
       </v-card>
     </div>

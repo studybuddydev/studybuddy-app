@@ -3,33 +3,33 @@
     <v-scroll-x-transition>
       <div class="pause-screen" v-if="pause">
         <div v-if="firstStart">
-          <p class="text-primary">Welcome to</p>
-          <h2 class="text-primary">StudyBuddy</h2>
+          <p class="text-primary">{{$t("pause.welcome")}}</p>
+          <h2 class="text-primary">StudyBuddy </h2>
         </div>
         <div v-else-if="pomodoro.getReport.reportDone">
-          <p class="text-primary">You finished a pomodoro</p>
-          <h2 class="text-primary">GOOD JOB</h2>
+          <p class="text-primary">{{$t("pause.pomoDone")}}</p>
+          <h2 class="text-primary">{{$t("pause.goodjob")}}</h2>
         </div>
         <div v-else>
-          <p class="text-primary">You are taking a</p>
-          <h2 class="text-primary">BREAK</h2>
+          <p class="text-primary">{{$t("pause.youare")}}</p>
+          <h2 class="text-primary">{{$t("pause.break")}}</h2>
         </div>
 
         <ul>
-          <li @click="startPomodoro()" v-if="!pomodoroGoing">Study</li>
-          <li @click="resumePomodoro()" v-if="pomodoroGoing">Resume</li>
+          <li @click="startPomodoro()" v-if="!pomodoroGoing">{{$t("pause.study")}}</li>
+          <li @click="resumePomodoro()" v-if="pomodoroGoing">{{$t("pause.resume")}}</li>
 
-          <li @click="endSession()" v-if="pomodoroGoing">End Session</li>
+          <li @click="endSession()" v-if="pomodoroGoing">{{$t("pause.endSession")}}</li>
           <v-divider class="my-5" :thickness="2"></v-divider>
          <!-- <li @click="openTutorial()" v-if="!state.isInTutorial">Tutorial</li> -->
            <!--  <li @click="closeTutorial()" v-else>Exit Tutorial</li> -->
-          <li @click="openUserSettings = true">Settings</li>
+          <li @click="openUserSettings = true">{{$t("pause.settings")}}</li>
         </ul>
 
         <div class="report" v-if="pomodoro.getReport.reportDone">
-          <p>Hai fatto <br />
-            {{ msTominutes(pomodoro.getReport.studyLength) }} minuti di studio <br />
-            {{ msTominutes(pomodoro.getReport.breakLength) }} minuti di pause
+          <p>{{$t("pause.youdid")}} <br />
+            {{ msTominutes(pomodoro.getReport.studyLength) }}{{$t("pause.studyMin")}} <br />
+            {{ msTominutes(pomodoro.getReport.breakLength) }} {{$t("pause.pauseMin")}}
           </p>
         </div>
       </div>

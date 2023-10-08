@@ -1,5 +1,5 @@
 <template>
-  <v-select :label="$t('color')"
+  <v-select :label="$t('study.color')"
     :items="colorList" item-title="title" item-value="color"
     :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" >
   <template v-slot:item="{ props: item }">

@@ -20,7 +20,7 @@
     <MenuList
       :model-value="exams"
       @update:model-value="updateExams($event)"
-      :elements-name="$t('exam')"
+      :elements-name="$t('study.exam')"
       :are-exams="true"
       base-url="exam"
       />
@@ -53,7 +53,7 @@
     <MenuList
       :model-value="chapters"
       @update:model-value="updateChapters($event)"
-      :elements-name="$t('chapter')"
+      :elements-name="$t('study.chapter')"
       :choose-color="false"
       :choose-icon="false"
       :color="exam?.color ?? 'primary'"

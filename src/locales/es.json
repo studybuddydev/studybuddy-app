@@ -1,45 +1,93 @@
 {
-    "welcome": "¡Bienvenido {name}!",
-    "random": {
-        "intro": "Este es un texto aleatorio"
-    },
-    "add": "Agregar {element}",
-    "edit": "Editar",
-    "delete": "Eliminar",
     "save": "Guardar",
-    "color": "Color",
-    "icon": "Icono",
-    "name": "Nombre de {element}",
-    "invalidName": "Nombre de {element} inválido",
-    "exam": "Examen",
-    "chapter": "Capítulo",
-    "popup": {
-    "settings": {
-    "title": "Configuración",
-    "language": "Idioma",
-    "theme": "Tema",
-    "save": "Guardar"
-    }               
+    "cancel": "Cancelar",
+    "pause": {
+      "welcome": "Bienvenido a",
+      "study": "Estudiar",
+      "tutorial": "Tutorial",
+      "settings": "Configuración",
+      "userSettings": "Configuración de Usuario",
+      "resume": "Reanudar Estudio",
+      "endSession": "Finalizar Sesión",
+      "youare": "Estás en",
+      "break": "DESCANSO",
+      "pomoDone": "Has completado un Pomodoro",
+      "goodjob": "¡Excelente trabajo!",
+      "youdid": "Has completado",
+      "studyMin": " minutos de estudio",
+      "pauseMin": " minutos de descanso",
+      "general": {
+        "general": "General",
+        "username": "Nombre de Usuario",
+        "language": "Idioma",
+        "theme": "Tema",
+        "exportData": "Exportar Datos",
+        "importData": "Importar Datos",
+        "resetTutorial": "Restablecer Tutorial",
+        "resetted": "El tutorial ha sido restablecido"
+      },
+      "timer": {
+        "timer": "Temporizador",
+        "sessionOf": " Sesión de",
+        "hours": "horas y",
+        "minutes": "minutos",
+        "sessionLength": "Duración de Sesión",
+        "breaksNumber": "descansos",
+        "breakLength": "minutos por descanso",
+        "volume": "Volumen de notificación",
+        "default": "Restaurar valores predeterminados"
+      }
     },
-    "pomo": {
-        "title": "Pomodoro",
-        "pomo": "Pomo completado",
-        "pomodoro": "Pomo de oro completado",
-        "start": "Iniciar",
-        "stop": "Detener",
-        "reset": "Reiniciar",
-        "studyLenght": "Duración del pomodoro en minutos",
-        "shortBreakLenght": "Duración del descanso corto en minutos",
-        "longBreakLenght": "Duración del descanso largo en minutos",
-        "longBreakAfter": "Número de pomodoros antes del descanso largo"
-    },
-    "item": {
-        "showtodo": "Mostrar ToDo",
-        "hidetodo": "Ocultar ToDo",
-        "link": "Agregar enlace",
-        "postit": "Agregar nota"
-    },
-    "link": {
-    "title": "Agregar enlace"
+    "study": {
+      "showTodo": "Mostrar Tareas Pendientes",
+      "hideTodo": "Ocultar Tareas Pendientes",
+      "addLink": "Agregar Enlace",
+      "addNote": "Agregar Nota",
+      "invalidName": "¡Nombre {element} inválido!",
+      "examDate": "Fecha del Examen",
+      "icon": "Ícono",
+      "color": "Color",
+      "newTask": "Nueva Tarea",
+      "add": "Agregar {element}",
+      "todoName": "Nombre",
+      "todoDate": "Fecha de Vencimiento",
+      "note": "Notas",
+      "moveToDeadline": "Mover a Fechas de Vencimiento",
+      "removeFromDeadline": "Eliminar de Fechas de Vencimiento",
+      "Delete": "Eliminar",
+      "tasks": "Tareas",
+      "deadlines": "Fechas de Vencimiento",
+      "name": "nombre {element}",
+      "exam": "Examen",
+      "chapter": "Capítulo",
+      "save": "Guardar",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "newEvent": "Nuevo Evento",
+      "hour": "Horas",
+      "minute": "Minutos",
+      "duration": "Duración [m]",
+      "time": {
+        "jan": "ene",
+        "feb": "feb",
+        "mar": "mar",
+        "apr": "abr",
+        "may": "may",
+        "jun": "jun",
+        "jul": "jul",
+        "aug": "ago",
+        "sep": "sep",
+        "oct": "oct",
+        "nov": "nov",
+        "dec": "dic",
+        "year": "año",
+        "month": "Mes",
+        "week": "Semana",
+        "day": "día",
+        "dd": "dd",
+        "mm": "mm",
+        "yyyy": "aaaa"
+      },
+      "introMessage": "¡Hola! A continuación, el temporizador representado por una serpiente verde acaba de comenzar. Presiona el botón de pausa cuando hagas una pausa. ¡Feliz estudio!"
     }
-    }
+  }

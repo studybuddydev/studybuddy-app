@@ -22,8 +22,8 @@
                 ></v-btn>
               </template>
               <v-list>
-                <v-list-item @click="editElement(element)" :title="$t('edit')" />
-                <v-list-item @click="removeElement(element)" :title="$t('delete')" />
+                <v-list-item @click="editElement(element)" :title="$t('study.edit')" />
+                <v-list-item @click="removeElement(element)" :title="$t('study.delete')" />
               </v-list>
             </v-menu>
           </template>
@@ -34,7 +34,7 @@
     <v-list-item
       @click="addElement()"
       :class="`bg-${props.color}`"
-      prepend-icon="mdi-plus" :title="$t('add',{ 'element' :props.elementsName })"  />
+      prepend-icon="mdi-plus" :title="$t('study.add',{ 'element' :props.elementsName })"  />
 
   </v-list>
 
@@ -45,7 +45,7 @@
         <v-btn icon dark @click="newElementDialog.open = false"> <v-icon>mdi-close</v-icon> </v-btn>
         <v-toolbar-title>{{ props.elementsName }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-toolbar-items> <v-btn variant="text" @click="saveElement()" > {{ $t('save') }} </v-btn> </v-toolbar-items>
+        <v-toolbar-items> <v-btn variant="text" @click="saveElement()" > {{ $t('study.save') }} </v-btn> </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
         <v-container>
@@ -56,21 +56,21 @@
               <v-text-field
                 required autofocus
                 v-model="newElementDialog.element.name"
-                :label="$t('name',{ 'element': props.elementsName})"
-                :error-messages="state.checkValidExamName(newElementDialog.element.name, newElementDialog.original) ? '' : $t('invalidName', {element: props.elementsName})" />
+                :label="$t('study.name',{ 'element': props.elementsName})"
+                :error-messages="state.checkValidExamName(newElementDialog.element.name, newElementDialog.original) ? '' : $t('study.invalidName', {element: props.elementsName})" />
             </v-col>
             <!--Deadline-->
-            <v-col cols="12" v-if="props.elementsName === $t('exam')">
+            <v-col cols="12" v-if="props.elementsName === $t('study.exam')">
               <v-text-field
                 v-model="newElementDialog.element.deadline"
-                label="Deadline"
+                :label="$t('study.examDate')"
                 type="date"
               />
             </v-col>
             
             <!--  Icon-->
             <v-col cols="12" v-if="props.chooseIcon">
-              <v-select :label="$t('icon')"
+              <v-select :label="$t('study.icon')"
                 :items="mdiIconsList" item-title="title" item-value="icon"
                 v-model="newElementDialog.element.icon"
                 :prepend-icon="newElementDialog.element.icon"

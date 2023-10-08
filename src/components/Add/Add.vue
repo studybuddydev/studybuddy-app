@@ -8,17 +8,17 @@
     <v-list class="mx-1">
       <v-list-item
         prepend-icon="mdi-format-list-checks"
-        :title="showTodo ? $t('item.hidetodo')  : $t('item.showtodo')"
+        :title="showTodo ? $t('study.hideTodo')  : $t('study.showTodo')"
         @click="emits('addTodo', !showTodo)"
       />
       <v-list-item
         prepend-icon="mdi-link"
-        :title="$t('item.link')"
+        :title="$t('study.addLink')"
         @click="emits('addLink')"
       />
       <v-list-item
         prepend-icon="mdi-note"
-        :title="$t('item.postit')"
+        :title="$t('study.addNote')"
         @click="emits('addPostIt')"
       />
 

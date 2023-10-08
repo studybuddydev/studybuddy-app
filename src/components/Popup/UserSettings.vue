@@ -1,6 +1,6 @@
 <template>
   <BaseDialog
-    title="User Settings"
+    :title="$t('pause.userSettings')"
     v-model="model"
     :extension="true"
     :data="settingsStore.settingsWithDefaults"
@@ -8,8 +8,8 @@
     @cancel="cancelSettings()">
     <template #extension>
       <v-tabs v-model="tab">
-        <v-tab value="general">General</v-tab>
-        <v-tab value="pomodoro">Timer</v-tab>
+        <v-tab value="general">{{$t("pause.general.general")}}</v-tab>
+        <v-tab value="pomodoro">{{$t("pause.timer.timer")}}</v-tab>
       </v-tabs>
     </template>
     <template #default="{ data }">
@@ -19,18 +19,18 @@
             <v-window-item value="general">
               <v-row>
                 <v-col cols="12">
-                  <v-text-field label="Username" v-model="data!.user!.username" type="string" required />
+                  <v-text-field :label="$t('pause.general.username')" v-model="data!.user!.username" type="string" required />
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-select :label="$t('popup.settings.language')" v-model="$i18n.locale" :items="$i18n.availableLocales"
+                  <v-select :label="$t('pause.general.language')" v-model="$i18n.locale" :items="$i18n.availableLocales"
                     @update:model-value="($event) => data!.user!.lang = $event" />
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-select :label="$t('popup.settings.theme')" v-model="data.user!.theme" :items="themeList" item-title="title"
+                  <v-select :label="$t('pause.general.theme')" v-model="data.user!.theme" :items="themeList" item-title="title"
                     item-value="value" @update:model-value="setTheme($event)">
                     <template #item="{ props, item }">
                       <v-list-item v-bind="props">
@@ -46,8 +46,8 @@
 
               <v-row>
                 <v-spacer />
-                <v-col> <v-btn variant="tonal" @click="exportData()">Export data</v-btn> </v-col>
-                <v-col> <v-btn variant="tonal" @click="importData()">Import data</v-btn> </v-col>
+                <v-col> <v-btn variant="tonal" @click="exportData()">{{$t("pause.general.exportData")}}</v-btn> </v-col>
+                <v-col> <v-btn variant="tonal" @click="importData()">{{$t("pause.general.importData")}}</v-btn> </v-col>
                 <v-spacer />
               </v-row>
 
@@ -56,9 +56,9 @@
                 <v-col>
                   <v-snackbar :timeout="2000" color="primary" elevation="24">
                     <template #activator="{ props }">
-                      <v-btn variant="tonal" @click="resetTutorial()" v-bind="props">Reset Tutorial</v-btn>
+                      <v-btn variant="tonal" @click="resetTutorial()" v-bind="props">{{$t("pause.general.resetTutorial")}}</v-btn>
                     </template>
-                    Tutorial resetted
+                    {{$t("pause.general.resetted")}}
                   </v-snackbar>
                 </v-col>
                 <v-spacer />
@@ -68,10 +68,10 @@
 
             <v-window-item value="pomodoro">
 
-              <div class="text-h6"> Sessions of {{ Math.floor(data!.pomodoro!.pomodoroFlexSettings!.totalLength / 60) }} hours {{ data!.pomodoro!.pomodoroFlexSettings!.totalLength % 60 }} minutes</div>
+              <div class="text-h6"> {{$t("pause.timer.sessionOf")}} {{ Math.floor(data!.pomodoro!.pomodoroFlexSettings!.totalLength / 60) }} {{$t("pause.timer.hours")}} {{ data!.pomodoro!.pomodoroFlexSettings!.totalLength % 60 }} {{$t("pause.timer.minutes")}}</div>
               <v-slider
                 v-model="data!.pomodoro!.pomodoroFlexSettings!.totalLength"
-                :min="20" :max="240" :step="1" thumb-label class="pr-4"
+                :min="5" :max="240" :step="5" thumb-label class="pr-4"
                 prepend-icon="mdi-timer"
               >
                 <template v-slot:thumb-label>
@@ -79,21 +79,21 @@
                 </template>
               </v-slider>
 
-              <div class="text-h6">{{ data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak }} breaks</div>
+              <div class="text-h6">{{ data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak }} {{$t("pause.timer.breaksNumber")}}</div>
               <v-slider
                 v-model="data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak"
                 :min="0" :max="10" :step="1" thumb-label show-ticks="always" class="pr-4"
                 prepend-icon="mdi-tally-mark-5"
               />
 
-              <div class="text-h6">{{ data!.pomodoro!.pomodoroFlexSettings!.breakLength }} minutes of break</div>
+              <div class="text-h6">{{ data!.pomodoro!.pomodoroFlexSettings!.breakLength }} {{$t("pause.timer.breakLength")}}</div>
               <v-slider
                 v-model="data!.pomodoro!.pomodoroFlexSettings!.breakLength"
                 :min="1" :max="20" :step="1" thumb-label class="pr-4"
                 prepend-icon="mdi-coffee"
               />
 
-              <div class="text-h6">Notification volume</div>
+              <div class="text-h6">{{$t("pause.timer.volume")}}</div>
               <v-slider
                 v-model="data!.pomodoro!.pomodoroFlexSettings!.soundVolume"
                 :min="0" :max="100" :step="1" thumb-label class="pr-4"
@@ -106,7 +106,7 @@
                   data!.pomodoro!.pomodoroFlexSettings!.totalLength = settingsStore.defaultSettings.pomodoro!.pomodoroFlexSettings!.totalLength;
                   data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak = settingsStore.defaultSettings.pomodoro!.pomodoroFlexSettings!.numberOfBreak;
                   data!.pomodoro!.pomodoroFlexSettings!.breakLength = settingsStore.defaultSettings.pomodoro!.pomodoroFlexSettings!.breakLength;
-                }">Reset Timer to defaults</v-btn> </v-col>
+                }">{{$t("pause.timer.default")}}</v-btn> </v-col>
                 <v-spacer />
               </v-row>
 
