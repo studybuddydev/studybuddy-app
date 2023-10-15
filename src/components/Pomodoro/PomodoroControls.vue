@@ -54,6 +54,7 @@ const state = useStateStore();
 function btnClick() {
   if (pomodoro.itsFinished) {
     pomodoro.stopPomodoro()
+    console.log('stop')
 
   } else if (pomodoro.status.interval === null) {
     pomodoro.startPomodoro()

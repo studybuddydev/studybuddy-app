@@ -11,7 +11,7 @@ const defaultSettings: Settings = {
     theme: 'blallo',
     username: 'Pippo',
     icon: 'mdi-icon',
-    lang: 'en',
+    lang: 'it',
   },
 
   pomodoro: {

@@ -1,6 +1,6 @@
 <template>
   <BaseDialog
-    :title="$t('pause.userSettings')"
+    :title="$t('pause.pomoSettings')"
     v-model="model"
     :extension="true"
     :data="settingsStore.settingsWithDefaults"
@@ -8,7 +8,7 @@
     @cancel="cancelSettings()">
     <template #extension>
       <v-tabs v-model="tab">
-        <v-tab value="general">{{$t("pause.general.general")}}</v-tab>
+
         <v-tab value="pomodoro">{{$t("pause.timer.timer")}}</v-tab>
       </v-tabs>
     </template>
@@ -16,55 +16,6 @@
       <v-card-text>
         <v-container>
           <v-window v-model="tab">
-            <v-window-item value="general">
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field :label="$t('pause.general.username')" v-model="data!.user!.username" type="string" required />
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-select :label="$t('pause.general.language')" v-model="$i18n.locale" :items="$i18n.availableLocales"
-                    @update:model-value="($event) => data!.user!.lang = $event" />
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-select :label="$t('pause.general.theme')" v-model="data.user!.theme" :items="themeList" item-title="title"
-                    item-value="value" @update:model-value="setTheme($event)">
-                    <template #item="{ props, item }">
-                      <v-list-item v-bind="props">
-                        <template #prepend>
-                          <v-icon :color="item.raw.color">mdi-circle</v-icon>
-                        </template>
-                      </v-list-item>
-                    </template>
-                    <!-- <template v-slot:prepend><v-icon :color="data.theme">mdi-circle</v-icon></template> -->
-                  </v-select>
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-spacer />
-                <v-col> <v-btn variant="tonal" @click="exportData()">{{$t("pause.general.exportData")}}</v-btn> </v-col>
-                <v-col> <v-btn variant="tonal" @click="importData()">{{$t("pause.general.importData")}}</v-btn> </v-col>
-                <v-spacer />
-              </v-row>
-
-              <v-row>
-                <v-spacer />
-                <v-col>
-                  <v-snackbar :timeout="2000" color="primary" elevation="24">
-                    <template #activator="{ props }">
-                      <v-btn variant="tonal" @click="resetTutorial()" v-bind="props">{{$t("pause.general.resetTutorial")}}</v-btn>
-                    </template>
-                    {{$t("pause.general.resetted")}}
-                  </v-snackbar>
-                </v-col>
-                <v-spacer />
-              </v-row>
-              
-            </v-window-item>
 
             <v-window-item value="pomodoro">
 

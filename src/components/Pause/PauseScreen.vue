@@ -24,7 +24,8 @@
           <v-divider class="my-5" :thickness="2"></v-divider>
          <!-- <li @click="openTutorial()" v-if="!state.isInTutorial">Tutorial</li> -->
            <!--  <li @click="closeTutorial()" v-else>Exit Tutorial</li> -->
-          <li @click="openPomoSettings = true">{{$t("pause.settings")}}</li>
+          <li v-if="firstStart || pomodoro.getReport.reportDone" @click="openPomoSettings = true">{{$t("pause.pomoSettings")}}</li>
+          <li v-else @click="openUserSettings = true">{{$t("pause.userSettings")}}</li>
         </ul>
 
         <div class="report" v-if="pomodoro.getReport.reportDone">
