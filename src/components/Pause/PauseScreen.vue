@@ -24,7 +24,7 @@
           <v-divider class="my-5" :thickness="2"></v-divider>
          <!-- <li @click="openTutorial()" v-if="!state.isInTutorial">Tutorial</li> -->
            <!--  <li @click="closeTutorial()" v-else>Exit Tutorial</li> -->
-          <li @click="openUserSettings = true">{{$t("pause.settings")}}</li>
+          <li @click="openPomoSettings = true">{{$t("pause.settings")}}</li>
         </ul>
 
         <div class="report" v-if="pomodoro.getReport.reportDone">
@@ -39,10 +39,14 @@
 
   <UserSettings class="settings" v-model="openUserSettings" />
 
+  <PomoSettings class="settings" v-model="openPomoSettings" />
+  
+
 </template>
 
 <script lang="ts" setup>
 import UserSettings from '@/components/Popup/UserSettings.vue';
+import PomoSettings from '@/components/Popup/PomoSettings.vue';
 import { ref, watch, computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useStateStore } from "@/stores/state";
@@ -53,6 +57,7 @@ const pomodoro = usePomodoroStore();
 const state = useStateStore();
 
 const openUserSettings = ref(false);
+const openPomoSettings = ref(false);
 
 const pauseFromPomodoro = computed(() => (pomodoro.status.isBreak && !!pomodoro.status.interval) || pomodoro.itsStopped);
 const pomodoroGoing = computed(() => pomodoro.going);

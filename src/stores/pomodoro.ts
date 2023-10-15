@@ -97,8 +97,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       clearInterval(status.value.interval);
       status.value.interval = null;
     }
-
+    
+    finished.value = false;
     console.log('stop pomodoro')
+
 
     currentReport.value.studyLength += Date.now() - (status.value.startMs ?? Date.now());
     if (status.value.isBreak) {
@@ -108,6 +110,9 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   
     status.value.status = 'Reinizia!';
     stopped.value = true;
+
+
+
     saveStatus();
   }
 
