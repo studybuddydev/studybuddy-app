@@ -1,7 +1,30 @@
 {
   "exams": [
+    {
+      "name": "Esame 1",
+      "icon": "mdi-book-open-page-variant",
+      "color": "deep-orange",
+      "postIts": [
+        {
+          "color": "#e6b905",
+          "content": "<p>Complimenti! Hai cliccato sull'esame e ora sei nella pagina relativa a questo esame.</p><p><br></p><p>Clicca il<strong> </strong>+ <u>in basso a destra nello schermo</u> per scoprire widget utili.</p><p><br></p><p>Cliccando su \"Capitolo 1\" puoi accedere al primo capitolo di questo esame.</p><p><br></p><p>Clicca \"Aggiungi capitolo\" per aggiungere un altro capitolo all'interno di questo esame.</p><p><br></p><p>Per tornare alla home clicca sul<u> logo StudyBuddy in alto a sinistra nella pagina.</u></p>"
+        }
+      ],
+      "chapters": [
+        {
+          "name": "Capitolo 1",
+          "postIts": []
+        }
+      ],
+      "showTasks": false
+    }
   ],
-  "dashboard": { "name": "StudyBuddy", "links": [], "postIts": [], "tasks": [], "showTasks": false },
-  "events": {
-  }
+  "dashboard": {
+    "name": "StudyBuddy",
+    "links": [],
+    "postIts": [],
+    "tasks": [],
+    "showTasks": false
+  },
+  "events": {}
 }
