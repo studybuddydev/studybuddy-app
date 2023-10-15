@@ -86,7 +86,7 @@ $bar-height: 1.2em;
 
 
     .progress-text {
-      opacity: 0;
+      opacity: 0.5;
       position: absolute;
       right: 0;
       line-height: $bar-height;

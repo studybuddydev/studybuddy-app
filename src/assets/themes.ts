@@ -118,7 +118,25 @@ export const themes = {
       snake: '#71e943',
       apple: '#e50000',
     }
-  }
+  }, 
+  dark: {
+    dark: true,
+    colors: {
+      background: '#212121',
+      surface: '#252525',
+      primary: '#bb86fc',
+      'primary-darken-1': '#005DA6',
+      secondary: '#03dac5',
+      'secondary-darken-1': '#FF8C00',
+      error: '#FF3333',
+      info: '#00BFFF',
+      success: '#00CC66',
+      warning: '#FFD700',
+      snake: '#03dac5',
+      apple: '#FF3333',
+    }
+  }, 
+  
 }
 
 export const themeList = [

@@ -8,7 +8,7 @@
         </div>
         <div v-else-if="pomodoro.getReport.reportDone">
           <p class="text-primary">{{$t("pause.pomoDone")}}</p>
-          <h2 class="text-primary">{{$t("pause.goodjob")}}</h2>
+          <h3 class="text-primary">{{$t("pause.goodjob")}}</h3>
         </div>
         <div v-else>
           <p class="text-primary">{{$t("pause.youare")}}</p>
@@ -155,6 +155,12 @@ function msTominutes(ms: number): string {
   h2 {
     text-align: center;
     font-size: 5rem;
+    max-width: 700px;
+  }
+
+  h3 {
+    text-align: center;
+    font-size: 3rem;
     max-width: 700px;
   }
   
