@@ -10,19 +10,25 @@
       {{ pomodoro.itsTimeToBreak }}
     </div> -->
 
-    <v-btn
-      :class="pomodoro.itsTimeToBreak || pomodoro.itsFinished ? 'btn bg-secondary' : 'btn bg-secondary small'"
-      icon="mdi-check-circle"
-      @click="btnClick()"
-      text="CIAO"
-    >
-      <div class="btn-content">
-        <v-icon v-if="pomodoro.itsFinished" class="icon" >mdi-stop</v-icon>
-        <v-icon v-else-if="pomodoro.status.interval === null" class="icon" >mdi-skip-next</v-icon>
-        <v-icon v-else-if="pomodoro.status.isBreak" class="icon">mdi-play</v-icon>
-        <v-icon v-else class="icon">mdi-pause</v-icon>
-      </div>
-    </v-btn>
+  <v-btn
+    :class="pomodoro.itsTimeToBreak || pomodoro.itsFinished ? 'btn bg-secondary' : 'btn bg-secondary small'"
+    icon="mdi-check-circle"
+    @click="btnClick()"
+  >
+    <div class="btn-content">
+      <v-icon v-if="pomodoro.itsFinished" class="icon" >mdi-stop</v-icon> 
+      <span v-if="pomodoro.itsFinished">Finished</span>
+
+      <v-icon v-else-if="pomodoro.status.interval === null" class="icon" >mdi-skip-next</v-icon>
+      <span v-if="pomodoro.status.interval === null">{{$t("pause.study")}}</span>
+
+      <v-icon v-else-if="pomodoro.status.isBreak" class="icon">mdi-play</v-icon>
+      <span v-if="pomodoro.status.isBreak">{{$t("pause.study")}}</span>
+
+      <v-icon v-else class="icon">mdi-pause</v-icon>
+
+    </div>
+  </v-btn>
 
     <!-- <v-btn v-if="pomodoro.status.interval !== null && pomodoro.status.isBreak"
       class="btn"
