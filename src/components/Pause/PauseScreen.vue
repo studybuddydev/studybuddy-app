@@ -179,11 +179,15 @@ function msTominutes(ms: number): string {
     margin-top: 2rem;
     font-size: 1.5rem;
 
+
     li {
       margin: 0.5rem 0;
       text-align: center;
       cursor: pointer;
       padding: 0.5rem 4rem;
+      justify-content: center;
+      align-items: center;
+      display: flex;
 
       // text-shadow: -1px -1px 0 rgb(var(--v-theme-primary)), 1px -1px 0 rgb(var(--v-theme-primary)), -1px 1px 0 rgb(var(--v-theme-primary)), 1px 1px 0 rgb(var(--v-theme-primary));
 
