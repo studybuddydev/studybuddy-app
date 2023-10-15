@@ -13,7 +13,7 @@
       "break": "DESCANSO",
       "pomoDone": "Has completado un Pomodoro",
       "goodjob": "¡Excelente trabajo!",
-      "youdid": "Has completado",
+      "youdid": "Has hecho",
       "studyMin": " minutos de estudio",
       "pauseMin": " minutos de descanso",
       "general": {
@@ -49,6 +49,7 @@
       "icon": "Ícono",
       "color": "Color",
       "newTask": "Nueva Tarea",
+      "addTask":"Agregar",
       "add": "Agregar {element}",
       "todoName": "Nombre",
       "linkName":"Nombre",
@@ -90,6 +91,6 @@
         "mm": "mm",
         "yyyy": "aaaa"
       },
-      "introMessage": "¡Hola! A continuación, el temporizador representado por una serpiente verde acaba de comenzar. Presiona el botón de pausa cuando hagas una pausa. ¡Feliz estudio!"
+      "introMessage": "¡Hola! A continuación, el temporizador representado por una serpiente verde acaba de comenzar. Presiona el botón de pausa debajo a la izquierda cuando hagas una pausa. ¡Buen estudio!"
     }
   }

@@ -49,6 +49,7 @@
       "icon": "Icône",
       "color": "Couleur",
       "newTask": "Nouvelle Tâche",
+      "addTask":"Ajouter",
       "add": "Ajouter {element}",
       "linkName":"Nom",
       "todoName": "Nom",

@@ -9,11 +9,11 @@
     "userSettings": "User Settings",
     "resume": "Resume Studying",
     "endSession": "End Session",
-    "youare": "You are in",
+    "youare": "You are on",
     "break": "BREAK",
     "pomoDone": "You have completed a Pomodoro",
     "goodjob": "Great Job!",
-    "youdid": "You have completed",
+    "youdid": "You did",
     "studyMin": " minutes of study",
     "pauseMin": " minutes of break",
     "general": {
@@ -49,6 +49,7 @@
     "icon": "Icon",
     "color": "Color",
     "newTask": "New Task",
+    "addTask":"Add",
     "add": "Add {element}",
     "todoName": "Name",
     "todoDate": "Due Date",
@@ -90,6 +91,6 @@
       "mm": "mm",
       "yyyy": "yyyy"
     },
-    "introMessage": "Hello! Below, the timer represented by a green snake has just started. Press the pause button when you take a break. Happy studying!"
+    "introMessage": "Hello! Below, the timer represented by a green snake has just started. Press the pause button in the lower left corner of this page when you take a break. Happy studying!"
   }
 }
