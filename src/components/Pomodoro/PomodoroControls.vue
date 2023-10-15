@@ -1,36 +1,49 @@
 <template>
-  <div v-if="state.isInTutorial" class="tutorial-discalimer bg-background">
-    <b class="text-error">Sei nel Tutorial</b>
-    <p>Niente verrá salvato</p>
-    <p>Per uscire premi ESC e "Exit Tutorial"</p>
-  </div>
-  <div class="controls">
-    <!-- <div class="status">
+    <div v-if="state.isInTutorial" class="tutorial-discalimer bg-background">
+        <b class="text-error">Sei nel Tutorial</b>
+        <p>Niente verrá salvato</p>
+        <p>Per uscire premi ESC e "Exit Tutorial"</p>
+    </div>
+    <div class="controls">
+        <!-- <div class="status">
       {{pomodoro.status.status}}
       {{ pomodoro.itsTimeToBreak }}
     </div> -->
 
-  <v-btn
-    :class="pomodoro.itsTimeToBreak || pomodoro.itsFinished ? 'btn bg-secondary' : 'btn bg-secondary small'"
-    icon="mdi-check-circle"
-    @click="btnClick()"
-  >
-    <div class="btn-content">
-      <v-icon v-if="pomodoro.itsFinished" class="icon" >mdi-stop</v-icon> 
-      <span v-if="pomodoro.itsFinished">Finished</span>
+        <v-btn
+            :class="
+                pomodoro.itsTimeToBreak || pomodoro.itsFinished
+                    ? 'btn bg-secondary'
+                    : 'btn bg-secondary small'
+            "
+            icon="mdi-check-circle"
+            @click="btnClick()"
+        >
+            <div class="btn-content">
+                <!-- end pomo-->
 
-      <v-icon v-else-if="pomodoro.status.interval === null" class="icon" >mdi-skip-next</v-icon>
-      <span v-if="pomodoro.status.interval === null">{{$t("pause.study")}}</span>
+                <v-icon v-if="pomodoro.itsFinished" class="icon"
+                    >mdi-stop</v-icon>
 
-      <v-icon v-else-if="pomodoro.status.isBreak" class="icon">mdi-play</v-icon>
-      <span v-if="pomodoro.status.isBreak">{{$t("pause.study")}}</span>
+                <!-- start first time-->
+                <div v-else-if="pomodoro.status.interval === null" class="icon-text">
+                    <span>{{ $t("pause.study") }}</span>
+                    <v-icon class="icon">mdi-skip-next</v-icon>
+                </div>
 
-      <v-icon v-else class="icon">mdi-pause</v-icon>
+                <!-- start -->
+                <div v-else-if="pomodoro.status.isBreak && pomodoro.status.interval" class="icon-text">
+                   <span>{{$t("pause.study")}}</span>
+                  <v-icon class="icon">mdi-play</v-icon>
+  
+                </div>
 
-    </div>
-  </v-btn>
+                <!-- pause-->
+                <v-icon v-else class="icon">mdi-pause</v-icon>
+            </div>
+        </v-btn>
 
-    <!-- <v-btn v-if="pomodoro.status.interval !== null && pomodoro.status.isBreak"
+        <!-- <v-btn v-if="pomodoro.status.interval !== null && pomodoro.status.isBreak"
       class="btn"
       icon="mdi-stop"
       variant="text" size="x-large"
@@ -48,7 +61,7 @@
       variant="text" size="x-large"
       @click="pomodoro.startPomodoro()"
     /> -->
-  </div>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -58,22 +71,19 @@ const pomodoro = usePomodoroStore();
 const state = useStateStore();
 
 function btnClick() {
-  if (pomodoro.itsFinished) {
-    pomodoro.stopPomodoro()
-    console.log('stop')
-
-  } else if (pomodoro.status.interval === null) {
-    pomodoro.startPomodoro()
-
-  } else {
-    pomodoro.nextStep()
-  }
-
+    if (pomodoro.itsFinished) {
+        pomodoro.stopPomodoro();
+        console.log("stop");
+    } else if (pomodoro.status.interval === null) {
+        pomodoro.startPomodoro();
+    } else {
+        pomodoro.nextStep();
+    }
 }
 </script>
 
 <style lang="scss" scoped>
-  .tutorial-discalimer {
+.tutorial-discalimer {
     min-width: 200px;
     padding: 1rem;
     border-radius: 0.5rem;
@@ -81,10 +91,14 @@ function btnClick() {
     text-align: center;
     border: 1px solid rgb(var(--v-theme-error));
     p {
-      margin: 0.5rem 0;
+        margin: 0.5rem 0;
     }
-  }
-  .controls {
+}
+.icon-text {
+  display: flex;
+  align-items: center;
+}
+.controls {
     z-index: 2500;
     border-radius: 0.6rem;
     overflow: hidden;
@@ -95,39 +109,37 @@ function btnClick() {
     align-items: center;
 
     .status {
-      flex-grow: 1;
-      padding: 0 1em;
+        flex-grow: 1;
+        padding: 0 1em;
     }
 
     .btn {
-      border-radius: 1em;
-      width: calc(256px - 2em);
-      height: 10em;
-      transition: height 0.2s ease-in-out;
+        border-radius: 1em;
+        width: calc(256px - 2em);
+        height: 10em;
+        transition: height 0.2s ease-in-out;
 
-      .btn-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        .btn-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
 
-        .icon {
-          font-size: 7em;
-          transition: font-size 0.2s ease-in-out;
+            .icon {
+                font-size: 7em;
+                transition: font-size 0.2s ease-in-out;
+            }
+            .text {
+                margin-top: 0.2em;
+            }
         }
-        .text {
-          margin-top: 0.2em;
-        }
-      }
 
-      &.small {
-        height: 3em;
-        .icon {
-          font-size: 2em;
+        &.small {
+            height: 3em;
+            .icon {
+                font-size: 2em;
+            }
         }
-      }
-
     }
-
-  }
+}
 </style>
