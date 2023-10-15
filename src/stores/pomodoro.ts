@@ -73,6 +73,12 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       studyLength: 0,
       breakLength: 0,
     }
+    console.log('start pomodoro')
+
+
+    pauseStartHit = false;
+    pauseEndHIt = false;
+    
     breakStartTime = null;
     timeToBreak.value = false;
     finished.value = false;
@@ -92,6 +98,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       status.value.interval = null;
     }
 
+    console.log('stop pomodoro')
+
     currentReport.value.studyLength += Date.now() - (status.value.startMs ?? Date.now());
     if (status.value.isBreak) {
       currentReport.value.breakLength += Date.now() - (breakStartTime ?? Date.now());
@@ -106,6 +114,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   function startInterval() {
     if (status.value.interval !== null)
       clearInterval(status.value.interval);
+
+    console.log('start interval')
   
     return setInterval(() => {
       const now = Date.now();

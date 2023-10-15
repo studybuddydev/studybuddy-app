@@ -16,8 +16,9 @@
         </div>
 
         <ul>
-          <li @click="startPomodoro()" v-if="!pomodoroGoing">{{$t("pause.study")}}</li>
-          <li @click="resumePomodoro()" v-if="pomodoroGoing">{{$t("pause.resume")}}</li>
+          <!-- <li @click="startPomodoro()" v-if="!pomodoroGoing">{{$t("pause.study")}}</li>
+          <li @click="resumePomodoro()" v-if="pomodoroGoing">{{$t("pause.resume")}}</li> -->
+          <li @click="close()"> <pomodoro-controls/></li>
 
           <li @click="endSession()" v-if="pomodoroGoing">{{$t("pause.endSession")}}</li>
           <v-divider class="my-5" :thickness="2"></v-divider>
@@ -45,6 +46,8 @@ import UserSettings from '@/components/Popup/UserSettings.vue';
 import { ref, watch, computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useStateStore } from "@/stores/state";
+import PomodoroControls from '@/components/Pomodoro/PomodoroControls.vue';
+
 import router from '@/router';
 const pomodoro = usePomodoroStore();
 const state = useStateStore();

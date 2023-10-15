@@ -56,6 +56,7 @@ function btnClick() {
     pomodoro.stopPomodoro()
   } else if (pomodoro.status.interval === null) {
     pomodoro.startPomodoro()
+
   } else {
     pomodoro.nextStep()
   }
@@ -76,7 +77,7 @@ function btnClick() {
     }
   }
   .controls {
-    z-index: 2000;
+    z-index: 2500;
     border-radius: 0.6rem;
     overflow: hidden;
     margin: 0.4em 0.5em;
