@@ -74,7 +74,7 @@ const route = useRoute()
 const pageType = route.meta.type as EStudyView;
 const element = ref(state.getStudyElement(route.params.exam as string, route.params.chapter as string));
 
-console.log(route.params.exam , route.params.chapter as string)
+console.log('brus')
 
 const linkRef = ref<InstanceType<typeof Links> | null>(null);
 const postitRef = ref<InstanceType<typeof PostIt> | null>(null);
