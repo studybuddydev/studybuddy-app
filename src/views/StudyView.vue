@@ -7,16 +7,16 @@
       <ToDo class="todo" :element="element" ref="todoRef" />
       <PostIt class="note" :element="element" ref="postitRef" />
       <Links class="link" :element="element" ref="linkRef" />
+    </div>
 
-      <div class="content_card" v-if="pageType === EStudyView.Dashboard">
+
+          
+    <div class="content_card" v-if="pageType === EStudyView.Dashboard">
       <v-card class="custom-card" max-width="400">
         <v-card-text>
           {{$t("study.introMessage")}}
         </v-card-text>
       </v-card>
-    </div>
-  
-
     </div>
 
 
@@ -73,6 +73,8 @@ const route = useRoute()
 
 const pageType = route.meta.type as EStudyView;
 const element = ref(state.getStudyElement(route.params.exam as string, route.params.chapter as string));
+
+console.log(route.params.exam , route.params.chapter as string)
 
 const linkRef = ref<InstanceType<typeof Links> | null>(null);
 const postitRef = ref<InstanceType<typeof PostIt> | null>(null);
@@ -162,7 +164,7 @@ const isPro = ref(true);
   /* a square in the middle*/
   display: flex;
   align-items: center;
-  width: 100vw;
+  width: 100%;
 
 
 }

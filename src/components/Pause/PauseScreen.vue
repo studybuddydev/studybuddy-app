@@ -4,7 +4,7 @@
       <div class="pause-screen" v-if="pause">
         <div v-if="firstStart">
           <p class="text-primary">{{$t("pause.welcome")}}</p>
-          <h2 class="text-primary">StudyBuddy </h2>
+          <h2 class="text-primary">Study Buddy </h2>
         </div>
         <div v-else-if="pomodoro.getReport.reportDone">
           <p class="text-primary">{{$t("pause.pomoDone")}}</p>
