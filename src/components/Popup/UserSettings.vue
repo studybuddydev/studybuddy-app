@@ -9,7 +9,7 @@
     <template #extension>
       <v-tabs v-model="tab">
         <v-tab value="general">{{$t("pause.general.general")}}</v-tab>
-        <!-- <v-tab value="pomodoro">{{$t("pause.timer.timer")}}</v-tab> -->
+        <!--<v-tab value="pomodoro">{{$t("pause.timer.timer")}}</v-tab> > -->
       </v-tabs>
     </template>
     <template #default="{ data }">
