@@ -67,18 +67,18 @@
     }
     .pomodoro.mobile {
       height: 3rem;
+      bottom: 5rem;
     }
 
     .pomodoro-controls {
       position: absolute;
-      bottom: 6rem;
+      bottom: 10rem;
       // centered
       display: flex;
       justify-content: center;
       align-content: center;
       width: 100%;
       z-index: 1499;
-
 
     }
 
