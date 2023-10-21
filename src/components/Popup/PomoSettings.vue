@@ -125,6 +125,7 @@
 import { ref, computed } from 'vue'
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
+import { usePomodoroStore } from "@/stores/pomodoro";
 import { useTheme } from 'vuetify'
 import { themeList } from '@/assets/themes'
 import BaseDialog from '@/components/common/BaseDialog.vue'
@@ -133,6 +134,8 @@ import type { Settings } from '@/types';
 const theme = useTheme();
 const state = useStateStore();
 const settingsStore = useSettingsStore();
+const pomodoro = usePomodoroStore();
+
 
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits(['update:modelValue'])
@@ -150,6 +153,10 @@ function cancelSettings() {
 }
 function saveSettings(s: Settings) {
   settingsStore.updateSettings(s);
+  
+  pomodoro.status.breaks = pomodoro.generateBreaks()
+  console.log(pomodoro.status.breaks);
+
 }
 function setTheme(newTheme: string) {
   theme.global.name.value = newTheme;

@@ -260,7 +260,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     MINUTE_MULTIPLIER,
     breakLengthPercentage, going, itsTimeToBreak, itsFinished, getReport, itsStopped,
     settings, percentage, status,
-    startPomodoro, stopPomodoro, nextStep
+    startPomodoro, stopPomodoro, nextStep, generateBreaks
   }
 
 })
