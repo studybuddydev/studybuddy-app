@@ -15,7 +15,25 @@ export default defineConfig({
       include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**'),
     }),
     vueJsx(),
-    VitePWA({ registerType: 'autoUpdate' })
+    VitePWA({
+      manifest: {
+        name: 'StudyBuddy',
+        short_name: 'StudyBuddy',
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#000000',
+        icons: [
+          {
+            src: '/public/images/logo.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          
+        ],
+      },
+    }),
+
   ],
   resolve: {
     alias: {
@@ -23,3 +41,4 @@ export default defineConfig({
     }
   }
 })
+
