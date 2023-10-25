@@ -1,18 +1,24 @@
 <template>
-  <!-- MAIN MENU -->
+  <!-- header -->
   <v-navigation-drawer permanent :rail="!!exam">
     <template v-slot:prepend>
-      <v-list-item
-        prepend-avatar="/images/logo.png"
-        to="/" nav >
-        <template v-slot>
-          <v-list-item class="pa-0">
-            <h1 class="title font-weight-bold text-primary">StudyBuddy
-              <span class="bg-primary pa-1">BETA</span>
-            </h1>
-          </v-list-item>
-        </template>
-      </v-list-item>
+      <v-list-item color="black" 
+          
+          to="/" nav
+          >
+          <template v-slot>
+          <div class="title">
+            <img src="/images/logo.png" alt="logo" width="47" />
+            
+            <v-list-item class="pa-0">
+              <h3 class="text-primary">StudyBuddy
+                <span class="bg-primary pa-1">BETA</span>
+              </h3>
+            
+            </v-list-item>
+            </div>
+          </template>
+        </v-list-item>
     </template>
 
     <v-divider></v-divider>
@@ -107,9 +113,17 @@ function importData() {
 
 <style scoped lang="scss">
 .title {
-  font-size: 1.2rem !important;
+  //font-size: 1.2rem !important;
   span {
     border-radius: 0.5rem;
   }
+  
+  display: flex; 
+  align-items: center;
+  // background-color: rgba(0, 0, 0, 0.8);
+  // backdrop-filter: blur(50px);
+  z-index: 30000;
+  position: sticky;
 }
+
 </style>

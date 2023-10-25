@@ -98,7 +98,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       status.value.interval = null;
     }
 
-   
+    console.log(status.value.interval)
     console.log('stop pomodoro')
 
 
@@ -112,6 +112,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     stopped.value = true;
 
     finished.value = false;
+    // refresh page
+    
 
     saveStatus();
   }

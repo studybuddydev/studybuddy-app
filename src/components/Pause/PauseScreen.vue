@@ -2,9 +2,32 @@
   <div transition="fade-transition">
     <v-scroll-x-transition>
       <div class="pause-screen" v-if="pause">
+
+ 
+
+          <div class="top-left title" v-if="!firstStart">
+            <img src="/images/logo.png" alt="logo" />
+            
+           
+              <h3 class="text-primary">StudyBuddy
+                <span class="bg-primary pa-1">BETA</span>
+              </h3>
+            
+          </div>
+          
+
+
+   
+
+
+
+
         <div v-if="firstStart">
           <p class="text-primary">{{$t("pause.welcome")}}</p>
-          <h2 class="text-primary">Study Buddy </h2>
+        <div class="title">
+            <img src="/images/logo.png" alt="logo" />
+            <h2 class="text-primary">StudyBuddy</h2>
+        </div>
         </div>
         <div v-else-if="pomodoro.getReport.reportDone">
           <p class="text-primary">{{$t("pause.pomoDone")}}</p>
@@ -129,11 +152,43 @@ function msTominutes(ms: number): string {
 </script>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
 .settings {
   z-index: 2001;
 }
+
+
+.top-left {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+
+}
+
+.title {
+  display: flex; 
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
+  flex-direction: row;
+
+}
+
+.title img {
+  width: 7rem;
+}
+
+
+
+
+
+span {
+    border-radius: 0.5rem;
+}
+
 
 .pause-screen {
   position: absolute;
@@ -150,18 +205,25 @@ function msTominutes(ms: number): string {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
   font-family: 'Press Start 2P', cursive;
 
   h2 {
     text-align: center;
+   
     font-size: 5rem;
+
     max-width: 700px;
+    font-weight: 900;
+    
   }
 
   h3 {
     text-align: center;
-    font-size: 3rem;
+    font-size: 1.5rem;
     max-width: 700px;
+    
+
   }
   
   p {
@@ -205,5 +267,29 @@ function msTominutes(ms: number): string {
     margin-top: 2rem;
     border-radius: 1rem;
   }
+}
+
+@media screen and (max-width: 600px) {
+  .title {
+    flex-direction: column; /* stacked */
+  }
+
+
+
+  .top-left {
+    top: 0.5rem;
+    flex-direction: row;
+  //center 
+  }
+  .title img {
+    width: 5rem;
+  }
+
+  .pause-screen h2 {
+     font-size: 15vw ;
+  }
+
+
+
 }
 </style>

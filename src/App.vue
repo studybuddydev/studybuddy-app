@@ -51,6 +51,12 @@
 </script>
 
 <style scoped lang="scss">
+*{
+  font-family: 'Oxygen', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+}
+
 .main {
   height: 100vh;
   overflow: auto;
