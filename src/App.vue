@@ -13,7 +13,6 @@
       </div>
     </v-main>
     
-    <CookieBanner />
 
     <PauseScreen />
 
