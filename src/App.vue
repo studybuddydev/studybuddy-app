@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire" >
-    <Menu v-if="windowWidth > 600" />
+    <Menu v-if="windowWidth > 600"></Menu>
     <v-main class="main">
       <div class="main-wrapper">
         <router-view :key="$route.fullPath"></router-view>
@@ -13,7 +13,7 @@
       </div>
     </v-main>
     
-
+    
     <PauseScreen />
 
   </v-app>
@@ -23,15 +23,12 @@
 <script setup lang="ts">
   import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
   import Menu from '@/components/Menus/Menu.vue';
-  import CookieBanner from '@/components/Cookie/CookieBanner.vue';
   import PauseScreen from '@/components/Pause/PauseScreen.vue';
   import PomodoroControls from '@/components/Pomodoro/PomodoroControls.vue';
-  import { computed, ref } from 'vue';
+  import { computed, ref,onMounted, onUnmounted } from 'vue';
 
-   const windowWidth = ref(window.innerWidth);
+  const windowWidth = ref(window.innerWidth);
   const isLargeScreen = computed(() => windowWidth.value > 600);
-
-  import { ref, onMounted, onUnmounted } from 'vue';
 
 
   const updateWidth = () => {

@@ -11,21 +11,13 @@
             {{element.name}}
           </v-list-item-title>
           <template v-slot:append>
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  color="grey-lighten-1"
-                  icon="mdi-dots-vertical"
-                  variant="text"
-                  v-bind="props"
-                  @click.prevent.stop="$event.preventDefault()"
-                ></v-btn>
-              </template>
-              <v-list>
-                <v-list-item @click="editElement(element)" :title="$t('study.edit')" />
-                <v-list-item @click="removeElement(element)" :title="$t('study.delete')" />
-              </v-list>
-            </v-menu>
+            <v-btn
+              color="grey-lighten-1"
+              icon="mdi-dots-vertical"
+              variant="text"
+              v-bind="props"
+              @click="editElement(element)"
+            ></v-btn>
           </template>
         </v-list-item>
       </template>
@@ -45,7 +37,6 @@
         <v-btn icon dark @click="newElementDialog.open = false"> <v-icon>mdi-close</v-icon> </v-btn>
         <v-toolbar-title>{{ props.elementsName }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-toolbar-items> <v-btn variant="text" @click="saveElement()" > {{ $t('study.save') }} </v-btn> </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
         <v-container>
@@ -87,7 +78,14 @@
               <ColorPicker v-model="newElementDialog.element.color" />
             </v-col>
           </v-row>
+
         </v-container>
+        <v-card-actions>
+          <v-btn icon="mdi-delete" variant="tonal" v-if="!!newElementDialog.original" @click="removeElement(newElementDialog.original)" color="error"></v-btn>
+          <v-spacer></v-spacer>
+          <v-btn @click="closeEditDialog()">{{ $t('cancel') }}</v-btn>
+          <v-btn @click="saveElement()" color="primary">{{ $t('save') }}</v-btn>
+        </v-card-actions>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -99,6 +97,7 @@ import draggable from 'vuedraggable'
 import ColorPicker from '../Inputs/ColorPicker.vue';
 import type { Chapter, Exam } from '@/types';
 import { useStateStore } from "@/stores/state";
+import router from '@/router';
 const state = useStateStore();
 
 const props = withDefaults(defineProps<{
@@ -143,7 +142,8 @@ function editElement(el: any) {
 }
 
 function removeElement(el: Exam | Chapter) {
-  emit('update:modelValue', props.modelValue.filter((e: Exam | Chapter) => e.name !== el.name))
+  emit('update:modelValue', props.modelValue.filter((e: Exam | Chapter) => e.name !== el.name));
+  closeEditDialog();
 }
 
 function saveElement() {
@@ -153,8 +153,14 @@ function saveElement() {
     } else {
       emit('update:modelValue', props.modelValue.map((e: Exam | Chapter) => e.name === newElementDialog.value.original?.name ? newElementDialog.value.element : e))
     }
-    newElementDialog.value.open = false;
+    closeEditDialog();
+    router.push({ path: `/${props.baseUrl}/${newElementDialog.value.element.name}`})
   }
+}
+
+
+function closeEditDialog() {
+  newElementDialog.value.open = false;
 }
 
 function rail() {

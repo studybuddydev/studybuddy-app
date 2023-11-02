@@ -1,6 +1,6 @@
 <template>
-  <v-container class= "" v-if="isPro">
-    <h1>{{ element.name }}</h1>
+  <v-container v-if="isPro">
+    <h1>{{[examName, chapterName].filter(x => x).join(' / ')}}</h1>
     <!-- <SBalendar v-if="pageType === EStudyView.Dashboard" /> -->
 
     <div class="content"  >
@@ -72,9 +72,9 @@ const state = useStateStore();
 const route = useRoute()
 
 const pageType = route.meta.type as EStudyView;
+const examName = route.params.exam as string
+const chapterName = route.params.chapter as string;
 const element = ref(state.getStudyElement(route.params.exam as string, route.params.chapter as string));
-
-console.log('brus')
 
 const linkRef = ref<InstanceType<typeof Links> | null>(null);
 const postitRef = ref<InstanceType<typeof PostIt> | null>(null);
