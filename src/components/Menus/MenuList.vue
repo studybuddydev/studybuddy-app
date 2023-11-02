@@ -12,7 +12,6 @@
           </v-list-item-title>
           <template v-slot:append>
             <v-btn
-              color="grey-lighten-1"
               icon="mdi-dots-vertical"
               variant="text"
               v-bind="props"
