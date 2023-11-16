@@ -161,10 +161,7 @@ function cancelSettings() {
 }
 function saveSettings(s: Settings) {
   settingsStore.updateSettings(s);
-  
   pomodoro.status.breaks = pomodoro.generateBreaks()
-  console.log(pomodoro.status.breaks);
-
 }
 function setTheme(newTheme: string) {
   theme.global.name.value = newTheme;

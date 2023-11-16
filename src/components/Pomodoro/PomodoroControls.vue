@@ -10,20 +10,14 @@
       {{ pomodoro.itsTimeToBreak }}
     </div> -->
 
-        <v-btn
-            :class="
-                pomodoro.itsTimeToBreak || pomodoro.itsFinished
-                    ? 'btn bg-secondary'
-                    : 'btn bg-secondary small'
-            "
-            icon="mdi-check-circle"
-            @click="btnClick()"
-        >
+        <v-btn :class="pomodoro.itsTimeToBreak || pomodoro.itsFinished
+                ? 'btn bg-secondary'
+                : 'btn bg-secondary small'
+            " icon="mdi-check-circle" @click="btnClick()">
             <div class="btn-content">
                 <!-- end pomo-->
 
-                <v-icon v-if="pomodoro.itsFinished" class="icon"
-                    >mdi-stop</v-icon>
+                <v-icon v-if="pomodoro.itsFinished" class="icon">mdi-stop</v-icon>
 
                 <!-- start first time-->
                 <div v-else-if="pomodoro.status.interval === null" class="icon-text">
@@ -33,9 +27,9 @@
 
                 <!-- start -->
                 <div v-else-if="pomodoro.status.isBreak && pomodoro.status.interval" class="icon-text">
-                   <span>{{$t("pause.study")}}</span>
-                  <v-icon class="icon">mdi-play</v-icon>
-  
+                    <span>{{ $t("pause.study") }}</span>
+                    <v-icon class="icon">mdi-play</v-icon>
+
                 </div>
 
                 <!-- pause-->
@@ -71,12 +65,15 @@ const pomodoro = usePomodoroStore();
 const state = useStateStore();
 
 function btnClick() {
+    console.log(pomodoro.itsFinished);
     if (pomodoro.itsFinished) {
-        pomodoro.stopPomodoro();
         console.log("stop");
+        pomodoro.stopPomodoro();
     } else if (pomodoro.status.interval === null) {
+        console.log("pippo");
         pomodoro.startPomodoro();
     } else {
+        console.log("ciao");
         pomodoro.nextStep();
     }
 }
@@ -90,14 +87,17 @@ function btnClick() {
     margin: 1rem;
     text-align: center;
     border: 1px solid rgb(var(--v-theme-error));
+
     p {
         margin: 0.5rem 0;
     }
 }
+
 .icon-text {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
+
 .controls {
     z-index: 2500;
     border-radius: 0.6rem;
@@ -129,6 +129,7 @@ function btnClick() {
                 font-size: 7em;
                 transition: font-size 0.2s ease-in-out;
             }
+
             .text {
                 margin-top: 0.2em;
             }
@@ -136,10 +137,10 @@ function btnClick() {
 
         &.small {
             height: 3em;
+
             .icon {
                 font-size: 2em;
             }
         }
     }
-}
-</style>
+}</style>

@@ -61,7 +61,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const percentage = ref<number>(0);
 
   if (status.value.interval !== null) {
-    startInterval();
+    status.value.interval = startInterval();
   } else {
     status.value.breaks = generateBreaks();
   }
@@ -73,8 +73,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       studyLength: 0,
       breakLength: 0,
     }
-    console.log('start pomodoro')
-
 
     pauseStartHit = false;
     pauseEndHIt = false;
@@ -118,8 +116,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     if (status.value.interval !== null)
       clearInterval(status.value.interval);
 
-    console.log('start interval')
-  
     return setInterval(() => {
       const now = Date.now();
       percentage.value = (now - status.value.startMs) / (settings.value.totalLength * MINUTE_MULTIPLIER *  10);
