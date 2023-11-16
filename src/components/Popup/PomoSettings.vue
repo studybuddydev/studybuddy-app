@@ -1,22 +1,21 @@
 <template>
   <BaseDialog
     :title="$t('pause.pomoSettings')"
-    v-model="model"
+    v-model="modelDialog"
     :extension="true"
     :data="settingsStore.settingsWithDefaults"
     @save="saveSettings($event)"
     @cancel="cancelSettings()">
     <template #extension>
-      <v-tabs v-model="tab">
-
-        <v-tab value="pomodoro">{{$t("pause.timer.timer")}}</v-tab>
+      <v-tabs v-model="modelTab">
         <v-tab value="general">{{$t("pause.general.general")}}</v-tab>
+        <v-tab value="pomodoro" :disabled="pomodoro.going">{{$t("pause.timer.timer")}}</v-tab>
       </v-tabs>
     </template>
     <template #default="{ data }">
       <v-card-text>
         <v-container>
-          <v-window v-model="tab">
+          <v-window v-model="modelTab">
 
             <v-window-item value="pomodoro">
 
@@ -112,6 +111,12 @@
                 <v-spacer />
               </v-row>
               
+              <v-row>
+                <v-spacer />
+                <v-col> <v-btn variant="tonal" @click="logout()">Log out</v-btn> </v-col>
+                <v-spacer />
+              </v-row>
+
             </v-window-item>
 
           </v-window>
@@ -122,7 +127,7 @@
   </BaseDialog>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { usePomodoroStore } from "@/stores/pomodoro";
@@ -130,22 +135,25 @@ import { useTheme } from 'vuetify'
 import { themeList } from '@/assets/themes'
 import BaseDialog from '@/components/common/BaseDialog.vue'
 import type { Settings } from '@/types';
+import { useAuth0 } from "@auth0/auth0-vue";
 
 const theme = useTheme();
 const state = useStateStore();
 const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
+const { logout } = useAuth0();
 
 
-const props = defineProps<{ modelValue: boolean }>()
-const emit = defineEmits(['update:modelValue'])
-const model = computed({
-  get() { return props.modelValue },
+const props = defineProps<{ modelValue: string | boolean }>()
+const emit = defineEmits(['update:modelValue', 'update:tab'])
+const modelDialog = computed({
+  get() { return !!props.modelValue },
   set(value) { return emit('update:modelValue', value) }
 })
-const tab = ref('pomodoro');
-
-const tt = ref(20);
+const modelTab = computed({
+  get() { return props.modelValue ?? 'general' },
+  set(value) { return emit('update:modelValue', value) }
+})
 
 function cancelSettings() {
   settingsStore.updateLanguage();

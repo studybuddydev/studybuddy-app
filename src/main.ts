@@ -50,23 +50,22 @@ const i18n = createI18n({
   messages: messages,
 });
 
+const auth0 = createAuth0({
+  domain: "dev-lk2eo802harq5vdb.eu.auth0.com",
+  clientId: "LoEbOp9bdkJCSQ8f8ttqVyfmY8DtxNuy",
+  authorizationParams: {
+    redirect_uri: window.location.origin
+  }
+})
+
+const pinia = createPinia();
+
 const app = createApp(App)
 
-app.use(
-  createAuth0({
-    domain: "dev-lk2eo802harq5vdb.eu.auth0.com",
-    clientId: "LoEbOp9bdkJCSQ8f8ttqVyfmY8DtxNuy",
-    authorizationParams: {
-      redirect_uri: window.location.origin
-    }
-  })
-);
-
-console.log(window.location.origin)
-
-app.use(router)
-app.use(createPinia())
-app.use(vuetify)
-app.use(i18n)
+app.use(router);
+app.use(pinia);
+app.use(vuetify);
+app.use(i18n);
 app.use(setupCalendar, {})
-app.mount('#app')
+app.use(auth0);
+app.mount('#app');
