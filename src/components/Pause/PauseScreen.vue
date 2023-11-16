@@ -12,7 +12,7 @@
 
         <div class="user-box" v-if="!isLoading" >
             <p v-if="isAuthenticated" class="logged-user" @click="openSettingsTab = 'general'">
-              <span>{{ user?.given_name }}</span>
+              <span>{{ user?.given_name ?? user?.nickname }}</span>
               <span><v-avatar :image="user?.picture" /></span>
             </p>
             <p class="login-button" v-else @click="loginWithRedirect()">Log In</p>
