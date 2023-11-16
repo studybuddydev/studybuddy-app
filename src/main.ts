@@ -20,6 +20,8 @@ import { setupCalendar } from 'v-calendar';
 
 import Hotjar from '@hotjar/browser';
 
+import { createAuth0 } from '@auth0/auth0-vue';
+
 const siteId = 3579956;
 const hotjarVersion = 6;
 
@@ -49,6 +51,18 @@ const i18n = createI18n({
 });
 
 const app = createApp(App)
+
+app.use(
+  createAuth0({
+    domain: "dev-lk2eo802harq5vdb.eu.auth0.com",
+    clientId: "LoEbOp9bdkJCSQ8f8ttqVyfmY8DtxNuy",
+    authorizationParams: {
+      redirect_uri: window.location.origin
+    }
+  })
+);
+
+console.log(window.location.origin)
 
 app.use(router)
 app.use(createPinia())

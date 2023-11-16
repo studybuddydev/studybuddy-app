@@ -3,6 +3,8 @@ import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router
 // import ExamView from '@/views/ExamView.vue'
 // import ChapterView from '@/views/ChapterView.vue'
 import StudyView from '@/views/StudyView.vue'
+import LoginView from '@/views/LoginView.vue'
+import UserProfile from '@/views/UserProfile.vue'
 import { EStudyView } from '@/types'
 
 const router = createRouter({
@@ -28,7 +30,17 @@ const router = createRouter({
       name: 'chapter',
       component: StudyView,
       meta: { type: EStudyView.Chapter }
-    }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: UserProfile,
+    },
   ]
 })
 

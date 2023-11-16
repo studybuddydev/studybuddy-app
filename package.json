@@ -11,6 +11,8 @@
     "release": "dotenv release-it --"
   },
   "dependencies": {
+    "@auth0/auth0-spa-js": "^2.1.2",
+    "@auth0/auth0-vue": "^2.3.2",
     "@hotjar/browser": "^1.0.9",
     "@intlify/unplugin-vue-i18n": "^0.10.1",
     "@popperjs/core": "^2.11.8",

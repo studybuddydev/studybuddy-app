@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@auth0/auth0-spa-js':
+    specifier: ^2.1.2
+    version: 2.1.2
+  '@auth0/auth0-vue':
+    specifier: ^2.3.2
+    version: 2.3.2(typescript@4.7.4)(vue-router@4.2.5)
   '@hotjar/browser':
     specifier: ^1.0.9
     version: 1.0.9
@@ -125,6 +131,25 @@ packages:
       jsonpointer: 5.0.1
       leven: 3.1.0
     dev: true
+
+  /@auth0/auth0-spa-js@2.1.2:
+    resolution: {integrity: sha512-xdA65Z/U7++Y7L9Uwh8Q8OVOs6qgFz+fb7GAzHFjpr1icO37B//xdzLXm7ZRgA19RWrsNe1nme3h896igJSvvw==}
+    dev: false
+
+  /@auth0/auth0-vue@2.3.2(typescript@4.7.4)(vue-router@4.2.5):
+    resolution: {integrity: sha512-HV53tLzT6yfRmbfp0pm7BG54i7fm1nIfj8mTd0HrhZP028fuxtyTPN9p+CY7uRvOm12aAxPZXdJlZ8/TVpxmPA==}
+    peerDependencies:
+      vue-router: ^4.0.12
+    peerDependenciesMeta:
+      vue-router:
+        optional: true
+    dependencies:
+      '@auth0/auth0-spa-js': 2.1.2
+      vue: 3.3.7(typescript@4.7.4)
+      vue-router: 4.2.5(vue@3.3.7)
+    transitivePeerDependencies:
+      - typescript
+    dev: false
 
   /@babel/code-frame@7.22.13:
     resolution: {integrity: sha512-XktuhWlJ5g+3TJXc5upd9Ks1HutSArik6jf2eAjYFyIOf4ej3RN+184cZbzDvbPnuTJIUhPKKJE3cIsYTiAT3w==}
