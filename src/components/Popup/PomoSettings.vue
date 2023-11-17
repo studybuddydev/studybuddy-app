@@ -143,7 +143,7 @@ const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
 const { logout } = useAuth0();
 
-logout()
+
 
 
 const props = defineProps<{ modelValue: string | boolean }>()
