@@ -113,7 +113,7 @@
               
               <v-row>
                 <v-spacer />
-                <v-col> <v-btn variant="tonal" @click="logout()">Log out</v-btn> </v-col>
+                <v-col> <v-btn variant="tonal" @click="loggaout()">Log out</v-btn> </v-col>
                 <v-spacer />
               </v-row>
 
@@ -144,6 +144,9 @@ const pomodoro = usePomodoroStore();
 const { logout } = useAuth0();
 
 
+function loggaout() {
+  logout({ logoutParams: { returnTo: window.location.origin } });
+}
 
 
 const props = defineProps<{ modelValue: string | boolean }>()
