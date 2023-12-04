@@ -1,64 +1,91 @@
 <template>
   <div transition="fade-transition">
     <v-scroll-x-transition>
-      <div class="pause-screen" v-if="pause">
+      <div class="pause-screen" v-if="!pro">
 
-        <div class="top-left title" v-if="!firstStart">
-          <img src="/images/logo.png" alt="logo" />
+        <div class="top-left title"  >
+          <img src="/images/logo.png" alt="logo" class="logo" />
           <h3 class="text-primary">StudyBuddy
             <span class="bg-primary pa-1">BETA</span>
           </h3>
         </div>
 
-        <div class="user-box" v-if="!isLoading" >
+        
+      <!-- login button and eye  -->       
+       <div class="user-box" v-if="pomodoro.status.isBreak || first" >
             <p v-if="isAuthenticated" class="logged-user" @click="openSettingsTab = 'general'">
               <span>{{ user?.given_name ?? user?.nickname }}</span>
               <span><v-avatar :image="user?.picture" /></span>
             </p>
             <p class="login-button" v-else @click="loginWithRedirect()">Log In</p>
         </div>
+        <div v-else>
+          <v-btn class="user-box" @click="enterPro()"> <v-icon size="32">mdi-eye</v-icon> </v-btn>
+        </div>
 
-        <div v-if="firstStart">
+
+        <!--  -->
+        <div v-if="first">
           <p class="text-primary">{{ $t("pause.welcome") }}</p>
           <div class="title">
-            <img src="/images/logo.png" alt="logo" />
+            <img src="/images/logo.png" alt="logo" class='logo'/>
             <h2 class="text-primary">StudyBuddy</h2>
-          </div>
+        </div>
+        <div class="pomopause" ><pomodoro-controls /> </div>
         </div>
         <div v-else-if="pomodoro.getReport.reportDone">
           <p class="text-primary">{{ $t("pause.pomoDone") }}</p>
           <h3 class="text-primary">{{ $t("pause.goodjob") }}</h3>
+          <div class="pomopause" ><pomodoro-controls /> </div>
+        </div>
+        <div v-else-if="!pomodoro.status.isBreak">
+          <h1 class="timer">{{ getTimerValue()}}</h1>
+
         </div>
         <div v-else>
           <p class="text-primary">{{ $t("pause.youare") }}</p>
           <h2 class="text-primary">{{ $t("pause.break") }}</h2>
+          <p class="text-primary">{{getPauseValue()}}</p>
+          <div class="pomopause" ><pomodoro-controls /> </div>
+          <h3 class="text-primary" @click="endSession()" v-if="pomodoroGoing">{{ $t("pause.endSession") }}</h3>
+        </div>
+
+        <!--if mobile add controls -->
+        <div v-if="windowWidth < 600">
+          <PomodoroControls />
         </div>
 
         <ul>
           <!-- <li @click="startPomodoro()" v-if="!pomodoroGoing">{{$t("pause.study")}}</li>
-          <li @click="resumePomodoro()" v-if="pomodoroGoing">{{$t("pause.resume")}}</li> -->
+          <li @click="resumePomodoro()" v-if="pomodoroGoing">{{$t("pause.resume")}}</li> 
           <li @click="close()"> <pomodoro-controls /></li>
 
-          <li @click="endSession()" v-if="pomodoroGoing">{{ $t("pause.endSession") }}</li>
+          <li @click="endSession()" v-if="pomodoroGoing">{{ $t("pause.endSession") }}</li>-->
           <v-divider class="my-5" :thickness="2"></v-divider>
           <!-- <li @click="openTutorial()" v-if="!state.isInTutorial">Tutorial</li> -->
           <!--  <li @click="closeTutorial()" v-else>Exit Tutorial</li> -->
-          <li v-if="!isLoading" @click="openSettingsTab = pomodoro.going ? 'general' : 'pomodoro'">
-            <v-icon icon="mdi-cog" size="large" /> Settings
+          <li v-if="!isLoading && pomodoro.status.isBreak" @click="openSettingsTab = pomodoro.going ? 'general' : 'pomodoro'">
+            <v-icon icon="mdi-cog" size="large" /> {{$t("pause.settings")}}
           </li>
         </ul>
 
         <div class="report" v-if="pomodoro.getReport.reportDone">
           <p>{{ $t("pause.youdid") }} <br />
-            {{ msTominutes(pomodoro.getReport.studyLength) }}{{ $t("pause.studyMin") }} <br />
-            {{ msTominutes(pomodoro.getReport.breakLength) }} {{ $t("pause.pauseMin") }}
+            {{ msTominutes(pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) }}{{ $t("pause.studyMin") }} <br />
+            {{ msTominutes(pomodoro.getReport.breakLength) }} {{ $t("pause.pauseMin") }} <br />
+            {{ pomodoro.status.breaks.length }} {{ $t("pause.break") }} <br />
+            efficienza: {{(((pomodoro.getReport.studyLength - pomodoro.getReport.breakLength)/(pomodoro.getReport.studyLength))* 120).toFixed(1)}}%
           </p>
         </div>
+
+        <div class="controls" v-if="!pomodoro.status.isBreak && !first"> <pomodoro-controls /></div>
+
       </div>
     </v-scroll-x-transition>
   </div>
 
   <PomoSettings class="settings" v-model="openSettingsTab"/>
+  
 </template>
 
 <script lang="ts" setup>
@@ -80,6 +107,11 @@ const pauseFromPomodoro = computed(() => (pomodoro.status.isBreak && !!pomodoro.
 const pomodoroGoing = computed(() => pomodoro.going);
 const pause = ref(!pomodoroGoing.value);
 const firstStart = ref(!pomodoroGoing.value);
+
+const pro = computed(() => pomodoro.pro);
+const first = computed(() => pomodoro.first);
+const windowWidth = ref(window.innerWidth);
+const isLargeScreen = computed(() => windowWidth.value > 600);
 
 watch(pauseFromPomodoro, (value) => {
   pause.value = value;
@@ -105,6 +137,8 @@ function close() {
 function resumePomodoro() {
   if (pomodoro.going && pauseFromPomodoro.value) {
     pomodoro.nextStep();
+    
+
   }
   close();
 }
@@ -118,6 +152,7 @@ function restartPomodoro() {
 function startPomodoro() {
   pomodoro.startPomodoro();
   close();
+  console.log(firstStart);
 }
 function openTutorial() {
   state.startTutorial();
@@ -136,10 +171,55 @@ function endSession() {
   pomodoro.stopPomodoro();
 }
 
+function enterPro() {
+  pomodoro.pro = true;
+}
+
 function msTominutes(ms: number): string {
   const minutes = Math.floor(ms / 1000 / 60);
   const seconds = Math.floor((ms / 1000) % 60).toString().padStart(2, '0');
   return `${minutes}:${seconds}`;
+}
+
+function getMinutesFromPercentage(n: number) {
+  const min = n * pomodoro.settings.totalLength / 100;
+  const sec = Math.round(min * pomodoro.MINUTE_MULTIPLIER);
+
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec / 60) % 60).toString().padStart(h > 0 ? 2 : 1, '0');
+  const s = (sec % 60).toString().padStart(2, '0');
+  return `${h > 0 ? h + ':' : ''}${m}:${s}`;
+}
+
+function getPauseValue(){
+  //for each break in pomodoro.status.breaks 
+  let currentBreak = 0
+  pomodoro.status.breaks.forEach(element => {
+
+    if(element.status == 1){
+      currentBreak = element.start
+    }
+
+  });
+  
+  pomodoro.percentage
+  
+  return getMinutesFromPercentage(pomodoro.percentage - currentBreak)
+
+}
+
+function getTimerValue(){
+  //for each break in pomodoro.status.breaks 
+    let current = 0
+    pomodoro.status.breaks.forEach(element => {
+        if (element.status == 0) {
+            current = element.start + element.lenght
+        }
+
+  });
+  
+  return getMinutesFromPercentage(pomodoro.percentage - current)
+
 }
 
 </script>
@@ -153,6 +233,34 @@ function msTominutes(ms: number): string {
   z-index: 2001;
 }
 
+.controls {
+ //bottom left 
+  position: absolute;
+  bottom: 0rem;
+  left: 1rem;
+  z-index: 2000;
+}
+
+.endsession {
+  position: absolute;
+  bottom: 4rem;
+  right: 2rem;
+
+  color: rgb(var(--v-theme-primary));
+}
+
+.pomopause {
+  //center 
+  display: flex;
+  justify-content: center;
+
+  color: rgb(var(--v-theme-primary));
+}
+
+.logo{
+  
+  height:4rem;
+}
 
 .top-left {
   display: flex;
@@ -206,13 +314,26 @@ function msTominutes(ms: number): string {
 
 }
 
-.title img {
-  width: 7rem;
-}
+
 
 
 span {
   border-radius: 0.5rem;
+}
+
+@font-face {
+  font-family: 'casio';
+  src: url('fonts/casio-calculator-font.ttf') format('truetype');
+}
+
+.timer {
+  font-family: "casio";
+  font-size: 3rem;
+  font-weight: 900;
+  color: rgb(var(--v-theme-primary));
+  // border 
+
+  //text-shadow: -1px -1px 0 rgb(var(--v-theme-secondary)), 1px -1px 0 rgb(var(--v-theme-secondary)), -1px 1px 0 rgb(var(--v-theme-secondary)), 1px 1px 0 rgb(var(--v-theme-secondary)); 
 }
 
 .pause-screen {
@@ -223,8 +344,8 @@ span {
   height: 100vh;
   z-index: 1500;
 
-  background-color: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(50px);
+  background-color: rgb(var(--v-theme-surface));
+  backdrop-filter: blur(90px);
 
   display: flex;
   justify-content: center;
@@ -301,9 +422,7 @@ span {
     //center 
   }
 
-  .title img {
-    width: 5rem;
-  }
+
 
   .pause-screen h2 {
     font-size: 15vw;

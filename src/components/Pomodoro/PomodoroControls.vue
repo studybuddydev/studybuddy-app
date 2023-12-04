@@ -25,7 +25,7 @@
                     <v-icon class="icon">mdi-skip-next</v-icon>
                 </div>
 
-                <!-- start -->
+                <!-- study -->
                 <div v-else-if="pomodoro.status.isBreak && pomodoro.status.interval" class="icon-text">
                     <span>{{ $t("pause.study") }}</span>
                     <v-icon class="icon">mdi-play</v-icon>
@@ -33,7 +33,7 @@
                 </div>
 
                 <!-- pause-->
-                <v-icon v-else class="icon">mdi-pause</v-icon>
+                <v-icon  v-else class="icon">mdi-pause</v-icon>
             </div>
         </v-btn>
 
@@ -63,6 +63,9 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import { useStateStore } from "@/stores/state";
 const pomodoro = usePomodoroStore();
 const state = useStateStore();
+const emit = defineEmits(['pause-clicked'])
+
+
 
 function btnClick() {
     console.log(pomodoro.itsFinished);
@@ -70,12 +73,15 @@ function btnClick() {
         console.log("stop");
         pomodoro.stopPomodoro();
     } else if (pomodoro.status.interval === null) {
-        console.log("pippo");
+        console.log("start pomodoro");
         pomodoro.startPomodoro();
+        pomodoro.first = false;
     } else {
-        console.log("ciao");
+        console.log("next");
         pomodoro.nextStep();
     }
+    pomodoro.pro = false;
+
 }
 </script>
 

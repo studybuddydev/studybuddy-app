@@ -5,7 +5,7 @@
       <div class="main-wrapper">
         <router-view :key="$route.fullPath"></router-view>
 
-        <PomodoroFlex class="pomodoro" :class="{'mobile': !isLargeScreen}" />
+        <PomodoroFlex class="pomodoro" :class="{'mobile': !isLargeScreen} " @click="pomodoro.pro = false" />
 
         <div class="pomodoro-controls" v-if="windowWidth < 600">
           <PomodoroControls />
@@ -26,6 +26,9 @@
   import PauseScreen from '@/components/Pause/PauseScreen.vue';
   import PomodoroControls from '@/components/Pomodoro/PomodoroControls.vue';
   import { computed, ref,onMounted, onUnmounted } from 'vue';
+  import { usePomodoroStore } from "@/stores/pomodoro";
+
+  const pomodoro = usePomodoroStore();
 
   const windowWidth = ref(window.innerWidth);
   const isLargeScreen = computed(() => windowWidth.value > 600);
