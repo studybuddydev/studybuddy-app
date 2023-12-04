@@ -3,21 +3,21 @@
     <v-scroll-x-transition>
       <div class="pause-screen" v-if="!pro">
 
-        <div class="top-left title"  >
+        <div class="top-left title">
           <img src="/images/logo.png" alt="logo" class="logo" />
           <h3 class="text-primary">StudyBuddy
             <span class="bg-primary pa-1">BETA</span>
           </h3>
         </div>
 
-        
-      <!-- login button and eye  -->       
-       <div class="user-box" v-if="pomodoro.status.isBreak || first" >
-            <p v-if="isAuthenticated" class="logged-user" @click="openSettingsTab = 'general'">
-              <span>{{ user?.given_name ?? user?.nickname }}</span>
-              <span><v-avatar :image="user?.picture" /></span>
-            </p>
-            <p class="login-button" v-else @click="loginWithRedirect()">Log In</p>
+
+        <!-- login button and eye  -->
+        <div class="user-box" v-if="pomodoro.status.isBreak || first">
+          <p v-if="isAuthenticated" class="logged-user" @click="openSettingsTab = 'general'">
+            <span>{{ user?.given_name ?? user?.nickname }}</span>
+            <span><v-avatar :image="user?.picture" /></span>
+          </p>
+          <p class="login-button" v-else @click="loginWithRedirect()">Log In</p>
         </div>
         <div v-else>
           <v-btn class="user-box" @click="enterPro()"> <v-icon size="32">mdi-eye</v-icon> </v-btn>
@@ -25,36 +25,26 @@
 
 
         <!--  -->
-        <div v-if="first">
-          <p class="text-primary">{{ $t("pause.welcome") }}</p>
-          <div class="title">
-            <img src="/images/logo.png" alt="logo" class='logo'/>
-            <h2 class="text-primary">StudyBuddy</h2>
+        <div class="pause-box">
+          <p :class="pomodoro.status.isBreak ? 'timer' : 'timer timer-inpause'" v-if="!first && !pomodoro.getReport.reportDone">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
+
+          <div v-if="first && pomodoro.status.isBreak">
+            <p class="text-primary">{{ $t("pause.welcome") }}</p>
+            <div class="title">
+              <img src="/images/logo.png" alt="logo" class='logo' />
+              <h2 class="text-primary">StudyBuddy</h2>
+            </div>
           </div>
-          <div class="pomopause" ><pomodoro-controls /> </div>
-        </div>
-        <div v-else-if="pomodoro.getReport.reportDone">
-          <p class="text-primary">{{ $t("pause.pomoDone") }}</p>
-          <h3 class="text-primary">{{ $t("pause.goodjob") }}</h3>
-          <div class="pomopause" ><pomodoro-controls /> </div>
-        </div>
-        <div v-else-if="!pomodoro.status.isBreak">
-          <p class="timer">{{ getTimerValue()}}</p>
+          <div v-else-if="pomodoro.status.isBreak">
+            <p class="text-primary">{{ pomodoro.getReport.reportDone ? $t("pause.pomoDone") : $t("pause.youare") }}</p>
+            <h2 class="text-primary">{{ pomodoro.getReport.reportDone ? $t("pause.goodjob") : $t("pause.break") }}</h2>
+          </div>
 
+          <div class="pomopause" v-if="pomodoro.status.isBreak"><pomodoro-controls /> </div>
+          <h3 class="text-primary" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</h3>
         </div>
-        <div v-else>
-          <p class="timer">{{getPauseValue()}} </p>
-          <p class="text-primary">{{ $t("pause.youare") }}</p>
-          <h2 class="text-primary">{{ $t("pause.break") }}</h2>
-          
-          <div class="pomopause" ><pomodoro-controls /> </div>
-          <h3 class="text-primary" @click="endSession()" v-if="pomodoroGoing">{{ $t("pause.endSession") }}</h3>
-        </div>
-
         <!--if mobile add controls -->
-        <div v-if="windowWidth < 600">
-          <PomodoroControls />
-        </div>
+        <div v-if="windowWidth < 600"> <PomodoroControls /> </div>
 
         <ul>
           <!-- <li @click="startPomodoro()" v-if="!pomodoroGoing">{{$t("pause.study")}}</li>
@@ -73,10 +63,12 @@
 
         <div class="report" v-if="pomodoro.getReport.reportDone">
           <p>{{ $t("pause.youdid") }} <br />
-            {{ msTominutes(pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) }}{{ $t("pause.studyMin") }} <br />
+            {{ msTominutes(pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) }}{{ $t("pause.studyMin") }}
+            <br />
             {{ msTominutes(pomodoro.getReport.breakLength) }} {{ $t("pause.pauseMin") }} <br />
             {{ pomodoro.status.breaks.length }} {{ $t("pause.break") }} <br />
-            efficienza: {{(((pomodoro.getReport.studyLength - pomodoro.getReport.breakLength)/(pomodoro.getReport.studyLength))* 120).toFixed(1)}}%
+            efficienza: {{ (((pomodoro.getReport.studyLength -
+              pomodoro.getReport.breakLength) / (pomodoro.getReport.studyLength)) * 120).toFixed(1) }}%
           </p>
         </div>
 
@@ -86,8 +78,7 @@
     </v-scroll-x-transition>
   </div>
 
-  <PomoSettings class="settings" v-model="openSettingsTab"/>
-  
+  <PomoSettings class="settings" v-model="openSettingsTab" />
 </template>
 
 <script lang="ts" setup>
@@ -99,6 +90,7 @@ import PomodoroControls from '@/components/Pomodoro/PomodoroControls.vue';
 import { useAuth0 } from "@auth0/auth0-vue";
 
 import router from '@/router';
+import { EPomodoroBreakStatus } from '@/types';
 const pomodoro = usePomodoroStore();
 const state = useStateStore();
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
@@ -139,7 +131,7 @@ function close() {
 function resumePomodoro() {
   if (pomodoro.going && pauseFromPomodoro.value) {
     pomodoro.nextStep();
-    
+
 
   }
   close();
@@ -193,35 +185,15 @@ function getMinutesFromPercentage(n: number) {
   return `${h > 0 ? h + ':' : ''}${m}:${s}`;
 }
 
-function getPauseValue(){
-  //for each break in pomodoro.status.breaks 
-  let currentBreak = 0
-  pomodoro.status.breaks.forEach(element => {
-
-    if(element.status == 1){
-      currentBreak = element.start
-    }
-
-  });
-  
-  pomodoro.percentage
-  
-  return getMinutesFromPercentage(pomodoro.percentage - currentBreak)
-
-}
-
-function getTimerValue(){
-  //for each break in pomodoro.status.breaks 
-    let current = 0
-    pomodoro.status.breaks.forEach(element => {
-        if (element.status == 0) {
-            current = element.start + element.lenght
-        }
-
-  });
-  
+function getTimerValue(getPause: boolean = false) {
+  let current = 0;
+  if (getPause) {
+    current = pomodoro.status.breaks.findLast(e => e.status == EPomodoroBreakStatus.DONE)?.start ?? 0;
+  } else {
+    const lastDone = pomodoro.status.breaks.findLast(e => e.status == EPomodoroBreakStatus.DONE);
+    current = lastDone ? lastDone.start + lastDone.lenght : 0;
+  }
   return getMinutesFromPercentage(pomodoro.percentage - current)
-
 }
 
 </script>
@@ -236,7 +208,7 @@ function getTimerValue(){
 }
 
 .controls {
- //bottom left 
+  //bottom left 
   position: absolute;
   bottom: 0rem;
   left: 1rem;
@@ -255,13 +227,11 @@ function getTimerValue(){
   //center 
   display: flex;
   justify-content: center;
-
   color: rgb(var(--v-theme-primary));
 }
 
-.logo{
-  
-  height:4rem;
+.logo {
+  height: 4rem;
 }
 
 .top-left {
@@ -292,7 +262,7 @@ function getTimerValue(){
     cursor: pointer;
   }
 
-  .login-button  {
+  .login-button {
     padding: 0 1rem;
   }
 
@@ -313,11 +283,7 @@ function getTimerValue(){
   align-items: center;
   font-family: 'Roboto', sans-serif;
   flex-direction: row;
-
 }
-
-
-
 
 span {
   border-radius: 0.5rem;
@@ -327,16 +293,6 @@ span {
   font-family: 'casio';
   src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
 }
-
-.timer {
-
-  
-  color: rgb(var(--v-theme-primary));
-  // border 
-
-  //text-shadow: -1px -1px 0 rgb(var(--v-theme-secondary)), 1px -1px 0 rgb(var(--v-theme-secondary)), -1px 1px 0 rgb(var(--v-theme-secondary)), 1px 1px 0 rgb(var(--v-theme-secondary)); 
-}
-
 .pause-screen {
   position: absolute;
   top: 0;
@@ -355,30 +311,43 @@ span {
 
   font-family: 'Press Start 2P', cursive;
 
-  h2 {
-    text-align: center;
-    font-size: 5rem;
-    max-width: 700px;
-    font-weight: 900;
-  }
+  .pause-box {
 
-  h3 {
-    text-align: center;
-    font-size: 1.5rem;
-    max-width: 700px;
-  }
+    h2 {
+      text-align: center;
+      font-size: 5rem;
+      max-width: 700px;
+      font-weight: 900;
+    }
 
-  p {
-    max-width: 700px;
-    text-align: center;
-    font-size: 1rem;
-    &.timer {
-      font-size: 3rem;
-      font-family: casio, Arial, Helvetica, sans-serif;
-      
-      margin-bottom: 2em
+    h3 {
+      text-align: center;
+      font-size: 1.5rem;
+      max-width: 700px;
+      margin-top: 0.5em;
+    }
+
+    p {
+      max-width: 700px;
+      text-align: center;
+      font-size: 1rem;
+
+      &.timer {
+        font-size: 2.7rem;
+        font-family: casio, Arial, Helvetica, sans-serif;
+        color: rgb(var(--v-theme-secondary));
+        margin-bottom: 2em;
+        background-color: rgb(var(--v-theme-background));
+        padding: 0.7em 1em;
+        border-radius: 0.5em;
+
+        &.timer-inpause {
+          color: rgb(var(--v-theme-primary));
+        }
+      }
     }
   }
+
 
   ul,
   .report {
@@ -398,6 +367,7 @@ span {
       justify-content: center;
       align-items: center;
       display: flex;
+
       // text-shadow: -1px -1px 0 rgb(var(--v-theme-primary)), 1px -1px 0 rgb(var(--v-theme-primary)), -1px 1px 0 rgb(var(--v-theme-primary)), 1px 1px 0 rgb(var(--v-theme-primary));
       &:hover {
         color: rgb(var(--v-theme-primary));
@@ -429,8 +399,6 @@ span {
     //center 
   }
 
-
-
   .pause-screen h2 {
     font-size: 15vw;
   }
@@ -439,28 +407,43 @@ span {
 
 
 .user-box:after {
-  content:'';
-  top:0;
-  transform:translateX(100%);
-  width:100%;
-  height:4rem;
+  content: '';
+  top: 0;
+  transform: translateX(100%);
+  width: 100%;
+  height: 4rem;
   position: absolute;
-  z-index:1;
+  z-index: 1;
   animation: slide 1.2s;
   /* 
   CSS Gradient - complete browser support from http://www.colorzilla.com/gradient-editor/ 
   */
-  background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(128,186,232,0) 99%, rgba(125,185,232,0) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,0.8)), color-stop(99%,rgba(128,186,232,0)), color-stop(100%,rgba(125,185,232,0))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* IE10+ */
-  background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#007db9e8',GradientType=1 ); /* IE6-9 */
+  background: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(50%, rgba(255, 255, 255, 0.8)), color-stop(99%, rgba(128, 186, 232, 0)), color-stop(100%, rgba(125, 185, 232, 0)));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  /* IE10+ */
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#007db9e8', GradientType=1);
+  /* IE6-9 */
 }
+
 @keyframes slide {
-	0% {transform:translateX(-100%);}
-	50% {transform:translateX(100%);}
-	100% {transform:translateX(-100%);}
-}
-</style>
+  0% {
+    transform: translateX(-100%);
+  }
+
+  50% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}</style>
