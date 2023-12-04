@@ -30,8 +30,8 @@
           <div class="title">
             <img src="/images/logo.png" alt="logo" class='logo'/>
             <h2 class="text-primary">StudyBuddy</h2>
-        </div>
-        <div class="pomopause" ><pomodoro-controls /> </div>
+          </div>
+          <div class="pomopause" ><pomodoro-controls /> </div>
         </div>
         <div v-else-if="pomodoro.getReport.reportDone">
           <p class="text-primary">{{ $t("pause.pomoDone") }}</p>
@@ -39,13 +39,14 @@
           <div class="pomopause" ><pomodoro-controls /> </div>
         </div>
         <div v-else-if="!pomodoro.status.isBreak">
-          <h1 class="timer">{{ getTimerValue()}}</h1>
+          <p class="timer">{{ getTimerValue()}}</p>
 
         </div>
         <div v-else>
+          <p class="timer">{{getPauseValue()}} </p>
           <p class="text-primary">{{ $t("pause.youare") }}</p>
           <h2 class="text-primary">{{ $t("pause.break") }}</h2>
-          <p class="text-primary">{{getPauseValue()}}</p>
+          
           <div class="pomopause" ><pomodoro-controls /> </div>
           <h3 class="text-primary" @click="endSession()" v-if="pomodoroGoing">{{ $t("pause.endSession") }}</h3>
         </div>
@@ -64,9 +65,10 @@
           <v-divider class="my-5" :thickness="2"></v-divider>
           <!-- <li @click="openTutorial()" v-if="!state.isInTutorial">Tutorial</li> -->
           <!--  <li @click="closeTutorial()" v-else>Exit Tutorial</li> -->
+          <!--
           <li v-if="!isLoading && pomodoro.status.isBreak" @click="openSettingsTab = pomodoro.going ? 'general' : 'pomodoro'">
             <v-icon icon="mdi-cog" size="large" /> {{$t("pause.settings")}}
-          </li>
+          </li> -->
         </ul>
 
         <div class="report" v-if="pomodoro.getReport.reportDone">
@@ -327,9 +329,8 @@ span {
 }
 
 .timer {
-  font-family: "casio";
-  font-size: 3rem;
-  font-weight: 900;
+
+  
   color: rgb(var(--v-theme-primary));
   // border 
 
@@ -371,6 +372,12 @@ span {
     max-width: 700px;
     text-align: center;
     font-size: 1rem;
+    &.timer {
+      font-size: 3rem;
+      font-family: casio, Arial, Helvetica, sans-serif;
+      
+      margin-bottom: 2em
+    }
   }
 
   ul,
