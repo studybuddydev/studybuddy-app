@@ -323,7 +323,7 @@ span {
 
 @font-face {
   font-family: 'casio';
-  src: url('fonts/casio-calculator-font.ttf') format('truetype');
+  src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
 }
 
 .timer {
