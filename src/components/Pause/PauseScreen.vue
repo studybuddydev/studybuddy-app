@@ -23,10 +23,14 @@
           <v-btn class="user-box" @click="enterPro()"> <v-icon size="32">mdi-eye</v-icon> </v-btn>
         </div>
 
+        <!-- 
+        <p class="text-primary"> ciao abbiamo trasferito l'app per i tester a  <a href="https://test.studybuddy.it"> test.studybuddy.it</a> questa è la versione di sviluppo, potrebbe spaccarsi da un momento all'altro</p>
+        <br>
+        -->
 
         <!--  -->
         <div class="pause-box">
-          <p :class="pomodoro.status.isBreak ? 'timer' : 'timer timer-inpause'" v-if="!first && !pomodoro.getReport.reportDone">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
+          <p :class="pomodoro.status.isBreak ? 'timer' : 'timer timer-inpause'" v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
 
           <div v-if="first && pomodoro.status.isBreak">
             <p class="text-primary">{{ $t("pause.welcome") }}</p>
@@ -36,18 +40,24 @@
             </div>
           </div>
           <div v-else-if="pomodoro.status.isBreak">
-            <p class="text-primary">{{ pomodoro.getReport.reportDone ? $t("pause.pomoDone") : $t("pause.youare") }}</p>
+            <p class="text-primary pause">{{ pomodoro.getReport.reportDone ? $t("pause.pomoDone") : $t("pause.youare") }}</p>
             <h2 class="text-primary">{{ pomodoro.getReport.reportDone ? $t("pause.goodjob") : $t("pause.break") }}</h2>
+            <p class="text-primary pausetime">{{ "da "+ getTimerValue(true)  }}</p>
           </div>
 
-          <div class="pomopause" v-if="pomodoro.status.isBreak"><pomodoro-controls /> </div>
+          <div class="pomopause" v-if="pomodoro.status.isBreak">
+            <v-btn  class = 'settingsbtn' @click="openSettingsTab = 'timer'"  v-if="first || pomodoro.getReport.reportDone">
+              <v-icon size="32">mdi-cog</v-icon>
+            </v-btn>
+            <pomodoro-controls /> 
+            </div>
           <h3 class="text-primary" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</h3>
         </div>
         <!--if mobile add controls -->
-        <div v-if="windowWidth < 600"> <PomodoroControls /> </div>
-
+         <!--  <div v-if="windowWidth < 600"> <PomodoroControls /> </div> -->
+        <!--
         <ul>
-          <!-- <li @click="startPomodoro()" v-if="!pomodoroGoing">{{$t("pause.study")}}</li>
+         <li @click="startPomodoro()" v-if="!pomodoroGoing">{{$t("pause.study")}}</li>
           <li @click="resumePomodoro()" v-if="pomodoroGoing">{{$t("pause.resume")}}</li> 
           <li @click="close()"> <pomodoro-controls /></li>
 
@@ -58,19 +68,25 @@
           <!--
           <li v-if="!isLoading && pomodoro.status.isBreak" @click="openSettingsTab = pomodoro.going ? 'general' : 'pomodoro'">
             <v-icon icon="mdi-cog" size="large" /> {{$t("pause.settings")}}
-          </li> -->
-        </ul>
+          </li>
+        </ul> -->
 
-        <div class="report" v-if="pomodoro.getReport.reportDone">
-          <p>{{ $t("pause.youdid") }} <br />
-            {{ msTominutes(pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) }}{{ $t("pause.studyMin") }}
-            <br />
-            {{ msTominutes(pomodoro.getReport.breakLength) }} {{ $t("pause.pauseMin") }} <br />
-            {{ pomodoro.status.breaks.length }} {{ $t("pause.break") }} <br />
-            efficienza: {{ (((pomodoro.getReport.studyLength -
-              pomodoro.getReport.breakLength) / (pomodoro.getReport.studyLength)) * 120).toFixed(1) }}%
-          </p>
-        </div>
+    <div class="report" v-if="pomodoro.getReport.reportDone">
+      <div class="grid-container">
+        <div>{{ "tempo totale" }}</div>
+        <div>{{ msTominutes(pomodoro.getReport.studyLength) }}</div>
+        <div>{{"di cui studio" }}</div>
+        <div>{{ msTominutes(pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) }}</div>
+        <div>{{"di cui pausa" }}</div>
+        <div>{{ msTominutes(pomodoro.getReport.breakLength) }}</div>
+        <div>{{ "n pause" }}</div>
+        <div>{{ pomodoro.status.breaks.length }}</div>
+        <div>{{ }}</div>
+        <div>{{  }}</div>
+        <div>{{"Punteggio:"}}</div>
+        <div>{{ (((pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) / (pomodoro.getReport.studyLength)) * 120).toFixed(1) }}%</div>
+      </div>
+    </div>
 
         <div class="controls" v-if="!pomodoro.status.isBreak && !first"> <pomodoro-controls /></div>
 
@@ -203,6 +219,29 @@ function getTimerValue(getPause: boolean = false) {
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+.pause{
+  text-align: left !important;
+}
+
+.pausetime{
+  text-align: right !important;
+  font-size: 1.5em !important;
+  
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 10px;
+}
+
+.settingsbtn {
+
+  color: rgb(var(--v-theme-secondary));
+  background: #2A2A2A;
+  // height as parent
+
+}
+
 .settings {
   z-index: 2001;
 }
@@ -229,6 +268,7 @@ function getTimerValue(getPause: boolean = false) {
   justify-content: center;
   color: rgb(var(--v-theme-primary));
 }
+
 
 .logo {
   height: 4rem;
@@ -352,6 +392,8 @@ span {
   ul,
   .report {
     color: rgb(var(--v-theme-secondary));
+    background: #2A2A2A;
+
   }
 
   ul {

@@ -42,6 +42,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const pomodoroSettings = computed(() => settings.value.pomodoro?.pomodoroSettings ?? defaultSettings!.pomodoro!.pomodoroSettings!);
   const pomodoroFlexSettings = computed(() => settings.value.pomodoro?.pomodoroFlexSettings ?? defaultSettings!.pomodoro!.pomodoroFlexSettings!);
 
+
   const settingsWithDefaults = computed<Settings>(() => {
     return {
       user: userSettings.value,
