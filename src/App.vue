@@ -14,7 +14,7 @@
     </v-main>
     
     
-    <PauseScreen />
+    <ZenScreen />
 
   </v-app>
 </template>
@@ -24,6 +24,7 @@
   import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
   import Menu from '@/components/Menus/Menu.vue';
   import PauseScreen from '@/components/Pause/PauseScreen.vue';
+  import ZenScreen from '@/components/Zen/ZenScreen.vue';
   import PomodoroControls from '@/components/Pomodoro/PomodoroControls.vue';
   import { computed, ref,onMounted, onUnmounted } from 'vue';
   import { usePomodoroStore } from "@/stores/pomodoro";
@@ -49,13 +50,10 @@
 
 </script>
 
-<style scoped lang="scss">
-*{
-  font-family: 'Oxygen', sans-serif;
-  font-weight: 400;
-  font-size: 1rem;
+<style lang="scss">
+html {
+  overflow: hidden !important;
 }
-
 .main {
   height: 100vh;
   overflow: auto;

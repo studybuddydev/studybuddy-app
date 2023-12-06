@@ -42,7 +42,7 @@
           <div v-else-if="pomodoro.status.isBreak">
             <p class="text-primary pause">{{ pomodoro.getReport.reportDone ? $t("pause.pomoDone") : $t("pause.youare") }}</p>
             <h2 class="text-primary">{{ pomodoro.getReport.reportDone ? $t("pause.goodjob") : $t("pause.break") }}</h2>
-            <p class="text-primary pausetime">{{ "da "+ getTimerValue(true)  }}</p>
+            <p class="text-primary pausetime">da {{ getTimerValue(true) }}</p>
           </div>
 
           <div class="pomopause" v-if="pomodoro.status.isBreak">
@@ -54,10 +54,10 @@
           <h3 class="text-primary" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</h3>
         </div>
         <!--if mobile add controls -->
-         <!--  <div v-if="windowWidth < 600"> <PomodoroControls /> </div> -->
+        <!--  <div v-if="windowWidth < 600"> <PomodoroControls /> </div> -->
         <!--
         <ul>
-         <li @click="startPomodoro()" v-if="!pomodoroGoing">{{$t("pause.study")}}</li>
+        <li @click="startPomodoro()" v-if="!pomodoroGoing">{{$t("pause.study")}}</li>
           <li @click="resumePomodoro()" v-if="pomodoroGoing">{{$t("pause.resume")}}</li> 
           <li @click="close()"> <pomodoro-controls /></li>
 
@@ -121,7 +121,6 @@ const firstStart = ref(!pomodoroGoing.value);
 const pro = computed(() => pomodoro.pro);
 const first = computed(() => pomodoro.first);
 const windowWidth = ref(window.innerWidth);
-const isLargeScreen = computed(() => windowWidth.value > 600);
 
 watch(pauseFromPomodoro, (value) => {
   pause.value = value;
@@ -147,8 +146,6 @@ function close() {
 function resumePomodoro() {
   if (pomodoro.going && pauseFromPomodoro.value) {
     pomodoro.nextStep();
-
-
   }
   close();
 }
@@ -204,7 +201,7 @@ function getMinutesFromPercentage(n: number) {
 function getTimerValue(getPause: boolean = false) {
   let current = 0;
   if (getPause) {
-    current = pomodoro.status.breaks.findLast(e => e.status == EPomodoroBreakStatus.DONE)?.start ?? 0;
+    current = pomodoro.status.breaks.find(e => e.status == EPomodoroBreakStatus.DOING)?.start ?? 0;
   } else {
     const lastDone = pomodoro.status.breaks.findLast(e => e.status == EPomodoroBreakStatus.DONE);
     current = lastDone ? lastDone.start + lastDone.lenght : 0;
@@ -219,15 +216,7 @@ function getTimerValue(getPause: boolean = false) {
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-.pause{
-  text-align: left !important;
-}
 
-.pausetime{
-  text-align: right !important;
-  font-size: 1.5em !important;
-  
-}
 .grid-container {
   display: grid;
   grid-template-columns: auto auto;
@@ -270,9 +259,7 @@ function getTimerValue(getPause: boolean = false) {
 }
 
 
-.logo {
-  height: 4rem;
-}
+
 
 .top-left {
   display: flex;
@@ -371,6 +358,15 @@ span {
       max-width: 700px;
       text-align: center;
       font-size: 1rem;
+
+      
+      &.pause{
+        text-align: left;
+      }
+      &.pausetime{
+        text-align: right;
+        font-size: 1.5em;
+      }
 
       &.timer {
         font-size: 2.7rem;

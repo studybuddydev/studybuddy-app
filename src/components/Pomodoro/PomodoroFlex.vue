@@ -40,7 +40,6 @@ function getMinutesFromPercentage(n: number) {
 $bar-height: 1.2em;
 
 .pomodoro {
-  z-index: 2000;
   display: flex;
   align-items: center;
   border-radius: calc($bar-height / 2);
