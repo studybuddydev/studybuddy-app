@@ -88,7 +88,7 @@
       </div>
     </div>
 
-        <div class="controls" v-if="!pomodoro.status.isBreak && !first"> <pomodoro-controls /></div>
+        <div class="controls" v-if="pomodoro.status.isBreak && !first"> <pomodoro-controls /></div>
 
       </div>
     </v-scroll-x-transition>
