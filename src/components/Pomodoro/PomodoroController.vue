@@ -2,7 +2,7 @@
   <v-btn :class="pomodoro.itsTimeToBreak || pomodoro.itsFinished
     ? 'btn bg-secondary'
     : 'btn bg-secondary small'
-    " icon="mdi-check-circle" @click="btnClick()">
+    " @click="btnClick()">
     <div class="btn-content">
       <!-- end pomo-->
 
@@ -57,8 +57,8 @@ function btnClick() {
 }
 
 .btn {
-  border-radius: 1em;
   transition: height 0.2s ease-in-out;
+  height: 3rem;
 
   .btn-content {
     display: flex;
@@ -67,7 +67,7 @@ function btnClick() {
     justify-content: center;
 
     .icon {
-      font-size: 7em;
+      font-size: 2rem;
       transition: font-size 0.2s ease-in-out;
     }
 
@@ -76,11 +76,5 @@ function btnClick() {
     }
   }
 
-  &.small {
-    height: 3em;
-    .icon {
-      font-size: 2em;
-    }
-  }
 }
 </style>

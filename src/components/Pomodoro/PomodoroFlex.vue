@@ -5,14 +5,13 @@
         backgroundColor: theme.current.value.colors.snake,
         color: theme.current.value.colors.surface,
         width: `${pomodoro.percentage}%`,
-      }"> ⦿ </div>
+      }"> <span class="mx-2">⦿</span> </div>
       <div v-for="b in pomodoro.status.breaks" :title="getMinutesFromPercentage(b.lenght)" :key="b.start" class="break"
         :style="{
           backgroundColor: theme.current.value.colors.apple,
           marginLeft: `${b.start}%`,
           width: `${b.lenght}%`,
         }"><v-icon size="x-small" icon="mdi-food-apple" /></div>
-      <p class="text-primary progress-text"> {{ getMinutesFromPercentage(pomodoro.percentage) }} </p>
     </div>
   </div>
 </template>
@@ -37,17 +36,18 @@ function getMinutesFromPercentage(n: number) {
 
 
 <style lang="scss" scoped>
-$bar-height: 1.2em;
+$bar-height: 2em;
 
 .pomodoro {
   display: flex;
   align-items: center;
-  border-radius: calc($bar-height / 2);
+  // border-radius: calc($bar-height / 2);
+  border-radius: 1rem;
   overflow: hidden;
-  margin: 0.4em 0.5em;
+  margin: 0.5em 0;
   height: $bar-height;
   background-color: #222;
-  filter: drop-shadow(0 0 0.2em #000);
+  filter: drop-shadow(0 0 0em #000);
   flex-grow: 1;
 
 
@@ -65,7 +65,7 @@ $bar-height: 1.2em;
     .break,
     .progress {
       height: $bar-height;
-      border-radius: 0.6em;
+      border-radius: 1em;
       line-height: 1em;
     }
 

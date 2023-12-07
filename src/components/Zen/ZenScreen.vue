@@ -53,7 +53,7 @@ function getTimerValue(getPause: boolean = false) {
       <div class="pause-screen">
         
         <!-- top left  -->
-        <div class="top-left title">
+        <div class="top-left title" v-if="!first || !pomodoro.status.isBreak">
           <img src="/images/logo.png" alt="logo" class="logo" />
           <h3 class="text-primary">StudyBuddy
             <span class="bg-primary beta">BETA</span>
@@ -72,38 +72,47 @@ function getTimerValue(getPause: boolean = false) {
         <!-- main content in the center-->
         <div class="main-content">
           
-          <p :class="pomodoro.status.isBreak ? 'timer' : 'timer timer-inpause'" v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
+          <p :class="pomodoro.status.isBreak ? 'timer font-casio' : 'timer timer-inpause font-casio'" v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
 
           <!-- welcome screen -->
           <div v-if="first && pomodoro.status.isBreak">
-            <p class="text-primary">{{ $t("pause.welcome") }}</p>
+            <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
             <div class="title">
               <img src="/images/logo.png" alt="logo" class='logo' />
-              <h2 class="text-primary">StudyBuddy</h2>
+              <h1 class="text-primary">StudyBuddy</h1>
             </div>
           </div>
           <!-- pause and finish screen -->
-          <div v-else-if="pomodoro.status.isBreak">
-            <p class="pause">{{ pomodoro.getReport.reportDone ? $t("pause.pomoDone") : $t("pause.youare") }}</p>
-            <h2 class="text-primary">{{ pomodoro.getReport.reportDone ? $t("pause.goodjob") : $t("pause.break") }}</h2>
-            <p class="text-primary pausetime">da {{ getTimerValue(true) }}</p>
+          <div v-else-if="pomodoro.status.isBreak" class="mb-5">
+            <p class="pause font-press text-center" v-if="pomodoro.getReport.reportDone">{{ $t("pause.pomoDone") }}</p>
+            <p class="pause font-press text-left" v-else>{{ $t("pause.youare") }}</p>
+            <h2 class="text-primary font-press text-center" v-if="pomodoro.getReport.reportDone">{{ $t("pause.goodjob") }}</h2>
+            <h1 class="text-primary font-press text-center" v-else>{{ $t("pause.break") }}</h1>
+            <p class="pausetime font-press text-right">da <span class="text-primary font-casio">{{ getTimerValue(true) }}</span></p>
           </div>
           <div class="pomopause" v-if="pomodoro.status.isBreak">
-            <v-btn  class = 'settingsbtn'  v-if="first || pomodoro.getReport.reportDone">
+            <v-btn class="btn bg-background btn-main btn-settings"  v-if="first || pomodoro.getReport.reportDone">
               <v-icon size="32">mdi-cog</v-icon>
             </v-btn>
-            <PomodoroController />
-            </div>
-          <h3 class="text-primary" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</h3>
+            <PomodoroController class="btn-main btn-study font-press" />
+          </div>
 
         </div>
 
         <!-- pomodoro bar -->
         <div class="pomodoro-bar">
-          <PomodoroController class="pomo-box pomo-controller" v-if="!first || !pomodoro.status.isBreak"/>
+          <div class="bottom-button-wrapper font-press">
+            <div v-if="!first || !pomodoro.status.isBreak">
+              <PomodoroController class="pomo-box pomo-controller bottom-box" v-if="!pomodoro.getReport.reportDone && (!pomodoroGoing || !pomodoro.status.isBreak)"/>
+              <v-btn class="btn bg-error btn-endsession bottom-box" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</v-btn>
+            </div>
+          </div>
+
           <PomodoroFlex class="pomo-flex" />
-          <div class="pomo-box pomo-time"  v-if="!first || !pomodoro.status.isBreak" >
-            <p>{{ getMinutesFromPercentage(pomodoro.percentage) }}</p>
+          <div class="bottom-button-wrapper">
+            <div class="pomo-box pomo-time bottom-box font-casio" v-if="!pomodoro.getReport.reportDone && (!first || !pomodoro.status.isBreak)" >
+              <p>{{ getMinutesFromPercentage(pomodoro.percentage) }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -126,7 +135,6 @@ function getTimerValue(getPause: boolean = false) {
   z-index: 1500;
   background-color: rgb(var(--v-theme-surface));
   
-
   .main-content {
     height: 100vh;
     width: 100vw;
@@ -134,21 +142,44 @@ function getTimerValue(getPause: boolean = false) {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    font-family:  'Press Start 2P', Arial, Helvetica, sans-serif;;
 
+    .btn-main {
+      height: 3rem;
+      margin: 0.5rem;
+    }
+
+    .btn-study {
+      width: 9rem;
+    }
+
+    h1, h2, h3, p {
+      max-width: 700px;
+    }
+
+    h1 {
+      font-size: 5rem;
+    }
 
     h2 {
-      text-align: center;
-      font-size: 5rem;
-      max-width: 700px;
+      font-size: 3rem;
       font-weight: 900;
     }
 
     h3 {
-      text-align: center;
       font-size: 1.5rem;
-      max-width: 700px;
-      margin-top: 0.5em;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+      margin-bottom: 1em;
+
+      img {
+        height: 5rem;
+        margin-right: 0.5em;
+      }
     }
 
     p {
@@ -157,17 +188,8 @@ function getTimerValue(getPause: boolean = false) {
       font-size: 1rem;
 
       
-      &.pause{
-        text-align: left;
-      }
-      &.pausetime{
-        text-align: right;
-        font-size: 1.5em;
-      }
-
       &.timer {
         font-size: 2.7rem;
-        font-family: 'casio', 'Press Start 2P', Arial, Helvetica, sans-serif;
         color: rgb(var(--v-theme-secondary));
         margin-bottom: 2em;
         background-color: rgb(var(--v-theme-background));
@@ -233,9 +255,10 @@ function getTimerValue(getPause: boolean = false) {
       }
     }
   }
-
-
-  
+  .btn {
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
 
   .pomodoro-bar {
     position: absolute;
@@ -244,16 +267,22 @@ function getTimerValue(getPause: boolean = false) {
     justify-content: space-between;
     bottom: 0;
     width: 100vw;
-    margin: 0 0 0.5em 0;
-    padding: 0 1em;
+    padding: 1.5em 1em 1em;
+    background-color: rgb(var(--v-theme-background));
+    border-radius: 1em 1em 0 0;
 
-    .pomo-box {
+    .bottom-button-wrapper {
       width: 10rem;
+      margin: 0 0.5rem;
     }
 
-    .pomo-controller {
+    .bottom-box {
       height: 3rem;
-      margin: 0 0.5rem;
+      line-height: 3rem;
+      width: 100%;
+      border-radius: 1rem;
+      font-size: 0.8rem;
+      font-weight: bold;
     }
 
     .pomo-flex {
@@ -261,13 +290,8 @@ function getTimerValue(getPause: boolean = false) {
     }
 
     .pomo-time {
-      font-size: 2em;
       display: flex;
-      background-color: rgb(var(--v-theme-background));
-      height: 3rem;
-      line-height: 3rem;
-      border-radius: 1rem;
-      margin: 0 0.5rem;
+      background-color: rgb(var(--v-theme-secondary-darken-1));
 
       p {
         width: 100%;

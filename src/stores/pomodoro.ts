@@ -29,7 +29,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   });
   
   let breakStartTime: number | null = null;
-  const MINUTE_MULTIPLIER = 60;
+  const MINUTE_MULTIPLIER = 2;
   let pauseStartHit = false;
   let pauseEndHIt = false;
   const timeToBreak = ref(false);
