@@ -51,7 +51,8 @@ function getTimerValue(getPause: boolean = false) {
   <div transition="fade-transition">
     <v-scroll-x-transition>
       <div class="pause-screen">
-
+        
+        <!-- top left  -->
         <div class="top-left title">
           <img src="/images/logo.png" alt="logo" class="logo" />
           <h3 class="text-primary">StudyBuddy
@@ -59,6 +60,7 @@ function getTimerValue(getPause: boolean = false) {
           </h3>
         </div>
 
+        <!-- top right -->
         <div class="top-right">
           <p v-if="isAuthenticated" class="logged-user">
             <span>{{ user?.given_name ?? user?.nickname }}</span>
@@ -67,6 +69,7 @@ function getTimerValue(getPause: boolean = false) {
           <p class="login-button" v-else @click="loginWithRedirect()">Log In</p>
         </div>
 
+        <!-- main content in the center-->
         <div class="main-content">
           
           <p :class="pomodoro.status.isBreak ? 'timer' : 'timer timer-inpause'" v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
@@ -94,11 +97,12 @@ function getTimerValue(getPause: boolean = false) {
 
         </div>
 
+        <!-- pomodoro bar -->
         <div class="pomodoro-bar">
           <PomodoroController class="pomo-box pomo-controller" v-if="!first || !pomodoro.status.isBreak"/>
           <PomodoroFlex class="pomo-flex" />
           <div class="pomo-box pomo-time"  v-if="!first || !pomodoro.status.isBreak" >
-            <p>{{ getTimerValue(pomodoro.status.isBreak) }}</p>
+            <p>{{ getMinutesFromPercentage(pomodoro.percentage) }}</p>
           </div>
         </div>
       </div>
