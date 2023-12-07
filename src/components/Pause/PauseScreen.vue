@@ -69,6 +69,7 @@
           <li v-if="!isLoading && pomodoro.status.isBreak" @click="openSettingsTab = pomodoro.going ? 'general' : 'pomodoro'">
             <v-icon icon="mdi-cog" size="large" /> {{$t("pause.settings")}}
           </li>
+          
         </ul> -->
 
     <div class="report" v-if="pomodoro.getReport.reportDone">
