@@ -74,6 +74,7 @@ function getTimerValue(getPause: boolean = false) {
           
           <p :class="pomodoro.status.isBreak ? 'timer' : 'timer timer-inpause'" v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
 
+          <!-- welcome screen -->
           <div v-if="first && pomodoro.status.isBreak">
             <p class="text-primary">{{ $t("pause.welcome") }}</p>
             <div class="title">
@@ -81,12 +82,12 @@ function getTimerValue(getPause: boolean = false) {
               <h2 class="text-primary">StudyBuddy</h2>
             </div>
           </div>
+          <!-- pause and finish screen -->
           <div v-else-if="pomodoro.status.isBreak">
             <p class="pause">{{ pomodoro.getReport.reportDone ? $t("pause.pomoDone") : $t("pause.youare") }}</p>
             <h2 class="text-primary">{{ pomodoro.getReport.reportDone ? $t("pause.goodjob") : $t("pause.break") }}</h2>
             <p class="text-primary pausetime">da {{ getTimerValue(true) }}</p>
           </div>
-
           <div class="pomopause" v-if="pomodoro.status.isBreak">
             <v-btn  class = 'settingsbtn'  v-if="first || pomodoro.getReport.reportDone">
               <v-icon size="32">mdi-cog</v-icon>
@@ -111,6 +112,11 @@ function getTimerValue(getPause: boolean = false) {
 </template>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@font-face {
+  font-family: 'casio';
+  src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
+}
 .pause-screen {
   position: absolute;
   top: 0;
@@ -119,6 +125,7 @@ function getTimerValue(getPause: boolean = false) {
   height: 100vh;
   z-index: 1500;
   background-color: rgb(var(--v-theme-surface));
+  
 
   .main-content {
     height: 100vh;
@@ -127,6 +134,52 @@ function getTimerValue(getPause: boolean = false) {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    font-family:  'Press Start 2P', Arial, Helvetica, sans-serif;;
+
+
+    h2 {
+      text-align: center;
+      font-size: 5rem;
+      max-width: 700px;
+      font-weight: 900;
+    }
+
+    h3 {
+      text-align: center;
+      font-size: 1.5rem;
+      max-width: 700px;
+      margin-top: 0.5em;
+    }
+
+    p {
+      max-width: 700px;
+      text-align: center;
+      font-size: 1rem;
+
+      
+      &.pause{
+        text-align: left;
+      }
+      &.pausetime{
+        text-align: right;
+        font-size: 1.5em;
+      }
+
+      &.timer {
+        font-size: 2.7rem;
+        font-family: 'casio', 'Press Start 2P', Arial, Helvetica, sans-serif;
+        color: rgb(var(--v-theme-secondary));
+        margin-bottom: 2em;
+        background-color: rgb(var(--v-theme-background));
+        padding: 0.7em 1em;
+        border-radius: 0.5em;
+
+        &.timer-inpause {
+          color: rgb(var(--v-theme-primary));
+        }
+      }
+    }
+
   }
 
   .top-left {
@@ -180,6 +233,9 @@ function getTimerValue(getPause: boolean = false) {
       }
     }
   }
+
+
+  
 
   .pomodoro-bar {
     position: absolute;
