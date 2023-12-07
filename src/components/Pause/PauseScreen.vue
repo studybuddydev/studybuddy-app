@@ -23,8 +23,9 @@
           <v-btn class="user-box" @click="enterPro()"> <v-icon size="32">mdi-eye</v-icon> </v-btn>
         </div>
 
-     
-        <p class="text-primary alert" v-if="true"> ciao abbiamo trasferito l'app per i tester a  <a href="https://test.studybuddy.it"> test.studybuddy.it</a> questa è la versione di sviluppo, potrebbe spaccarsi da un momento all'altro</p>
+        <!--  WARNING UTENTI -->
+        
+        <p class="text-primary alert" v-if="true"> <v-icon size="100">mdi-alert</v-icon>  ciao abbiamo trasferito l'app per i tester a  <a href="https://test.studybuddy.it"> test.studybuddy.it</a> questa è la versione di sviluppo, potrebbe spaccarsi da un momento all'altro</p>
         <br> 
 
         <!--  -->
