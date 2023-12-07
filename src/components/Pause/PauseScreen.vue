@@ -225,10 +225,28 @@ function getTimerValue(getPause: boolean = false) {
   font-size: 1.5em !important;
   font-family: 'Press Start 2P', cursive;
   color: rgb(var(--v-theme-primary));
-  margin: 0.5em;
+  margin: 3em;
   padding: 0.5em;
   border-radius: 0.5em;
   border: rgb(var(--v-theme-primary)) solid 10px;
+
+  //stile only for <a>  inside alert
+  a{
+    color: rgb(var(--v-theme-surface));
+    background: rgb(var(--v-theme-primary));;
+    font-weight: bold;
+    font-size: 1.3em !important;
+    font-family: 'Press Start 2P', cursive;
+    margin: 0.3em;
+    padding: 0.2em;
+    border-radius: 0.5em;
+    border: rgb(var(--v-theme-primary)) solid 1px;
+    //on hover change color
+    &:hover{
+      color: rgb(var(--v-theme-primary));
+      background: rgb(var(--v-theme-surface));
+    }
+  }
 
 }
 
