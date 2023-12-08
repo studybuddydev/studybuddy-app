@@ -16,6 +16,9 @@ const pomodoroGoing = computed(() => pomodoro.going);
 const pause = ref(!pomodoroGoing.value);
 const firstStart = ref(!pomodoroGoing.value);
 const first = computed(() => pomodoro.first);
+
+const showTime = ref(true);
+
 watch(pauseFromPomodoro, (value) => {
   pause.value = value;
 });
@@ -45,6 +48,12 @@ function getTimerValue(getPause: boolean = false) {
   return getMinutesFromPercentage(pomodoro.percentage - current)
 }
 
+function hideNumbers() {
+  showTime.value = !showTime.value;
+}
+
+
+
 </script>
 
 <template>
@@ -71,9 +80,12 @@ function getTimerValue(getPause: boolean = false) {
 
         <!-- main content in the center-->
         <div class="main-content">
-          
-          <p :class="pomodoro.status.isBreak ? 'timer font-casio' : 'timer timer-inpause font-casio'" v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
-
+          <div v-if="!showTime"> 
+            <p :class="pomodoro.status.isBreak ? 'timer font-casio' : 'timer timer-inpause font-casio'" v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
+          </div>
+          <div v-else>
+            <p>buono studio</p>
+          </div>
           <!-- welcome screen -->
           <div v-if="first && pomodoro.status.isBreak">
             <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
@@ -96,7 +108,23 @@ function getTimerValue(getPause: boolean = false) {
             </v-btn>
             <PomodoroController class="btn-main btn-study font-press" />
           </div>
-
+          
+          <!-- report table-->
+          <div class="report" v-if="pomodoro.getReport.reportDone">
+            <div class="grid-container">
+              <div>{{ "tempo totale" }}</div>
+              <div>{{ msTominutes(pomodoro.getReport.studyLength) }}</div>
+              <div>{{"di cui studio" }}</div>
+              <div>{{ msTominutes(pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) }}</div>
+              <div>{{"di cui pausa" }}</div>
+              <div>{{ msTominutes(pomodoro.getReport.breakLength) }}</div>
+              <div>{{ "n pause" }}</div>
+              <div>{{ pomodoro.status.breaks.length }}</div>
+              <div>{{ }}</div>
+              <div>{{  }}</div>
+              <div>{{"Punteggio:"}}</div>
+            <div>{{ (((pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) / (pomodoro.getReport.studyLength)) * 120).toFixed(1) }}%</div>
+          </div>
         </div>
 
         <!-- pomodoro bar -->
@@ -110,12 +138,16 @@ function getTimerValue(getPause: boolean = false) {
 
           <PomodoroFlex class="pomo-flex" />
           <div class="bottom-button-wrapper">
-            <div class="pomo-box pomo-time bottom-box font-casio" v-if="!pomodoro.getReport.reportDone && (!first || !pomodoro.status.isBreak)" >
-              <p>{{ getMinutesFromPercentage(pomodoro.percentage) }}</p>
+            <div   @click="hideNumbers()" class="pomo-box pomo-time bottom-box font-casio" v-if="!pomodoro.getReport.reportDone && (!first || !pomodoro.status.isBreak)" >
+              <p :class="{'blur-class': showTime}">{{ getMinutesFromPercentage(pomodoro.percentage) }}</p>
+              <v-icon v-if="!showTime" size="32">mdi-eye-off</v-icon>
+              <v-icon v-else size="32">mdi-eye</v-icon>
             </div>
           </div>
         </div>
+
       </div>
+    </div>
     </v-scroll-x-transition>
   </div>
 </template>
@@ -134,6 +166,12 @@ function getTimerValue(getPause: boolean = false) {
   height: 100vh;
   z-index: 1500;
   background-color: rgb(var(--v-theme-surface));
+
+  .blur-class {
+  filter: blur(30px);
+  
+  
+  }
   
   .main-content {
     height: 100vh;
@@ -142,6 +180,7 @@ function getTimerValue(getPause: boolean = false) {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+   // margin-top: -6em;         // check this
 
     .btn-main {
       height: 3rem;
@@ -149,7 +188,8 @@ function getTimerValue(getPause: boolean = false) {
     }
 
     .btn-study {
-      width: 9rem;
+      width: 11rem;
+      font-size: 1em;
     }
 
     h1, h2, h3, p {
@@ -177,7 +217,7 @@ function getTimerValue(getPause: boolean = false) {
       margin-bottom: 1em;
 
       img {
-        height: 5rem;
+        height: 7rem;
         margin-right: 0.5em;
       }
     }
@@ -234,6 +274,7 @@ function getTimerValue(getPause: boolean = false) {
     transition: background-color 0.2s ease-in-out;
     height: 4rem;
     overflow: hidden;
+    font-family: 'Press Start 2P', Arial, Helvetica, sans-serif;
 
     &:hover {
       background-color: #FFF4;
