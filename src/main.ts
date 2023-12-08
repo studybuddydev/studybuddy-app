@@ -51,8 +51,8 @@ const i18n = createI18n({
 });
 
 const auth0 = createAuth0({
-  domain: "dev-lk2eo802harq5vdb.eu.auth0.com",
-  clientId: "LoEbOp9bdkJCSQ8f8ttqVyfmY8DtxNuy",
+  domain: "studybuddyit.eu.auth0.com",
+  clientId: "ZyUtaogYVjzqmWoglOEV5vT7XeHRzDtz",
   authorizationParams: {
     redirect_uri: window.location.origin
   }
