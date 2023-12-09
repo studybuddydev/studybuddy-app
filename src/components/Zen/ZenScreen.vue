@@ -48,12 +48,15 @@ function getTimerValue(getPause: boolean = false) {
   return getMinutesFromPercentage(pomodoro.percentage - current)
 }
 
-function hideNumbers() {
+function toogleTime() {
   showTime.value = !showTime.value;
 }
 
-
-
+function msToMinutes(ms: number): string {
+  const minutes = Math.floor(ms / 1000 / 60);
+  const seconds = Math.floor((ms / 1000) % 60).toString().padStart(2, '0');
+  return `${minutes}:${seconds}`;
+}
 </script>
 
 <template>
@@ -80,7 +83,7 @@ function hideNumbers() {
 
         <!-- main content in the center-->
         <div class="main-content">
-          <div v-if="!showTime"> 
+          <div v-if="showTime"> 
             <p :class="pomodoro.status.isBreak ? 'timer font-casio' : 'timer timer-inpause font-casio'" v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
           </div>
           <div v-else>
@@ -113,11 +116,11 @@ function hideNumbers() {
           <div class="report" v-if="pomodoro.getReport.reportDone">
             <div class="grid-container">
               <div>{{ "tempo totale" }}</div>
-              <div>{{ msTominutes(pomodoro.getReport.studyLength) }}</div>
+              <div>{{ msToMinutes(pomodoro.getReport.studyLength) }}</div>
               <div>{{"di cui studio" }}</div>
-              <div>{{ msTominutes(pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) }}</div>
+              <div>{{ msToMinutes(pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) }}</div>
               <div>{{"di cui pausa" }}</div>
-              <div>{{ msTominutes(pomodoro.getReport.breakLength) }}</div>
+              <div>{{ msToMinutes(pomodoro.getReport.breakLength) }}</div>
               <div>{{ "n pause" }}</div>
               <div>{{ pomodoro.status.breaks.length }}</div>
               <div>{{ }}</div>
@@ -128,24 +131,35 @@ function hideNumbers() {
         </div>
 
         <!-- pomodoro bar -->
-        <div class="pomodoro-bar">
-          <div class="bottom-button-wrapper font-press">
-            <div v-if="!first || !pomodoro.status.isBreak">
-              <PomodoroController class="pomo-box pomo-controller bottom-box" v-if="!pomodoro.getReport.reportDone && (!pomodoroGoing || !pomodoro.status.isBreak)"/>
-              <v-btn class="btn bg-error btn-endsession bottom-box" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</v-btn>
-            </div>
-          </div>
+        <div class="bottom-bar">
 
-          <PomodoroFlex class="pomo-flex" />
-          <div class="bottom-button-wrapper">
-            <div   @click="hideNumbers()" class="pomo-box pomo-time bottom-box font-casio" v-if="!pomodoro.getReport.reportDone && (!first || !pomodoro.status.isBreak)" >
-              <p :class="{'blur-class': showTime}">{{ getMinutesFromPercentage(pomodoro.percentage) }}</p>
-              <v-icon v-if="!showTime" size="32">mdi-eye-off</v-icon>
-              <v-icon v-else size="32">mdi-eye</v-icon>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn density="comfortable" icon="mdi-pencil" class="btn-edit bg-background" v-bind="props"></v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item @click="toogleTime()" title="Mostra Tempo" v-if="!showTime" />
+              <v-list-item @click="toogleTime()" title="Nascondi Tempo" v-else />
+            </v-list>
+          </v-menu>
+
+          <div class="pomodoro-bar">
+            <div class="bottom-button-wrapper font-press">
+              <div v-if="!first || !pomodoro.status.isBreak">
+                <PomodoroController class="pomo-box pomo-controller bottom-box" v-if="!pomodoro.getReport.reportDone && (!pomodoroGoing || !pomodoro.status.isBreak)"/>
+                <v-btn class="btn bg-error btn-endsession bottom-box" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</v-btn>
+              </div>
+            </div>
+
+            <PomodoroFlex class="pomo-flex" />
+            <div class="bottom-button-wrapper">
+              <div class="pomo-box pomo-time bottom-box font-casio" v-if="!pomodoro.getReport.reportDone && (!first || !pomodoro.status.isBreak)" >
+                <p v-if="showTime">{{ getMinutesFromPercentage(pomodoro.percentage) }}</p>
+              </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
     </v-scroll-x-transition>
@@ -167,12 +181,6 @@ function hideNumbers() {
   z-index: 1500;
   background-color: rgb(var(--v-theme-surface));
 
-  .blur-class {
-  filter: blur(30px);
-  
-  
-  }
-  
   .main-content {
     height: 100vh;
     width: 100vw;
@@ -301,42 +309,53 @@ function hideNumbers() {
     font-weight: bold;
   }
 
-  .pomodoro-bar {
+
+  .bottom-bar {
     position: absolute;
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
     bottom: 0;
-    width: 100vw;
-    padding: 1.5em 1em 1em;
-    background-color: rgb(var(--v-theme-background));
-    border-radius: 1em 1em 0 0;
+    display: flex;
+    flex-direction: column;
 
-    .bottom-button-wrapper {
-      width: 10rem;
-      margin: 0 0.5rem;
+    .btn-edit {
+      align-self: flex-end;
+      margin: 1rem
     }
 
-    .bottom-box {
-      height: 3rem;
-      line-height: 3rem;
-      width: 100%;
-      border-radius: 1rem;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
-
-    .pomo-flex {
-      flex-grow: 1;
-    }
-
-    .pomo-time {
+    .pomodoro-bar {
       display: flex;
-      background-color: rgb(var(--v-theme-secondary-darken-1));
+      align-items: end;
+      justify-content: space-between;
+      width: 100vw;
+      padding: 1.5em 1em 1em;
+      background-color: rgb(var(--v-theme-background));
+      border-radius: 1em 1em 0 0;
 
-      p {
+      .bottom-button-wrapper {
+        width: 10rem;
+        margin: 0 0.5rem;
+      }
+
+      .bottom-box {
+        height: 3rem;
+        line-height: 3rem;
         width: 100%;
-        text-align: center;
+        border-radius: 1rem;
+        font-size: 0.8rem;
+        font-weight: bold;
+      }
+
+      .pomo-flex {
+        flex-grow: 1;
+      }
+
+      .pomo-time {
+        display: flex;
+        background-color: rgb(var(--v-theme-secondary-darken-1));
+
+        p {
+          width: 100%;
+          text-align: center;
+        }
       }
     }
   }
