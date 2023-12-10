@@ -40,12 +40,12 @@ $bar-height: 2em;
 
 .pomodoro {
   display: flex;
+  flex-direction: column;
   align-items: center;
   // border-radius: calc($bar-height / 2);
   border-radius: 1rem;
   overflow: hidden;
-  margin: 0.5em 0;
-  height: $bar-height;
+  height: 100%;
   background-color: #222;
   filter: drop-shadow(0 0 0em #000);
   flex-grow: 1;
@@ -55,6 +55,7 @@ $bar-height: 2em;
     display: flex;
     align-items: center;
     width: 100%;
+    flex-grow: 1;
 
     .breaks-container {
       display: flex;
@@ -64,9 +65,11 @@ $bar-height: 2em;
 
     .break,
     .progress {
-      height: $bar-height;
+      height: 100%;
       border-radius: 1em;
-      line-height: 1em;
+      display: flex;
+      justify-content: end;
+      align-items: center;
     }
 
     .break {
@@ -80,23 +83,6 @@ $bar-height: 2em;
 
     .progress {
       text-align: right;
-      line-height: $bar-height;
-    }
-
-
-    .progress-text {
-      opacity: 0.5;
-      position: absolute;
-      right: 0;
-      line-height: $bar-height;
-      padding: 0 0.5em;
-      transition: 0.15s opacity ease-in-out;
-    }
-
-    &:hover {
-      .progress-text {
-        opacity: 1;
-      }
     }
   }
 

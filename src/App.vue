@@ -5,7 +5,7 @@
       <div class="main-wrapper">
         <router-view :key="$route.fullPath"></router-view>
 
-        <PomodoroFlex class="pomodoro" :class="{ 'mobile': !isLargeScreen }" @click="pomodoro.pro = false" />
+        <!-- <PomodoroFlex class="pomodoro" :class="{ 'mobile': !isLargeScreen }" @click="pomodoro.pro = false" /> -->
 
         <div class="pomodoro-controls" v-if="windowWidth < 600">
           <PomodoroControls />
