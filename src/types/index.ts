@@ -2,6 +2,7 @@ export enum EStudyView {
   Dashboard, Exam, Chapter
 }
 
+
 // ---------- EXAM ----------
 export type Link = {
   name: string;
