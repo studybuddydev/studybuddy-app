@@ -23,10 +23,10 @@
           <v-btn class="user-box" @click="enterPro()"> <v-icon size="32">mdi-eye</v-icon> </v-btn>
         </div>
 
-        <!-- 
-        <p class="text-primary"> ciao abbiamo trasferito l'app per i tester a  <a href="https://test.studybuddy.it"> test.studybuddy.it</a> questa è la versione di sviluppo, potrebbe spaccarsi da un momento all'altro</p>
-        <br>
-        -->
+        <!--  WARNING UTENTI -->
+        
+        <p class="text-primary alert" v-if="true"> <v-icon size="100">mdi-alert</v-icon>  ciao abbiamo trasferito l'app per i tester a  <a href="https://test.studybuddy.it"> test.studybuddy.it</a> questa è la versione di sviluppo, potrebbe spaccarsi da un momento all'altro</p>
+        <br> 
 
         <!--  -->
         <div class="pause-box">
@@ -69,6 +69,7 @@
           <li v-if="!isLoading && pomodoro.status.isBreak" @click="openSettingsTab = pomodoro.going ? 'general' : 'pomodoro'">
             <v-icon icon="mdi-cog" size="large" /> {{$t("pause.settings")}}
           </li>
+
         </ul> -->
 
     <div class="report" v-if="pomodoro.getReport.reportDone">
@@ -88,7 +89,7 @@
       </div>
     </div>
 
-        <div class="controls" v-if="!pomodoro.status.isBreak && !first"> <pomodoro-controls /></div>
+        <div class="controls"> <pomodoro-controls /></div>
 
       </div>
     </v-scroll-x-transition>
@@ -215,7 +216,6 @@ function getTimerValue(getPause: boolean = false) {
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
 
 .grid-container {
   display: grid;
