@@ -10,6 +10,7 @@
       <v-tabs v-model="modelTab">
         <v-tab value="general">{{$t("pause.general.general")}}</v-tab>
         <v-tab value="pomodoro" :disabled="pomodoro.going">{{$t("pause.timer.timer")}}</v-tab>
+        <v-tab value="zen">Zen Mode</v-tab>
       </v-tabs>
     </template>
     <template #default="{ data }">
@@ -107,6 +108,19 @@
                 <v-spacer />
               </v-row>
 
+            </v-window-item>
+
+            <v-window-item value="zen">
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field label="Colore Sfondo" v-model="data!.zenMode!.backgroundColor" type="color" clearable />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field label="Link immagine di background" v-model="data!.zenMode!.backgroundImg" type="string" clearable />
+                </v-col>
+              </v-row>
             </v-window-item>
 
           </v-window>

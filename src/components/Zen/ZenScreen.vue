@@ -4,17 +4,13 @@ import { ref, watch, computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { EPomodoroBreakStatus } from '@/types';
+import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomoSettings from '@/components/Popup/PomoSettings.vue';
 
-enum PomodoroControllerStatus {
-  Study = "study",
-  Pause = "pause",
-  End = "end",
-}
-
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
+const settings = useSettingsStore();
 const terminatePomoDialog = ref(false);
 
 const pauseFromPomodoro = computed(() => (pomodoro.status.isBreak && !!pomodoro.status.interval) || pomodoro.itsStopped);
@@ -25,6 +21,14 @@ const first = computed(() => pomodoro.first);
 const showTime = ref(true);
 const zenMode = ref(true);
 const openSettingsTab = ref(false);
+const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
+  if (settings.settings.zenMode?.backgroundImg) {
+    return { backgroundImage: `url(${settings.settings.zenMode?.backgroundImg})` }
+  } else if (settings.settings.zenMode?.backgroundColor) {
+    return { backgroundColor: settings.settings.zenMode?.backgroundColor }
+  }
+  return {};
+});
 
 watch(pauseFromPomodoro, (value) => {
   pause.value = value;
@@ -68,7 +72,7 @@ function msToMinutes(ms: number): string {
 
     <div transition="fade-transition">
       <v-scroll-y-reverse-transition>
-        <div class="zen-screen" v-if="zenMode">
+        <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
           <!-- top left  -->
           <div class="top-left title" v-if="!first || !pomodoro.status.isBreak">
@@ -91,17 +95,19 @@ function msToMinutes(ms: number): string {
           <div class="main-content">
             <div v-if="pomodoro.started && showTime">
               <p :class="pomodoro.status.isBreak ? 'timer font-casio' : 'timer timer-inpause font-casio'"
-                v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
+              v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
             </div>
             <div v-else-if="pomodoro.started">
               <p>buono studio</p>
             </div>
             <!-- welcome screen -->
             <div v-if="!pomodoro.started && first">
-              <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
-              <div class="title">
-                <img src="/images/logo.png" alt="logo" class='logo' />
-                <h1 class="text-primary">StudyBuddy</h1>
+              <div class="blur">
+                <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
+                <div class="title">
+                  <img src="/images/logo.png" alt="logo" class='logo' />
+                  <h1 class="text-primary">StudyBuddy</h1>
+                </div>
               </div>
             </div>
             <!-- pause and finish screen -->
@@ -217,6 +223,15 @@ function msToMinutes(ms: number): string {
   font-family: 'casio';
   src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
 }
+
+.blur {
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin: 1rem;
+}
+
 .settings {
   z-index: 2000;
 }
@@ -253,6 +268,9 @@ function msToMinutes(ms: number): string {
   height: 100vh;
   z-index: 1500;
   background-color: rgb(var(--v-theme-surface));
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 
   .main-content {
     height: 100vh;
@@ -342,7 +360,6 @@ function msToMinutes(ms: number): string {
       align-items: center;
       justify-content: center;
       flex-direction: row;
-      margin-bottom: 1em;
 
       img {
         height: 7rem;
