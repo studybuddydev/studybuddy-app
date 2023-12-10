@@ -35,6 +35,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const timeToBreak = ref(false);
   const finished = ref(false);
   const stopped = ref(false);
+  const started = ref(false);
   const itsTimeToBreak = computed(() => timeToBreak.value);
   const itsFinished = computed(() => finished.value);
   const itsStopped = computed(() => stopped.value);
@@ -65,16 +66,12 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       interval: null,
   });
 
-  
-
-
-
-
   const percentage = ref<number>(0);
 
   if (status.value.interval !== null) {
     status.value.interval = startInterval();
     first.value = false;
+    started.value = true;
   } else {
     status.value.breaks = generateBreaks();
   }
@@ -103,6 +100,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     status.value.startMs = Date.now();
     status.value.interval = startInterval();
     stopped.value = false;
+    started.value = true;
     saveStatus();
 
   }
@@ -124,6 +122,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     finished.value = false;
     // refresh page
+    started.value = false;
     
 
     saveStatus();
@@ -269,7 +268,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   return {
     MINUTE_MULTIPLIER,
-    breakLengthPercentage, going, itsTimeToBreak, itsFinished, getReport, itsStopped,
+    breakLengthPercentage, going, itsTimeToBreak, itsFinished, getReport, itsStopped, started,
     settings, percentage, status,
     startPomodoro, stopPomodoro, nextStep, generateBreaks, pro, first
   }

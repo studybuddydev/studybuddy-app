@@ -2,6 +2,7 @@ export enum EStudyView {
   Dashboard, Exam, Chapter
 }
 
+
 // ---------- EXAM ----------
 export type Link = {
   name: string;
@@ -119,7 +120,10 @@ export type UserSettings = {
   icon: string;
   lang: string;
 }
-
+export type ZenModeSettings = {
+  backgroundColor?: string;
+  backgroundImg?: string;
+}
 
 export type Settings = {
   pomodoro?: {
@@ -127,6 +131,7 @@ export type Settings = {
     pomodoroFlexSettings?: PomodoroFlexSettings;
   };
   user?: UserSettings;
+  zenMode?: ZenModeSettings;
 }
 
 

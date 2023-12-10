@@ -42,7 +42,7 @@
           </template>
       </v-list-item> -->
 
-      <PomodoroControls v-if="!exam" />
+      <!-- <PomodoroControls v-if="!exam" /> -->
     </template>
   </v-navigation-drawer>
 
@@ -66,9 +66,9 @@
       :base-url="`exam/${exam.name}`"
     />
 
-    <template v-slot:append>
+    <!-- <template v-slot:append>
       <PomodoroControls />
-    </template>
+    </template> -->
 
   </v-navigation-drawer>
 

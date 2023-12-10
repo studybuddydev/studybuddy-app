@@ -5,14 +5,13 @@
         backgroundColor: theme.current.value.colors.snake,
         color: theme.current.value.colors.surface,
         width: `${pomodoro.percentage}%`,
-      }"> ⦿ </div>
+      }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" /> </div>
       <div v-for="b in pomodoro.status.breaks" :title="getMinutesFromPercentage(b.lenght)" :key="b.start" class="break"
         :style="{
           backgroundColor: theme.current.value.colors.apple,
           marginLeft: `${b.start}%`,
           width: `${b.lenght}%`,
         }"><v-icon size="x-small" icon="mdi-food-apple" /></div>
-      <p class="text-primary progress-text"> {{ getMinutesFromPercentage(pomodoro.percentage) }} </p>
     </div>
   </div>
 </template>
@@ -37,18 +36,19 @@ function getMinutesFromPercentage(n: number) {
 
 
 <style lang="scss" scoped>
-$bar-height: 1.2em;
+$bar-height: 2em;
 
 .pomodoro {
-  z-index: 2000;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  border-radius: calc($bar-height / 2);
+  // border-radius: calc($bar-height / 2);
+  border-radius: 1rem;
   overflow: hidden;
-  margin: 0.4em 0.5em;
-  height: $bar-height;
+  margin: 0.5em 0;
+  height: 100%;
   background-color: #222;
-  filter: drop-shadow(0 0 0.2em #000);
+  filter: drop-shadow(0 0 0em #000);
   flex-grow: 1;
 
 
@@ -56,6 +56,7 @@ $bar-height: 1.2em;
     display: flex;
     align-items: center;
     width: 100%;
+    flex-grow: 1;
 
     .breaks-container {
       display: flex;
@@ -65,9 +66,11 @@ $bar-height: 1.2em;
 
     .break,
     .progress {
-      height: $bar-height;
-      border-radius: 0.6em;
-      line-height: 1em;
+      height: 100%;
+      border-radius: 1em;
+      display: flex;
+      justify-content: end;
+      align-items: center;
     }
 
     .break {
@@ -81,23 +84,6 @@ $bar-height: 1.2em;
 
     .progress {
       text-align: right;
-      line-height: $bar-height;
-    }
-
-
-    .progress-text {
-      opacity: 0.5;
-      position: absolute;
-      right: 0;
-      line-height: $bar-height;
-      padding: 0 0.5em;
-      transition: 0.15s opacity ease-in-out;
-    }
-
-    &:hover {
-      .progress-text {
-        opacity: 1;
-      }
     }
   }
 

@@ -28,6 +28,11 @@ const defaultSettings: Settings = {
       breakLength: 5,
       soundVolume: 50,
     },
+  },
+
+  zenMode: {
+    backgroundColor: undefined,
+    backgroundImg: undefined,
   }
 };
 
@@ -41,6 +46,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const userSettings = computed(() => settings.value.user ?? defaultSettings.user!);
   const pomodoroSettings = computed(() => settings.value.pomodoro?.pomodoroSettings ?? defaultSettings!.pomodoro!.pomodoroSettings!);
   const pomodoroFlexSettings = computed(() => settings.value.pomodoro?.pomodoroFlexSettings ?? defaultSettings!.pomodoro!.pomodoroFlexSettings!);
+  const zenModeSettings = computed(() => settings.value.zenMode ?? defaultSettings.zenMode);
 
 
   const settingsWithDefaults = computed<Settings>(() => {
@@ -49,7 +55,8 @@ export const useSettingsStore = defineStore('settings', () => {
       pomodoro: {
         pomodoroSettings: pomodoroSettings.value,
         pomodoroFlexSettings: pomodoroFlexSettings.value,
-      }
+      },
+      zenMode: zenModeSettings.value,
     }
   });
 
