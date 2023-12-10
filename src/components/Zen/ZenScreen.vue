@@ -105,14 +105,14 @@ function msToMinutes(ms: number): string {
               </div>
             </div>
             <!-- pause and finish screen -->
+            <div v-else-if="pomodoro.getReport.reportDone" class="mb-5">
+              <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
+              <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
+            </div>
             <div v-else-if="pomodoro.status.isBreak" class="mb-5">
               <p class="pause font-press text-left">{{ $t("pause.youare") }}</p>
               <h1 class="text-primary font-press text-center">{{ $t("pause.break") }}</h1>
             <p class="pausetime font-press text-right">da <span class="text-primary font-casio">{{ getTimerValue(true) }}</span></p>
-          </div>
-          <div v-else-if="pomodoro.getReport.reportDone" class="mb-5">
-            <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
-            <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
           </div>
 
             <div class="pomopause">
@@ -183,7 +183,7 @@ function msToMinutes(ms: number): string {
               <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="!pomodoro.started">
                 <v-icon class="icon">mdi-play</v-icon>
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.nextStep()" v-else-if="!pomodoro.status.isBreak">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.nextStep(); zenMode = true; }" v-else-if="!pomodoro.status.isBreak">
                 <v-icon class="icon">mdi-pause</v-icon>
               </v-btn>
               <v-btn class='btn bg-warning pomo-btn pomo-box' @click="pomodoro.nextStep()" v-else>

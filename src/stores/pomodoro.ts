@@ -71,6 +71,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   if (status.value.interval !== null) {
     status.value.interval = startInterval();
     first.value = false;
+    started.value = true;
   } else {
     status.value.breaks = generateBreaks();
   }

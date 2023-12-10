@@ -12,10 +12,7 @@
         </div>
       </div>
     </v-main>
-
-
     <ZenScreen />
-
   </v-app>
 </template>
 

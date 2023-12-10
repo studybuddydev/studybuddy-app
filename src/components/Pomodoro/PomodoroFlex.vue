@@ -5,7 +5,7 @@
         backgroundColor: theme.current.value.colors.snake,
         color: theme.current.value.colors.surface,
         width: `${pomodoro.percentage}%`,
-      }"> <span class="mx-2">⦿</span> </div>
+      }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" /> </div>
       <div v-for="b in pomodoro.status.breaks" :title="getMinutesFromPercentage(b.lenght)" :key="b.start" class="break"
         :style="{
           backgroundColor: theme.current.value.colors.apple,
@@ -45,6 +45,7 @@ $bar-height: 2em;
   // border-radius: calc($bar-height / 2);
   border-radius: 1rem;
   overflow: hidden;
+  margin: 0.5em 0;
   height: 100%;
   background-color: #222;
   filter: drop-shadow(0 0 0em #000);

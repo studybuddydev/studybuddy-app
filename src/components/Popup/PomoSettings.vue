@@ -93,27 +93,17 @@
 
               <v-row>
                 <v-spacer />
-                <v-col> <v-btn variant="tonal" @click="exportData()">{{$t("pause.general.exportData")}}</v-btn> </v-col>
-                <v-col> <v-btn variant="tonal" @click="importData()">{{$t("pause.general.importData")}}</v-btn> </v-col>
-                <v-spacer />
-              </v-row>
-
-              <v-row>
-                <v-spacer />
-                <v-col>
+                <v-col> <v-btn class="bg-background" @click="exportData()" icon="mdi-tray-arrow-down" title="Export Data" color="background"/> </v-col>
+                <v-col> <v-btn class="bg-background" @click="importData()" icon="mdi-tray-arrow-up" title="Import Data" color="background"/> </v-col>
+                <!-- <v-col>
                   <v-snackbar :timeout="2000" color="primary" elevation="24">
                     <template #activator="{ props }">
-                      <v-btn variant="tonal" @click="resetTutorial()" v-bind="props">{{$t("pause.general.resetTutorial")}}</v-btn>
+                      <v-btn class="bg-background" @click="resetTutorial()" icon="mdi-tray-arrow-up" />
                     </template>
                     {{$t("pause.general.resetted")}}
                   </v-snackbar>
-                </v-col>
-                <v-spacer />
-              </v-row>
-              
-              <v-row>
-                <v-spacer />
-                <v-col> <v-btn variant="tonal" @click="loggaout()">Log out</v-btn> </v-col>
+                </v-col> -->
+                <v-col> <v-btn @click="loggaout()" icon="mdi-logout-variant" color="error" title="Logout"></v-btn> </v-col>
                 <v-spacer />
               </v-row>
 
