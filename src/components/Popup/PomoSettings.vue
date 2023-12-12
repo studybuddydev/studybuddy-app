@@ -118,7 +118,10 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-text-field label="Link immagine di background" v-model="data!.zenMode!.backgroundImg" type="string" clearable />
+                  <v-select label="Seleziona immagine di sfondo" v-model="data!.zenMode!.backgroundImg" :items="backgroundImages" clearable/>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field label="Url immagine custom" v-model="data!.zenMode!.backgroundImg" type="string" clearable />
                 </v-col>
               </v-row>
             </v-window-item>
@@ -147,6 +150,14 @@ const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
 const { logout } = useAuth0();
 
+const backgroundImages = [
+  { title: 'Default', value: 'https://shorturl.at/dfjG9' },
+  { title: 'Forest', value: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg?cs=srgb&dl=pexels-johannes-plenio-1423600.jpg&fm=jpg&w=6000&h=4000' },
+  { title: 'Beach', value: 'https://images.pexels.com/photos/221471/pexels-photo-221471.jpeg?cs=srgb&dl=pexels-pixabay-221471.jpg&fm=jpg&w=2500&h=1400' },
+  { title: 'Mountain', value: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png?cs=srgb&dl=pexels-stephan-seeber-1772973.jpg&fm=jpg&w=6016&h=4016' },
+  { title: 'Dog', value: 'https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?cs=srgb&dl=pexels-chevanon-photography-1108099.jpg&fm=jpg&w=5184&h=3888' },
+  { title: 'Barbie', value: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' },
+]
 
 function loggaout() {
   logout({ logoutParams: { returnTo: window.location.origin } });

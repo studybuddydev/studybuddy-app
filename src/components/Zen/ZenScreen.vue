@@ -20,7 +20,7 @@ const first = computed(() => pomodoro.first);
 
 const showTime = ref(true);
 const zenMode = ref(true);
-const openSettingsTab = ref(false);
+const openSettingsTab = ref<boolean | string>(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
   if (settings.settings.zenMode?.backgroundImg) {
     return { backgroundImage: `url(${settings.settings.zenMode?.backgroundImg})` }
@@ -67,7 +67,7 @@ function msToMinutes(ms: number): string {
 </script>
 
 <template>
-  <div>
+  <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
     <PomoSettings class="settings" v-model="openSettingsTab" />
 
     <div transition="fade-transition">
@@ -75,7 +75,7 @@ function msToMinutes(ms: number): string {
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
           <!-- top left  -->
-          <div class="top-left title" v-if="!first || !pomodoro.status.isBreak">
+          <div class="top-left title blur" v-if="!first || !pomodoro.status.isBreak">
             <img src="/images/logo.png" alt="logo" class="logo" />
             <h3 class="text-primary">StudyBuddy
               <span class="bg-primary beta">BETA</span>
@@ -83,7 +83,7 @@ function msToMinutes(ms: number): string {
           </div>
 
           <!-- top right -->
-          <div class="top-right">
+          <div class="top-right blur">
             <p v-if="isAuthenticated" class="logged-user">
               <span>{{ user?.given_name ?? user?.nickname }}</span>
               <span><v-avatar :image="user?.picture" /></span>
@@ -94,7 +94,7 @@ function msToMinutes(ms: number): string {
           <!-- main content in the center-->
           <div class="main-content">
             <div v-if="pomodoro.started && showTime">
-              <p :class="pomodoro.status.isBreak ? 'timer font-casio' : 'timer timer-inpause font-casio'"
+              <p :class="pomodoro.status.isBreak ? 'timer blur font-casio' : 'timer blur timer-inpause font-casio'"
               v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
             </div>
             <div v-else-if="pomodoro.started">
@@ -102,7 +102,7 @@ function msToMinutes(ms: number): string {
             </div>
             <!-- welcome screen -->
             <div v-if="!pomodoro.started && first">
-              <div class="blur">
+              <div class="blur rounded-box pa-7">
                 <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
                 <div class="title">
                   <img src="/images/logo.png" alt="logo" class='logo' />
@@ -111,11 +111,11 @@ function msToMinutes(ms: number): string {
               </div>
             </div>
             <!-- pause and finish screen -->
-            <div v-else-if="pomodoro.getReport.reportDone" class="mb-5">
+            <div v-else-if="pomodoro.getReport.reportDone" class="mb-5 blur rounded-box pa-7">
               <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
               <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
             </div>
-            <div v-else-if="pomodoro.status.isBreak" class="mb-5">
+            <div v-else-if="pomodoro.status.isBreak" class="mb-5 blur rounded-box pa-7">
               <p class="pause font-press text-left">{{ $t("pause.youare") }}</p>
               <h1 class="text-primary font-press text-center">{{ $t("pause.break") }}</h1>
             <p class="pausetime font-press text-right">da <span class="text-primary font-casio">{{ getTimerValue(true) }}</span></p>
@@ -174,11 +174,11 @@ function msToMinutes(ms: number): string {
         <v-list>
           <v-list-item @click="toogleTime()" title="Mostra Tempo" v-if="!showTime" />
           <v-list-item @click="toogleTime()" title="Nascondi Tempo" v-else />
-          <v-list-item title="Modifica sfondo" />
+          <v-list-item @click="openSettingsTab = 'zen'" title="Modifica sfondo" />
         </v-list>
       </v-menu>
 
-      <div :class="zenMode ? 'pull-up-panel' : 'pull-up-panel pull-up-panel-zenmode'">
+      <div :class="zenMode ? 'pull-up-panel blur' : 'pull-up-panel blur pull-up-panel-zenmode'">
         <div class="handle" v-ripple @click="zenMode = !zenMode">
           <v-icon :icon="zenMode ? 'mdi-chevron-down' : 'mdi-chevron-up'" />
         </div>
@@ -187,13 +187,16 @@ function msToMinutes(ms: number): string {
           <div class="bottom-button-wrapper font-press">
             <div>
               <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="!pomodoro.started">
-                <v-icon class="icon">mdi-play</v-icon>
+                <v-icon class="icon" icon="mdi-play" />
               </v-btn>
               <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.nextStep(); zenMode = true; }" v-else-if="!pomodoro.status.isBreak">
-                <v-icon class="icon">mdi-pause</v-icon>
+                <v-icon class="icon" icon="mdi-pause" />
+              </v-btn>
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.stopPomodoro(); }" v-else-if="pomodoro.itsFinished">
+                <v-icon class="icon" icon="mdi-stop" />
               </v-btn>
               <v-btn class='btn bg-warning pomo-btn pomo-box' @click="pomodoro.nextStep()" v-else>
-                <v-icon class="icon">mdi-coffee</v-icon>
+                <v-icon class="icon" icon="mdi-coffee" />
               </v-btn>
               <!-- <PomodoroController class="pomo-box pomo-controller bottom-box" v-if="!pomodoro.getReport.reportDone && (!pomodoroGoing || !pomodoro.status.isBreak)"/>
             <v-btn class="btn bg-error btn-endsession bottom-box" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</v-btn> -->
@@ -224,12 +227,20 @@ function msToMinutes(ms: number): string {
   src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
 }
 
+
 .blur {
-  backdrop-filter: blur(10px);
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(var(--v-theme-background));
+}
+
+.img-background {
+  .blur {
+    backdrop-filter: blur(10px);
+    background-color: rgba(var(--v-theme-background), 0.5);
+  }
+}
+
+.rounded-box {
   border-radius: 1rem;
-  padding: 1rem;
-  margin: 1rem;
 }
 
 .settings {
@@ -376,7 +387,6 @@ function msToMinutes(ms: number): string {
         font-size: 2.7rem;
         color: rgb(var(--v-theme-secondary));
         margin-bottom: 2em;
-        background-color: rgb(var(--v-theme-background));
         padding: 0.7em 1em;
         border-radius: 0.5em;
 
@@ -394,6 +404,8 @@ function msToMinutes(ms: number): string {
     position: absolute;
     top: 1rem;
     left: 1rem;
+    border-radius: 1rem;
+    padding: 0.5rem;
 
     .logo {
       height: 4rem;
@@ -402,6 +414,7 @@ function msToMinutes(ms: number): string {
     .beta {
       border-radius: 0.5rem;
       padding: 0.4em;
+      margin-right: 1em;
     }
   }
 
@@ -409,7 +422,6 @@ function msToMinutes(ms: number): string {
     display: flex;
     align-items: center;
     justify-items: center;
-    background-color: #FFF2;
     padding: 0.5em;
     border-radius: 0.5em;
     position: absolute;
@@ -462,7 +474,6 @@ function msToMinutes(ms: number): string {
 
   .pull-up-panel {
     width: 100vw;
-    background-color: rgb(var(--v-theme-background));
     border-radius: 1em 1em 0 0;
     display: flex;
     flex-direction: column;
