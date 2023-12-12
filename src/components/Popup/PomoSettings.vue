@@ -157,6 +157,8 @@ const backgroundImages = [
   { title: 'Mountain', value: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png?cs=srgb&dl=pexels-stephan-seeber-1772973.jpg&fm=jpg&w=6016&h=4016' },
   { title: 'Dog', value: 'https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?cs=srgb&dl=pexels-chevanon-photography-1108099.jpg&fm=jpg&w=5184&h=3888' },
   { title: 'Barbie', value: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' },
+  { title: 'Oppenheimer', value: 'https://images5.alphacoders.com/125/1257951.jpeg' },
+  { title: 'Gandalf', value: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' },
 ]
 
 function loggaout() {

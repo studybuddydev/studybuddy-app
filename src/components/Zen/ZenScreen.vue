@@ -235,7 +235,7 @@ function msToMinutes(ms: number): string {
 .img-background {
   .blur {
     backdrop-filter: blur(10px);
-    background-color: rgba(var(--v-theme-background), 0.5);
+    background-color: rgba(var(--v-theme-background), 0.7);
   }
 }
 
