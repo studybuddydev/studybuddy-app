@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { PomodoroSettings, Settings } from '@/types'
+import type { PomodoroFlexSettings, Settings } from '@/types'
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify'
 
@@ -15,19 +15,10 @@ const defaultSettings: Settings = {
   },
 
   pomodoro: {
-    pomodoroSettings: {
-      longBreakLength: 15,
-      shortBreakLength: 5,
-      nrStudy: 4,
-      studyLength: 25,
-    },
-
-    pomodoroFlexSettings: {
-      totalLength: 120,
-      numberOfBreak: 3,
-      breakLength: 5,
-      soundVolume: 50,
-    },
+    totalLength: 120,
+    numberOfBreak: 3,
+    breakLength: 5,
+    soundVolume: 50,
   },
 
   zenMode: {
@@ -44,18 +35,14 @@ export const useSettingsStore = defineStore('settings', () => {
   const settings = ref<Settings>(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}'));
 
   const userSettings = computed(() => settings.value.user ?? defaultSettings.user!);
-  const pomodoroSettings = computed(() => settings.value.pomodoro?.pomodoroSettings ?? defaultSettings!.pomodoro!.pomodoroSettings!);
-  const pomodoroFlexSettings = computed(() => settings.value.pomodoro?.pomodoroFlexSettings ?? defaultSettings!.pomodoro!.pomodoroFlexSettings!);
+  const pomodoroFlexSettings = computed(() => settings.value.pomodoro ?? defaultSettings!.pomodoro!);
   const zenModeSettings = computed(() => settings.value.zenMode ?? defaultSettings.zenMode);
 
 
   const settingsWithDefaults = computed<Settings>(() => {
     return {
       user: userSettings.value,
-      pomodoro: {
-        pomodoroSettings: pomodoroSettings.value,
-        pomodoroFlexSettings: pomodoroFlexSettings.value,
-      },
+      pomodoro: pomodoroFlexSettings.value,
       zenMode: zenModeSettings.value,
     }
   });
@@ -65,9 +52,9 @@ export const useSettingsStore = defineStore('settings', () => {
     save();
   }
 
-  function updatePomodoroSettings(newSettings: PomodoroSettings) {
+  function updatePomodoroSettings(newSettings: PomodoroFlexSettings) {
     if (settings.value.pomodoro)
-      settings.value.pomodoro.pomodoroSettings = newSettings;
+      settings.value.pomodoro = newSettings;
     save();
   }
 
@@ -87,7 +74,7 @@ export const useSettingsStore = defineStore('settings', () => {
   
   return {
     settings, settingsWithDefaults,
-    userSettings, pomodoroSettings, pomodoroFlexSettings,
+    userSettings, pomodoroFlexSettings,
     defaultSettings,
     updateSettings, updatePomodoroSettings,
     updateTheme, updateLanguage

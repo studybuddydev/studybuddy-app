@@ -1,7 +1,7 @@
 
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { type State, type Exam, type PomodoroSettings, type Chapter, type PomodotoStatus, type WithLink, type Link, type StudyElement, type Event, type Deadline, DeadlineType, type PomodoroFlexSettings, type PomodoroFlexStatus, type Settings } from '@/types'
+import { type State, type Exam, type Chapter, type PomodotoStatus, type StudyElement, type Event, type Deadline, DeadlineType } from '@/types'
 import defaultState from '@/assets/defaultState.json';
 import tutorialState from '@/assets/tutorialState.json';
 import { createEvent } from 'ics';
@@ -229,23 +229,15 @@ export const useStateStore = defineStore('state', () => {
 
   // Pomodoro
   function getPomodoroStatus(): PomodotoStatus | undefined {
-    return state.value.pomodoro.pomodoroStatus;
+    return state.value.pomodoro;
   }
   function setPomodoroStatus(pomodoro: PomodotoStatus) {
-    state.value.pomodoro.pomodoroStatus = { ...pomodoro };
+    state.value.pomodoro = { ...pomodoro };
     save();
   }
   function removePomodoroStatus() {
-    if (state.value.pomodoro.pomodoroStatus)
-      delete state.value.pomodoro.pomodoroStatus;
-    save();
-  }
-
-  function getPomodoroFlexStatus(): PomodoroFlexStatus | undefined {
-    return state.value.pomodoro.pomodoroFlexStatus;
-  }
-  function setPomodoroFlexStatus(flexStatus: PomodoroFlexStatus) {
-    state.value.pomodoro.pomodoroFlexStatus = { ...flexStatus };
+    if (state.value.pomodoro)
+      delete state.value.pomodoro;
     save();
   }
 
@@ -322,7 +314,7 @@ export const useStateStore = defineStore('state', () => {
     updateChapters, addChapter, editChapter, removeChapter,
     checkValidExamName,
     getEvents, saveEvents, getDeadlines, getEventsForDay, getDeadlinesForDay, saveEventsForDate,
-    getPomodoroStatus, setPomodoroStatus, removePomodoroStatus, getPomodoroFlexStatus, setPomodoroFlexStatus,
+    getPomodoroStatus, setPomodoroStatus, removePomodoroStatus,
     downloadData, uploadData,
     startTutorial, closeTutorial, isInTutorial
   };

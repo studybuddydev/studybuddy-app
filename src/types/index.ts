@@ -69,48 +69,26 @@ export type Deadline = {
 export enum DeadlineType { Exam, Task }
 
 // ---------- POMODORO ----------
-export enum EPomodoroBreakStatus {
-  DONE,
-  DOING,
-  TODO,
-}
-export type PomodoroBreak = {
+export enum PomodoroState { STUDY = 0, BREAK = 1 }
+export enum BreakState { NOTDONE = 0, DOING = 1, DONE = 2 };
+export type Break = {
   start: number;
-  lenght: number;
-  status: EPomodoroBreakStatus;
+  end?: number;
 }
-export type PomodoroFlexStatus = {
-  isBreak: boolean,
-  status:string,
-  breaks: PomodoroBreak[],
-  startMs: number,
-  interval: number | null,
-}
-export enum EPomodoroStatus {
-  Study,
-  ShortBreak,
-  LongBreak,
-}
+
 export type PomodotoStatus = {
-  pomodoroRunning: boolean,
-  msPassed: number,
-  msStarted: number,
-  paused: boolean,
-  status: EPomodoroStatus,
-  studyDone: number,
-  pomodoriDone: number,
+  // lastTick: number;
+  start: number;
+  end: number;
+  state: PomodoroState;
+  breaksDone: Break[];
+  breaksTodo: Break[];
 }
 
 // ---------- SETTINGS ----------
-export type PomodoroSettings = {
-  studyLength: number;
-  shortBreakLength: number;
-  longBreakLength: number;
-  nrStudy: number;
-}
 export type PomodoroFlexSettings = {
   numberOfBreak: number;
-  breakLength: number;
+  breaksLength: number;
   totalLength: number;
   soundVolume: number;
 }
@@ -126,10 +104,7 @@ export type ZenModeSettings = {
 }
 
 export type Settings = {
-  pomodoro?: {
-    pomodoroSettings?: PomodoroSettings;
-    pomodoroFlexSettings?: PomodoroFlexSettings;
-  };
+  pomodoro?: PomodoroFlexSettings;
   user?: UserSettings;
   zenMode?: ZenModeSettings;
 }
@@ -141,8 +116,5 @@ export type State = {
     dashboard: StudyElement;
     events: { [key: string]: Event[] },
   },
-  pomodoro: {
-    pomodoroStatus?: PomodotoStatus;
-    pomodoroFlexStatus?: PomodoroFlexStatus;
-  }
+  pomodoro?: PomodotoStatus;
 }

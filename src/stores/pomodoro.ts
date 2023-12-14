@@ -1,276 +1,99 @@
 import { defineStore } from 'pinia'
-import { type PomodoroFlexSettings, type PomodoroFlexStatus, type PomodoroBreak, EPomodoroBreakStatus } from '@/types';
+import { type PomodotoStatus, type Break, PomodoroState, BreakState } from '@/types';
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { computed, ref } from 'vue';
-
-enum ESound {
-  BreakStart = 'pomo.wav',
-  BreakDone = 'break.wav',
-  PomodoroDone = 'pomodoro.wav',
-}
-
-type PomodoroReport = {
-  reportDone: boolean;
-  studyLength: number;
-  breakLength: number;
-}
 
 export const usePomodoroStore = defineStore('pomodoro', () => {
 
   const settingsStore = useSettingsStore();
   const stateStore = useStateStore();
 
-
-  const currentReport = ref<PomodoroReport>({
-    reportDone: false,
-    studyLength: 0,
-    breakLength: 0,
-  });
-  
-  let breakStartTime: number | null = null;
-  const MINUTE_MULTIPLIER = 60;
-  let pauseStartHit = false;
-  let pauseEndHIt = false;
-  const timeToBreak = ref(false);
-  const finished = ref(false);
-  const stopped = ref(false);
-  const started = ref(false);
-  const itsTimeToBreak = computed(() => timeToBreak.value);
-  const itsFinished = computed(() => finished.value);
-  const itsStopped = computed(() => stopped.value);
-  const getReport = computed(() => currentReport.value);
-  const pro = ref(false);
-  const first = ref(true); 
+  const SHORT_BREAK_THRESHOLD = 60 * 1000;
 
 
+  const currentPomodoro = ref(stateStore.getPomodoroStatus());
+  let interval: number | null = null;
 
-  const breakLengthPercentage = computed(() => (settings.value.breakLength * MINUTE_MULTIPLIER) / (settings.value.totalLength * MINUTE_MULTIPLIER) * 100);
-  const going = computed(() => status.value.interval !== null);
 
-  console.log('init pomodoro store')
+  function generateBreaks(remainingLenght: number, breaksLength: number, nrOfBreaks: number) {
+    if (breaksLength <= 0) return [];
 
-  const tutorialPomodoroSettings: PomodoroFlexSettings = {
-    totalLength: 15,
-    breakLength: 1,
-    numberOfBreak: 3,
-    soundVolume: 50,
-  }
-  const settings = computed<PomodoroFlexSettings>(() => stateStore.isInTutorial ? tutorialPomodoroSettings : settingsStore.pomodoroFlexSettings);
-  const status = ref<PomodoroFlexStatus>(
-    stateStore.getPomodoroFlexStatus() ?? {
-      isBreak: false,
-      status: 'Inizia!',
-      breaks: generateBreaks(),
-      startMs: Date.now(),
-      interval: null,
-  });
+    const singleBreakLength = breaksLength / nrOfBreaks;
+    const singleStudyPeriod = (remainingLenght - breaksLength) / (nrOfBreaks + 1);
+    const breaks: Break[] = [];
+    for (let i = 0; i < nrOfBreaks; i++) {
+      const start = singleStudyPeriod + (i * (singleBreakLength + singleStudyPeriod));
+      breaks.push({ start, end: start + singleBreakLength })
+    }
+    return breaks;
 
-  const percentage = ref<number>(0);
-
-  if (status.value.interval !== null) {
-    status.value.interval = startInterval();
-    first.value = false;
-    started.value = true;
-  } else {
-    status.value.breaks = generateBreaks();
   }
 
 
   function startPomodoro() {
-    currentReport.value = {
-      reportDone: false,
-      studyLength: 0,
-      breakLength: 0,
+    const settings = settingsStore.pomodoroFlexSettings;
+
+    const now = Date.now();
+    const totalLength = settings.totalLength * 60 * 1000;
+    const breaksLength = settings.breaksLength * 60 * 1000;
+    const nrOfBreaks = settings.numberOfBreak;
+    const studyPeriod = (totalLength - (nrOfBreaks * breaksLength)) / (nrOfBreaks + 1);
+
+    currentPomodoro.value = {
+      start: now,
+      end: now + totalLength,
+      breaksDone: [],
+      breaksTodo: generateBreaks(studyPeriod, breaksLength, nrOfBreaks),
+      state: PomodoroState.STUDY
     }
-
-    pauseStartHit = false;
-    pauseEndHIt = false;
-
-    first.value = false;
-    console.log('start pomodoro', first)
-    
-    breakStartTime = null;
-    timeToBreak.value = false;
-    finished.value = false;
-    status.value.isBreak = false;
-    status.value.status = 'STUDIA!';
-    status.value.breaks = generateBreaks();
-    percentage.value = 0;
-    status.value.startMs = Date.now();
-    status.value.interval = startInterval();
-    stopped.value = false;
-    started.value = true;
-    saveStatus();
-
   }
 
   function stopPomodoro() {
-    if (status.value.interval !== null) {
-      clearInterval(status.value.interval);
-      status.value.interval = null;
+    if (interval !== null) {
+      clearInterval(interval);
+      interval = null;
     }
+  }
 
-    currentReport.value.studyLength += Date.now() - (status.value.startMs ?? Date.now());
-    if (status.value.isBreak) {
-      currentReport.value.breakLength += Date.now() - (breakStartTime ?? Date.now());
+  function pause() {
+    const pomo = currentPomodoro.value;
+    if (!pomo) {
+      stopPomodoro();
+      return;
     }
-    currentReport.value.reportDone = true;
-  
-    status.value.status = 'Reinizia!';
-    stopped.value = true;
+    const now = Date.now();
+    pomo.state = PomodoroState.BREAK;
 
-    finished.value = false;
-    // refresh page
-    started.value = false;
+    pomo.breaksDone.push({ start: now, end: undefined });
+
+
+  }
+
+  function study() {
+    const pomo = currentPomodoro.value;
+    if (!pomo) {
+      stopPomodoro();
+      return;
+    }
+    const now = Date.now();
+    pomo.state = PomodoroState.STUDY;
+
+    const lastBreak = pomo.breaksDone[pomo.breaksDone.length - 1];
+    lastBreak.end = now;
+    const breakLength = lastBreak.end - lastBreak.start;
+
     
 
-    saveStatus();
-  }
 
-  function startInterval() {
-    if (status.value.interval !== null)
-      clearInterval(status.value.interval);
+    const breakTimeDone = pomo.breaksDone.reduce((acc, curr) => acc + (curr.end ?? curr.start) - curr.start, 0);
+    const nrOfBreaksDone = pomo.breaksDone.filter(b => (b.end ?? b.start) - b.start > 60*1000).length;
 
-    return setInterval(() => {
-      const now = Date.now();
-      percentage.value = (now - status.value.startMs) / (settings.value.totalLength * MINUTE_MULTIPLIER *  10);
-      if (percentage.value > 100) {
-        finished.value = true;
-        percentage.value = 100;
-        if (status.value.interval !== null) {
-          clearInterval(status.value.interval);
-          status.value.interval = null;
-          playSound(ESound.PomodoroDone);
-        }
-      }
-      updateBreaks();
-    }, 16);
-  }
-
-  function nextStep() {
-    if (status.value.interval === null) return;
-
-    pauseStartHit = false;
-    pauseEndHIt = false;
-    timeToBreak.value = false;
-
-  
-    for (const b of status.value.breaks) {
-      if (b.status === EPomodoroBreakStatus.DOING) {
-        b.lenght = percentage.value - b.start;
-        b.status = EPomodoroBreakStatus.DONE;
-        status.value.isBreak = false;
-        currentReport.value.breakLength += Date.now() - (breakStartTime ?? Date.now());
-        breakStartTime = null;
-        status.value.status = 'STUDIA!';
-        saveStatus();
-        return;
-      }
-  
-      if (b.status === EPomodoroBreakStatus.TODO) {
-        b.start = percentage.value;
-        b.status = EPomodoroBreakStatus.DOING;
-  
-        status.value.isBreak = true;
-        breakStartTime = Date.now();
-        status.value.status = 'Relax';
-        saveStatus();
-        return;
-      }
-    }
-  
-    // add a new pause if none found
-    status.value.breaks.push({
-      start: percentage.value,
-      lenght: 0,
-      status: EPomodoroBreakStatus.DOING
-    });
-    status.value.isBreak = true;
-    breakStartTime = Date.now();
-    status.value.status = 'Relax';
-    saveStatus();
-  
-  }
-
-  function updateBreaks() {
-
-    let capoTreno = percentage.value;
-  
-    for (let i = 0; i < status.value.breaks.length; i++) {
-      const b = status.value.breaks[i];
-      if (b.status === EPomodoroBreakStatus.DOING) {
-  
-        const itHasBeingGoingFor = percentage.value - b.start;
-        if (b.lenght < itHasBeingGoingFor) {
-          b.lenght = itHasBeingGoingFor;
-          if (!pauseEndHIt) {
-            playSound(ESound.BreakDone);
-            pauseEndHIt = true;
-            saveStatus();
-          }
-        } else {
-          capoTreno = b.start + b.lenght;
-        }
-  
-      } else if (b.status === EPomodoroBreakStatus.TODO) {
-  
-        if (b.start < capoTreno) {
-          const prev = status.value.breaks[i - 1];
-          if (prev && prev.status !== EPomodoroBreakStatus.DONE) {
-            // JOIN
-            prev.lenght = b.start - prev.start + b.lenght;
-            status.value.breaks.splice(i, 1);
-            i--;
-            saveStatus();
-          } else {
-            b.start = capoTreno;
-            capoTreno = b.start + b.lenght;
-            if (!timeToBreak.value) timeToBreak.value = true;
-  
-            if (!pauseStartHit) {
-              playSound(ESound.BreakStart);
-              pauseStartHit = true;
-              saveStatus();
-            }
-          }
-        }
-      }
-    }
-  }
-
-  function generateBreaks(): PomodoroBreak[] {
-    const totalBreakTime = breakLengthPercentage.value * settings.value.numberOfBreak;
-    const leftTime = 100 - totalBreakTime;
-    
-    const studyTime = leftTime / (settings.value.numberOfBreak + 1);
-  
-    const res = new Array(settings.value.numberOfBreak).fill(0).map((_, i) => ({
-      start: studyTime * (i + 1) + (breakLengthPercentage.value * i),
-      lenght: breakLengthPercentage.value,
-      status: EPomodoroBreakStatus.TODO
-    }));
-    return res;
-  }
-
-  function saveStatus() {
-    stateStore.setPomodoroFlexStatus(status.value);
-  }
-
-  function playSound(sound: ESound) {
-    const audio = new Audio(`/sounds/${sound}`);
-    let volume = settings.value.soundVolume;
-    if (volume === undefined) volume = 0.5;
-    audio.volume = volume / 100;
-    audio.play();
-  }
-
-
-  return {
-    MINUTE_MULTIPLIER,
-    breakLengthPercentage, going, itsTimeToBreak, itsFinished, getReport, itsStopped, started,
-    settings, percentage, status,
-    startPomodoro, stopPomodoro, nextStep, generateBreaks, pro, first
+    pomo.breaksTodo = generateBreaks(
+      pomo.end - now,
+      (settingsStore.pomodoroFlexSettings.breaksLength * 60 * 1000) - breakTimeDone,
+      settingsStore.pomodoroFlexSettings.numberOfBreak - nrOfBreaksDone
+    );
   }
 
 })
