@@ -69,11 +69,21 @@ export type Deadline = {
 export enum DeadlineType { Exam, Task }
 
 // ---------- POMODORO ----------
-export enum PomodoroState { STUDY = 0, BREAK = 1 }
+export enum PomodoroState {
+  CREATED = 0, STUDY = 1, BREAK = 2, FINISHED = 3
+}
 export enum BreakState { NOTDONE = 0, DOING = 1, DONE = 2 };
 export type Break = {
   start: number;
   end?: number;
+  soundStart?: boolean;
+  soundEnd?: boolean;
+}
+
+export type PomoReport = {
+  timeTotal: number;
+  timeStudy: number;
+  timeBreak: number;
 }
 
 export type PomodotoStatus = {
@@ -83,7 +93,9 @@ export type PomodotoStatus = {
   state: PomodoroState;
   breaksDone: Break[];
   breaksTodo: Break[];
+  soundEnd?: boolean;
 }
+
 
 // ---------- SETTINGS ----------
 export type PomodoroFlexSettings = {

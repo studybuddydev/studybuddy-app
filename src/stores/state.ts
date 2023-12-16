@@ -12,8 +12,7 @@ const defaultData: State = {
     exams: defaultState.exams ??  [],
     dashboard: defaultState.dashboard ?? { name: 'StudyBuddy', links: [], postIts: [], showTasks: false, tasks: [] },
     events: defaultState.events ?? {},
-  },
-  pomodoro: {},
+  }
 }
 const defaulDataCopy = JSON.parse(JSON.stringify(defaultData)) as State;
 
