@@ -17,7 +17,7 @@ const defaultSettings: Settings = {
   pomodoro: {
     totalLength: 120,
     numberOfBreak: 3,
-    breakLength: 5,
+    breaksLength: 15,
     soundVolume: 50,
   },
 

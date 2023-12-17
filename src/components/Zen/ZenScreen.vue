@@ -3,7 +3,6 @@
 import { ref, watch, computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useAuth0 } from "@auth0/auth0-vue";
-import { EPomodoroBreakStatus } from '@/types';
 import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomoSettings from '@/components/Popup/PomoSettings.vue';
@@ -13,10 +12,10 @@ const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
 const terminatePomoDialog = ref(false);
 
-const pauseFromPomodoro = computed(() => (pomodoro.status.isBreak && !!pomodoro.status.interval) || pomodoro.itsStopped);
-const pomodoroGoing = computed(() => pomodoro.going);
-const pause = ref(!pomodoroGoing.value);
-const first = computed(() => pomodoro.first);
+// const pauseFromPomodoro = computed(() => (pomodoro.status.isBreak && !!pomodoro.status.interval) || pomodoro.itsStopped);
+// const pomodoroGoing = computed(() => pomodoro.going);
+// const pause = ref(!pomodoroGoing.value);
+// const first = computed(() => pomodoro.first);
 
 const showTime = ref(true);
 const zenMode = ref(true);
@@ -30,40 +29,44 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
   return {};
 });
 
-watch(pauseFromPomodoro, (value) => {
-  pause.value = value;
-});
-
-function getMinutesFromPercentage(n: number) {
-  const min = n * pomodoro.settings.totalLength / 100;
-  const sec = Math.round(min * pomodoro.MINUTE_MULTIPLIER);
-
-  const h = Math.floor(sec / 3600);
-  const m = Math.floor((sec / 60) % 60).toString().padStart(h > 0 ? 2 : 1, '0');
-  const s = (sec % 60).toString().padStart(2, '0');
-  return `${h > 0 ? h + ':' : ''}${m}:${s}`;
-}
-
-function getTimerValue(getPause: boolean = false) {
-  let current = 0;
-  if (getPause) {
-    current = pomodoro.status.breaks.find(e => e.status == EPomodoroBreakStatus.DOING)?.start ?? 0;
-  } else {
-    const lastDone = pomodoro.status.breaks.findLast(e => e.status == EPomodoroBreakStatus.DONE);
-    current = lastDone ? lastDone.start + lastDone.lenght : 0;
-  }
-  return getMinutesFromPercentage(pomodoro.percentage - current)
-}
-
-function toogleTime() {
+function toggleTime() {
   showTime.value = !showTime.value;
 }
 
-function msToMinutes(ms: number): string {
-  const minutes = Math.floor(ms / 1000 / 60);
-  const seconds = Math.floor((ms / 1000) % 60).toString().padStart(2, '0');
-  return `${minutes}:${seconds}`;
-}
+// watch(pauseFromPomodoro, (value) => {
+//   pause.value = value;
+// });
+
+// function getMinutesFromPercentage(n: number) {
+//   const min = n * pomodoro.settings.totalLength / 100;
+//   const sec = Math.round(min * pomodoro.MINUTE_MULTIPLIER);
+
+//   const h = Math.floor(sec / 3600);
+//   const m = Math.floor((sec / 60) % 60).toString().padStart(h > 0 ? 2 : 1, '0');
+//   const s = (sec % 60).toString().padStart(2, '0');
+//   return `${h > 0 ? h + ':' : ''}${m}:${s}`;
+// }
+
+// function getTimerValue(getPause: boolean = false) {
+//   let current = 0;
+//   if (getPause) {
+//     current = pomodoro.status.breaks.find(e => e.status == EPomodoroBreakStatus.DOING)?.start ?? 0;
+//   } else {
+//     const lastDone = pomodoro.status.breaks.findLast(e => e.status == EPomodoroBreakStatus.DONE);
+//     current = lastDone ? lastDone.start + lastDone.lenght : 0;
+//   }
+//   return getMinutesFromPercentage(pomodoro.percentage - current)
+// }
+
+// function toogleTime() {
+//   showTime.value = !showTime.value;
+// }
+
+// function msToMinutes(ms: number): string {
+//   const minutes = Math.floor(ms / 1000 / 60);
+//   const seconds = Math.floor((ms / 1000) % 60).toString().padStart(2, '0');
+//   return `${minutes}:${seconds}`;
+// }
 </script>
 
 <template>
@@ -75,7 +78,7 @@ function msToMinutes(ms: number): string {
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
           <!-- top left  -->
-          <div class="top-left title blur" v-if="!first || !pomodoro.status.isBreak">
+          <div class="top-left title blur">
             <img src="/images/logo.png" alt="logo" class="logo" />
             <h3 class="text-primary">StudyBuddy
               <span class="bg-primary beta">BETA</span>
@@ -93,15 +96,14 @@ function msToMinutes(ms: number): string {
 
           <!-- main content in the center-->
           <div class="main-content">
-            <div v-if="pomodoro.started && showTime">
-              <p :class="pomodoro.status.isBreak ? 'timer blur font-casio' : 'timer blur timer-inpause font-casio'"
-              v-if="!pomodoro.status.isBreak">{{ getTimerValue(pomodoro.status.isBreak) }}</p>
+            <div v-if="pomodoro.going && showTime">
+              <p class="timer blur timer-inpause font-casio" v-if="pomodoro.studing">{{ pomodoro.percentage }}</p>
             </div>
-            <div v-else-if="pomodoro.started">
+            <div v-else-if="pomodoro.going">
               <p>buono studio</p>
             </div>
             <!-- welcome screen -->
-            <div v-if="!pomodoro.started && first">
+            <div v-if="pomodoro.created">
               <div class="blur rounded-box pa-7">
                 <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
                 <div class="title">
@@ -111,29 +113,29 @@ function msToMinutes(ms: number): string {
               </div>
             </div>
             <!-- pause and finish screen -->
-            <div v-else-if="pomodoro.getReport.reportDone" class="mb-5 blur rounded-box pa-7">
+            <div v-else-if="pomodoro.terminated" class="mb-5 blur rounded-box pa-7">
               <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
               <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
             </div>
-            <div v-else-if="pomodoro.status.isBreak" class="mb-5 blur rounded-box pa-7">
+            <div v-else-if="pomodoro.pauseing" class="mb-5 blur rounded-box pa-7">
               <p class="pause font-press text-left">{{ $t("pause.youare") }}</p>
               <h1 class="text-primary font-press text-center">{{ $t("pause.break") }}</h1>
-            <p class="pausetime font-press text-right">da <span class="text-primary font-casio">{{ getTimerValue(true) }}</span></p>
-          </div>
+              <p class="pausetime font-press text-right">da <span class="text-primary font-casio">{{ pomodoro.percentage }}</span></p>
+            </div>
 
             <div class="pomopause">
-              <v-btn class="btn bg-background btn-main btn-settings" v-if="!pomodoro.started && (first || pomodoro.getReport.reportDone)" @click="openSettingsTab = true">
+              <v-btn class="btn bg-background btn-main btn-settings" v-if="!pomodoro.going" @click="openSettingsTab = true">
                 <v-icon size="32" icon="mdi-cog" />
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.started || pomodoro.status.isBreak"
-                @click="pomodoro.status.interval === null ? pomodoro.startPomodoro() : pomodoro.nextStep()">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.studing"
+                @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro() ">
                 <span>{{ $t("pause.study") }}</span>
                 <v-icon class="icon">mdi-play</v-icon>
               </v-btn>
             </div>
 
             <!-- report table-->
-            <div class="report font-press" v-if="pomodoro.getReport.reportDone">
+            <!-- <div class="report font-press" v-if="pomodoro.getReport.reportDone">
               <div class="grid-container">
                 <p>{{ "Tempo studio:" }}</p>
                 <p class="report-value">{{ msToMinutes(pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) }}</p>
@@ -147,7 +149,7 @@ function msToMinutes(ms: number): string {
                 <p class="report-value report-total">{{ ((pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) /
                   pomodoro.getReport.studyLength * 100).toFixed(1) }}%</p>
               </div>
-            </div>
+            </div> -->
 
             <!-- pomodoro bar -->
 
@@ -172,8 +174,8 @@ function msToMinutes(ms: number): string {
         </template>
 
         <v-list>
-          <v-list-item @click="toogleTime()" title="Mostra Tempo" v-if="!showTime" />
-          <v-list-item @click="toogleTime()" title="Nascondi Tempo" v-else />
+          <v-list-item @click="toggleTime()" title="Mostra Tempo" v-if="!showTime" />
+          <v-list-item @click="toggleTime()" title="Nascondi Tempo" v-else />
           <v-list-item @click="openSettingsTab = 'zen'" title="Modifica sfondo" />
         </v-list>
       </v-menu>
@@ -186,16 +188,16 @@ function msToMinutes(ms: number): string {
         <div class="pomodoro-bar">
           <div class="bottom-button-wrapper font-press">
             <div>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="!pomodoro.started">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created">
                 <v-icon class="icon" icon="mdi-play" />
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.nextStep(); zenMode = true; }" v-else-if="!pomodoro.status.isBreak">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.togglePauseStudy(); zenMode = true; }" v-else-if="pomodoro.going">
                 <v-icon class="icon" icon="mdi-pause" />
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.stopPomodoro(); }" v-else-if="pomodoro.itsFinished">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.stopPomodoro(); }" v-else-if="pomodoro.done">
                 <v-icon class="icon" icon="mdi-stop" />
               </v-btn>
-              <v-btn class='btn bg-warning pomo-btn pomo-box' @click="pomodoro.nextStep()" v-else>
+              <v-btn class='btn bg-warning pomo-btn pomo-box' @click="pomodoro.togglePauseStudy()" v-else>
                 <v-icon class="icon" icon="mdi-coffee" />
               </v-btn>
               <!-- <PomodoroController class="pomo-box pomo-controller bottom-box" v-if="!pomodoro.getReport.reportDone && (!pomodoroGoing || !pomodoro.status.isBreak)"/>
@@ -206,7 +208,7 @@ function msToMinutes(ms: number): string {
           <div class="bottom-button-wrapper">
             <div class="time-bottom-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
-                <p v-if="showTime">{{ getMinutesFromPercentage(pomodoro.percentage) }}</p>
+                <p v-if="showTime">{{ pomodoro.percentage }}</p>
               </div>
               <div class="pomo-box pomo-stop" @click="terminatePomoDialog = true">
                 <v-icon icon="mdi-stop" />

@@ -7,9 +7,9 @@
 
         <!-- <PomodoroFlex class="pomodoro" :class="{ 'mobile': !isLargeScreen }" @click="pomodoro.pro = false" /> -->
 
-        <div class="pomodoro-controls" v-if="windowWidth < 600">
+        <!-- <div class="pomodoro-controls" v-if="windowWidth < 600">
           <PomodoroControls />
-        </div>
+        </div> -->
       </div>
     </v-main>
     <ZenScreen />
@@ -18,11 +18,8 @@
 
 
 <script setup lang="ts">
-import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import Menu from '@/components/Menus/Menu.vue';
-import PauseScreen from '@/components/Pause/PauseScreen.vue';
 import ZenScreen from '@/components/Zen/ZenScreen.vue';
-import PomodoroControls from '@/components/Pomodoro/PomodoroControls.vue';
 import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 
