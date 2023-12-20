@@ -3,6 +3,8 @@
     <v-scroll-x-transition>
       <div class="pause-screen" v-if="pause">
 
+        <p class="alert" v-if="isMobile" :style="{ display: showAlert ? 'block' : 'none' }"> Attenzione quest'app è ottimizzata per il pc, da telefono potrebbe rompersi <button class = "close-button" @click="closeAlert"><v-icon>mdi-close</v-icon></button> </p>
+
         <div class="top-left title" v-if="!firstStart">
           <img src="/images/logo.png" alt="logo" />
           <h3 class="text-primary">StudyBuddy
@@ -80,6 +82,13 @@ const pauseFromPomodoro = computed(() => (pomodoro.status.isBreak && !!pomodoro.
 const pomodoroGoing = computed(() => pomodoro.going);
 const pause = ref(!pomodoroGoing.value);
 const firstStart = ref(!pomodoroGoing.value);
+
+const showAlert = ref(true);
+  const isMobile = computed(() => window.innerWidth <= 600);
+  
+  function closeAlert() {
+    showAlert.value = false;
+  }
 
 watch(pauseFromPomodoro, (value) => {
   pause.value = value;
@@ -161,7 +170,31 @@ function msTominutes(ms: number): string {
   top: 1rem;
   left: 1rem;
 }
+.close-button {
+    background-color: #f44336; /* Red */
+    border: none;
+    color: white;
+    width: 3rem;
+    height: 3rem;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 1rem;
+    display: inline-block;
+    font-size: 16px;
+    margin: 1px 1px;
+    cursor: pointer;
+  }
+.alert {
 
+  font-size: 1rem;
+  font-weight: 900;
+  // add border 
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: rgb(var(--v-theme-primary));
+  color: rgba(0, 0, 0, 0.887);
+  margin: 1rem;
+}
 
 .user-box {
   display: flex;
