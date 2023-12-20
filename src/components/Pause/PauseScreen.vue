@@ -334,8 +334,20 @@ span {
     //center 
   }
 
-  .title img {
+  .user-box {
+    top: 0.5rem;
+    right: 0.5rem;
     width: 5rem;
+    //center 
+  }
+  .top-right {
+    top: 0.5rem;
+    width: 0;
+    //center 
+  }
+
+  .title img {
+    width: 3rem;
   }
 
   .pause-screen h2 {

@@ -69,7 +69,7 @@
     }
     .pomodoro.mobile {
       height: 3rem;
-      bottom: 5rem;
+      //
     }
 
     .pomodoro-controls {

@@ -9,6 +9,13 @@
       <Links class="link" :element="element" ref="linkRef" />
     </div>
 
+    <div v-if="isMobile" class="top-left title" >
+          <img src="/images/logo.png" alt="logo" />
+          <h3 class="text-primary">StudyBuddy
+            <span class="bg-primary pa-1">BETA</span>
+          </h3>
+    </div>
+
 
           
     <div class="content_card" v-if="pageType === EStudyView.Dashboard">
@@ -64,6 +71,7 @@ import Add from '@/components/Add/Add.vue'
 import { EStudyView } from '@/types';
 import BaseDialog from '@/components/common/BaseDialog.vue'
 const baseDialog = ref(true);
+import { computed } from 'vue';
 
 
 import { useRoute } from 'vue-router'
@@ -81,12 +89,26 @@ const postitRef = ref<InstanceType<typeof PostIt> | null>(null);
 const todoRef = ref<InstanceType<typeof ToDo> | null>(null);
 const isBlurred = ref(true);
 const isPro = ref(true);
+const isMobile = computed(() => window.innerWidth <= 600);
 
 
 
 </script>
 
 <style scoped lang="scss">
+
+.top-left {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 100vw;
+}
+.title img {
+    width: 4rem;
+}
+
 .content {
   display: grid;
   grid-template-columns: 3fr 1fr;
