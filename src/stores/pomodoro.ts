@@ -5,7 +5,8 @@ import { useSettingsStore } from "@/stores/settings";
 import { computed, ref } from 'vue';
 
 const TICK_TIME = 15;
-const MINUTE_MULTIPLIER = 60 * 1000;
+const SECONDS_MULTIPLIER = 1000;
+const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 enum ESound {
   BreakStart = 'pomo.wav',
   BreakDone = 'break.wav',
@@ -320,13 +321,13 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     audio.play();
   }
 
-  function timeFormatted(time: number) {
-    let leftTime = time;
-    const h = Math.floor(leftTime / (60 * MINUTE_MULTIPLIER));
-    leftTime -= h * 60 * MINUTE_MULTIPLIER;
-    const m = Math.floor(leftTime / MINUTE_MULTIPLIER);
-    leftTime -= m * MINUTE_MULTIPLIER;
-    const s = Math.floor(leftTime / (MINUTE_MULTIPLIER / 60));
+  function timeFormatted(seconds: number) {
+    let secondsLeft = seconds; // Math.floor(time  / MINUTE_MULTIPLIER * 60);
+    const h = Math.floor(secondsLeft / 3600);
+    secondsLeft -= h * 3600;
+    const m = Math.floor(secondsLeft / 60);
+    secondsLeft -= m * 60;
+    const s = Math.floor(secondsLeft);
 
     const sStr = s.toString().padStart(2, '0');
     const mStr = `${h > 0 ? m.toString().padStart(2, '0') : m.toString()}:`;
@@ -337,14 +338,17 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   function timeSinceStartFormatted() {
     const pomo = getCurrentPomo()
     if (!pomo) return '0:00';
-    return timeFormatted( getNow(pomo.startedAt) );
+    const start = Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER)
+    return timeFormatted( start );
   }
 
   function timeInCurrentBreakFormatted() {
     const pomo = getCurrentPomo()
     const startLastPause = pomo?.breaksDone.at(-1)?.start;
     if (!pomo || !startLastPause) return '0:00';
-    return timeFormatted( getNow(pomo.startedAt) - startLastPause );
+    const startS = Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER)
+    const startLastPauseS = Math.floor(startLastPause / SECONDS_MULTIPLIER)
+    return timeFormatted( startS - startLastPauseS );
   }
 
 
