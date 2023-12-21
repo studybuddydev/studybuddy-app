@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 
 const TICK_TIME = 15;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 0.1 * SECONDS_MULTIPLIER;
 enum ESound {
   BreakStart = 'pomo.wav',
   BreakDone = 'break.wav',
@@ -212,25 +212,31 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       }
 
     } else if (pomo.state === PomodoroState.STUDY) {                                    // STUDY
-      let i = 0;
-      let nextBreak = pomo.breaksTodo[i++];
-      let curEnd = now
+      let nextBreak = pomo.breaksTodo[0];
+      let curEndProgress = now
 
-      if (nextBreak && curEnd > nextBreak.start && !nextBreak.soundStart) {
+      if (nextBreak && curEndProgress > nextBreak.start && !nextBreak.soundStart) {
         nextBreak.soundStart = true;
         playSound(ESound.BreakStart);
       }
 
-      while (nextBreak) {
-        if (curEnd <= nextBreak.start)
-          break;
-        nextBreak.end = nextBreak.end ? now + (nextBreak.end - nextBreak.start) : now + (settingsStore.pomodoroFlexSettings.breaksLength * MINUTE_MULTIPLIER);
+      if (curEndProgress > nextBreak.start) {
+        nextBreak.end = curEndProgress + ((nextBreak.end ?? now) - nextBreak.start)
         nextBreak.start = now;
-        curEnd = nextBreak.end;
-        nextBreak = pomo.breaksTodo[i++]
+        curEndProgress = nextBreak.end;
+
+        let nextNextBreak: Break | null = pomo.breaksTodo[1];
+        while (nextNextBreak) {
+          if (curEndProgress > nextNextBreak.start) {
+            nextBreak.end = (nextBreak.end ?? nextBreak.start) + breakLength(nextNextBreak);
+            pomo.breaksTodo.splice(1, 1);
+            nextNextBreak = pomo.breaksTodo[1];
+          } else {
+              nextNextBreak = null;
+          }
+        }
       }
     }
-
   }
 
   // ---------- METHODS ----------
@@ -311,6 +317,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   function saveStatus() {
     stateStore.save();
+  }
+
+  function breakLength(b: Break) {
+    return (b.end ?? b.start) - b.start;
   }
 
   async function playSound(sound: ESound) {
