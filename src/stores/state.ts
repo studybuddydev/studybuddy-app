@@ -39,6 +39,7 @@ export const useStateStore = defineStore('state', () => {
   function save() {
     if (isTutorial.value) return;
     console.log('Saving localstorage')
+    console.log(state.value.pomodoro)
     localStorage.setItem('state', JSON.stringify(state.value));
   }
 

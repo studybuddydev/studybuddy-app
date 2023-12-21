@@ -83,6 +83,7 @@ export type DisplayBreak = {
   startPerc: number;
   lengthPerc: number;
   lengthTime: string;
+  done: boolean;
 }
 
 export type PomoReport = {

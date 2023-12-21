@@ -8,7 +8,7 @@
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" /> </div>
       <div v-for="b in pomodoro.displayBreaks" :title="b.lengthTime" :key="b.startPerc" class="break"
         :style="{
-          backgroundColor: theme.current.value.colors.apple,
+          backgroundColor: b.done ? theme.current.value.colors.warning : theme.current.value.colors.apple,
           marginLeft: `${b.startPerc}%`,
           width: `${b.lengthPerc}%`,
         }"><v-icon size="x-small" icon="mdi-food-apple" /></div>

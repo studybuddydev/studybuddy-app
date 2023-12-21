@@ -97,7 +97,7 @@ function toggleTime() {
           <!-- main content in the center-->
           <div class="main-content">
             <div v-if="pomodoro.going && showTime">
-              <p class="timer blur timer-inpause font-casio" v-if="pomodoro.studing">{{ pomodoro.percentage }}</p>
+              <p class="timer blur timer-inpause font-casio" v-if="pomodoro.studing">{{ pomodoro.timeSinceStart }}</p>
             </div>
             <div v-else-if="pomodoro.going">
               <p>buono studio</p>
@@ -120,7 +120,7 @@ function toggleTime() {
             <div v-else-if="pomodoro.pauseing" class="mb-5 blur rounded-box pa-7">
               <p class="pause font-press text-left">{{ $t("pause.youare") }}</p>
               <h1 class="text-primary font-press text-center">{{ $t("pause.break") }}</h1>
-              <p class="pausetime font-press text-right">da <span class="text-primary font-casio">{{ pomodoro.percentage }}</span></p>
+              <p class="pausetime font-press text-right">da <span class="text-primary font-casio">{{ pomodoro.timeInCurrentBreak }}</span></p>
             </div>
 
             <div class="pomopause">
@@ -208,7 +208,7 @@ function toggleTime() {
           <div class="bottom-button-wrapper">
             <div class="time-bottom-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
-                <p v-if="showTime">{{ pomodoro.percentage }}</p>
+                <p v-if="showTime">{{ pomodoro.timeSinceStart }}</p>
               </div>
               <div class="pomo-box pomo-stop" @click="terminatePomoDialog = true">
                 <v-icon icon="mdi-stop" />
