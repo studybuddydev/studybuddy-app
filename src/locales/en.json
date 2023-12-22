@@ -34,7 +34,7 @@
       "minutes": "minutes",
       "sessionLength": "Session Length",
       "breaksNumber": "breaks",
-      "breakLength": "minutes per break",
+      "breaksLength": "minutes of break",
       "volume": "Notification Volume",
       "default": "Restore Default Values"
     }

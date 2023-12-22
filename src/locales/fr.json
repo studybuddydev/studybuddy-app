@@ -33,7 +33,7 @@
       "minutes": "minutes",
       "sessionLength": "Durée de la Session",
       "breaksNumber": "pauses",
-      "breakLength": "minutes par pause",
+      "breaksLength": "minutes de pause",
       "volume": "Volume de notification",
       "default": "Restaurer les Valeurs par Défaut"
     }
