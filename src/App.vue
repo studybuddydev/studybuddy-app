@@ -7,9 +7,6 @@
 
         <!-- <PomodoroFlex class="pomodoro" :class="{ 'mobile': !isLargeScreen }" @click="pomodoro.pro = false" /> -->
 
-        <!-- <div class="pomodoro-controls" v-if="windowWidth < 600">
-          <PomodoroControls />
-        </div> -->
       </div>
     </v-main>
     <ZenScreen />

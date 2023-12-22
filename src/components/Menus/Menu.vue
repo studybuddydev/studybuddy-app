@@ -42,7 +42,6 @@
           </template>
       </v-list-item> -->
 
-      <!-- <PomodoroControls v-if="!exam" /> -->
     </template>
   </v-navigation-drawer>
 
@@ -66,10 +65,6 @@
       :base-url="`exam/${exam.name}`"
     />
 
-    <!-- <template v-slot:append>
-      <PomodoroControls />
-    </template> -->
-
   </v-navigation-drawer>
 
   <UserSettings v-model="openUserSettings" />
@@ -84,7 +79,6 @@ import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import type { Chapter, Exam } from '@/types';
 import UserSettings from '@/components/Popup/UserSettings.vue';
-import PomodoroControls from '../Pomodoro/PomodoroControls.vue';
 
 const route = useRoute()
 const state = useStateStore();

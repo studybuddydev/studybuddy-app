@@ -6,7 +6,8 @@ import { computed, ref } from 'vue';
 
 const TICK_TIME = 15;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 0.1 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
+
 enum ESound {
   BreakStart = 'pomo.wav',
   BreakDone = 'break.wav',
@@ -220,7 +221,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
         playSound(ESound.BreakStart);
       }
 
-      if (curEndProgress > nextBreak.start) {
+      if (nextBreak && curEndProgress > nextBreak.start) {
         nextBreak.end = curEndProgress + ((nextBreak.end ?? now) - nextBreak.start)
         nextBreak.start = now;
         curEndProgress = nextBreak.end;
@@ -232,7 +233,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
             pomo.breaksTodo.splice(1, 1);
             nextNextBreak = pomo.breaksTodo[1];
           } else {
-              nextNextBreak = null;
+            nextNextBreak = null;
           }
         }
       }
@@ -348,7 +349,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   function timeSinceStartFormatted() {
     const pomo = getCurrentPomo()
     if (!pomo) return '0:00';
-    const start = Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER)
+    const start = pomo.startedAt ? Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER) : 0;
     return timeFormatted( start );
   }
 

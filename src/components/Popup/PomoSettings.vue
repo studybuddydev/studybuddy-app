@@ -20,44 +20,44 @@
 
             <v-window-item value="pomodoro">
 
-              <div class="text-h6"> {{$t("pause.timer.sessionOf")}} {{ Math.floor(data!.pomodoro!.pomodoroFlexSettings!.totalLength / 60) }} {{$t("pause.timer.hours")}} {{ data!.pomodoro!.pomodoroFlexSettings!.totalLength % 60 }} {{$t("pause.timer.minutes")}}</div>
+              <div class="text-h6"> {{$t("pause.timer.sessionOf")}} {{ Math.floor(data!.pomodoro!.totalLength / 60) }} {{$t("pause.timer.hours")}} {{ data!.pomodoro!.totalLength % 60 }} {{$t("pause.timer.minutes")}}</div>
               <v-slider
-                v-model="data!.pomodoro!.pomodoroFlexSettings!.totalLength"
+                v-model="data!.pomodoro!.totalLength"
                 :min="5" :max="240" :step="5" thumb-label class="pr-4"
                 prepend-icon="mdi-timer"
               >
                 <template v-slot:thumb-label>
-                  {{ Math.floor(data!.pomodoro!.pomodoroFlexSettings!.totalLength / 60) }}h{{ data!.pomodoro!.pomodoroFlexSettings!.totalLength % 60 }}m
+                  {{ Math.floor(data!.pomodoro!.totalLength / 60) }}h{{ data!.pomodoro!.totalLength % 60 }}m
                 </template>
               </v-slider>
 
-              <div class="text-h6">{{ data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak }} {{$t("pause.timer.breaksNumber")}}</div>
+              <div class="text-h6">{{ data!.pomodoro!.numberOfBreak }} {{$t("pause.timer.breaksNumber")}}</div>
               <v-slider
-                v-model="data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak"
+                v-model="data!.pomodoro!.numberOfBreak"
                 :min="0" :max="10" :step="1" thumb-label show-ticks="always" class="pr-4"
                 prepend-icon="mdi-tally-mark-5"
               />
 
-              <div class="text-h6">{{ data!.pomodoro!.pomodoroFlexSettings!.breakLength }} {{$t("pause.timer.breakLength")}}</div>
+              <div class="text-h6">{{ data!.pomodoro!.breaksLength }} {{$t("pause.timer.breakLength")}}</div>
               <v-slider
-                v-model="data!.pomodoro!.pomodoroFlexSettings!.breakLength"
+                v-model="data!.pomodoro!.breaksLength"
                 :min="1" :max="20" :step="1" thumb-label class="pr-4"
                 prepend-icon="mdi-coffee"
               />
 
               <div class="text-h6">{{$t("pause.timer.volume")}}</div>
               <v-slider
-                v-model="data!.pomodoro!.pomodoroFlexSettings!.soundVolume"
+                v-model="data!.pomodoro!.soundVolume"
                 :min="0" :max="100" :step="1" thumb-label class="pr-4"
-                :prepend-icon="volumeIcon(data!.pomodoro!.pomodoroFlexSettings!.soundVolume)"
+                :prepend-icon="volumeIcon(data!.pomodoro!.soundVolume)"
               />
 
               <v-row>
                 <v-spacer />
                 <v-col> <v-btn variant="tonal" @click="() => {
-                  data!.pomodoro!.pomodoroFlexSettings!.totalLength = settingsStore.defaultSettings.pomodoro!.pomodoroFlexSettings!.totalLength;
-                  data!.pomodoro!.pomodoroFlexSettings!.numberOfBreak = settingsStore.defaultSettings.pomodoro!.pomodoroFlexSettings!.numberOfBreak;
-                  data!.pomodoro!.pomodoroFlexSettings!.breakLength = settingsStore.defaultSettings.pomodoro!.pomodoroFlexSettings!.breakLength;
+                  data!.pomodoro!.totalLength = settingsStore.defaultSettings.pomodoro!.totalLength;
+                  data!.pomodoro!.numberOfBreak = settingsStore.defaultSettings.pomodoro!.numberOfBreak;
+                  data!.pomodoro!.breaksLength = settingsStore.defaultSettings.pomodoro!.breaksLength;
                 }">{{$t("pause.timer.default")}}</v-btn> </v-col>
                 <v-spacer />
               </v-row>
@@ -183,7 +183,7 @@ function cancelSettings() {
 }
 function saveSettings(s: Settings) {
   settingsStore.updateSettings(s);
-  pomodoro.status.breaks = pomodoro.generateBreaks()
+  // pomodoro.status.breaks = pomodoro.generateBreaks()
 }
 function setTheme(newTheme: string) {
   theme.global.name.value = newTheme;
