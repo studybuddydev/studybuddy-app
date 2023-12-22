@@ -40,8 +40,8 @@ const props = defineProps<{
 <style scoped lang="scss">
 .add-button {
   position: fixed;
-  bottom: 40px;
-  right: 20px;
+  bottom: 5.5rem;
+  right: 2rem;
   z-index: 500;
 }
 </style>

@@ -1,6 +1,6 @@
 
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
@@ -191,9 +191,6 @@ function toggleTime() {
               <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.togglePauseStudy(); zenMode = true; }" v-else-if="pomodoro.studing">
                 <v-icon class="icon" icon="mdi-pause" />
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.stopPomodoro(); }" v-else-if="pomodoro.done">
-                <v-icon class="icon" icon="mdi-stop" />
-              </v-btn>
               <v-btn class='btn bg-secondary pomo-btn pomo-box pomo-box-disabled' v-else>
                 <v-icon class="icon coffee-cup" icon="mdi-coffee" />
               </v-btn>
@@ -207,7 +204,7 @@ function toggleTime() {
               <div class="pomo-box pomo-time font-casio">
                 <p v-if="showTime">{{ pomodoro.timeSinceStart }}</p>
               </div>
-              <div class="pomo-box pomo-stop" @click="terminatePomoDialog = true">
+              <div class="pomo-box pomo-stop" @click="pomodoro.done ? pomodoro.stopPomodoro() : terminatePomoDialog = true">
                 <v-icon icon="mdi-stop" />
               </div>
             </div>

@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 
 const TICK_TIME = 15;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 0.1 * SECONDS_MULTIPLIER;
 
 enum ESound {
   BreakStart = 'pomo.wav',
