@@ -122,7 +122,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       nextBreak.start = now;
       pomo.breaksDone.push(pomo.breaksTodo.shift()!); // Move break from todo to done
     } else {
-      pomo.breaksDone.push({ start: now, end: now, soundStart: true });     // create new break
+      pomo.breaksDone.push({ start: now, end: now, soundStart: true, soundEnd: true });     // create new break
     }
     saveStatus();
   }
