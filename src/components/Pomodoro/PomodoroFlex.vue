@@ -47,6 +47,7 @@ $bar-height: 2em;
     align-items: center;
     width: 100%;
     flex-grow: 1;
+    position: relative;
 
     .breaks-container {
       display: flex;
