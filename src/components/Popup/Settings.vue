@@ -63,15 +63,15 @@
                 </template>
               </v-slider>
 
+              <div class="text-h6">{{ settingsStore.settings!.pomodoro!.breaksLength }} {{ $t("pause.timer.breaksLength") }}
+              </div>
+              <v-slider v-model="settingsStore.settings!.pomodoro!.breaksLength" :min="1" :max="60" :step="1" thumb-label
+                class="pr-4" prepend-icon="mdi-coffee" />
+
               <div class="text-h6">{{ settingsStore.settings!.pomodoro!.numberOfBreak }}
                 {{ $t("pause.timer.breaksNumber") }}</div>
               <v-slider v-model="settingsStore.settings!.pomodoro!.numberOfBreak" :min="0" :max="10" :step="1" thumb-label
                 show-ticks="always" class="pr-4" prepend-icon="mdi-tally-mark-5" />
-
-              <div class="text-h6">{{ settingsStore.settings!.pomodoro!.breaksLength }} {{ $t("pause.timer.breakLength") }}
-              </div>
-              <v-slider v-model="settingsStore.settings!.pomodoro!.breaksLength" :min="1" :max="20" :step="1" thumb-label
-                class="pr-4" prepend-icon="mdi-coffee" />
 
               <div class="text-h6">{{ $t("pause.timer.volume") }}</div>
               <v-slider v-model="settingsStore.settings!.pomodoro!.soundVolume" :min="0" :max="100" :step="1" thumb-label

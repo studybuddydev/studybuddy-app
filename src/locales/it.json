@@ -35,7 +35,7 @@
                      "minutes": "minuti",
                      "sessionLength": "Durata sessione",
                      "breaksNumber": "pause",
-                     "breakLength": "minuti per pausa",
+                     "breaksLength": "minuti di pausa",
                      "volume": "Volume notifica",
                      "default": "Ripristina valori predefiniti"
               }
