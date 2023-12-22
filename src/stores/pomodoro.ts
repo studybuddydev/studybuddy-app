@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplayBreak } from '@/types';
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const TICK_TIME = 15;
 const SECONDS_MULTIPLIER = 1000;
@@ -20,13 +20,18 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const settingsStore = useSettingsStore();
   const stateStore = useStateStore();
 
+  watch(settingsStore.pomoSettings, () => {
+    if (getCurrentPomo()?.state === PomodoroState.CREATED)
+      createPomodoro();
+  });
+
   // const currentPomodoro = ref(stateStore.getPomodoroStatus());
   // const pomo = computed(() => stateStore.getPomodoroStatus())
   function getCurrentPomo() {
     return stateStore.getPomodoroStatus();
   }
   let interval: number | undefined;
-  let _report: PomoReport | undefined;
+  let report = ref<PomoReport | null>(null);
   let now = ref(Date.now());
   init();
 
@@ -36,7 +41,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const pomo = getCurrentPomo();
     if (!pomo || pomo.state === PomodoroState.TERMINATED || pomo.state === PomodoroState.CREATED) {
       createPomodoro();
-      console.log('creating pomo')
     } else {
       interval = setInterval(tick, TICK_TIME);
     }
@@ -66,7 +70,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // when you first press start you set the start time of the pomodoro and sets the state to study
   function startPomodoro() {
-    console.log('start')
     clearStuff();
     let pomo = getCurrentPomo();
     if (!pomo || pomo.state === PomodoroState.TERMINATED) {
@@ -81,17 +84,16 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // when you press stop you set the end time of the pomodoro and sets the state to terminated
   function stopPomodoro() {
-    console.log('stop')
     const pomo = getCurrentPomo();
     if (pomo) {
       pomo.state = PomodoroState.TERMINATED;
       pomo.endedAt = getNow(pomo.startedAt);
     }
+    report.value = getPomoReport();
     saveStatus();
   }
   // between start and stop you alternate between study and pause, this method is called when you press the pause/play button during a pomdoo
   function togglePauseStudy() {
-    console.log('toggle')
     const pomo = getCurrentPomo();
     if (!pomo) return;
     if (pomo.state === PomodoroState.STUDY) {
@@ -104,13 +106,11 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // start the pause 
   function pause() {
-    console.log('pause')
     const pomo = getCurrentPomo();
     if (!pomo) {
       stopPomodoro();
       return;
     }
-    console.log(pomo)
     adjustPomo();
     
     const now = getNow(pomo.startedAt);
@@ -129,7 +129,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // start the study ending a pause 
   function study() {
-    console.log('study')
     const pomo = getCurrentPomo();
     if (!pomo) {
       stopPomodoro();
@@ -241,7 +240,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
 
   // ---------- METHODS ----------
-
   function getNow(startTime: number | undefined) {
     return now.value - (startTime ?? 0);
   }
@@ -263,7 +261,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     if (interval) {
       clearInterval(interval);
     }
-    _report = undefined;
+    report.value = null;
   }
 
   function getBreaks() {
@@ -298,22 +296,20 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return 100 * getNow(pomo.startedAt) / pomo.end;
   }
 
-  function getPomoReport() {
+  function getPomoReport(): PomoReport {
     const pomo = getCurrentPomo();
-    if (!pomo) {
-      _report = undefined;
-      return null;
-    }
-    if (_report) return _report;
-    const study = pomo.breaksDone.reduce((acc, curr) => acc + (curr.end ?? curr.start) - curr.start, 0);
-    const breakTime = pomo.breaksDone.reduce((acc, curr) => acc + (curr.end ?? curr.start) - curr.start, 0);
-    _report = {
-      timeTotal: pomo.end,
-      timeStudy: study,
-      timeBreak: breakTime
+    if (!pomo) return { timeTotal: '', timeStudy: '', timeBreak: '', nrBreaks: '', points: '' };
+    const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
+    const timeStudy = pomo.end - timeBreak;
+    const points = ((timeStudy - timeBreak) / timeStudy * 100)
+
+    return {
+      timeTotal: timeFormatted(pomo.end / SECONDS_MULTIPLIER),
+      timeStudy: timeFormatted(timeStudy / SECONDS_MULTIPLIER),
+      timeBreak: timeFormatted(timeBreak / SECONDS_MULTIPLIER),
+      nrBreaks: pomo.breaksDone.length.toString(),
+      points: points.toFixed(1)
     };
-    return _report;
-  
   }
 
   function saveStatus() {
@@ -361,6 +357,14 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const startLastPauseS = Math.floor(startLastPause / SECONDS_MULTIPLIER)
     return timeFormatted( startS - startLastPauseS );
   }
+  function timeInCurrentStudyFormatted() {
+    const pomo = getCurrentPomo()
+    if (!pomo) return '0:00';
+    const startLastStudy = pomo?.breaksDone.at(-1)?.end ?? 0;
+    const startS = Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER)
+    const startLastStudyS = Math.floor(startLastStudy / SECONDS_MULTIPLIER)
+    return timeFormatted( startS - startLastStudyS );
+  }
 
 
   // ---------- COMPUTED ----------
@@ -374,7 +378,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const percentage = computed(getNowInPercentage);
   const timeSinceStart = computed(() => timeSinceStartFormatted());
   const timeInCurrentBreak = computed(() => timeInCurrentBreakFormatted());
-  const report = computed(getPomoReport);
+  const timeInCurrentStudy = computed(() => timeInCurrentStudyFormatted());
   const done = computed(() => {
     const pomo = getCurrentPomo();
     if (!pomo) return false;
@@ -387,7 +391,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     getCurrentPomo, getBreaks,
     percentage, displayBreaks, report,
     created, going, studing, pauseing, terminated, done,
-    timeSinceStart, timeInCurrentBreak
+    timeSinceStart, timeInCurrentBreak, timeInCurrentStudy
   }
 
 })

@@ -97,7 +97,7 @@ function toggleTime() {
           <!-- main content in the center-->
           <div class="main-content">
             <div v-if="pomodoro.going && showTime">
-              <p class="timer blur timer-inpause font-casio" v-if="pomodoro.studing">{{ pomodoro.timeSinceStart }}</p>
+              <p class="timer blur timer-inpause font-casio" v-if="pomodoro.studing">{{ pomodoro.timeInCurrentStudy }}</p>
             </div>
             <!-- welcome screen -->
             <div v-if="pomodoro.created">
@@ -132,21 +132,20 @@ function toggleTime() {
             </div>
 
             <!-- report table-->
-            <!-- <div class="report font-press" v-if="pomodoro.getReport.reportDone">
+            <div class="report font-press" v-if="pomodoro.report">
               <div class="grid-container">
                 <p>{{ "Tempo studio:" }}</p>
-                <p class="report-value">{{ msToMinutes(pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) }}</p>
+                <p class="report-value">{{ pomodoro.report.timeTotal }}</p>
                 <p>{{ "Tempo pausa:" }}</p>
-                <p class="report-value">{{ msToMinutes(pomodoro.getReport.breakLength) }}</p>
+                <p class="report-value">{{ pomodoro.report.timeBreak }}</p>
                 <p>{{ "Tempo totale:" }}</p>
-                <p class="report-value">{{ msToMinutes(pomodoro.getReport.studyLength) }}</p>
+                <p class="report-value">{{ pomodoro.report.timeStudy }}</p>
                 <p>{{ "Nr. pause:" }}</p>
-                <p class="report-value">{{ pomodoro.status.breaks.length }}</p>
+                <p class="report-value">{{ pomodoro.report.nrBreaks }}</p>
                 <p class="report-total">{{ "Punteggio:" }}</p>
-                <p class="report-value report-total">{{ ((pomodoro.getReport.studyLength - pomodoro.getReport.breakLength) /
-                  pomodoro.getReport.studyLength * 100).toFixed(1) }}%</p>
+                <p class="report-value report-total">{{ pomodoro.report.points }}%</p>
               </div>
-            </div> -->
+            </div>
 
             <!-- pomodoro bar -->
 
@@ -312,7 +311,7 @@ function toggleTime() {
 
 
     .report {
-      background: #2A2A2A;
+      background: rgb(var(--v-theme-background));
       border: 1px solid rgb(var(--v-theme-primary));
       padding: 0.8rem 1.5rem 1rem;
       margin-top: 2rem;

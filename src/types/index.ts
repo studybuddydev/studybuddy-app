@@ -87,9 +87,11 @@ export type DisplayBreak = {
 }
 
 export type PomoReport = {
-  timeTotal: number;
-  timeStudy: number;
-  timeBreak: number;
+  timeTotal: string;
+  timeStudy: string;
+  timeBreak: string;
+  nrBreaks: string;
+  points: string;
 }
 
 export type PomodotoStatus = {
