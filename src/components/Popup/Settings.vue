@@ -91,9 +91,16 @@
 
             <!-- THEME -->
             <v-window-item value="theme">
+
               <v-row>
                 <v-col cols="12">
-                  <v-select :label="$t('pause.general.theme')" v-model="settingsStore.settings.theme!.theme"
+                  <v-select label="Theme" v-model="selectedTheme"
+                    :items="themes" clearable  @update:model-value="setTheme($event)" />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-select label="Colors" v-model="settingsStore.settings.theme!.theme"
                     :items="themeList" item-title="title" item-value="value" @update:model-value="settingsStore.updateTheme($event)">
                     <template #item="{ props, item }">
                       <v-list-item v-bind="props">
@@ -114,10 +121,6 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-select label="Seleziona immagine di sfondo" v-model="settingsStore.settings!.theme!.backgroundImg"
-                    :items="backgroundImages" clearable />
-                </v-col>
-                <v-col cols="12">
                   <v-text-field label="Url immagine custom" v-model="settingsStore.settings!.theme!.backgroundImg"
                     type="string" clearable />
                 </v-col>
@@ -132,7 +135,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { usePomodoroStore } from "@/stores/pomodoro";
@@ -146,21 +149,32 @@ const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
 const { logout } = useAuth0();
 
-const backgroundImages = [
-  { title: 'Default', value: 'https://shorturl.at/dfjG9' },
-  { title: 'Forest', value: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg?cs=srgb&dl=pexels-johannes-plenio-1423600.jpg&fm=jpg&w=6000&h=4000' },
-  { title: 'Beach', value: 'https://images.pexels.com/photos/221471/pexels-photo-221471.jpeg?cs=srgb&dl=pexels-pixabay-221471.jpg&fm=jpg&w=2500&h=1400' },
-  { title: 'Mountain', value: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png?cs=srgb&dl=pexels-stephan-seeber-1772973.jpg&fm=jpg&w=6016&h=4016' },
-  { title: 'Dog', value: 'https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?cs=srgb&dl=pexels-chevanon-photography-1108099.jpg&fm=jpg&w=5184&h=3888' },
-  { title: 'Barbie', value: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' },
-  { title: 'Oppenheimer', value: 'https://images5.alphacoders.com/125/1257951.jpeg' },
-  { title: 'Gandalf', value: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' },
-]
+type Theme = { theme: string, img: string }
 
+const themes = [
+  { title: 'Blallo',      value: { theme: 'blallo',   img: 'https://m.media-amazon.com/images/M/MV5BNjlkM2ZmYmYtZTg4YS00YTdlLWFlOTAtMzNiN2IyNjgxNDljXkEyXkFqcGdeQXVyNjA0OTQyODE@._V1_.jpg' } },
+  { title: 'Aurora',      value: { theme: 'blallo',   img: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg?cs=srgb&dl=pexels-stein-egil-liland-3573603.jpg&fm=jpg&_gl=1*6avfwy*_ga*ODM3MTgyOTc1LjE3MDMyNzk0NzM.*_ga_8JE65Q40S6*MTcwMzI3OTQ3My4xLjEuMTcwMzI3OTc1NS4wLjAuMA..' } },
+  { title: 'Japan',       value: { theme: 'pastel',   img: 'https://shorturl.at/dfjG9' } },
+  { title: 'Forest',      value: { theme: 'verdone',  img: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg?cs=srgb&dl=pexels-johannes-plenio-1423600.jpg&fm=jpg&w=6000&h=4000' } },
+  { title: 'Beach',       value: { theme: 'pastel',   img: 'https://images.pexels.com/photos/221471/pexels-photo-221471.jpeg?cs=srgb&dl=pexels-pixabay-221471.jpg&fm=jpg&w=2500&h=1400' } },
+  { title: 'Mountain',    value: { theme: 'nord',     img: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png?cs=srgb&dl=pexels-stephan-seeber-1772973.jpg&fm=jpg&w=6016&h=4016' } },
+  { title: 'Dog',         value: { theme: 'bio',      img: 'https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?cs=srgb&dl=pexels-chevanon-photography-1108099.jpg&fm=jpg&w=5184&h=3888' } },
+  { title: 'Barbie',      value: { theme: 'pastel',   img: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' } },
+  { title: 'Oppenheimer', value: { theme: 'gptnight', img: 'https://venezianews.b-cdn.net/wp-content/uploads/elementor/thumbs/Oppenheimer-qcqe56sjf98g5iharhgvboxysohac64vt3kbim5lio.jpg' } },
+  { title: 'Gandalf',     value: { theme: 'blallo',   img: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' } }
+]
+const selectedTheme = ref<Theme | null>(null);
+
+function setTheme(newTheme: Theme) {
+  settingsStore.updateTheme(newTheme.theme);
+  settingsStore.settings!.theme!.theme = newTheme.theme;
+  settingsStore.settings!.theme!.backgroundImg = newTheme.img;
+}
+
+const backgroundImages = themes.map(x => ({ title: x.title, value: x.value.img }));
 function loggaout() {
   logout({ logoutParams: { returnTo: window.location.origin } });
 }
-
 
 const props = defineProps<{ modelValue: string | boolean }>()
 const emit = defineEmits(['update:modelValue', 'update:tab'])
@@ -172,10 +186,6 @@ const modelTab = computed({
   get() { return props.modelValue ?? 'general' },
   set(value) { return emit('update:modelValue', value) }
 })
-
-function setTheme(newTheme: string) {
-  theme.global.name.value = newTheme;
-}
 
 function exportData() {
   state.downloadData();
