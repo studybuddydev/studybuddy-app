@@ -1,17 +1,17 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import type { PomodoroFlexSettings, Settings } from '@/types'
+import type { PomodoroSettings, Settings, ThemeSettings, UserSettings } from '@/types'
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify'
 
 const LOCAL_STORAGE_KEY = 'settings';
+const DEFAULT_LANG = 'it';
+const DEFAULT_THEME = 'blallo';
+const DEFAULT_ICONS = 'mdi-icon';
 
 const defaultSettings: Settings = {
   user: {
-    theme: 'blallo',
-    username: 'Pippo',
-    icon: 'mdi-icon',
-    lang: 'it',
+    lang: DEFAULT_LANG,
   },
 
   pomodoro: {
@@ -21,7 +21,9 @@ const defaultSettings: Settings = {
     soundVolume: 50,
   },
 
-  zenMode: {
+  theme: {
+    icon: DEFAULT_ICONS,
+    theme: DEFAULT_THEME,
     backgroundColor: undefined,
     backgroundImg: undefined,
   }
@@ -33,50 +35,50 @@ export const useSettingsStore = defineStore('settings', () => {
   const i18n = useI18n();
 
   const settings = ref<Settings>(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}'));
+  settings.value.user = { ...defaultSettings.user, ...settings.value.user } as UserSettings;
+  settings.value.theme = { ...defaultSettings.theme, ...settings.value.theme } as ThemeSettings;
+  settings.value.pomodoro = { ...defaultSettings.pomodoro, ...settings.value.pomodoro } as PomodoroSettings;
 
-  const userSettings = computed(() => settings.value.user ?? defaultSettings.user!);
-  const pomodoroFlexSettings = computed(() => settings.value.pomodoro ?? defaultSettings!.pomodoro!);
-  const zenModeSettings = computed(() => settings.value.zenMode ?? defaultSettings.zenMode);
-
-
-  const settingsWithDefaults = computed<Settings>(() => {
-    return {
-      user: userSettings.value,
-      pomodoro: pomodoroFlexSettings.value,
-      zenMode: zenModeSettings.value,
-    }
-  });
+  const userSettings = computed(() => settings.value.user);
+  const pomoSettings = computed(() => settings.value.pomodoro);
+  const themeSettings = computed(() => settings.value.theme);
 
   function updateSettings(newSettings: Settings) {
     settings.value = newSettings;
     save();
   }
 
-  function updatePomodoroSettings(newSettings: PomodoroFlexSettings) {
+  function updatePomodoroSettings(newSettings: PomodoroSettings) {
     if (settings.value.pomodoro)
       settings.value.pomodoro = newSettings;
     save();
   }
 
+  watch(settings.value, () => {
+    save();
+  });
+
   function save() {
+    console.log('Saving settings')
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings.value));
   }
 
-  function updateTheme() {
-    theme.global.name.value = userSettings.value.theme;
+  function updateTheme(newTheme?: string) {
+    theme.global.name.value = newTheme ?? themeSettings.value.theme ?? DEFAULT_THEME;
   }
   function updateLanguage() {
-    i18n.locale.value = userSettings.value.lang
+    i18n.locale.value = userSettings.value.lang ?? DEFAULT_LANG;
   }
 
   updateTheme();
   updateLanguage();
   
   return {
-    settings, settingsWithDefaults,
-    userSettings, pomodoroFlexSettings,
+    settings,
+    userSettings, pomoSettings, themeSettings,
     defaultSettings,
     updateSettings, updatePomodoroSettings,
-    updateTheme, updateLanguage
+    updateTheme, updateLanguage,
+    save
   };
 });

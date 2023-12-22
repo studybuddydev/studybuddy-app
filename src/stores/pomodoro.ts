@@ -34,7 +34,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // ---------- INIT ----------
   function init() {
     const pomo = getCurrentPomo();
-    if (!pomo || pomo.state === PomodoroState.TERMINATED) {
+    if (!pomo || pomo.state === PomodoroState.TERMINATED || pomo.state === PomodoroState.CREATED) {
       createPomodoro();
       console.log('creating pomo')
     } else {
@@ -47,7 +47,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // set up pomodoro ( a study session using the data from the settings), this method modify the currentPomodoro object
   function createPomodoro() {
     clearStuff();
-    const settings = settingsStore.pomodoroFlexSettings;
+    const settings = settingsStore.pomoSettings;
 
     const totalLength = settings.totalLength * MINUTE_MULTIPLIER;
     const breaksLength = settings.breaksLength * MINUTE_MULTIPLIER;
@@ -326,7 +326,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   async function playSound(sound: ESound) {
     const audio = new Audio(`/sounds/${sound}`);
-    let volume = settingsStore.pomodoroFlexSettings.soundVolume;
+    let volume = settingsStore.pomoSettings.soundVolume;
     if (volume === undefined) volume = 0.5;
     audio.volume = volume / 100;
     audio.play();
@@ -368,7 +368,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const studing    = computed(() => getCurrentPomo()?.state === PomodoroState.STUDY);
   const pauseing   = computed(() => getCurrentPomo()?.state === PomodoroState.BREAK);
   const terminated = computed(() => getCurrentPomo()?.state === PomodoroState.TERMINATED);
-  const going      = computed(() => studing.value || studing.value);
+  const going      = computed(() => studing.value || pauseing.value);
 
   const displayBreaks = computed(getDisplayBreaks);
   const percentage = computed(getNowInPercentage);

@@ -105,27 +105,26 @@ export type PomodotoStatus = {
 
 
 // ---------- SETTINGS ----------
-export type PomodoroFlexSettings = {
+export type PomodoroSettings = {
   numberOfBreak: number;
   breaksLength: number;
   totalLength: number;
   soundVolume: number;
 }
 export type UserSettings = {
-  username: string;
-  theme: string;
-  icon: string;
   lang: string;
 }
-export type ZenModeSettings = {
+export type ThemeSettings = {
+  theme: string;
+  icon: string;
   backgroundColor?: string;
   backgroundImg?: string;
 }
 
 export type Settings = {
-  pomodoro?: PomodoroFlexSettings;
-  user?: UserSettings;
-  zenMode?: ZenModeSettings;
+  pomodoro: PomodoroSettings;
+  user: UserSettings;
+  theme: ThemeSettings;
 }
 
 

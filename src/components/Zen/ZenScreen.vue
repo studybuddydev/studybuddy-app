@@ -5,7 +5,7 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
-import PomoSettings from '@/components/Popup/PomoSettings.vue';
+import Settings from '@/components/Popup/Settings.vue';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -21,10 +21,10 @@ const showTime = ref(true);
 const zenMode = ref(true);
 const openSettingsTab = ref<boolean | string>(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
-  if (settings.settings.zenMode?.backgroundImg) {
-    return { backgroundImage: `url(${settings.settings.zenMode?.backgroundImg})` }
-  } else if (settings.settings.zenMode?.backgroundColor) {
-    return { backgroundColor: settings.settings.zenMode?.backgroundColor }
+  if (settings.settings.theme?.backgroundImg) {
+    return { backgroundImage: `url(${settings.settings.theme?.backgroundImg})` }
+  } else if (settings.settings.theme?.backgroundColor) {
+    return { backgroundColor: settings.settings.theme?.backgroundColor }
   }
   return {};
 });
@@ -71,7 +71,7 @@ function toggleTime() {
 
 <template>
   <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
-    <PomoSettings class="settings" v-model="openSettingsTab" />
+    <Settings class="settings" v-model="openSettingsTab" />
 
     <div transition="fade-transition">
       <v-scroll-y-reverse-transition>
@@ -98,9 +98,6 @@ function toggleTime() {
           <div class="main-content">
             <div v-if="pomodoro.going && showTime">
               <p class="timer blur timer-inpause font-casio" v-if="pomodoro.studing">{{ pomodoro.timeSinceStart }}</p>
-            </div>
-            <div v-else-if="pomodoro.going">
-              <p>buono studio</p>
             </div>
             <!-- welcome screen -->
             <div v-if="pomodoro.created">
@@ -176,7 +173,7 @@ function toggleTime() {
         <v-list>
           <v-list-item @click="toggleTime()" title="Mostra Tempo" v-if="!showTime" />
           <v-list-item @click="toggleTime()" title="Nascondi Tempo" v-else />
-          <v-list-item @click="openSettingsTab = 'zen'" title="Modifica sfondo" />
+          <v-list-item @click="openSettingsTab = 'theme'" title="Modifica sfondo" />
         </v-list>
       </v-menu>
 
@@ -188,17 +185,17 @@ function toggleTime() {
         <div class="pomodoro-bar">
           <div class="bottom-button-wrapper font-press">
             <div>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created || pomodoro.terminated">
                 <v-icon class="icon" icon="mdi-play" />
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.togglePauseStudy(); zenMode = true; }" v-else-if="pomodoro.going">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.togglePauseStudy(); zenMode = true; }" v-else-if="pomodoro.studing">
                 <v-icon class="icon" icon="mdi-pause" />
               </v-btn>
               <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.stopPomodoro(); }" v-else-if="pomodoro.done">
                 <v-icon class="icon" icon="mdi-stop" />
               </v-btn>
-              <v-btn class='btn bg-warning pomo-btn pomo-box' @click="pomodoro.togglePauseStudy()" v-else>
-                <v-icon class="icon" icon="mdi-coffee" />
+              <v-btn class='btn bg-secondary pomo-btn pomo-box pomo-box-disabled' v-else>
+                <v-icon class="icon coffee-cup" icon="mdi-coffee" />
               </v-btn>
               <!-- <PomodoroController class="pomo-box pomo-controller bottom-box" v-if="!pomodoro.getReport.reportDone && (!pomodoroGoing || !pomodoro.status.isBreak)"/>
             <v-btn class="btn bg-error btn-endsession bottom-box" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</v-btn> -->
@@ -271,6 +268,28 @@ function toggleTime() {
   border-radius: 1rem;
   font-size: 0.8rem;
   font-weight: bold;
+}
+
+.pomo-box-disabled {
+  background-color: rgb(var(--v-theme-secondary-darken-1));
+  filter: saturate(0.5);
+  opacity: 0.5;
+  pointer-events: none; /* Disable user interaction */
+
+}
+.coffee-cup {
+  animation: cupOnButton 2s infinite;
+}
+@keyframes cupOnButton {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-5px) rotate(5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
 }
 
 .zen-screen {
@@ -507,7 +526,6 @@ function toggleTime() {
         height: 2rem;
         margin: 0.5rem 0;
       }
-
       .pomo-flex, .pomo-box {
         transition: height 0.1s ease-in-out, margin 0.1s ease-in-out;
       }
