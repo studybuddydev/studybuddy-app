@@ -126,7 +126,6 @@
                 </v-col>
               </v-row>
             </v-window-item>
-
           </v-window>
         </v-container>
       </v-card-text>
@@ -139,11 +138,9 @@ import { computed, ref } from 'vue'
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { usePomodoroStore } from "@/stores/pomodoro";
-import { useTheme } from 'vuetify'
 import { themeList } from '@/assets/themes'
 import { useAuth0 } from "@auth0/auth0-vue";
 
-const theme = useTheme();
 const state = useStateStore();
 const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
@@ -153,12 +150,13 @@ type Theme = { theme: string, img: string }
 
 const themes = [
   { title: 'Blallo',      value: { theme: 'blallo',   img: 'https://m.media-amazon.com/images/M/MV5BNjlkM2ZmYmYtZTg4YS00YTdlLWFlOTAtMzNiN2IyNjgxNDljXkEyXkFqcGdeQXVyNjA0OTQyODE@._V1_.jpg' } },
-  { title: 'Aurora',      value: { theme: 'blallo',   img: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg?cs=srgb&dl=pexels-stein-egil-liland-3573603.jpg&fm=jpg&_gl=1*6avfwy*_ga*ODM3MTgyOTc1LjE3MDMyNzk0NzM.*_ga_8JE65Q40S6*MTcwMzI3OTQ3My4xLjEuMTcwMzI3OTc1NS4wLjAuMA..' } },
+  { title: 'Aurora',      value: { theme: 'blallo',   img: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg?cs=srgb&dl=pexels-stein-egil-liland-3573603.jpg' } },
   { title: 'Japan',       value: { theme: 'pastel',   img: 'https://shorturl.at/dfjG9' } },
-  { title: 'Forest',      value: { theme: 'verdone',  img: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg?cs=srgb&dl=pexels-johannes-plenio-1423600.jpg&fm=jpg&w=6000&h=4000' } },
-  { title: 'Beach',       value: { theme: 'pastel',   img: 'https://images.pexels.com/photos/221471/pexels-photo-221471.jpeg?cs=srgb&dl=pexels-pixabay-221471.jpg&fm=jpg&w=2500&h=1400' } },
-  { title: 'Mountain',    value: { theme: 'nord',     img: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png?cs=srgb&dl=pexels-stephan-seeber-1772973.jpg&fm=jpg&w=6016&h=4016' } },
-  { title: 'Dog',         value: { theme: 'bio',      img: 'https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?cs=srgb&dl=pexels-chevanon-photography-1108099.jpg&fm=jpg&w=5184&h=3888' } },
+  { title: 'Forest',      value: { theme: 'bio',      img: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' } },
+  { title: 'OG',          value: { theme: 'verdone',  img: 'https://images.pexels.com/photos/66997/pexels-photo-66997.jpeg' } },
+  { title: 'Beach',       value: { theme: 'pastel',   img: 'https://images.pexels.com/photos/221471/pexels-photo-221471.jpeg' } },
+  { title: 'Mountain',    value: { theme: 'nord',     img: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' } },
+  { title: 'Dog',         value: { theme: 'bio',      img: 'https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg' } },
   { title: 'Barbie',      value: { theme: 'pastel',   img: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' } },
   { title: 'Oppenheimer', value: { theme: 'gptnight', img: 'https://venezianews.b-cdn.net/wp-content/uploads/elementor/thumbs/Oppenheimer-qcqe56sjf98g5iharhgvboxysohac64vt3kbim5lio.jpg' } },
   { title: 'Gandalf',     value: { theme: 'blallo',   img: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' } }
