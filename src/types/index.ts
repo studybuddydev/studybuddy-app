@@ -1,3 +1,5 @@
+import type { index } from 'realm';
+
 export enum EStudyView {
   Dashboard, Exam, Chapter
 }
@@ -84,6 +86,7 @@ export type DisplayBreak = {
   lengthPerc: number;
   lengthTime: string;
   done: boolean;
+  index: number;
 }
 
 export type PomoReport = {
