@@ -7,6 +7,7 @@ import { computed, ref, watch } from 'vue';
 const TICK_TIME = 15;
 const SECONDS_MULTIPLIER = 1000;
 const MINUTE_MULTIPLIER = 0.1 * SECONDS_MULTIPLIER;
+const POMO_VERSION = 3;
 
 enum ESound {
   BreakStart = 'pomo.wav',
@@ -39,7 +40,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // ---------- INIT ----------
   function init() {
     const pomo = getCurrentPomo();
-    if (!pomo || pomo.state === PomodoroState.TERMINATED || pomo.state === PomodoroState.CREATED) {
+    if (!pomo || pomo.version !== POMO_VERSION || pomo.state === PomodoroState.TERMINATED || pomo.state === PomodoroState.CREATED) {
       createPomodoro();
     } else {
       interval = setInterval(tick, TICK_TIME);
@@ -59,6 +60,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     // currentPomodoro.value = {
     const pomo: PomodotoStatus = {
+      version: POMO_VERSION,
       end: totalLength,
       breaksDone: [],
       breaksTodo: generateBreaks(totalLength, breaksLength, nrOfBreaks),

@@ -96,6 +96,7 @@ export type PomoReport = {
 
 export type PomodotoStatus = {
   // lastTick: number;
+  version: number;
   startedAt?: number;
   endedAt?: number;
   end: number;
