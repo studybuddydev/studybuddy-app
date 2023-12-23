@@ -6,7 +6,7 @@ import { computed, ref, watch } from 'vue';
 
 const TICK_TIME = 15;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 0.1 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 
 enum ESound {
