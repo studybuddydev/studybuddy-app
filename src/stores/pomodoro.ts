@@ -4,7 +4,7 @@ import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { computed, ref, watch } from 'vue';
 
-const TICK_TIME = 15;
+const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
 const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
@@ -279,14 +279,15 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const pomo = getCurrentPomo();
     if (!pomo) return [];
     const now = getNow(pomo.startedAt);
-    return getBreaks().map(b => {
+    return getBreaks().map((b, i) => {
       const startPerc = 100 * b.start / pomo.end;
       const end = b.end ?? now;
       const lengthPerc = (100 * (end / pomo.end)) - startPerc;
       return {
         startPerc, lengthPerc,
         lengthTime: timeFormatted(end - b.start),
-        done: b.done
+        done: b.done,
+        index: i
       }
     })
   }

@@ -6,7 +6,7 @@
         color: theme.current.value.colors.surface,
         width: `${pomodoro.percentage}%`,
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" /> </div>
-      <div v-for="b in pomodoro.displayBreaks" :title="b.lengthTime" :key="b.startPerc" class="break"
+      <div v-for="b in pomodoro.displayBreaks" :title="b.lengthTime" :key="b.index" class="break"
         :style="{
           backgroundColor: b.done ? theme.current.value.colors.warning : theme.current.value.colors.apple,
           marginLeft: `${b.startPerc}%`,
@@ -62,6 +62,7 @@ $bar-height: 2em;
       display: flex;
       justify-content: end;
       align-items: center;
+      transition: width 0.1s linear;
     }
 
     .break {
@@ -71,6 +72,7 @@ $bar-height: 2em;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: margin 0.1s linear, width 0.1s linear;
     }
 
     .progress {
