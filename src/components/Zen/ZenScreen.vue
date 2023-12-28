@@ -88,10 +88,13 @@ function toggleTime() {
           <!-- top right -->
           <div class="top-right blur">
             <p v-if="isAuthenticated" class="logged-user">
-              <span>{{ user?.given_name ?? user?.nickname }}</span>
+              <span class="text">{{ user?.given_name ?? user?.nickname }}</span>
               <span><v-avatar :image="user?.picture" /></span>
             </p>
-            <p class="login-button" v-else @click="loginWithRedirect()">Log In</p>
+            <p class="login-button" v-else @click="loginWithRedirect()">
+              <v-icon size="x-large" class="icon" icon="mdi-account"/>
+              <span class="text">Log In</span>
+            </p>
           </div>
 
           <!-- main content in the center-->
@@ -100,7 +103,7 @@ function toggleTime() {
               <p class="timer blur timer-inpause font-casio" v-if="pomodoro.studing">{{ pomodoro.timeInCurrentStudy }}</p>
             </div>
             <!-- welcome screen -->
-            <div v-if="pomodoro.created">
+            <div v-if="pomodoro.created" class="created-box">
               <div class="blur rounded-box pa-7">
                 <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
                 <div class="title">
@@ -182,7 +185,7 @@ function toggleTime() {
         </div>
 
         <div class="pomodoro-bar">
-          <div class="bottom-button-wrapper font-press">
+          <div class="button-wrapper font-press pomo-left">
             <div>
               <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created || pomodoro.terminated">
                 <v-icon class="icon" icon="mdi-play" />
@@ -198,8 +201,8 @@ function toggleTime() {
             </div>
           </div>
           <PomodoroFlex class="pomo-flex" />
-          <div class="bottom-button-wrapper">
-            <div class="time-bottom-button-wrapper">
+          <div class="button-wrapper pomo-right">
+            <div class="time-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
                 <p v-if="showTime">{{ pomodoro.timeSinceStart }}</p>
               </div>
@@ -293,7 +296,7 @@ function toggleTime() {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100vh ;
   z-index: 1500;
   background-color: rgb(var(--v-theme-surface));
   background-size: cover;
@@ -309,7 +312,11 @@ function toggleTime() {
     flex-direction: column;
     // margin-top: -6em;         // check this
 
-
+    .created-box {
+      @media (max-width: 600px) {
+        display: none;
+      }
+    }
     .report {
       background: rgb(var(--v-theme-background));
       border: 1px solid rgb(var(--v-theme-primary));
@@ -364,6 +371,9 @@ function toggleTime() {
 
     h1 {
       font-size: 5rem;
+      @media (max-width: 600px) {
+        font-size: 3rem;
+      }
     }
 
     h2 {
@@ -392,6 +402,9 @@ function toggleTime() {
       img {
         height: 7rem;
         margin-right: 0.5em;
+        @media (max-width: 600px) {
+          display: none;
+        }
       }
     }
 
@@ -423,6 +436,7 @@ function toggleTime() {
     left: 1rem;
     border-radius: 1rem;
     padding: 0.5rem;
+    height: 5rem;
 
     .logo {
       height: 4rem;
@@ -440,15 +454,26 @@ function toggleTime() {
     align-items: center;
     justify-items: center;
     padding: 0.5em;
-    border-radius: 0.5em;
+    border-radius: 1em;
     position: absolute;
     top: 1rem;
-    right: 2rem;
+    right: 1rem;
     transition: background-color 0.1s ease-in-out;
-    height: 4rem;
+    height: 5rem;
     overflow: hidden;
     font-family: 'Press Start 2P', Arial, Helvetica, sans-serif;
 
+    .icon {
+      display: none;
+    }
+    @media (max-width: 600px) {
+      .text {
+        display: none;
+      }
+      .icon {
+        display: block;
+      }
+    }
     &:hover {
       background-color: #FFF4;
       cursor: pointer;
@@ -478,11 +503,12 @@ function toggleTime() {
 }
 
 .bottom-bar {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   display: flex;
   flex-direction: column;
   z-index: 1500;
+  justify-content: flex-end;
 
   .btn-edit {
     align-self: flex-end;
@@ -513,10 +539,31 @@ function toggleTime() {
 
     .pomodoro-bar {
       transition: padding 0.1s ease-in-out;
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
       align-items: end;
       justify-content: space-between;
       padding: 0.5rem 1rem 1.5rem;
+
+      @media (max-width: 600px) {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+
+        .pomo-left {
+          grid-column: 1;
+          grid-row: 1;
+          justify-self: start;
+        }
+        .pomo-right {
+          grid-column: 2;
+          grid-row: 1;
+          justify-self: end;
+        }
+        .pomo-flex {
+          grid-column: 1 / span 2;
+          grid-row: 2;
+        }
+      }
 
       .pomo-flex {
         height: 2rem;
@@ -525,11 +572,17 @@ function toggleTime() {
       .pomo-flex, .pomo-box {
         transition: height 0.1s ease-in-out, margin 0.1s ease-in-out;
       }
-      .bottom-button-wrapper {
+      .button-wrapper {
         width: 10rem;
         margin: 0 0.5rem;
 
-        .time-bottom-button-wrapper {
+      @media (max-width: 600px) {
+        width: 100%;
+        margin: 0;
+        padding: 0.2rem;
+      }
+
+        .time-button-wrapper {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -598,7 +651,7 @@ function toggleTime() {
   top: 0;
   transform: translateX(100%);
   width: 100%;
-  height: 4rem;
+  height: 5rem;
   position: absolute;
   z-index: 1;
   animation: slide 1.2s;
