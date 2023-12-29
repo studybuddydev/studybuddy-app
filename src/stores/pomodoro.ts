@@ -285,7 +285,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       const lengthPerc = (100 * (end / pomo.end)) - startPerc;
       return {
         startPerc, lengthPerc,
-        lengthTime: timeFormatted(end - b.start),
+        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER),
         done: b.done,
         index: i
       }

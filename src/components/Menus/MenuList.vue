@@ -1,5 +1,5 @@
 <template>
-  <v-list nav density="compact">
+  <v-list nav density="compact" class="menu-list">
     <draggable item-key="name" :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" >
       <template #item="{element}">
         <v-list-item link :to="`/${baseUrl}/${element.name}`"
@@ -213,5 +213,10 @@ const colorList = [
 <style scoped>
 .exam-title {
   font-weight: bold;
+}
+
+
+.menu-list {
+  margin-bottom: 7rem;
 }
 </style>

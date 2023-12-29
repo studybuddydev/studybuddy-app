@@ -42,6 +42,41 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss">
+// .scrollbar::-webkit-scrollbar-track {
+//   // background: var(--v-theme-primary);
+// }
+
+// .scrollbar::-webkit-scrollbar-thumb {
+//   // background-color: var(--v-theme-primary);
+//   border-radius: 2px;
+// }
+
+// .scrollbar::-webkit-scrollbar-thumb:hover {
+//   // background-color: var(--v-theme-primary);
+// }
+
+/* Scroll bar stylings */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: var(--lightestgrey); 
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 5px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
 html {
   overflow: hidden !important;
 }

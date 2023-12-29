@@ -138,11 +138,11 @@ function toggleTime() {
             <div class="report font-press" v-if="pomodoro.report">
               <div class="grid-container">
                 <p>{{ "Tempo studio:" }}</p>
-                <p class="report-value">{{ pomodoro.report.timeTotal }}</p>
+                <p class="report-value">{{ pomodoro.report.timeStudy }}</p>
                 <p>{{ "Tempo pausa:" }}</p>
                 <p class="report-value">{{ pomodoro.report.timeBreak }}</p>
                 <p>{{ "Tempo totale:" }}</p>
-                <p class="report-value">{{ pomodoro.report.timeStudy }}</p>
+                <p class="report-value">{{ pomodoro.report.timeTotal }}</p>
                 <p>{{ "Nr. pause:" }}</p>
                 <p class="report-value">{{ pomodoro.report.nrBreaks }}</p>
                 <p class="report-total">{{ "Punteggio:" }}</p>
@@ -503,6 +503,7 @@ function toggleTime() {
 }
 
 .bottom-bar {
+  pointer-events: none;
   position: fixed;
   bottom: 0;
   display: flex;
@@ -511,11 +512,13 @@ function toggleTime() {
   justify-content: flex-end;
 
   .btn-edit {
+    pointer-events: auto;
     align-self: flex-end;
     margin: 1rem
   }
 
   .pull-up-panel {
+    pointer-events: auto;
     width: 100vw;
     border-radius: 1em 1em 0 0;
     display: flex;

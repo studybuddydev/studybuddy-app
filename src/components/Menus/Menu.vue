@@ -46,7 +46,7 @@
   </v-navigation-drawer>
 
   <!-- EXAM MENU -->
-  <v-navigation-drawer permanent v-if="exam">
+  <v-navigation-drawer permanent v-if="exam" >
 
     <template v-slot:prepend>
       <v-list-item :to="`/exam/${exam.name}`" nav >
@@ -62,9 +62,8 @@
       :choose-color="false"
       :choose-icon="false"
       :color="exam?.color ?? 'primary'"
-      :base-url="`exam/${exam.name}`"
+      :base-url="`exam/${exam.name}`" 
     />
-
   </v-navigation-drawer>
 
   <UserSettings v-model="openUserSettings" />
