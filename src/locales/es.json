@@ -33,7 +33,7 @@
         "minutes": "minutos",
         "sessionLength": "Duración de Sesión",
         "breaksNumber": "descansos",
-        "breakLength": "minutos por descanso",
+        "breaksLength": "minutos de descanso",
         "volume": "Volumen de notificación",
         "default": "Restaurar valores predeterminados"
       }

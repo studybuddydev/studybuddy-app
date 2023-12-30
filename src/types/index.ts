@@ -1,6 +1,9 @@
+import type { index } from 'realm';
+
 export enum EStudyView {
   Dashboard, Exam, Chapter
 }
+
 
 // ---------- EXAM ----------
 export type Link = {
@@ -68,65 +71,67 @@ export type Deadline = {
 export enum DeadlineType { Exam, Task }
 
 // ---------- POMODORO ----------
-export enum EPomodoroBreakStatus {
-  DONE,
-  DOING,
-  TODO,
+export enum PomodoroState {
+  CREATED = 0, STUDY = 1, BREAK = 2, TERMINATED = 3
 }
-export type PomodoroBreak = {
+export enum BreakState { NOTDONE = 0, DOING = 1, DONE = 2 };
+export type Break = {
   start: number;
-  lenght: number;
-  status: EPomodoroBreakStatus;
+  end?: number;
+  soundStart?: boolean;
+  soundEnd?: boolean;
 }
-export type PomodoroFlexStatus = {
-  isBreak: boolean,
-  status:string,
-  breaks: PomodoroBreak[],
-  startMs: number,
-  interval: number | null,
+export type DisplayBreak = {
+  startPerc: number;
+  lengthPerc: number;
+  lengthTime: string;
+  done: boolean;
+  index: number;
 }
-export enum EPomodoroStatus {
-  Study,
-  ShortBreak,
-  LongBreak,
+
+export type PomoReport = {
+  timeTotal: string;
+  timeStudy: string;
+  timeBreak: string;
+  nrBreaks: string;
+  points: string;
 }
+
 export type PomodotoStatus = {
-  pomodoroRunning: boolean,
-  msPassed: number,
-  msStarted: number,
-  paused: boolean,
-  status: EPomodoroStatus,
-  studyDone: number,
-  pomodoriDone: number,
+  // lastTick: number;
+  version: number;
+  startedAt?: number;
+  endedAt?: number;
+  end: number;
+  state: PomodoroState;
+  breaksDone: Break[];
+  breaksTodo: Break[];
+  soundEnd?: boolean;
 }
+
 
 // ---------- SETTINGS ----------
 export type PomodoroSettings = {
-  studyLength: number;
-  shortBreakLength: number;
-  longBreakLength: number;
-  nrStudy: number;
-}
-export type PomodoroFlexSettings = {
   numberOfBreak: number;
-  breakLength: number;
+  breaksLength: number;
   totalLength: number;
   soundVolume: number;
 }
 export type UserSettings = {
-  username: string;
+  lang: string;
+  hideTime: boolean;
+}
+export type ThemeSettings = {
   theme: string;
   icon: string;
-  lang: string;
+  backgroundColor?: string;
+  backgroundImg?: string;
 }
 
-
 export type Settings = {
-  pomodoro?: {
-    pomodoroSettings?: PomodoroSettings;
-    pomodoroFlexSettings?: PomodoroFlexSettings;
-  };
-  user?: UserSettings;
+  pomodoro: PomodoroSettings;
+  user: UserSettings;
+  theme: ThemeSettings;
 }
 
 
@@ -136,8 +141,5 @@ export type State = {
     dashboard: StudyElement;
     events: { [key: string]: Event[] },
   },
-  pomodoro: {
-    pomodoroStatus?: PomodotoStatus;
-    pomodoroFlexStatus?: PomodoroFlexStatus;
-  }
+  pomodoro?: PomodotoStatus;
 }

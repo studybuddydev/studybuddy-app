@@ -42,12 +42,11 @@
           </template>
       </v-list-item> -->
 
-      <PomodoroControls v-if="!exam" />
     </template>
   </v-navigation-drawer>
 
   <!-- EXAM MENU -->
-  <v-navigation-drawer permanent v-if="exam">
+  <v-navigation-drawer permanent v-if="exam" >
 
     <template v-slot:prepend>
       <v-list-item :to="`/exam/${exam.name}`" nav >
@@ -63,13 +62,8 @@
       :choose-color="false"
       :choose-icon="false"
       :color="exam?.color ?? 'primary'"
-      :base-url="`exam/${exam.name}`"
+      :base-url="`exam/${exam.name}`" 
     />
-
-    <template v-slot:append>
-      <PomodoroControls />
-    </template>
-
   </v-navigation-drawer>
 
   <UserSettings v-model="openUserSettings" />
@@ -84,7 +78,6 @@ import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import type { Chapter, Exam } from '@/types';
 import UserSettings from '@/components/Popup/UserSettings.vue';
-import PomodoroControls from '../Pomodoro/PomodoroControls.vue';
 
 const route = useRoute()
 const state = useStateStore();

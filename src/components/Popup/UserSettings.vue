@@ -27,6 +27,10 @@
                   <v-select :label="$t('pause.general.language')" v-model="$i18n.locale" :items="$i18n.availableLocales"
                     @update:model-value="($event) => data!.user!.lang = $event" />
                 </v-col>
+                <v-col cols="12">
+                  <v-select label="Show Time" v-model="$i18n.locale" :items="$i18n.availableLocales"
+                    @update:model-value="($event) => data!.user!.lang = $event" />
+                </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">

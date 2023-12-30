@@ -1,0 +1,655 @@
+
+<script lang="ts" setup>
+import { ref, computed } from 'vue';
+import { usePomodoroStore } from "@/stores/pomodoro";
+import { useAuth0 } from "@auth0/auth0-vue";
+import { useSettingsStore } from "@/stores/settings";
+import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
+import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
+import Settings from '@/components/Popup/Settings.vue';
+
+const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
+const pomodoro = usePomodoroStore();
+const settings = useSettingsStore();
+const terminatePomoDialog = ref(false);
+
+const zenMode = ref(true);
+const openSettingsTab = ref<boolean | string>(false);
+const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
+  if (settings.settings.theme?.backgroundImg) {
+    return { backgroundImage: `url(${settings.settings.theme?.backgroundImg})` }
+  } else if (settings.settings.theme?.backgroundColor) {
+    return { backgroundColor: settings.settings.theme?.backgroundColor }
+  }
+  return {};
+});
+
+</script>
+
+<template>
+  <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
+    <Settings class="settings" v-model="openSettingsTab" />
+
+    <div transition="fade-transition">
+      <v-scroll-y-reverse-transition>
+        <div class="zen-screen" v-if="zenMode" :style="zenStyle">
+
+          <!-- top left  -->
+          <div class="top-left title blur">
+            <img src="/images/logo.png" alt="logo" class="logo" />
+            <h3 class="text-primary" v-if="!pomodoro.created">StudyBuddy
+              <span class="bg-primary beta">BETA</span>
+            </h3>
+          </div>
+
+          <!-- top right -->
+          <div class="top-right blur">
+            <p v-if="isAuthenticated" class="logged-user">
+              <span class="text">{{ user?.given_name ?? user?.nickname }}</span>
+              <span><v-avatar :image="user?.picture" /></span>
+            </p>
+            <p class="login-button" v-else @click="loginWithRedirect()">
+              <v-icon size="x-large" class="icon" icon="mdi-account"/>
+              <span class="text">Log In</span>
+            </p>
+          </div>
+
+          <!-- main content in the center-->
+          <div class="main-content">
+            <!-- welcome screen -->
+            <div v-if="pomodoro.created" class="created-box">
+              <div class="blur rounded-box pa-7">
+                <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
+                <div class="title">
+                  <img src="/images/logo.png" alt="logo" class='logo' />
+                  <h1 class="text-primary">StudyBuddy</h1>
+                </div>
+              </div>
+            </div>
+            <!-- finish screen -->
+            <div v-else-if="pomodoro.terminated" class="blur rounded-box finish-box">
+              <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
+              <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
+            </div>
+
+            <PomodoroCircle class="pomodoro-circle blur" v-if="!settings.userSettings.hideTime && pomodoro.going" />
+            <div class="pomopause">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="pomodoro.created"
+                @click="pomodoro.startPomodoro()">
+                <span>{{ $t("pause.study") }}</span>
+                <v-icon class="icon">mdi-play</v-icon>
+              </v-btn>
+            </div>
+
+            <!-- report table-->
+            <div class="report font-press" v-if="pomodoro.report">
+              <div class="grid-container">
+                <p>{{ "Tempo studio:" }}</p>
+                <p class="report-value">{{ pomodoro.report.timeStudy }}</p>
+                <p>{{ "Tempo pausa:" }}</p>
+                <p class="report-value">{{ pomodoro.report.timeBreak }}</p>
+                <p>{{ "Tempo totale:" }}</p>
+                <p class="report-value">{{ pomodoro.report.timeTotal }}</p>
+                <p>{{ "Nr. pause:" }}</p>
+                <p class="report-value">{{ pomodoro.report.nrBreaks }}</p>
+                <p class="report-total">{{ "Punteggio:" }}</p>
+                <p class="report-value report-total">{{ pomodoro.report.points }}%</p>
+              </div>
+            </div>
+
+            <!-- pomodoro bar -->
+
+          </div>
+        </div>
+      </v-scroll-y-reverse-transition>
+
+      <v-dialog v-model="terminatePomoDialog" width="auto">
+        <v-card text="Sei sicuro di voler terminare il pomodoro">
+          <v-card-actions>
+            <v-spacer />
+            <v-btn @click="terminatePomoDialog = false">No</v-btn>
+            <v-btn color="primary" @click="pomodoro.stopPomodoro(); terminatePomoDialog = false">Si</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
+    <div class="bottom-bar">
+      <v-btn
+        density="comfortable"
+        icon="mdi-cog"
+        class="btn-edit bg-background"
+        @click="openSettingsTab =  pomodoro.going ? 'theme' : 'pomodoro'"
+      />
+
+      <div :class="zenMode ? 'pull-up-panel blur' : 'pull-up-panel blur pull-up-panel-zenmode'">
+        <div class="handle" v-ripple @click="zenMode = !zenMode">
+          <v-icon :icon="zenMode ? 'mdi-chevron-down' : 'mdi-chevron-up'" />
+        </div>
+
+        <div class="pomodoro-bar">
+          <div class="button-wrapper font-press pomo-left" v-if="!pomodoro.created">
+            <div>
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created || pomodoro.terminated">
+                <v-icon class="icon" icon="mdi-play" />
+              </v-btn>
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.togglePauseStudy(); zenMode = true; }" v-else-if="pomodoro.studing">
+                <v-icon class="icon" icon="mdi-pause" />
+              </v-btn>
+              <v-btn class='btn bg-secondary pomo-btn pomo-box pomo-box-disabled' v-else>
+                <v-icon class="icon coffee-cup" icon="mdi-coffee" />
+              </v-btn>
+              <!-- <PomodoroController class="pomo-box pomo-controller bottom-box" v-if="!pomodoro.getReport.reportDone && (!pomodoroGoing || !pomodoro.status.isBreak)"/>
+            <v-btn class="btn bg-error btn-endsession bottom-box" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</v-btn> -->
+            </div>
+          </div>
+          <PomodoroFlex class="pomo-flex" />
+          <div class="button-wrapper pomo-right" v-if="!pomodoro.created">
+            <div class="time-button-wrapper">
+              <div class="pomo-box pomo-time font-casio">
+                <p v-if="!settings.userSettings.hideTime">{{ pomodoro.timeSinceStart }}</p>
+              </div>
+              <div class="pomo-box pomo-stop" @click="pomodoro.done ? pomodoro.stopPomodoro() : terminatePomoDialog = true">
+                <v-icon icon="mdi-stop" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+@font-face {
+  font-family: 'casio';
+  src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
+}
+
+.pomodoro-circle {
+  height: min(50vh, 80vw);
+  width: min(50vh, 80vw);
+  border-radius: 50%;
+}
+
+
+.blur {
+  background-color: rgba(var(--v-theme-background));
+}
+
+.img-background {
+  .blur {
+    backdrop-filter: blur(10px);
+    background-color: rgba(var(--v-theme-background), 0.7);
+  }
+}
+
+.rounded-box {
+  border-radius: 1rem;
+}
+
+.settings {
+  z-index: 2000;
+}
+.pomo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .icon {
+    font-size: 2rem;
+    transition: font-size 0.1s ease-in-out;
+  }
+
+  .text {
+    margin-top: 0.2em;
+  }
+}
+
+.pomo-box {
+  height: 3rem !important;
+  line-height: 3rem;
+  width: 100%;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.pomo-box-disabled {
+  background-color: rgb(var(--v-theme-secondary-darken-1));
+  filter: saturate(0.5);
+  opacity: 0.5;
+  pointer-events: none; /* Disable user interaction */
+
+}
+.coffee-cup {
+  animation: cupOnButton 2s infinite;
+}
+@keyframes cupOnButton {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-5px) rotate(5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+.zen-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh ;
+  z-index: 1500;
+  background-color: rgb(var(--v-theme-surface));
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  .main-content {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    // margin-top: -6em;         // check this
+    @media (max-width: 600px) {
+      justify-content: flex-start;
+      margin-top: 20vh;
+    }
+    .created-box {
+      @media (max-width: 600px) {
+        .title {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+
+    .finish-box {
+      margin: 1rem;
+      padding: 1.5rem;
+
+
+
+      @media (max-width: 600px) {
+        padding: 1rem;
+        p {
+          font-size: 0.7rem;
+        }
+        h2 {
+          font-size: 1rem;
+        }
+      }
+    }
+    .report {
+      background: rgb(var(--v-theme-background));
+      border: 1px solid rgb(var(--v-theme-primary));
+      padding: 0.8rem 1.5rem 1rem;
+      margin-top: 2rem;
+      border-radius: 1rem;
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 0.2rem 1.2rem;
+        h2 {
+          grid-column: 1 / span 2;
+          text-align: center;
+          margin-bottom: 0.3rem;
+          font-size: 1.5rem;
+        }
+        p {
+          text-align: left;
+        }
+
+        .report-value {
+          text-align: right;
+        }
+        .report-total {
+          margin-top: 1rem;
+
+        }
+      }
+    }
+
+    .btn-main-start {
+      width: auto;
+    }
+
+    .btn-main {
+      height: 3rem;
+      margin: 0.5rem;
+    }
+
+    .btn-study {
+      width: 11rem;
+      font-size: 1em;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      max-width: 700px;
+    }
+
+    h1 {
+      font-size: 5rem;
+      @media (max-width: 600px) {
+        font-size: 3rem;
+      }
+    }
+
+    h2 {
+      font-size: 3rem;
+      font-weight: 900;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+    }
+
+    .pomopause {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+      margin-top: 1em;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+
+      img {
+        height: 7rem;
+        margin-right: 0.5em;
+        @media (max-width: 600px) {
+          display: none;
+        }
+      }
+    }
+
+    p {
+      max-width: 700px;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+  }
+
+  .top-left {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    height: 5rem;
+    .logo {
+      height: 4rem;
+    }
+
+    .beta {
+      border-radius: 0.5rem;
+      padding: 0.4em;
+      margin-right: 1em;
+    }
+  }
+
+  .top-right {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    padding: 0.5em;
+    border-radius: 1em;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    transition: background-color 0.1s ease-in-out;
+    height: 5rem;
+    overflow: hidden;
+    font-family: 'Press Start 2P', Arial, Helvetica, sans-serif;
+
+    .icon {
+      display: none;
+    }
+    @media (max-width: 600px) {
+      .text {
+        display: none;
+      }
+      .icon {
+        display: block;
+      }
+    }
+    &:hover {
+      background-color: #FFF4;
+      cursor: pointer;
+    }
+
+    .login-button {
+      padding: 0 1rem;
+    }
+
+    .logged-user {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+
+      span {
+        padding: 0 0.5rem;
+      }
+    }
+  }
+
+  .btn {
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+
+}
+
+.bottom-bar {
+  pointer-events: none;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1500;
+  justify-content: flex-end;
+
+  .btn-edit {
+    pointer-events: auto;
+    align-self: flex-end;
+    margin: 1rem
+  }
+
+  .pull-up-panel {
+    padding-top: 0.8rem;
+    pointer-events: auto;
+    width: 100vw;
+    border-radius: 1em 1em 0 0;
+    display: flex;
+    flex-direction: column;
+
+    .handle {
+      align-self: center;
+      margin: 0 0.8rem 0 0.8rem;
+      cursor: pointer;
+      width: calc(100% - 1rem);
+      height: 1.6rem;
+      border-radius: 0.8rem;
+      display: flex;
+      justify-content: center;
+      background-color: #FFFFFF00;
+      transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
+      &:hover {
+        background-color: #FFFFFF10;
+      }
+
+      @media screen and (max-width: 600px) {
+        display: none;
+      }
+    }
+
+    .pomodoro-bar {
+      transition: padding 0.1s ease-in-out;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      padding: 0.5rem 1rem 1.5rem;
+
+      @media (max-width: 600px) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+
+        .pomo-left {
+          grid-column: 1;
+          grid-row: 1;
+          justify-self: start;
+        }
+        .pomo-right {
+          grid-column: 2;
+          grid-row: 1;
+          justify-self: end;
+        }
+        .pomo-flex {
+          grid-column: 1 / span 2;
+          grid-row: 2;
+        }
+      }
+
+      .pomo-flex {
+        height: 2rem;
+        margin: 0.5rem 0;
+      }
+      .pomo-flex, .pomo-box {
+        transition: height 0.1s ease-in-out, margin 0.1s ease-in-out;
+      }
+      .button-wrapper {
+        width: 10rem;
+        margin: 0 0.5rem;
+
+      @media (max-width: 600px) {
+        width: 100%;
+        margin: 0;
+        padding: 0.2rem;
+      }
+
+        .time-button-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      .pomo-time {
+        width: 70%;
+        display: flex;
+        background-color: rgb(var(--v-theme-secondary-darken-1));
+        border-radius: 1rem 0 0 1rem;
+
+        p {
+          width: 100%;
+          text-align: center;
+        }
+      }
+
+      .pomo-stop {
+        width: 27%;
+        border-radius: 0 1rem 1rem 0;
+        background-color: rgb(var(--v-theme-error));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 3%;
+        font-size: 1.2rem;
+        transition: background-color 0.1s ease-in-out;
+        cursor: pointer;
+
+        &:hover {
+          background-color: rgb(var(--v-theme-apple));
+        }
+      }
+    }
+
+    &.pull-up-panel-zenmode {
+      .handle {
+        margin: 0.3rem 0.3rem 0 0.3rem;
+        height: 1.2rem;
+        border-radius: 0.4rem;
+        font-size: 0.8rem;
+      }
+      .pomodoro-bar {
+        padding: 0.5rem 1rem 0.5rem;
+      }
+
+      .pomodoro-bar {
+        .pomo-box {
+          height: 2rem !important;
+          line-height: 2rem;
+        }
+        
+        .pomo-flex {
+          height: 1.4rem;
+          margin: 0.3rem 0;
+        }
+      }
+    }
+  }
+}
+
+
+.top-right:after {
+  content: '';
+  top: 0;
+  transform: translateX(100%);
+  width: 100%;
+  height: 5rem;
+  position: absolute;
+  z-index: 1;
+  animation: slide 1.2s;
+  /* 
+  CSS Gradient - complete browser support from http://www.colorzilla.com/gradient-editor/ 
+  */
+  background: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(50%, rgba(255, 255, 255, 0.8)), color-stop(99%, rgba(128, 186, 232, 0)), color-stop(100%, rgba(125, 185, 232, 0)));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  /* IE10+ */
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#007db9e8', GradientType=1);
+  /* IE6-9 */
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  50% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}</style>
