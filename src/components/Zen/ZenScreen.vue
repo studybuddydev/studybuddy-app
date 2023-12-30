@@ -5,6 +5,7 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
+import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
 import Settings from '@/components/Popup/Settings.vue';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
@@ -12,12 +13,6 @@ const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
 const terminatePomoDialog = ref(false);
 
-// const pauseFromPomodoro = computed(() => (pomodoro.status.isBreak && !!pomodoro.status.interval) || pomodoro.itsStopped);
-// const pomodoroGoing = computed(() => pomodoro.going);
-// const pause = ref(!pomodoroGoing.value);
-// const first = computed(() => pomodoro.first);
-
-const showTime = ref(true);
 const zenMode = ref(true);
 const openSettingsTab = ref<boolean | string>(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
@@ -29,44 +24,6 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
   return {};
 });
 
-function toggleTime() {
-  showTime.value = !showTime.value;
-}
-
-// watch(pauseFromPomodoro, (value) => {
-//   pause.value = value;
-// });
-
-// function getMinutesFromPercentage(n: number) {
-//   const min = n * pomodoro.settings.totalLength / 100;
-//   const sec = Math.round(min * pomodoro.MINUTE_MULTIPLIER);
-
-//   const h = Math.floor(sec / 3600);
-//   const m = Math.floor((sec / 60) % 60).toString().padStart(h > 0 ? 2 : 1, '0');
-//   const s = (sec % 60).toString().padStart(2, '0');
-//   return `${h > 0 ? h + ':' : ''}${m}:${s}`;
-// }
-
-// function getTimerValue(getPause: boolean = false) {
-//   let current = 0;
-//   if (getPause) {
-//     current = pomodoro.status.breaks.find(e => e.status == EPomodoroBreakStatus.DOING)?.start ?? 0;
-//   } else {
-//     const lastDone = pomodoro.status.breaks.findLast(e => e.status == EPomodoroBreakStatus.DONE);
-//     current = lastDone ? lastDone.start + lastDone.lenght : 0;
-//   }
-//   return getMinutesFromPercentage(pomodoro.percentage - current)
-// }
-
-// function toogleTime() {
-//   showTime.value = !showTime.value;
-// }
-
-// function msToMinutes(ms: number): string {
-//   const minutes = Math.floor(ms / 1000 / 60);
-//   const seconds = Math.floor((ms / 1000) % 60).toString().padStart(2, '0');
-//   return `${minutes}:${seconds}`;
-// }
 </script>
 
 <template>
@@ -80,7 +37,7 @@ function toggleTime() {
           <!-- top left  -->
           <div class="top-left title blur">
             <img src="/images/logo.png" alt="logo" class="logo" />
-            <h3 class="text-primary">StudyBuddy
+            <h3 class="text-primary" v-if="!pomodoro.created">StudyBuddy
               <span class="bg-primary beta">BETA</span>
             </h3>
           </div>
@@ -99,9 +56,6 @@ function toggleTime() {
 
           <!-- main content in the center-->
           <div class="main-content">
-            <div v-if="pomodoro.going && showTime">
-              <p class="timer blur timer-inpause font-casio" v-if="pomodoro.studing">{{ pomodoro.timeInCurrentStudy }}</p>
-            </div>
             <!-- welcome screen -->
             <div v-if="pomodoro.created" class="created-box">
               <div class="blur rounded-box pa-7">
@@ -112,23 +66,16 @@ function toggleTime() {
                 </div>
               </div>
             </div>
-            <!-- pause and finish screen -->
-            <div v-else-if="pomodoro.terminated" class="mb-5 blur rounded-box pa-7">
+            <!-- finish screen -->
+            <div v-else-if="pomodoro.terminated" class="blur rounded-box finish-box">
               <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
               <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
             </div>
-            <div v-else-if="pomodoro.pauseing" class="mb-5 blur rounded-box pa-7">
-              <p class="pause font-press text-left">{{ $t("pause.youare") }}</p>
-              <h1 class="text-primary font-press text-center">{{ $t("pause.break") }}</h1>
-              <p class="pausetime font-press text-right">da <span class="text-primary font-casio">{{ pomodoro.timeInCurrentBreak }}</span></p>
-            </div>
 
+            <PomodoroCircle class="pomodoro-circle blur" v-if="!settings.userSettings.hideTime && pomodoro.going" />
             <div class="pomopause">
-              <v-btn class="btn bg-background btn-main btn-settings" v-if="!pomodoro.going" @click="openSettingsTab = true">
-                <v-icon size="32" icon="mdi-cog" />
-              </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.studing"
-                @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro() ">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="pomodoro.created"
+                @click="pomodoro.startPomodoro()">
                 <span>{{ $t("pause.study") }}</span>
                 <v-icon class="icon">mdi-play</v-icon>
               </v-btn>
@@ -167,17 +114,12 @@ function toggleTime() {
       </v-dialog>
     </div>
     <div class="bottom-bar">
-      <v-menu v-if="zenMode">
-        <template v-slot:activator="{ props }">
-          <v-btn density="comfortable" icon="mdi-pencil" class="btn-edit bg-background" v-bind="props"></v-btn>
-        </template>
-
-        <v-list>
-          <v-list-item @click="toggleTime()" title="Mostra Tempo" v-if="!showTime" />
-          <v-list-item @click="toggleTime()" title="Nascondi Tempo" v-else />
-          <v-list-item @click="openSettingsTab = 'theme'" title="Modifica sfondo" />
-        </v-list>
-      </v-menu>
+      <v-btn
+        density="comfortable"
+        icon="mdi-cog"
+        class="btn-edit bg-background"
+        @click="openSettingsTab =  pomodoro.going ? 'theme' : 'pomodoro'"
+      />
 
       <div :class="zenMode ? 'pull-up-panel blur' : 'pull-up-panel blur pull-up-panel-zenmode'">
         <div class="handle" v-ripple @click="zenMode = !zenMode">
@@ -185,7 +127,7 @@ function toggleTime() {
         </div>
 
         <div class="pomodoro-bar">
-          <div class="button-wrapper font-press pomo-left">
+          <div class="button-wrapper font-press pomo-left" v-if="!pomodoro.created">
             <div>
               <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created || pomodoro.terminated">
                 <v-icon class="icon" icon="mdi-play" />
@@ -201,10 +143,10 @@ function toggleTime() {
             </div>
           </div>
           <PomodoroFlex class="pomo-flex" />
-          <div class="button-wrapper pomo-right">
+          <div class="button-wrapper pomo-right" v-if="!pomodoro.created">
             <div class="time-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
-                <p v-if="showTime">{{ pomodoro.timeSinceStart }}</p>
+                <p v-if="!settings.userSettings.hideTime">{{ pomodoro.timeSinceStart }}</p>
               </div>
               <div class="pomo-box pomo-stop" @click="pomodoro.done ? pomodoro.stopPomodoro() : terminatePomoDialog = true">
                 <v-icon icon="mdi-stop" />
@@ -223,6 +165,12 @@ function toggleTime() {
 @font-face {
   font-family: 'casio';
   src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
+}
+
+.pomodoro-circle {
+  height: min(50vh, 80vw);
+  width: min(50vh, 80vw);
+  border-radius: 50%;
 }
 
 
@@ -311,10 +259,33 @@ function toggleTime() {
     justify-content: center;
     flex-direction: column;
     // margin-top: -6em;         // check this
-
+    @media (max-width: 600px) {
+      justify-content: flex-start;
+      margin-top: 20vh;
+    }
     .created-box {
       @media (max-width: 600px) {
-        display: none;
+        .title {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+
+    .finish-box {
+      margin: 1rem;
+      padding: 1.5rem;
+
+
+
+      @media (max-width: 600px) {
+        padding: 1rem;
+        p {
+          font-size: 0.7rem;
+        }
+        h2 {
+          font-size: 1rem;
+        }
       }
     }
     .report {
@@ -412,18 +383,6 @@ function toggleTime() {
       max-width: 700px;
       text-align: center;
       font-size: 1rem;
-
-      &.timer {
-        font-size: 2.7rem;
-        color: rgb(var(--v-theme-secondary));
-        margin-bottom: 2em;
-        padding: 0.7em 1em;
-        border-radius: 0.5em;
-
-        &.timer-inpause {
-          color: rgb(var(--v-theme-primary));
-        }
-      }
     }
 
   }
@@ -437,7 +396,6 @@ function toggleTime() {
     border-radius: 1rem;
     padding: 0.5rem;
     height: 5rem;
-
     .logo {
       height: 4rem;
     }
@@ -518,6 +476,7 @@ function toggleTime() {
   }
 
   .pull-up-panel {
+    padding-top: 0.8rem;
     pointer-events: auto;
     width: 100vw;
     border-radius: 1em 1em 0 0;
@@ -526,7 +485,7 @@ function toggleTime() {
 
     .handle {
       align-self: center;
-      margin: 0.8rem 0.8rem 0 0.8rem;
+      margin: 0 0.8rem 0 0.8rem;
       cursor: pointer;
       width: calc(100% - 1rem);
       height: 1.6rem;
@@ -538,17 +497,21 @@ function toggleTime() {
       &:hover {
         background-color: #FFFFFF10;
       }
+
+      @media screen and (max-width: 600px) {
+        display: none;
+      }
     }
 
     .pomodoro-bar {
       transition: padding 0.1s ease-in-out;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
+      display: flex;
       align-items: end;
       justify-content: space-between;
       padding: 0.5rem 1rem 1.5rem;
 
       @media (max-width: 600px) {
+        display: grid;
         grid-template-columns: 1fr 1fr;
         grid-template-rows: auto auto;
 

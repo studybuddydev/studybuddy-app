@@ -27,6 +27,9 @@
                   <v-select :label="$t('pause.general.language')" v-model="$i18n.locale" :items="$i18n.availableLocales"
                     @update:model-value="($event) => settingsStore.settings!.user!.lang = $event" />
                 </v-col>
+                <v-col cols="12">
+                  <v-select label="Hide Time" v-model="settingsStore.settings!.user!.hideTime" :items="hideTimeValues" />
+                </v-col>
               </v-row>
 
               <v-row>
@@ -149,19 +152,24 @@ const { logout } = useAuth0();
 type Theme = { theme: string, img: string }
 
 const themes = [
-  { title: 'Blallo',      value: { theme: 'blallo',   img: 'https://m.media-amazon.com/images/M/MV5BNjlkM2ZmYmYtZTg4YS00YTdlLWFlOTAtMzNiN2IyNjgxNDljXkEyXkFqcGdeQXVyNjA0OTQyODE@._V1_.jpg' } },
-  { title: 'Aurora',      value: { theme: 'blallo',   img: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg?cs=srgb&dl=pexels-stein-egil-liland-3573603.jpg' } },
-  { title: 'Japan',       value: { theme: 'pastel',   img: 'https://shorturl.at/dfjG9' } },
   { title: 'Forest',      value: { theme: 'bio',      img: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' } },
-  { title: 'OG',          value: { theme: 'verdone',  img: 'https://images.pexels.com/photos/66997/pexels-photo-66997.jpeg' } },
-  { title: 'Beach',       value: { theme: 'pastel',   img: 'https://images.pexels.com/photos/221471/pexels-photo-221471.jpeg' } },
+  { title: 'Aurora',      value: { theme: 'blallo',   img: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg' } },
+  { title: 'Space',       value: { theme: 'gptnight', img: 'https://live.staticflickr.com/65535/52259221868_b757d6cdea_k_d.jpg' } },
   { title: 'Mountain',    value: { theme: 'nord',     img: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' } },
-  { title: 'Dog',         value: { theme: 'bio',      img: 'https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg' } },
+  { title: 'Beach',       value: { theme: 'pastel',   img: 'https://images.pexels.com/photos/65322/pexels-photo-65322.jpeg' } },
   { title: 'Barbie',      value: { theme: 'pastel',   img: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' } },
   { title: 'Oppenheimer', value: { theme: 'gptnight', img: 'https://venezianews.b-cdn.net/wp-content/uploads/elementor/thumbs/Oppenheimer-qcqe56sjf98g5iharhgvboxysohac64vt3kbim5lio.jpg' } },
+  { title: 'OG',          value: { theme: 'verdone',  img: 'https://images.pexels.com/photos/66997/pexels-photo-66997.jpeg' } },
   { title: 'Gandalf',     value: { theme: 'blallo',   img: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' } }
+
 ]
+
 const selectedTheme = ref<Theme | null>(null);
+
+const hideTimeValues = [
+  { title: 'False', value: false },
+  { title: 'True', value: true }
+]
 
 function setTheme(newTheme: Theme) {
   settingsStore.updateTheme(newTheme.theme);

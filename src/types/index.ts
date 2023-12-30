@@ -119,6 +119,7 @@ export type PomodoroSettings = {
 }
 export type UserSettings = {
   lang: string;
+  hideTime: boolean;
 }
 export type ThemeSettings = {
   theme: string;

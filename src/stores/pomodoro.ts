@@ -369,6 +369,26 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return timeFormatted( startS - startLastStudyS );
   }
 
+  function getCurrentStatePercentage() {
+    const pomo = getCurrentPomo();
+    if (!pomo) return 0;
+    
+    const now = getNow(pomo.startedAt);
+    let lastPoint = 0;
+    let nextPoint = pomo.end;
+
+    if (pomo.state === PomodoroState.STUDY) {
+      lastPoint = pomo.breaksDone.at(-1)?.end ?? 0;
+      nextPoint = pomo.breaksTodo[0]?.start ?? pomo.end;
+    } else if (pomo.state === PomodoroState.BREAK) {
+      const currBreak = pomo.breaksDone.at(-1);
+      lastPoint = currBreak?.start ?? 0;
+      nextPoint = currBreak?.end ?? now;
+    }
+
+    return (now - lastPoint) / (nextPoint - lastPoint);
+  }
+
 
   // ---------- COMPUTED ----------
   const created    = computed(() => getCurrentPomo()?.state === PomodoroState.CREATED);
@@ -382,6 +402,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const timeSinceStart = computed(() => timeSinceStartFormatted());
   const timeInCurrentBreak = computed(() => timeInCurrentBreakFormatted());
   const timeInCurrentStudy = computed(() => timeInCurrentStudyFormatted());
+  const percInCurrentState = computed(() => getCurrentStatePercentage());
   const done = computed(() => {
     const pomo = getCurrentPomo();
     if (!pomo) return false;
@@ -394,7 +415,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     getCurrentPomo, getBreaks,
     percentage, displayBreaks, report,
     created, going, studing, pauseing, terminated, done,
-    timeSinceStart, timeInCurrentBreak, timeInCurrentStudy
+    timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState
   }
 
 })

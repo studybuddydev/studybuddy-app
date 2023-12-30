@@ -6,12 +6,13 @@ import { useTheme } from 'vuetify'
 
 const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
-const DEFAULT_THEME = 'blallo';
+const DEFAULT_THEME = 'bio';
 const DEFAULT_ICONS = 'mdi-icon';
 
 const defaultSettings: Settings = {
   user: {
     lang: DEFAULT_LANG,
+    hideTime: false,
   },
 
   pomodoro: {
@@ -25,7 +26,7 @@ const defaultSettings: Settings = {
     icon: DEFAULT_ICONS,
     theme: DEFAULT_THEME,
     backgroundColor: undefined,
-    backgroundImg: undefined,
+    backgroundImg: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg',
   }
 };
 
