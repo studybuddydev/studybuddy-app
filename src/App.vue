@@ -110,7 +110,7 @@ html {
 
     .pomodoro.mobile {
       height: 3rem;
-      bottom: 5rem;
+      bottom: 4rem;
     }
 
     .pomodoro-controls {
