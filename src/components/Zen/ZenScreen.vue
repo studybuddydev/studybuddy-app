@@ -43,14 +43,14 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
           </div>
 
           <!-- top right -->
-          <div class="top-right blur">
+          <div class="top-right blur" v-if="!isLoading">
             <p v-if="isAuthenticated" class="logged-user">
               <span class="text">{{ user?.given_name ?? user?.nickname }}</span>
               <span><v-avatar :image="user?.picture" /></span>
             </p>
             <p class="login-button" v-else @click="loginWithRedirect()">
               <v-icon size="x-large" class="icon" icon="mdi-account"/>
-              <span class="text">Log In</span>
+              <span class="text">Login</span>
             </p>
           </div>
 

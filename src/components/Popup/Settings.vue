@@ -3,7 +3,7 @@
     <v-card>
       <v-toolbar dark color="primary">
         <v-btn icon dark @click="modelDialog = false"> <v-icon>mdi-close</v-icon> </v-btn>
-        <v-toolbar-title>Settings</v-toolbar-title>
+        <!-- <v-toolbar-title>Settings</v-toolbar-title> -->
         <v-tabs v-model="modelTab">
           <v-tab value="general">{{ $t("pause.general.general") }}</v-tab>
           <v-tab value="pomodoro" :disabled="pomodoro.going">{{ $t("pause.timer.timer") }}</v-tab>

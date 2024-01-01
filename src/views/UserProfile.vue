@@ -1,7 +1,7 @@
 <template>
     <div>
         <h2>User Profile</h2>
-        <button v-if="!isAuthenticated" @click="login">Log in</button>
+        <button v-if="!isAuthenticated" @click="login">Login</button>
         <pre v-if="isAuthenticated">
         <code>{{ user }}</code>
     </pre>
