@@ -24,6 +24,57 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
   return {};
 });
 
+const isPipped = ref(false);
+
+async function pipIt() {
+  const player = document.querySelector("#pomocirclepip");
+
+  if (!(window as any).documentPictureInPicture) return;
+
+  if ((window as any).documentPictureInPicture.window) {
+    (window as any).documentPictureInPicture.window.close();
+    isPipped.value = false;
+    return;
+  }
+
+  // Open a Picture-in-Picture window.
+  const pipWindow = await (window as any).documentPictureInPicture.requestWindow();
+
+  // Copy style sheets over from the initial document
+  // so that the player looks the same.
+  [...(document.styleSheets as any)].forEach((styleSheet) => {
+    try {
+      const cssRules = [...styleSheet.cssRules].map((rule) => rule.cssText).join('');
+      const style = document.createElement('style');
+
+      style.textContent = cssRules;
+      pipWindow.document.head.appendChild(style);
+    } catch (e) {
+      const link = document.createElement('link');
+
+      link.rel = 'stylesheet';
+      link.type = styleSheet.type;
+      link.media = styleSheet.media;
+      link.href = styleSheet.href;
+      pipWindow.document.head.appendChild(link);
+    }
+  });
+
+  // Move the player to the Picture-in-Picture window.
+  pipWindow.document.body.append(player);
+  
+  // Move the player back when the Picture-in-Picture window closes.
+  pipWindow.addEventListener("pagehide", (event: any) => {
+    console.log('diocane')
+    const playerContainer = document.querySelector("#pomocirclepipparent");
+    const pipPlayer = event.target.querySelector("#pomocirclepip");
+    console.log(playerContainer)
+    playerContainer?.append(pipPlayer);
+  });
+  isPipped.value = true;
+
+}
+
 </script>
 
 <template>
@@ -49,7 +100,7 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
               <span><v-avatar :image="user?.picture" /></span>
             </p>
             <p class="login-button" v-else @click="loginWithRedirect()">
-              <v-icon size="x-large" class="icon" icon="mdi-account"/>
+              <v-icon v-ripple size="x-large" class="icon" icon="mdi-account"/>
               <span class="text">Login</span>
             </p>
           </div>
@@ -71,13 +122,29 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
               <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
               <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
             </div>
-
-            <PomodoroCircle class="pomodoro-circle blur" v-if="!settings.userSettings.hideTime && pomodoro.going" />
+            
+            <div class="pomodoro-circle-component-on-zen-wrapper">
+              <PomodoroCircle
+                class="pomodoro-circle-component pomodoro-circle-component-on-zen"
+                v-if="!settings.userSettings.hideTime && pomodoro.going"
+                />
+              <div class="pip-icon"><v-icon class="icon" :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'" @click="pipIt()" /></div>
+            </div>
+            <div class="hide" id="pomocirclepipparent">
+              <div
+                id="pomocirclepip"
+                :class="zenStyle.backgroundImage ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
+                :style="zenStyle">
+                <div class="pomodoro-circle-component-on-pip-wrapper">
+                  <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-pip" />
+                </div>
+              </div>
+            </div>
             <div class="pomopause">
               <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="pomodoro.created"
                 @click="pomodoro.startPomodoro()">
                 <span>{{ $t("pause.study") }}</span>
-                <v-icon class="icon">mdi-play</v-icon>
+                <v-icon class="icon" icon="mdi-play" />
               </v-btn>
             </div>
 
@@ -167,11 +234,51 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
   src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
 }
 
-.pomodoro-circle {
-  height: min(50vh, 80vw);
-  width: min(50vh, 80vw);
-  border-radius: 50%;
+.pomodoro-circle-component-on-zen-wrapper {
+  position: relative;
+  .pip-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: none;
+    .icon {
+      cursor: pointer;
+      &:hover {
+        color: rgb(var(--v-theme-primary));
+      }
+    }
+  }
+
+  &:hover {
+    .pip-icon {
+      display: block;
+    }
+  }
+
+  .pomodoro-circle-component-on-zen {
+    height: min(50vh, 80vw);
+    width: min(50vh, 80vw);
+  }
 }
+.pomodoro-circle-component-on-pip-wrapper-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: rgb(var(--v-theme-surface));
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  .pomodoro-circle-component-on-pip-wrapper {
+    width: 100vmin;
+    height: 100vmin;
+    padding: 1rem;
+    .pomodoro-circle-component-on-pip {
+      height: 100%;
+    }
+  }
+}
+
 
 
 .blur {

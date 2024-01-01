@@ -65,7 +65,9 @@ onUnmounted(() => { window.removeEventListener('resize', updateWidth); });
 //   // background-color: var(--v-theme-primary);
 // }
 
-/* Scroll bar stylings */
+.hide {
+  display: none !important;
+}
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;

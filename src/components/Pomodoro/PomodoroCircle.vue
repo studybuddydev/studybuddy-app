@@ -1,5 +1,5 @@
 <template>
-  <div class="pomodoro-circle">
+  <div class="pomodoro-circle blur">
 
     <div class="progress-bar" :style="{
       background: `conic-gradient(
@@ -36,13 +36,16 @@ import { useTheme } from 'vuetify'
 import { usePomodoroStore } from "@/stores/pomodoro";
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
-
 </script>
 
 
 <style lang="scss" scoped>
+.blur {
+  background-color: rgba(var(--v-theme-background));
+}
 .pomodoro-circle {
   position: relative;
+  border-radius: 50%;
 
   .progress-bar {
     position: absolute;
