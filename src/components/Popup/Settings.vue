@@ -28,7 +28,7 @@
                     @update:model-value="($event) => settingsStore.settings!.user!.lang = $event" />
                 </v-col>
                 <v-col cols="12">
-                  <v-select label="Hide Time" v-model="settingsStore.settings!.user!.hideTime" :items="hideTimeValues" />
+                  <v-select label="Nascondi tempo" v-model="settingsStore.settings!.user!.hideTime" :items="hideTimeValues" />
                 </v-col>
               </v-row>
 
