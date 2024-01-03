@@ -55,12 +55,27 @@
 
             <!-- POMODORO -->
             <v-window-item value="pomodoro">
-              <v-btn @click="presetPomo(0,0,0)" color="primary" class="mb-2">
-                {{ $t("libero") }}
-              </v-btn>
-              <v-btn @click="presetPomo(115,15,3)" color="primary" class="mb-2">
-                {{ $t("classico") }}
-              </v-btn>
+              <v-row>
+                <v-col cols="auto">
+                  <v-btn @click="presetPomo(0,0,0)" color="primary" class="mb-2">
+                    {{ $t("libero") }}
+                  </v-btn>
+                </v-col>
+                <v-col cols="auto">
+                  <v-btn @click="presetPomo(115,15,3)" color="primary" class="mb-2">
+                    {{ $t("classico") }}
+                  </v-btn>
+                </v-col>
+                <v-col cols="auto">
+                  <div class="time-picker">
+                    <input type="number" v-model="hours" min="0" max="23" placeholder="hh" style="width: 50px;" class="bordered-input" />
+                    <input type="number" v-model="minutes" min="0" max="59" placeholder="mm" style="width: 50px;" class="bordered-input" />
+                  </div>
+                </v-col>
+                </v-row>
+       
+
+              
 
               <div class="text-h6"> {{ $t("pause.timer.sessionOf") }} {{
                 Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} {{ $t("pause.timer.hours") }} {{ settingsStore.settings!.pomodoro!.totalLength % 60 }} {{ $t("pause.timer.minutes") }}</div>
@@ -155,6 +170,30 @@ const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
 const { logout } = useAuth0();
 
+const hours = computed({
+ get() { 
+   let totalLength = settingsStore.settings!.pomodoro!.totalLength;
+   let date = new Date(Date.now() + totalLength * 60 * 1000);
+   return date.getHours();
+ },
+ set(value) { 
+   let minutes = settingsStore.settings!.pomodoro!.totalLength % 60;
+   settingsStore.settings!.pomodoro!.totalLength = value * 60 + minutes;
+ }
+})
+
+const minutes = computed({
+ get() {
+   let totalLength = settingsStore.settings!.pomodoro!.totalLength;
+   let date = new Date(Date.now() + totalLength * 60 * 1000);
+   return date.getMinutes();
+ },
+ set(value) { 
+   let hours = settingsStore.settings!.pomodoro!.totalLength / 60;
+   settingsStore.settings!.pomodoro!.totalLength = hours * 60 + value;
+ }
+})
+
 type Theme = { theme: string, img: string }
 
 const themes = [
@@ -176,6 +215,8 @@ const hideTimeValues = [
   { title: 'False', value: false },
   { title: 'True', value: true }
 ]
+
+
 
 function setTheme(newTheme: Theme) {
   settingsStore.updateTheme(newTheme.theme);
@@ -228,3 +269,21 @@ const sessionLenght = computed({
 })
 
 </script>
+
+<style scoped lang="scss">
+.time-picker {
+ display: flex;
+ justify-content: space-between;
+ 
+}
+.time-picker {
+ display: flex;
+ justify-content: space-between;
+}
+
+.bordered-input {
+ border: 1px solid black;
+ padding: 5px;
+ border-radius: 10px;
+}
+</style>
