@@ -55,6 +55,12 @@
 
             <!-- POMODORO -->
             <v-window-item value="pomodoro">
+              <v-btn @click="presetPomo(0,0,0)" color="primary" class="mb-2">
+                {{ $t("libero") }}
+              </v-btn>
+              <v-btn @click="presetPomo(115,15,3)" color="primary" class="mb-2">
+                {{ $t("classico") }}
+              </v-btn>
 
               <div class="text-h6"> {{ $t("pause.timer.sessionOf") }} {{
                 Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} {{ $t("pause.timer.hours") }} {{ settingsStore.settings!.pomodoro!.totalLength % 60 }} {{ $t("pause.timer.minutes") }}</div>
@@ -199,6 +205,12 @@ function exportData() {
 
 function importData() {
   state.uploadData();
+}
+
+function presetPomo(totalLength = 2, breaksLength = 15, numberOfBreak = 3) {
+  settingsStore.settings!.pomodoro!.totalLength = totalLength;
+  settingsStore.settings!.pomodoro!.breaksLength = breaksLength;
+  settingsStore.settings!.pomodoro!.numberOfBreak = numberOfBreak;
 }
 
 //// ---- ////
