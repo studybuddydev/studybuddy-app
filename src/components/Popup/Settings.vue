@@ -58,7 +58,7 @@
 
               <div class="text-h6"> {{ $t("pause.timer.sessionOf") }} {{
                 Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} {{ $t("pause.timer.hours") }} {{ settingsStore.settings!.pomodoro!.totalLength % 60 }} {{ $t("pause.timer.minutes") }}</div>
-              <v-slider v-model="settingsStore.settings!.pomodoro!.totalLength" :min="5" :max="240" :step="5" thumb-label
+              <v-slider v-model="settingsStore.settings!.pomodoro!.totalLength" :min="0" :max="240" :step="5" thumb-label
                 class="pr-4" prepend-icon="mdi-timer">
                 <template v-slot:thumb-label>
                   {{ Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }}h{{
