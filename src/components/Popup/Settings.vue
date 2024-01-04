@@ -28,7 +28,8 @@
                     @update:model-value="($event) => settingsStore.settings!.user!.lang = $event" />
                 </v-col>
                 <v-col cols="12">
-                  <v-select label="Nascondi tempo" v-model="settingsStore.settings!.user!.hideTime" :items="hideTimeValues" />
+                  <v-select label="Nascondi tempo" v-model="settingsStore.settings!.user!.hideTime"
+                    :items="hideTimeValues" />
                 </v-col>
               </v-row>
 
@@ -56,29 +57,29 @@
             <!-- POMODORO -->
             <v-window-item value="pomodoro">
               <v-row>
-                <v-col cols="auto">
-                  <v-btn @click="presetPomo(0,0,0)" color="primary" class="mb-2">
+                <v-col cols="6">
+                  <v-btn @click="presetPomo(0, 0, 0)" color="primary" class="mb-2">
                     {{ $t("libero") }}
                   </v-btn>
                 </v-col>
-                <v-col cols="auto">
-                  <v-btn @click="presetPomo(115,15,3)" color="primary" class="mb-2">
+                <v-col cols="6">
+                  <v-btn @click="presetPomo(115, 15, 3)" color="primary" class="mb-2">
                     {{ $t("classico") }}
                   </v-btn>
                 </v-col>
-                <v-col cols="auto">
-                  <div class="time-picker">
-                    <input type="number" v-model="hours" min="0" max="23" placeholder="hh" style="width: 50px;" class="bordered-input" />
-                    <input type="number" v-model="minutes" min="0" max="59" placeholder="mm" style="width: 50px;" class="bordered-input" />
-                  </div>
+              </v-row>
+              <v-row>
+                <v-col cols="6">
+                  <v-text-field v-model="hours" type="number" min="0" max="23" label="Hours"/>
                 </v-col>
-                </v-row>
-       
-
-              
+                <v-col cols="6">
+                  <v-text-field v-model="minutes" type="number" min="0" max="59" label="Minutes" />
+                </v-col>
+              </v-row>
 
               <div class="text-h6"> {{ $t("pause.timer.sessionOf") }} {{
-                Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} {{ $t("pause.timer.hours") }} {{ settingsStore.settings!.pomodoro!.totalLength % 60 }} {{ $t("pause.timer.minutes") }}</div>
+                Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} {{ $t("pause.timer.hours") }} {{
+    settingsStore.settings!.pomodoro!.totalLength % 60 }} {{ $t("pause.timer.minutes") }}</div>
               <v-slider v-model="settingsStore.settings!.pomodoro!.totalLength" :min="0" :max="240" :step="5" thumb-label
                 class="pr-4" prepend-icon="mdi-timer">
                 <template v-slot:thumb-label>
@@ -87,7 +88,8 @@
                 </template>
               </v-slider>
 
-              <div class="text-h6">{{ settingsStore.settings!.pomodoro!.breaksLength }} {{ $t("pause.timer.breaksLength") }}
+              <div class="text-h6">{{ settingsStore.settings!.pomodoro!.breaksLength }} {{ $t("pause.timer.breaksLength")
+              }}
               </div>
               <v-slider v-model="settingsStore.settings!.pomodoro!.breaksLength" :min="1" :max="60" :step="1" thumb-label
                 class="pr-4" prepend-icon="mdi-coffee" />
@@ -118,14 +120,14 @@
 
               <v-row>
                 <v-col cols="12">
-                  <v-select label="Theme" v-model="selectedTheme"
-                    :items="themes" clearable  @update:model-value="setTheme($event)" />
+                  <v-select label="Theme" v-model="selectedTheme" :items="themes" clearable
+                    @update:model-value="setTheme($event)" />
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-select label="Colors" v-model="settingsStore.settings.theme!.theme"
-                    :items="themeList" item-title="title" item-value="value" @update:model-value="settingsStore.updateTheme($event)">
+                  <v-select label="Colors" v-model="settingsStore.settings.theme!.theme" :items="themeList"
+                    item-title="title" item-value="value" @update:model-value="settingsStore.updateTheme($event)">
                     <template #item="{ props, item }">
                       <v-list-item v-bind="props">
                         <template #prepend>
@@ -171,41 +173,41 @@ const pomodoro = usePomodoroStore();
 const { logout } = useAuth0();
 
 const hours = computed({
- get() { 
-   let totalLength = settingsStore.settings!.pomodoro!.totalLength;
-   let date = new Date(Date.now() + totalLength * 60 * 1000);
-   return date.getHours();
- },
- set(value) { 
-   let minutes = settingsStore.settings!.pomodoro!.totalLength % 60;
-   settingsStore.settings!.pomodoro!.totalLength = value * 60 + minutes;
- }
+  get() {
+    let totalLength = settingsStore.settings!.pomodoro!.totalLength;
+    let date = new Date(Date.now() + totalLength * 60 * 1000);
+    return date.getHours();
+  },
+  set(value) {
+    let minutes = settingsStore.settings!.pomodoro!.totalLength % 60;
+    settingsStore.settings!.pomodoro!.totalLength = value * 60 + minutes;
+  }
 })
 
 const minutes = computed({
- get() {
-   let totalLength = settingsStore.settings!.pomodoro!.totalLength;
-   let date = new Date(Date.now() + totalLength * 60 * 1000);
-   return date.getMinutes();
- },
- set(value) { 
-   let hours = settingsStore.settings!.pomodoro!.totalLength / 60;
-   settingsStore.settings!.pomodoro!.totalLength = hours * 60 + value;
- }
+  get() {
+    let totalLength = settingsStore.settings!.pomodoro!.totalLength;
+    let date = new Date(Date.now() + totalLength * 60 * 1000);
+    return date.getMinutes();
+  },
+  set(value) {
+    let hours = settingsStore.settings!.pomodoro!.totalLength / 60;
+    settingsStore.settings!.pomodoro!.totalLength = hours * 60 + value;
+  }
 })
 
 type Theme = { theme: string, img: string }
 
 const themes = [
-  { title: 'Forest',      value: { theme: 'bio',      img: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' } },
-  { title: 'Aurora',      value: { theme: 'blallo',   img: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg' } },
-  { title: 'Space',       value: { theme: 'gptnight', img: 'https://live.staticflickr.com/65535/52259221868_b757d6cdea_k_d.jpg' } },
-  { title: 'Mountain',    value: { theme: 'nord',     img: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' } },
-  { title: 'Beach',       value: { theme: 'pastel',   img: 'https://images.pexels.com/photos/65322/pexels-photo-65322.jpeg' } },
-  { title: 'Barbie',      value: { theme: 'pastel',   img: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' } },
+  { title: 'Forest', value: { theme: 'bio', img: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' } },
+  { title: 'Aurora', value: { theme: 'blallo', img: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg' } },
+  { title: 'Space', value: { theme: 'gptnight', img: 'https://live.staticflickr.com/65535/52259221868_b757d6cdea_k_d.jpg' } },
+  { title: 'Mountain', value: { theme: 'nord', img: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' } },
+  { title: 'Beach', value: { theme: 'pastel', img: 'https://images.pexels.com/photos/65322/pexels-photo-65322.jpeg' } },
+  { title: 'Barbie', value: { theme: 'pastel', img: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' } },
   { title: 'Oppenheimer', value: { theme: 'gptnight', img: 'https://venezianews.b-cdn.net/wp-content/uploads/elementor/thumbs/Oppenheimer-qcqe56sjf98g5iharhgvboxysohac64vt3kbim5lio.jpg' } },
-  { title: 'OG',          value: { theme: 'verdone',  img: 'https://images.pexels.com/photos/66997/pexels-photo-66997.jpeg' } },
-  { title: 'Gandalf',     value: { theme: 'blallo',   img: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' } }
+  { title: 'OG', value: { theme: 'verdone', img: 'https://images.pexels.com/photos/66997/pexels-photo-66997.jpeg' } },
+  { title: 'Gandalf', value: { theme: 'blallo', img: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' } }
 
 ]
 
@@ -272,18 +274,18 @@ const sessionLenght = computed({
 
 <style scoped lang="scss">
 .time-picker {
- display: flex;
- justify-content: space-between;
- 
+  display: flex;
+  justify-content: space-between;
+
 }
+
 .time-picker {
- display: flex;
- justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .bordered-input {
- border: 1px solid black;
- padding: 5px;
- border-radius: 10px;
-}
-</style>
+  border: 1px solid black;
+  padding: 5px;
+  border-radius: 10px;
+}</style>
