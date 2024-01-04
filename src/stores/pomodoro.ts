@@ -303,11 +303,11 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const pomo = getCurrentPomo();
     if (!pomo) return { timeTotal: '', timeStudy: '', timeBreak: '', nrBreaks: '', points: '' };
     const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
-    const timeStudy = pomo.end - timeBreak;
+    const timeStudy = (pomo.endedAt ?? pomo.end) - timeBreak;
     const points = ((timeStudy - timeBreak) / timeStudy * 100)
 
     return {
-      timeTotal: timeFormatted(pomo.end / SECONDS_MULTIPLIER),
+      timeTotal: timeFormatted((pomo.endedAt ?? pomo.end) / SECONDS_MULTIPLIER),
       timeStudy: timeFormatted(timeStudy / SECONDS_MULTIPLIER),
       timeBreak: timeFormatted(timeBreak / SECONDS_MULTIPLIER),
       nrBreaks: pomo.breaksDone.length.toString(),
