@@ -26,6 +26,18 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
 
 const isPipped = ref(false);
 
+function stopPomodoro() {
+  pomodoro.stopPomodoro();
+  zenMode.value = true;
+}
+
+function toggleZenMode() {
+  zenMode.value = !zenMode.value;
+  if (!zenMode.value && pomodoro.pauseing) {
+    pomodoro.togglePauseStudy();
+  }
+}
+
 async function pipIt() {
   const player = document.querySelector("#pomocirclepip");
 
@@ -175,7 +187,7 @@ async function pipIt() {
           <v-card-actions>
             <v-spacer />
             <v-btn @click="terminatePomoDialog = false">No</v-btn>
-            <v-btn color="primary" @click="pomodoro.stopPomodoro(); terminatePomoDialog = false">Si</v-btn>
+            <v-btn color="primary" @click="stopPomodoro(); terminatePomoDialog = false">Si</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -189,7 +201,7 @@ async function pipIt() {
       />
 
       <div :class="zenMode ? 'pull-up-panel blur' : 'pull-up-panel blur pull-up-panel-zenmode'">
-        <div class="handle" v-ripple @click="zenMode = !zenMode">
+        <div class="handle" v-ripple @click="toggleZenMode()">
           <v-icon :icon="zenMode ? 'mdi-chevron-down' : 'mdi-chevron-up'" />
         </div>
 
@@ -215,7 +227,8 @@ async function pipIt() {
               <div class="pomo-box pomo-time font-casio">
                 <p v-if="!settings.userSettings.hideTime">{{ pomodoro.timeSinceStart }}</p>
               </div>
-              <div class="pomo-box pomo-stop" @click="pomodoro.done ? pomodoro.stopPomodoro() : terminatePomoDialog = true">
+              <div :class="pomodoro.terminated ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
+                    @click="pomodoro.done ? stopPomodoro() : terminatePomoDialog = true">
                 <v-icon icon="mdi-stop" />
               </div>
             </div>
