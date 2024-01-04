@@ -293,14 +293,13 @@ async function pipIt() {
 }
 
 
-
 .blur {
   background-color: rgba(var(--v-theme-background));
 }
 
 .img-background {
   .blur {
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
     background-color: rgba(var(--v-theme-background), 0.7);
   }
 }

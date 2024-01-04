@@ -40,9 +40,6 @@ const theme = useTheme();
 
 
 <style lang="scss" scoped>
-.blur {
-  background-color: rgba(var(--v-theme-background));
-}
 .pomodoro-circle {
   position: relative;
   border-radius: 50%;
@@ -109,4 +106,54 @@ const theme = useTheme();
     }
   }
 }
+
+
+.breathing {
+  animation: breathing 2s ease-out infinite normal;
+}
+
+@keyframes breathing {
+  0% {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  10% {
+    -webkit-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+
+  15% {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  25% {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  35% {
+    -webkit-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+
+  40% {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
 </style>
