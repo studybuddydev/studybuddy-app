@@ -35,9 +35,9 @@
 
               <v-row>
                 <v-spacer />
-                <v-col> <v-btn class="bg-background" @click="exportData()" icon="mdi-tray-arrow-down" title="Export Data"
+                <v-col> <v-btn class="bg-background ma-2" @click="exportData()" icon="mdi-tray-arrow-down" title="Export Data"
                     color="background" /> </v-col>
-                <v-col> <v-btn class="bg-background" @click="importData()" icon="mdi-tray-arrow-up" title="Import Data"
+                <v-col> <v-btn class="bg-background ma-2" @click="importData()" icon="mdi-tray-arrow-up" title="Import Data"
                     color="background" /> </v-col>
                 <!-- <v-col>
                   <v-snackbar :timeout="2000" color="primary" elevation="24">
@@ -47,7 +47,7 @@
                     {{$t("pause.general.resetted")}}
                   </v-snackbar>
                 </v-col> -->
-                <v-col> <v-btn @click="loggaout()" icon="mdi-logout-variant" color="error" title="Logout"></v-btn>
+                <v-col> <v-btn @click="loggaout()" class="ma-2" icon="mdi-logout-variant" color="error" title="Logout"></v-btn>
                 </v-col>
                 <v-spacer />
               </v-row>
@@ -288,4 +288,6 @@ const sessionLenght = computed({
   border: 1px solid black;
   padding: 5px;
   border-radius: 10px;
-}</style>
+}
+
+</style>
