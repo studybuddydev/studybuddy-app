@@ -153,7 +153,7 @@ async function pipIt() {
               </div>
             </div>
             <div class="pomopause">
-              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="pomodoro.created"
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
                 @click="pomodoro.startPomodoro()">
                 <span>{{ $t("pause.study") }}</span>
                 <v-icon class="icon" icon="mdi-play" />
@@ -194,6 +194,7 @@ async function pipIt() {
     </div>
     <div class="bottom-bar">
       <v-btn
+        v-if="zenMode"
         density="comfortable"
         icon="mdi-cog"
         class="btn-edit bg-background"
@@ -206,7 +207,7 @@ async function pipIt() {
         </div>
 
         <div class="pomodoro-bar">
-          <div class="button-wrapper font-press pomo-left" v-if="!pomodoro.created">
+          <div class="button-wrapper font-press pomo-left" v-if="pomodoro.going">
             <div>
               <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created || pomodoro.terminated">
                 <v-icon class="icon" icon="mdi-play" />
@@ -222,7 +223,7 @@ async function pipIt() {
             </div>
           </div>
           <PomodoroFlex class="pomo-flex" />
-          <div class="button-wrapper pomo-right" v-if="!pomodoro.created">
+          <div class="button-wrapper pomo-right" v-if="pomodoro.going">
             <div class="time-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
                 <p v-if="!settings.userSettings.hideTime">{{ pomodoro.timeSinceStart }}</p>
