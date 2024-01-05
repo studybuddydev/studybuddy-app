@@ -152,14 +152,6 @@ async function pipIt() {
                 </div>
               </div>
             </div>
-            <div class="pomopause">
-              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
-                @click="pomodoro.startPomodoro()">
-                <span>{{ $t("pause.study") }}</span>
-                <v-icon class="icon" icon="mdi-play" />
-              </v-btn>
-            </div>
-
             <!-- report table-->
             <div class="report font-press" v-if="pomodoro.report">
               <div class="grid-container">
@@ -176,7 +168,13 @@ async function pipIt() {
               </div>
             </div>
 
-            <!-- pomodoro bar -->
+            <div class="pomopause">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+                @click="pomodoro.startPomodoro()">
+                <span>{{ $t("pause.study") }}</span>
+                <v-icon class="icon" icon="mdi-play" />
+              </v-btn>
+            </div>
 
           </div>
         </div>
