@@ -136,6 +136,23 @@ export const themes = {
       apple: '#FF3333',
     }
   }, 
+  vaporwave: {
+    dark: true,
+    colors: {
+      background: '#0a0c37',      // Pastel pink
+      surface: '#375971',         // Light lavender
+      primary: '#ff61c6',         // Neon green
+      'primary-darken-1': '#ee51b6', // Darker green
+      secondary: '#5cecff',       // Pastel magenta
+      'secondary-darken-1': '#5cecff', // Darker magenta
+      error: '#ff6666',           // Neon red
+      info: '#66ccff',            // Pastel blue
+      success: '#99ff99',         // Light green
+      warning: '#ff9900',         // Pastel yellow
+      snake: '#80ff80',           // Neon green (same as primary)
+      apple: '#ff3333',           // Darker red
+    }
+  }, 
   
 }
 
@@ -149,4 +166,5 @@ export const themeList = [
   { value: 'blallo', title: 'Blallo', color: '#fdd93d' },
   { value: 'gptday', title: 'GPT Day', color: '#0077C2' },
   { value: 'gptnight', title: 'GPT Night', color: '#005DA6' },
+  { value: 'vaporwave', title: 'Vaporwave', color: '#ff61c6' },
 ]

@@ -200,10 +200,13 @@ type Theme = { theme: string, img: string }
 
 const themes = [
   { title: 'Forest', value: { theme: 'bio', img: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' } },
+  { title: 'Clouds', value: { theme: 'nord', img: 'https://images.alphacoders.com/133/1332707.png' } },
   { title: 'Aurora', value: { theme: 'blallo', img: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg' } },
   { title: 'Space', value: { theme: 'gptnight', img: 'https://live.staticflickr.com/65535/52259221868_b757d6cdea_k_d.jpg' } },
   { title: 'Mountain', value: { theme: 'nord', img: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' } },
   { title: 'Beach', value: { theme: 'pastel', img: 'https://images.pexels.com/photos/65322/pexels-photo-65322.jpeg' } },
+  { title: 'Vaporwave', value: { theme: 'vaporwave', img: 'https://images.alphacoders.com/124/1249674.jpg' } },
+  { title: 'LOFI', value: { theme: 'gptnight', img: 'https://i.redd.it/injl33v9myl51.jpg' } },
   { title: 'Barbie', value: { theme: 'pastel', img: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' } },
   { title: 'Oppenheimer', value: { theme: 'gptnight', img: 'https://venezianews.b-cdn.net/wp-content/uploads/elementor/thumbs/Oppenheimer-qcqe56sjf98g5iharhgvboxysohac64vt3kbim5lio.jpg' } },
   { title: 'OG', value: { theme: 'verdone', img: 'https://images.pexels.com/photos/66997/pexels-photo-66997.jpeg' } },
