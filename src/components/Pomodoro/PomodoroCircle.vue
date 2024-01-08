@@ -1,5 +1,5 @@
 <template>
-  <div class="pomodoro-circle blur">
+  <div :class="inPip ? 'pomodoro-circle blur pip' : 'pomodoro-circle blur'" ref="el">
 
     <div class="progress-bar" :style="{
       background: `conic-gradient(
@@ -10,20 +10,20 @@
     }"></div>
     <div class="progress-bar-content">
       <div v-if="pomodoro.going">
-        <p class="timer timer-inpause font-casio" v-if="pomodoro.studing">{{ pomodoro.timeInCurrentStudy }}</p>
+        <p class="timer timer-inpause font-casio" v-if="pomodoro.studing"
+          v-html="pomodoro.timeInCurrentStudy" :style="{ fontSize: `${width / 12}px` }"></p>
 
         <div v-else-if="pomodoro.pauseing" class="pause-text">
-          <p class="font-press pause-p">{{ $t("pause.youare") }}</p>
-          <h1 class="text-primary font-press">{{ $t("pause.break") }}</h1>
-          <p class="font-press pause-p">da <span class="text-primary font-casio">{{ pomodoro.timeInCurrentBreak
-          }}</span></p>
+          <p :style="{ fontSize: `${width / 20}px` }" class="font-press pause-p">{{ $t("pause.youare") }}</p>
+          <p :style="{ fontSize: `${width / 15}px` }" class="text-primary font-press">{{ $t("pause.break") }}</p>
+          <p :style="{ fontSize: `${width / 20}px` }" class="font-press pause-p">da <span class="text-primary font-casio" v-html="pomodoro.timeInCurrentBreak"></span></p>
         </div>
       </div>
 
-      <div class="buttons">
+      <div class="buttons" >
         <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5' v-if="!pomodoro.studing"
-          @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro()">
-          <v-icon class="icon">mdi-play</v-icon>
+          @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro()" :style="{ height: `${width / 10}px` }">
+          <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-play" />
         </v-btn>
       </div>
     </div>
@@ -34,12 +34,22 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
 import { usePomodoroStore } from "@/stores/pomodoro";
+import { useElementSize } from '@vueuse/core'
+import { ref } from 'vue';
+
+const el = ref(null)
+const { width } = useElementSize(el)
+
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
+
+const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  });
 </script>
 
 
 <style lang="scss" scoped>
+
+
 .pomodoro-circle {
   position: relative;
   border-radius: 50%;
@@ -69,15 +79,7 @@ const theme = useTheme();
     align-items: center;
 
     .pause-text {
-      margin-top: 4em;
-    }
-
-    .pause-p {
-      font-size: min(2.5vh, 4vw);
-    }
-
-    h1 {
-      font-size: min(5vh, 8vw);
+      // margin-top: 4em;
     }
 
     .buttons {
@@ -87,15 +89,12 @@ const theme = useTheme();
       flex-direction: row;
 
       .btn {
-        font-size: min(2vh, 3vw);
         height: min(6vh, 8vw);
         font-weight: bold;
-        font-size: min(4vh, 5vw);
       }
     }
 
     .timer {
-      font-size: min(5vh, 7vw);
       color: rgb(var(--v-theme-secondary));
       padding: 0.7em 1em;
       border-radius: 0.5em;
@@ -106,7 +105,6 @@ const theme = useTheme();
     }
   }
 }
-
 
 .breathing {
   animation: breathing 2s ease-out infinite normal;

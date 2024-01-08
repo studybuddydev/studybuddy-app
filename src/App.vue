@@ -65,6 +65,13 @@ onUnmounted(() => { window.removeEventListener('resize', updateWidth); });
 //   // background-color: var(--v-theme-primary);
 // }
 
+
+.small {
+  font-size: 0.5em;
+}
+
+
+
 .hide {
   display: none !important;
 }

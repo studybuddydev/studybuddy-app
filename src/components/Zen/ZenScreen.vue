@@ -138,7 +138,7 @@ async function pipIt() {
             <div class="pomodoro-circle-component-on-zen-wrapper">
               <PomodoroCircle
                 class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-                v-if="!settings.userSettings.hideTime && pomodoro.going"
+                v-if="!settings.userSettings.hideTime && pomodoro.going" :in-pip="false"
                 />
               <div class="pip-icon"><v-icon class="icon" :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'" @click="pipIt()" /></div>
             </div>
@@ -148,7 +148,7 @@ async function pipIt() {
                 :class="zenStyle.backgroundImage ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
                 :style="zenStyle">
                 <div class="pomodoro-circle-component-on-pip-wrapper">
-                  <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-pip" />
+                  <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-pip" :in-pip="true" />
                 </div>
               </div>
             </div>
@@ -224,7 +224,7 @@ async function pipIt() {
           <div class="button-wrapper pomo-right" v-if="pomodoro.going">
             <div class="time-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
-                <p v-if="!settings.userSettings.hideTime">{{ pomodoro.timeSinceStart }}</p>
+                <p v-if="!settings.userSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
               </div>
               <div :class="pomodoro.terminated ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
                     @click="pomodoro.done ? stopPomodoro() : terminatePomoDialog = true">

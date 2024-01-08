@@ -6,7 +6,7 @@ import { computed, ref, watch } from 'vue';
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 1 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 
 enum ESound {
@@ -64,7 +64,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       end: totalLength,
       breaksDone: [],
       breaksTodo: generateBreaks(totalLength, breaksLength, nrOfBreaks),
-      state: PomodoroState.CREATED
+      state: PomodoroState.CREATED,
+      soundEnd: totalLength <= 1000,
     }
     stateStore.setPomodoroStatus(pomo);
     saveStatus();
@@ -285,7 +286,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       const lengthPerc = (100 * (end / pomo.end)) - startPerc;
       return {
         startPerc, lengthPerc,
-        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER),
+        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, false),
         done: b.done,
         index: i
       }
@@ -307,9 +308,9 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const points = Math.max( ((timeStudy - timeBreak) / timeStudy * 100), 0 );
 
     return {
-      timeTotal: timeFormatted((pomo.endedAt ?? pomo.end) / SECONDS_MULTIPLIER),
-      timeStudy: timeFormatted(timeStudy / SECONDS_MULTIPLIER),
-      timeBreak: timeFormatted(timeBreak / SECONDS_MULTIPLIER),
+      timeTotal: timeFormatted((pomo.endedAt ?? pomo.end) / SECONDS_MULTIPLIER, false),
+      timeStudy: timeFormatted(timeStudy / SECONDS_MULTIPLIER, false),
+      timeBreak: timeFormatted(timeBreak / SECONDS_MULTIPLIER, false),
       nrBreaks: pomo.breaksDone.length.toString(),
       points: points.toFixed(1)
     };
@@ -331,18 +332,23 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     audio.play();
   }
 
-  function timeFormatted(seconds: number) {
+  function timeFormatted(seconds: number, html: boolean = true) {
     let secondsLeft = seconds; // Math.floor(time  / MINUTE_MULTIPLIER * 60);
-    const h = Math.floor(secondsLeft / 3600);
+    let h = Math.floor(secondsLeft / 3600);
     secondsLeft -= h * 3600;
     const m = Math.floor(secondsLeft / 60);
     secondsLeft -= m * 60;
     const s = Math.floor(secondsLeft);
 
-    const sStr = s.toString().padStart(2, '0');
-    const mStr = `${h > 0 ? m.toString().padStart(2, '0') : m.toString()}:`;
+    h += 1
+    const sStr = `${s.toString().padStart(2, '0')}`;
+    const mStr = `${h > 0 ? m.toString().padStart(2, '0') : m.toString()}`;
     const hStr = h > 0 ? `${h}:` : '';
-    return `${hStr}${mStr}${sStr}`;
+    const cssClass = h > 0 ? 'small seconds' : 'seconds';
+
+    return html ? 
+      `${hStr}${mStr}<span class="${cssClass}">:${sStr}</span>`
+      : `${hStr}${mStr}:${sStr}`;
   }
 
   function timeSinceStartFormatted() {
