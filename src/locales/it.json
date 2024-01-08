@@ -17,7 +17,7 @@
               "goodjob": "Ottimo Lavoro!",
               "youdid": "Hai fatto",
               "studyMin": " minuti di studio",
-              "pauseMin": " minuti di pausa",
+              "pauseMin": " minuti di pausa totali",
               "general": {
                      "general": "Profilo",
                      "username": "Nome Utente",
@@ -35,7 +35,7 @@
                      "minutes": "minuti",
                      "sessionLength": "Durata sessione",
                      "breaksNumber": "pause",
-                     "breaksLength": "minuti di pausa",
+                     "breaksLength": "minuti di pausa totali",
                      "volume": "Volume notifica",
                      "default": "Ripristina valori predefiniti"
               }

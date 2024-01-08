@@ -36,7 +36,7 @@ export const themes = {
   bio: {
     dark: false,
     colors: {
-      background: '#fefae0',
+      background: '#f7f2da',
       surface: '#fefae0',
       primary: '#606c38',
       'primary-darken-1': '#283618',

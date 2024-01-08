@@ -6,7 +6,7 @@ import { computed, ref, watch } from 'vue';
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 1 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 
 enum ESound {
@@ -54,9 +54,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     clearStuff();
     const settings = settingsStore.pomoSettings;
 
-    const totalLength = settings.totalLength * MINUTE_MULTIPLIER;
-    const breaksLength = settings.breaksLength * MINUTE_MULTIPLIER;
-    const nrOfBreaks = settings.numberOfBreak;
+    const free = !!settings.freeMode;
+    const totalLength   = free ? 0 : settings.totalLength * MINUTE_MULTIPLIER;
+    const breaksLength  = free ? 0 : settings.breaksLength * MINUTE_MULTIPLIER;
+    const nrOfBreaks    = free ? 0 : settings.numberOfBreak;
 
     // currentPomodoro.value = {
     const pomo: PomodotoStatus = {
@@ -334,13 +335,12 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   function timeFormatted(seconds: number, html: boolean = true) {
     let secondsLeft = seconds; // Math.floor(time  / MINUTE_MULTIPLIER * 60);
-    let h = Math.floor(secondsLeft / 3600);
+    const h = Math.floor(secondsLeft / 3600);
     secondsLeft -= h * 3600;
     const m = Math.floor(secondsLeft / 60);
     secondsLeft -= m * 60;
     const s = Math.floor(secondsLeft);
 
-    h += 1
     const sStr = `${s.toString().padStart(2, '0')}`;
     const mStr = `${h > 0 ? m.toString().padStart(2, '0') : m.toString()}`;
     const hStr = h > 0 ? `${h}:` : '';

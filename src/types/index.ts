@@ -112,6 +112,7 @@ export type PomodotoStatus = {
 
 // ---------- SETTINGS ----------
 export type PomodoroSettings = {
+  freeMode?: boolean;
   numberOfBreak: number;
   breaksLength: number;
   totalLength: number;

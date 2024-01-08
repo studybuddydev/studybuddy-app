@@ -77,10 +77,8 @@ async function pipIt() {
   
   // Move the player back when the Picture-in-Picture window closes.
   pipWindow.addEventListener("pagehide", (event: any) => {
-    console.log('diocane')
     const playerContainer = document.querySelector("#pomocirclepipparent");
     const pipPlayer = event.target.querySelector("#pomocirclepip");
-    console.log(playerContainer)
     playerContainer?.append(pipPlayer);
   });
   isPipped.value = true;

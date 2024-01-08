@@ -57,55 +57,54 @@
             <!-- POMODORO -->
             <v-window-item value="pomodoro">
               <v-row>
-                <v-col cols="6">
-                  <v-btn @click="presetPomo(0, 0, 0)" color="primary" class="mb-2">
-                    {{ $t("libero") }}
-                  </v-btn>
-                </v-col>
-                <v-col cols="6">
-                  <v-btn @click="presetPomo(115, 15, 3)" color="primary" class="mb-2">
-                    {{ $t("classico") }}
-                  </v-btn>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
-                  <v-text-field v-model="hours" type="number" min="0" max="23" label="Hours"/>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field v-model="minutes" type="number" min="0" max="59" label="Minutes" />
+                <v-col cols="12 d-flex justify-space-around pa-6">
+                  <v-btn-toggle color="primary" group rounded="xl" variant="flat" v-model="modeSwitch">
+                    <v-btn value="classic" class="bg-background">Classico</v-btn>
+                    <v-btn value="free" class="bg-background">Libero</v-btn>
+                  </v-btn-toggle>
                 </v-col>
               </v-row>
 
-              <div class="text-h6"> {{ $t("pause.timer.sessionOf") }} {{
-                Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} {{ $t("pause.timer.hours") }} {{
-    settingsStore.settings!.pomodoro!.totalLength % 60 }} {{ $t("pause.timer.minutes") }}</div>
-              <v-slider v-model="settingsStore.settings!.pomodoro!.totalLength" :min="0" :max="240" :step="5" thumb-label
-                class="pr-4" prepend-icon="mdi-timer">
-                <template v-slot:thumb-label>
-                  {{ Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }}h{{
-                    settingsStore.settings!.pomodoro!.totalLength % 60 }}m
-                </template>
-              </v-slider>
+              <v-row>
+                <v-col cols="9">
+                  <div class="text-h6 text-bottom">
+                    {{ $t("pause.timer.sessionOf") }}
+                    {{ Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} ore e {{ settingsStore.settings!.pomodoro!.totalLength % 60 }} minuti
+                  </div>
+                </v-col>
+                <v-col cols="3">
+                  <v-text-field v-model="endsAt" type="time" variant="underlined" dense label="Termina alle" :disabled="freeMode"/>
+                </v-col>
+              </v-row>
+
+              <v-slider v-model="settingsStore.settings!.pomodoro!.totalLength" :min="0" :max="240" :step="5" thumb-label :disabled="freeMode"
+                    class="pr-4" prepend-icon="mdi-timer">
+                    <template v-slot:thumb-label>
+                      {{ Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }}h{{
+                        settingsStore.settings!.pomodoro!.totalLength % 60 }}m
+                    </template>
+                  </v-slider>
+
+
 
               <div class="text-h6">{{ settingsStore.settings!.pomodoro!.breaksLength }} {{ $t("pause.timer.breaksLength")
               }}
               </div>
-              <v-slider v-model="settingsStore.settings!.pomodoro!.breaksLength" :min="1" :max="60" :step="1" thumb-label
+              <v-slider v-model="settingsStore.settings!.pomodoro!.breaksLength" :min="1" :max="60" :step="1" thumb-label :disabled="freeMode"
                 class="pr-4" prepend-icon="mdi-coffee" />
 
               <div class="text-h6">{{ settingsStore.settings!.pomodoro!.numberOfBreak }}
                 {{ $t("pause.timer.breaksNumber") }}</div>
-              <v-slider v-model="settingsStore.settings!.pomodoro!.numberOfBreak" :min="0" :max="10" :step="1" thumb-label
+              <v-slider v-model="settingsStore.settings!.pomodoro!.numberOfBreak" :min="0" :max="10" :step="1" thumb-label :disabled="freeMode"
                 show-ticks="always" class="pr-4" prepend-icon="mdi-tally-mark-5" />
 
               <div class="text-h6">{{ $t("pause.timer.volume") }}</div>
-              <v-slider v-model="settingsStore.settings!.pomodoro!.soundVolume" :min="0" :max="100" :step="1" thumb-label
+              <v-slider v-model="settingsStore.settings!.pomodoro!.soundVolume" :min="0" :max="100" :step="1" thumb-label :disabled="freeMode"
                 class="pr-4" :prepend-icon="volumeIcon(settingsStore.settings!.pomodoro!.soundVolume)" />
 
               <v-row>
                 <v-spacer />
-                <v-col> <v-btn variant="tonal" @click="() => {
+                <v-col> <v-btn variant="tonal" :disabled="freeMode" @click="() => {
                   settingsStore.settings!.pomodoro!.totalLength = settingsStore.defaultSettings.pomodoro!.totalLength;
                   settingsStore.settings!.pomodoro!.numberOfBreak = settingsStore.defaultSettings.pomodoro!.numberOfBreak;
                   settingsStore.settings!.pomodoro!.breaksLength = settingsStore.defaultSettings.pomodoro!.breaksLength;
@@ -160,7 +159,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { usePomodoroStore } from "@/stores/pomodoro";
@@ -172,29 +171,30 @@ const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
 const { logout } = useAuth0();
 
-const hours = computed({
-  get() {
-    let totalLength = settingsStore.settings!.pomodoro!.totalLength;
-    let date = new Date(Date.now() + totalLength * 60 * 1000);
-    return date.getHours();
-  },
-  set(value) {
-    let minutes = settingsStore.settings!.pomodoro!.totalLength % 60;
-    settingsStore.settings!.pomodoro!.totalLength = value * 60 + minutes;
-  }
-})
 
-const minutes = computed({
-  get() {
-    let totalLength = settingsStore.settings!.pomodoro!.totalLength;
-    let date = new Date(Date.now() + totalLength * 60 * 1000);
-    return date.getMinutes();
-  },
-  set(value) {
-    let hours = settingsStore.settings!.pomodoro!.totalLength / 60;
-    settingsStore.settings!.pomodoro!.totalLength = hours * 60 + value;
-  }
+function updateTotalLength() {
+  const date = new Date();
+  const [h, m] = endsAt.value.split(':');
+  date.setHours(+h);
+  date.setMinutes(+m);
+  const res = Math.floor((date.getTime() - Date.now()) / 1000 / 60);
+  settingsStore.settings!.pomodoro!.totalLength = res < 0 ? res + (24 * 60) : res;
+}
+function updateHoursMinutes() {
+  const date = new Date(new Date().getTime() + settingsStore.settings!.pomodoro!.totalLength*60000);
+  endsAt.value = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+const totalLength = computed(() => settingsStore.settings!.pomodoro!.totalLength)
+const endsAt = ref('00:00');
+updateHoursMinutes();
+watch(endsAt, () => updateTotalLength(), { deep: true });
+watch(totalLength, () => updateHoursMinutes());
+
+const modeSwitch = computed({
+  get() { return settingsStore.settings!.pomodoro!.freeMode ? 'free' : 'classic'; },
+  set(value) { settingsStore.settings!.pomodoro!.freeMode = value === 'free'; }
 })
+const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
 
 type Theme = { theme: string, img: string }
 
@@ -218,15 +218,12 @@ const hideTimeValues = [
   { title: 'True', value: true }
 ]
 
-
-
 function setTheme(newTheme: Theme) {
   settingsStore.updateTheme(newTheme.theme);
   settingsStore.settings!.theme!.theme = newTheme.theme;
   settingsStore.settings!.theme!.backgroundImg = newTheme.img;
 }
 
-const backgroundImages = themes.map(x => ({ title: x.title, value: x.value.img }));
 function loggaout() {
   logout({ logoutParams: { returnTo: window.location.origin } });
 }
@@ -263,16 +260,15 @@ const volumeIcon = computed(() => ((volume: number) => {
   if (volume < 66) return 'mdi-volume-medium';
   return 'mdi-volume-high';
 }))
-
-let _sessionLenght = 20;
-const sessionLenght = computed({
-  get() { return props.modelValue },
-  set(value) { return emit('update:modelValue', value) }
-})
-
 </script>
 
 <style scoped lang="scss">
+.text-bottom {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
 .time-picker {
   display: flex;
   justify-content: space-between;
