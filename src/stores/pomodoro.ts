@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplayBreak } from '@/types';
+import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplaySession } from '@/types';
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { computed, ref, watch } from 'vue';
@@ -277,21 +277,40 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     ];
   }
 
-  function getDisplayBreaks(): DisplayBreak[] {
+  function parseDisplaySession(l: { start: number, end?: number, done?: boolean }[]): DisplaySession[] {
     const pomo = getCurrentPomo();
     if (!pomo) return [];
     const now = getNow(pomo.startedAt);
-    return getBreaks().map((b, i) => {
-      const startPerc = 100 * b.start / pomo.end;
+
+    return l.filter(b => b.end).map((b, i) => {
+      const startPerc = Math.min(100, 100 * b.start / pomo.end);
       const end = b.end ?? now;
-      const lengthPerc = (100 * (end / pomo.end)) - startPerc;
+      const lengthPerc = Math.min(100 - startPerc, (100 * (end / pomo.end)) - startPerc);
       return {
         startPerc, lengthPerc,
         lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, false),
         done: b.done,
         index: i
       }
-    })
+    }).filter(b => b.lengthPerc >= 0.2)
+  }
+
+  function getDisplayBreaks(): DisplaySession[] {
+    return parseDisplaySession(getBreaks());
+  }
+
+  function getDisplayStudy(): DisplaySession[] {
+    const pomo = getCurrentPomo();
+    if (!pomo || pomo.state === PomodoroState.CREATED) return [];
+    const now = getNow(pomo.startedAt);
+
+    const res: { start: number, end?: number }[] = [{ start: 0 }];
+    for (const b of pomo.breaksDone) {
+      res.at(-1)!.end = b.start;
+      if (b.end && b.end + 5000 < now) res.push({ start: b.end });
+    }
+    if (res.at(-1)!.end === undefined) res.at(-1)!.end = now;
+    return parseDisplaySession(res);
   }
 
   function getNowInPercentage() {
@@ -404,6 +423,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const going      = computed(() => studing.value || pauseing.value);
 
   const displayBreaks = computed(getDisplayBreaks);
+  const displayStudy = computed(getDisplayStudy);
   const percentage = computed(getNowInPercentage);
   const timeSinceStart = computed(() => timeSinceStartFormatted());
   const timeInCurrentBreak = computed(() => timeInCurrentBreakFormatted());
@@ -419,7 +439,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   return {
     startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
     getCurrentPomo, getBreaks,
-    percentage, displayBreaks, report,
+    percentage, displayBreaks, displayStudy, report,
     created, going, studing, pauseing, terminated, done,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState
   }

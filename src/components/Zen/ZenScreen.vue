@@ -138,7 +138,6 @@ async function pipIt() {
                 class="pomodoro-circle-component pomodoro-circle-component-on-zen"
                 v-if="!settings.userSettings.hideTime && pomodoro.going" :in-pip="false"
                 />
-              <div class="pip-icon"><v-icon class="icon" :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'" @click="pipIt()" /></div>
             </div>
             <div class="hide" id="pomocirclepipparent">
               <div
@@ -189,13 +188,24 @@ async function pipIt() {
       </v-dialog>
     </div>
     <div class="bottom-bar">
-      <v-btn
-        v-if="zenMode"
-        density="comfortable"
-        icon="mdi-cog"
-        class="btn-edit bg-background"
-        @click="openSettingsTab =  pomodoro.going ? 'theme' : 'pomodoro'"
-      />
+      <div class="quick-settings" v-if="zenMode">
+        <v-btn
+          density="comfortable" size="small" class="btn-edit bg-surface"
+          :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'"
+          @click="pipIt()"
+        />
+        <v-btn
+          density="comfortable" size="small" class="btn-edit bg-surface"
+          :icon="settings.userSettings.hideTime ? 'mdi-eye-off' : 'mdi-eye'"
+          @click="settings.userSettings.hideTime = !settings.userSettings.hideTime"
+        />
+        <v-btn
+          density="comfortable" class="btn-edit btn-edit-main bg-background"
+          icon="mdi-cog"
+          @click="openSettingsTab =  pomodoro.going ? 'theme' : 'pomodoro'"
+        />
+
+      </div>
 
       <div :class="zenMode ? 'pull-up-panel blur' : 'pull-up-panel blur pull-up-panel-zenmode'">
         <div class="handle" v-ripple @click="toggleZenMode()">
@@ -246,24 +256,6 @@ async function pipIt() {
 
 .pomodoro-circle-component-on-zen-wrapper {
   position: relative;
-  .pip-icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: none;
-    .icon {
-      cursor: pointer;
-      &:hover {
-        color: rgb(var(--v-theme-primary));
-      }
-    }
-  }
-
-  &:hover {
-    .pip-icon {
-      display: block;
-    }
-  }
 
   .pomodoro-circle-component-on-zen {
     height: min(50vh, 80vw);
@@ -585,11 +577,26 @@ async function pipIt() {
   z-index: 1500;
   justify-content: flex-end;
 
-  .btn-edit {
+  .quick-settings {
     pointer-events: auto;
     align-self: flex-end;
-    margin: 1rem
+    margin: 1rem;
+
+    &:hover {
+      .btn-edit {
+        display: inline;
+      }
+    }
+
+    .btn-edit {
+      display: none;
+      margin: 0.2rem;
+    }
+    .btn-edit-main {
+      display: inline;
+    }
   }
+
 
   .pull-up-panel {
     padding-top: 0.8rem;
