@@ -11,15 +11,15 @@
     <v-dialog width="500" v-model="popupFirstLogin" v-if="windowWidth > 600 && !isLoading && !isAuthenticated">
       <v-card>
         <v-toolbar dark color="primary">
-          <v-toolbar-title>Benvenuto su StudyBuddy</v-toolbar-title>
+          <v-toolbar-title>{{ $t("welcomeToSB") }}</v-toolbar-title>
           <v-btn icon dark @click="popupFirstLogin = false"> <v-icon>mdi-close</v-icon> </v-btn>
         </v-toolbar>
         <v-card-text>
           <v-container>
             <v-row>
               <v-col cols="12">
-                <p>Ciao, sei nella versione di test di Studybuddy, vuoi aiutarci diventando tester?</p><br />
-                <p>Effettua il login ora!</p>
+                <p>{{ $t("loginMsg") }}</p><br />
+                <p>{{ $t("doLogin") }}</p>
               </v-col>
             </v-row>
             </v-container>

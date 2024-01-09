@@ -7,7 +7,7 @@
         <v-tabs v-model="modelTab">
           <v-tab value="general">{{ $t("pause.general.general") }}</v-tab>
           <v-tab value="pomodoro" :disabled="pomodoro.going">{{ $t("pause.timer.timer") }}</v-tab>
-          <v-tab value="theme">Theme</v-tab>
+          <v-tab value="theme">{{ $t("pause.theme.theme") }}</v-tab>
         </v-tabs>
       </v-toolbar>
 
@@ -28,16 +28,16 @@
                     @update:model-value="($event) => settingsStore.settings!.user!.lang = $event" />
                 </v-col>
                 <v-col cols="12">
-                  <v-select label="Nascondi tempo" v-model="settingsStore.settings!.user!.hideTime"
+                  <v-select :label="$t('pause.general.hideTime')" v-model="settingsStore.settings!.user!.hideTime"
                     :items="hideTimeValues" />
                 </v-col>
               </v-row>
 
               <v-row>
                 <v-spacer />
-                <v-col> <v-btn class="bg-background ma-2" @click="exportData()" icon="mdi-tray-arrow-down" title="Export Data"
+                <v-col> <v-btn class="bg-background ma-2" @click="exportData()" icon="mdi-tray-arrow-down" :title="$t('pause.general.exportData')"
                     color="background" /> </v-col>
-                <v-col> <v-btn class="bg-background ma-2" @click="importData()" icon="mdi-tray-arrow-up" title="Import Data"
+                <v-col> <v-btn class="bg-background ma-2" @click="importData()" icon="mdi-tray-arrow-up" :title="$t('pause.general.importData')"
                     color="background" /> </v-col>
                 <!-- <v-col>
                   <v-snackbar :timeout="2000" color="primary" elevation="24">
@@ -73,7 +73,7 @@
                   </div>
                 </v-col>
                 <v-col cols="3">
-                  <v-text-field v-model="endsAt" type="time" variant="underlined" dense label="Termina alle" :disabled="freeMode"/>
+                  <v-text-field v-model="endsAt" type="time" variant="underlined" dense :label="$t('pause.timer.endTime')" :disabled="freeMode"/>
                 </v-col>
               </v-row>
 
@@ -119,13 +119,13 @@
 
               <v-row>
                 <v-col cols="12">
-                  <v-select label="Theme" v-model="selectedTheme" :items="themes" clearable
+                  <v-select :label="$t('pause.theme.theme')" v-model="selectedTheme" :items="themes" clearable
                     @update:model-value="setTheme($event)" />
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-select label="Colors" v-model="settingsStore.settings.theme!.theme" :items="themeList"
+                  <v-select :label="$t('pause.theme.colors')" v-model="settingsStore.settings.theme!.theme" :items="themeList"
                     item-title="title" item-value="value" @update:model-value="settingsStore.updateTheme($event)">
                     <template #item="{ props, item }">
                       <v-list-item v-bind="props">
@@ -140,13 +140,13 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-text-field label="Colore Sfondo" v-model="settingsStore.settings!.theme!.backgroundColor"
+                  <v-text-field :label="$t('pause.theme.bgColor')" v-model="settingsStore.settings!.theme!.backgroundColor"
                     type="color" clearable />
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-text-field label="Url immagine custom" v-model="settingsStore.settings!.theme!.backgroundImg"
+                  <v-text-field :label="$t('pause.theme.url')" v-model="settingsStore.settings!.theme!.backgroundImg"
                     type="string" clearable />
                 </v-col>
               </v-row>

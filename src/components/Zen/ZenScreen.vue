@@ -153,15 +153,15 @@ async function pipIt() {
             <!-- report table-->
             <div class="report font-press" v-if="pomodoro.report">
               <div class="grid-container">
-                <p>{{ "Tempo studio:" }}</p>
+                <p>{{ $t("pause.studyTime") }}</p>
                 <p class="report-value">{{ pomodoro.report.timeStudy }}</p>
-                <p>{{ "Tempo pausa:" }}</p>
+                <p>{{ $t("pause.pauseTime") }}</p>
                 <p class="report-value">{{ pomodoro.report.timeBreak }}</p>
-                <p>{{ "Tempo totale:" }}</p>
+                <p>{{ $t("pause.totalTime") }}</p>
                 <p class="report-value">{{ pomodoro.report.timeTotal }}</p>
-                <p>{{ "Nr. pause:" }}</p>
+                <p>{{ $t("pause.pauseNumber") }}</p>
                 <p class="report-value">{{ pomodoro.report.nrBreaks }}</p>
-                <p class="report-total">{{ "Punteggio:" }}</p>
+                <p class="report-total">{{ $t("pause.score") }}</p>
                 <p class="report-value report-total">{{ pomodoro.report.points }}%</p>
               </div>
             </div>
@@ -179,7 +179,7 @@ async function pipIt() {
       </v-scroll-y-reverse-transition>
 
       <v-dialog v-model="terminatePomoDialog" width="auto">
-        <v-card text="Sei sicuro di voler terminare il pomodoro">
+        <v-card :text="$t('zen.confirm')">
           <v-card-actions>
             <v-spacer />
             <v-btn @click="terminatePomoDialog = false">No</v-btn>

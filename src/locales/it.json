@@ -2,6 +2,9 @@
        "save": "Salva",
        "cancel": "Annulla",
        "delete": "Elimina",
+       "welcomeToSB": "Benvenuto su StudyBuddy",
+       "loginMsg": "Ciao, sei nella versione di test di Studybuddy, vuoi aiutarci diventando tester?",
+       "doLogin": "Effettua il login ora!",
        "pause": {
               "welcome": "Benvenuto su",
               "study": "Studia",
@@ -15,13 +18,19 @@
               "break": "PAUSA",
               "pomoDone": "Hai fatto un Pomodoro",
               "goodjob": "Ottimo Lavoro!",
-              "youdid": "Hai fatto",
-              "studyMin": " minuti di studio",
-              "pauseMin": " minuti di pausa totali",
+              //"youdid": "Hai fatto",
+              //"studyMin": " minuti di studio",
+              //"pauseMin": " minuti di pausa totali",
+              "studyTime": "Tempo studio:",
+              "pauseTime": "Tempo pausa:",
+              "totalTime": "Tempo totale:",
+              "pauseNumber": "Nr. pause:",
+              "score":"Punteggio:",
               "general": {
                      "general": "Profilo",
                      "username": "Nome Utente",
                      "language": "Lingua",
+                     "hideTime": "Nascondi tempo",
                      "theme": "Tema",
                      "exportData": "Esporta Dati",
                      "importData": "Importa Dati",
@@ -37,8 +46,18 @@
                      "breaksNumber": "pause",
                      "breaksLength": "minuti di pausa totali",
                      "volume": "Volume notifica",
-                     "default": "Ripristina valori predefiniti"
+                     "default": "Ripristina valori predefiniti",
+                     "endTime": "Termina alle"
+              },
+              "theme":{
+                     "theme": "Tema",
+                     "colors": "Palette",
+                     "bgColor": "Colore sfondo",
+                     "url": "Url immagine custom"
               }
+       },
+       "zen":{
+              "confirm": "Vuoi davvero terminare il pomodoro?"
        },
        "study": {
               "showTodo": "Mostra ToDo",

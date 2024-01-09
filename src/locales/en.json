@@ -1,26 +1,33 @@
 {
   "save": "Save",
   "cancel": "Cancel",
+  "delete": "Delete",
+  "welcomeToSB": "Welcome to StudyBuddy",
+  "loginMsg": "Hello, you are in the test version of Studybuddy, would you like to help us by becoming a tester?",
+  "doLogin": "Log in now!",
   "pause": {
     "welcome": "Welcome to",
     "study": "Study",
     "tutorial": "Tutorial",
     "settings": "Settings",
     "userSettings": "Profile",
-    "pomoSettings": "Timer Settings",
+    "pomoSettings": "Timer",
     "resume": "Resume Studying",
     "endSession": "End Session",
-    "youare": "You are on",
+    "youare": "You are in",
     "break": "BREAK",
     "pomoDone": "You have completed a Pomodoro",
     "goodjob": "Great Job!",
-    "youdid": "You did",
-    "studyMin": " minutes of study",
-    "pauseMin": " minutes of break",
+    "studyTime": "Study Time:",
+    "pauseTime": "Break Time:",
+    "totalTime": "Total Time:",
+    "pauseNumber": "No. of Breaks:",
+    "score": "Score:",
     "general": {
-      "general": "General",
+      "general": "Profile",
       "username": "Username",
       "language": "Language",
+      "hideTime": "Hide time",
       "theme": "Theme",
       "exportData": "Export Data",
       "importData": "Import Data",
@@ -34,31 +41,40 @@
       "minutes": "minutes",
       "sessionLength": "Session Length",
       "breaksNumber": "breaks",
-      "breaksLength": "minutes of break",
+      "breaksLength": "total break minutes",
       "volume": "Notification Volume",
-      "default": "Restore Default Values"
+      "default": "Restore Default Values",
+      "endTime": "Ends at"
+    },
+    "theme": {
+      "theme": "Theme",
+      "colors": "Palette",
+      "bgColor": "Background Color",
+      "url": "Custom Image URL"
     }
+  },
+  "zen": {
+    "confirm": "Do you really want to end the Pomodoro?"
   },
   "study": {
     "showTodo": "Show ToDo",
     "hideTodo": "Hide ToDo",
-    "addLink":"Add Link",
+    "addLink": "Add Link",
     "addNote": "Add Note",
-    "link":"Link",
+    "link": "Link",
     "invalidName": "Invalid {element} Name!",
     "examDate": "Exam Date",
     "icon": "Icon",
     "color": "Color",
     "newTask": "New Task",
-    "addTask":"Add",
+    "addTask": "Add",
     "add": "Add {element}",
     "todoName": "Name",
+    "linkName": "Name",
     "todoDate": "Due Date",
-    "linkName":"Name",
     "note": "Notes",
-    "moveToDeadline": "Move to Deadlines",
-    "removeFromDeadline": "Remove from Deadlines",
-    "Delete": "Delete",
+    "moveToDeadline": "Add to deadlines",
+    "removeFromDeadline": "Remove from deadlines",
     "tasks": "Tasks",
     "deadlines": "Deadlines",
     "name": "Name {element}",
@@ -71,6 +87,8 @@
     "hour": "Hours",
     "minute": "Minutes",
     "duration": "Duration [m]",
+    "monthly": "Month",
+    "weekly": "Week",
     "time": {
       "jan": "Jan",
       "feb": "Feb",
@@ -92,6 +110,6 @@
       "mm": "mm",
       "yyyy": "yyyy"
     },
-    "introMessage": "Hello! Below, the timer represented by a green snake has just started. Press the pause button in the lower left corner of this page when you take a break. Happy studying!"
+    "introMessage": "Hello! Below, the timer represented by a green snake has just started. Press the pause button when you take a break. Happy studying!"
   }
 }
