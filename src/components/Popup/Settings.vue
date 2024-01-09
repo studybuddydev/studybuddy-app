@@ -24,12 +24,17 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-select :label="$t('pause.general.language')" v-model="$i18n.locale" :items="$i18n.availableLocales"
-                    @update:model-value="($event) => settingsStore.settings!.user!.lang = $event" />
-                </v-col>
-                <v-col cols="12">
-                  <v-select label="Nascondi tempo" v-model="settingsStore.settings!.user!.hideTime"
-                    :items="hideTimeValues" />
+                  <v-select :label="$t('pause.general.language')" v-model="$i18n.locale" :items="langs"
+                    @update:model-value="($event) => settingsStore.settings!.user!.lang = $event" >
+                    <template #item="{ props, item }">
+                      <v-list-item v-bind="props">
+                        <template #prepend>
+                          <country-flag :country='item.raw.country' size='normal' class="ma-1 rounded-lg" />
+                        </template>
+                      </v-list-item>
+                    </template>
+                    <!-- <template v-slot:prepend><v-icon :color="data.theme">mdi-circle</v-icon></template> -->
+                  </v-select>
                 </v-col>
               </v-row>
 
@@ -73,7 +78,7 @@
                   </div>
                 </v-col>
                 <v-col cols="3">
-                  <v-text-field v-model="endsAt" type="time" variant="underlined" dense label="Termina alle" :disabled="freeMode"/>
+                  <v-text-field v-model="endsAt" type="time" variant="underlined" dense label="Termina alle" :disabled="freeMode" class="field-time" />
                 </v-col>
               </v-row>
 
@@ -165,6 +170,7 @@ import { useSettingsStore } from "@/stores/settings";
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { themeList } from '@/assets/themes'
 import { useAuth0 } from "@auth0/auth0-vue";
+import CountryFlag from 'vue-country-flag-next'
 
 const state = useStateStore();
 const settingsStore = useSettingsStore();
@@ -172,6 +178,7 @@ const pomodoro = usePomodoroStore();
 const { logout } = useAuth0();
 
 
+// ----- ENDS AT
 function updateTotalLength() {
   const date = new Date();
   const [h, m] = endsAt.value.split(':');
@@ -190,12 +197,24 @@ updateHoursMinutes();
 watch(endsAt, () => updateTotalLength(), { deep: true });
 watch(totalLength, () => updateHoursMinutes());
 
+// ----- MODE
 const modeSwitch = computed({
   get() { return settingsStore.settings!.pomodoro!.freeMode ? 'free' : 'classic'; },
   set(value) { settingsStore.settings!.pomodoro!.freeMode = value === 'free'; }
 })
 const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
 
+// ----- LANG
+// $i18n.availableLocales
+const langs = [
+  { title: 'Italiano', value: 'it', country: 'it' },
+  { title: 'English', value: 'en', country: 'us' },
+  { title: 'Español', value: 'es', country: 'es' },
+  { title: 'French', value: 'fr', country: 'fr' },
+  { title: 'German', value: 'de', country: 'de' }
+]
+
+// ----- THEME
 type Theme = { theme: string, img: string }
 
 const themes = [
@@ -213,19 +232,14 @@ const themes = [
   { title: 'Gandalf', value: { theme: 'blallo', img: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' } }
 
 ]
-
 const selectedTheme = ref<Theme | null>(null);
-
-const hideTimeValues = [
-  { title: 'False', value: false },
-  { title: 'True', value: true }
-]
 
 function setTheme(newTheme: Theme) {
   settingsStore.updateTheme(newTheme.theme);
   settingsStore.settings!.theme!.theme = newTheme.theme;
   settingsStore.settings!.theme!.backgroundImg = newTheme.img;
 }
+
 
 function loggaout() {
   logout({ logoutParams: { returnTo: window.location.origin } });
@@ -256,7 +270,7 @@ function presetPomo(totalLength = 2, breaksLength = 15, numberOfBreak = 3) {
   settingsStore.settings!.pomodoro!.numberOfBreak = numberOfBreak;
 }
 
-//// ---- ////
+//// ---- Volume
 const volumeIcon = computed(() => ((volume: number) => {
   if (!volume) return 'mdi-volume-off';
   if (volume < 33) return 'mdi-volume-low';
