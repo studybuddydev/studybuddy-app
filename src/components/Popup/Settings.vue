@@ -88,7 +88,7 @@
                       {{ Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }}h{{
                         settingsStore.settings!.pomodoro!.totalLength % 60 }}m
                     </template>
-                  </v-slider>
+              </v-slider>
 
 
 
@@ -109,11 +109,17 @@
 
               <v-row>
                 <v-spacer />
+                <v-col> 
+                  <v-btn variant="tonal"  :disabled="freeMode" @click="() => {
+                    presetPomo(115, 15, 3);}">
+                    {{ $t("25/5") }}
+                  </v-btn> 
+                </v-col>
+                <v-spacer />
+
                 <v-col> <v-btn variant="tonal" :disabled="freeMode" @click="() => {
-                  settingsStore.settings!.pomodoro!.totalLength = settingsStore.defaultSettings.pomodoro!.totalLength;
-                  settingsStore.settings!.pomodoro!.numberOfBreak = settingsStore.defaultSettings.pomodoro!.numberOfBreak;
-                  settingsStore.settings!.pomodoro!.breaksLength = settingsStore.defaultSettings.pomodoro!.breaksLength;
-                }">{{ $t("pause.timer.default") }}</v-btn> </v-col>
+                  presetPomo(110, 10, 1);
+                }">{{ $t("50/10") }}</v-btn> </v-col>
                 <v-spacer />
               </v-row>
 
