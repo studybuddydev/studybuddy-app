@@ -208,7 +208,7 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
 // $i18n.availableLocales
 const langs = [
   { title: 'Italiano', value: 'it', country: 'it' },
-  { title: 'English', value: 'en', country: 'us' },
+  { title: 'English', value: 'en', country: 'gb' },
   { title: 'Español', value: 'es', country: 'es' },
   { title: 'French', value: 'fr', country: 'fr' },
   { title: 'German', value: 'de', country: 'de' }
