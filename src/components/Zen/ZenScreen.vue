@@ -235,7 +235,7 @@ async function pipIt() {
                 <p v-if="!settings.userSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
               </div>
               <div :class="pomodoro.terminated ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
-                    @click="pomodoro.done ? stopPomodoro() : terminatePomoDialog = true">
+                    @click="(pomodoro.freeMode || !pomodoro.done) ? terminatePomoDialog = true : stopPomodoro()">
                 <v-icon icon="mdi-stop" />
               </div>
             </div>

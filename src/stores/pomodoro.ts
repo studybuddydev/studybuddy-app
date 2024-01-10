@@ -67,6 +67,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       breaksTodo: generateBreaks(totalLength, breaksLength, nrOfBreaks),
       state: PomodoroState.CREATED,
       soundEnd: totalLength <= 1000,
+      freeMode: free
     }
     stateStore.setPomodoroStatus(pomo);
     saveStatus();
@@ -434,13 +435,14 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     if (!pomo) return false;
     return pomo.end <= getNow(pomo.startedAt);
   });
+  const freeMode = computed(() => getCurrentPomo()?.freeMode ?? false);
 
   // ---------- RETURN ----------
   return {
     startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
     getCurrentPomo, getBreaks,
     percentage, displayBreaks, displayStudy, report,
-    created, going, studing, pauseing, terminated, done,
+    created, going, studing, pauseing, terminated, done, freeMode,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState
   }
 

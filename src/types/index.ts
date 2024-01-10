@@ -107,6 +107,7 @@ export type PomodotoStatus = {
   breaksDone: Break[];
   breaksTodo: Break[];
   soundEnd?: boolean;
+  freeMode: boolean;
 }
 
 
