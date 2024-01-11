@@ -6,6 +6,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
+export const hash = Math.floor(Math.random() * 90000) + 10000;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -25,7 +26,7 @@ export default defineConfig({
         theme_color: '#000000',
         icons: [
           {
-            src: '/public/images/logo.png',
+            src: '/images/logo.png',
             sizes: '192x192',
             type: 'image/png',
           },
@@ -35,6 +36,15 @@ export default defineConfig({
     }),
 
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: `[name]` + hash + `.js`,
+        chunkFileNames: `[name]` + hash + `.js`,
+        assetFileNames: `[name]` + hash + `.[ext]`
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
