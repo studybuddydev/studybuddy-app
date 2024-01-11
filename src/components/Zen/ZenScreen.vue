@@ -181,8 +181,8 @@ async function pipIt() {
         <v-card :text="$t('zen.confirm')">
           <v-card-actions>
             <v-spacer />
-            <v-btn @click="terminatePomoDialog = false">No</v-btn>
-            <v-btn color="primary" @click="stopPomodoro(); terminatePomoDialog = false">Si</v-btn>
+            <v-btn @click="terminatePomoDialog = false">{{ $t("no") }}</v-btn>
+            <v-btn color="primary" @click="stopPomodoro(); terminatePomoDialog = false">{{ $t("yes") }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

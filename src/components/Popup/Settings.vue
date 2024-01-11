@@ -64,8 +64,8 @@
               <v-row>
                 <v-col cols="12 d-flex justify-space-around pa-6">
                   <v-btn-toggle color="primary" group rounded="xl" variant="flat" v-model="modeSwitch">
-                    <v-btn value="classic" class="bg-background">Classico</v-btn>
-                    <v-btn value="free" class="bg-background">Libero</v-btn>
+                    <v-btn value="classic" class="bg-background">{{ $t("pause.timer.classic") }}</v-btn>
+                    <v-btn value="free" class="bg-background">{{ $t("pause.timer.free") }}</v-btn>
                   </v-btn-toggle>
                 </v-col>
               </v-row>
@@ -74,11 +74,11 @@
                 <v-col cols="9">
                   <div class="text-h6 text-bottom">
                     {{ $t("pause.timer.sessionOf") }}
-                    {{ Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} ore e {{ settingsStore.settings!.pomodoro!.totalLength % 60 }} minuti
+                    {{ Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} {{ $t("pause.timer.hours") }} {{ settingsStore.settings!.pomodoro!.totalLength % 60 }} {{ $t("pause.timer.minutes") }}
                   </div>
                 </v-col>
                 <v-col cols="3">
-                  <v-text-field v-model="endsAt" type="time" variant="underlined" dense label="Termina alle" :disabled="freeMode"/>
+                  <v-text-field v-model="endsAt" type="time" variant="underlined" dense :label= '$t("pause.timer.endTime")' :disabled="freeMode"/>
                 </v-col>
               </v-row>
 

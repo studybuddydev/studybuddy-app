@@ -1,6 +1,8 @@
 {
   "save": "Save",
   "cancel": "Cancel",
+  "yes": "Yes",
+  "no": "No",
   "delete": "Delete",
   "welcomeToSB": "Welcome to StudyBuddy",
   "loginMsg": "Hello, you are in the test version of Studybuddy, would you like to help us by becoming a tester?",
@@ -14,8 +16,9 @@
     "pomoSettings": "Timer",
     "resume": "Resume Studying",
     "endSession": "End Session",
-    "youare": "You are in",
+    "youare": "You have been on",
     "break": "BREAK",
+    "for": "for",
     "pomoDone": "You have completed a Pomodoro",
     "goodjob": "Great Job!",
     "studyTime": "Study Time:",
@@ -44,7 +47,9 @@
       "breaksLength": "total break minutes",
       "volume": "Notification Volume",
       "default": "Restore Default Values",
-      "endTime": "Ends at"
+      "endTime": "Ends at",
+      "classic": "Classic",
+      "free": "Free"
     },
     "theme": {
       "theme": "Theme",

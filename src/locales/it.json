@@ -1,6 +1,8 @@
 {
        "save": "Salva",
        "cancel": "Annulla",
+       "yes": "Sì",
+       "no": "No",
        "delete": "Elimina",
        "welcomeToSB": "Benvenuto su StudyBuddy",
        "loginMsg": "Ciao, sei nella versione di test di Studybuddy, vuoi aiutarci diventando tester?",
@@ -16,6 +18,7 @@
               "endSession": "Termina",
               "youare": "Sei in",
               "break": "PAUSA",
+              "for": "da",
               "pomoDone": "Hai fatto un Pomodoro",
               "goodjob": "Ottimo Lavoro!",
               //"youdid": "Hai fatto",
@@ -47,7 +50,9 @@
                      "breaksLength": "minuti di pausa totali",
                      "volume": "Volume notifica",
                      "default": "Ripristina valori predefiniti",
-                     "endTime": "Termina alle"
+                     "endTime": "Termina alle",
+                     "classic": "Classico",
+                     "free": "Libero"
               },
               "theme":{
                      "theme": "Tema",
