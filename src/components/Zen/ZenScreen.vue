@@ -91,6 +91,17 @@ async function pipIt() {
   <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
     <Settings class="settings" v-model="openSettingsTab" />
 
+    <div class="hide" id="pomocirclepipparent">
+      <div
+        id="pomocirclepip"
+        :class="zenStyle.backgroundImage ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
+        :style="zenStyle">
+        <div class="pomodoro-circle-component-on-pip-wrapper">
+          <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-pip" :in-pip="true" />
+        </div>
+      </div>
+    </div>
+
     <div transition="fade-transition">
       <v-scroll-y-reverse-transition>
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
@@ -138,16 +149,6 @@ async function pipIt() {
                 class="pomodoro-circle-component pomodoro-circle-component-on-zen"
                 v-if="!settings.userSettings.hideTime && pomodoro.going" :in-pip="false"
                 />
-            </div>
-            <div class="hide" id="pomocirclepipparent">
-              <div
-                id="pomocirclepip"
-                :class="zenStyle.backgroundImage ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
-                :style="zenStyle">
-                <div class="pomodoro-circle-component-on-pip-wrapper">
-                  <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-pip" :in-pip="true" />
-                </div>
-              </div>
             </div>
             <!-- report table-->
             <div class="report font-press" v-if="pomodoro.report">
