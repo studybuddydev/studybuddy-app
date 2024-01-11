@@ -196,7 +196,7 @@ async function pipIt() {
         />
         <v-btn
           density="comfortable" size="small" class="btn-edit bg-surface"
-          :icon="settings.userSettings.hideTime ? 'mdi-eye-off' : 'mdi-eye'"
+          :icon="settings.userSettings.hideTime ? 'mdi-eye' : 'mdi-eye-off'"
           @click="settings.userSettings.hideTime = !settings.userSettings.hideTime"
         />
         <v-btn
