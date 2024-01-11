@@ -81,11 +81,11 @@ export type Break = {
   soundStart?: boolean;
   soundEnd?: boolean;
 }
-export type DisplayBreak = {
+export type DisplaySession = {
   startPerc: number;
   lengthPerc: number;
   lengthTime: string;
-  done: boolean;
+  done?: boolean;
   index: number;
 }
 
@@ -107,11 +107,13 @@ export type PomodotoStatus = {
   breaksDone: Break[];
   breaksTodo: Break[];
   soundEnd?: boolean;
+  freeMode: boolean;
 }
 
 
 // ---------- SETTINGS ----------
 export type PomodoroSettings = {
+  freeMode?: boolean;
   numberOfBreak: number;
   breaksLength: number;
   totalLength: number;

@@ -6,12 +6,19 @@
         color: theme.current.value.colors.surface,
         width: `${pomodoro.percentage}%`,
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" /> </div>
-      <div v-for="b in pomodoro.displayBreaks" :title="b.lengthTime" :key="b.index" class="break"
+      <div v-for="b in pomodoro.displayBreaks" :key="b.index" class="break"
         :style="{
           backgroundColor: b.done ? theme.current.value.colors.warning : theme.current.value.colors.apple,
           marginLeft: `${b.startPerc}%`,
           width: `${b.lengthPerc}%`,
-        }"><v-icon size="x-small" icon="mdi-food-apple" /></div>
+        }"><v-icon size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
+
+      <div class="time-indicator time-indicator-break" v-for="b in pomodoro.displayBreaks" :key="b.index"
+        :style="{ marginLeft: `${b.startPerc + (b.lengthPerc / 2)}%` }"><p>{{b.lengthTime}}</p></div>
+
+      <div class="time-indicator time-indicator-study" v-for="s in pomodoro.displayStudy" :key="s.index"
+        :style="{ marginLeft: `${s.startPerc + (s.lengthPerc / 2)}%` }"><p>{{s.lengthTime}}</p></div>
+
     </div>
   </div>
 </template>
@@ -26,15 +33,14 @@ const theme = useTheme();
 
 
 <style lang="scss" scoped>
-$bar-height: 2em;
+
 
 .pomodoro {
   display: flex;
   flex-direction: column;
   align-items: center;
-  // border-radius: calc($bar-height / 2);
-  border-radius: 1rem;
   overflow: hidden;
+  border-radius: 1rem;
   margin: 0.5em 0;
   height: 100%;
   background-color: #222;
@@ -49,11 +55,28 @@ $bar-height: 2em;
     flex-grow: 1;
     position: relative;
 
-    .breaks-container {
-      display: flex;
-      justify-content: space-between;
+    .time-indicator {
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      display: none;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      transform: translateX(-50%);
+      overflow: hidden;
+      color: rgba(var(--v-theme-on-success));
+      font-style: italic;
     }
 
+    &:hover {
+      .icon-apple {
+        display: none;
+      }
+      .time-indicator {
+        display: flex;
+      }
+    }
 
     .break,
     .progress {
@@ -63,7 +86,10 @@ $bar-height: 2em;
       justify-content: end;
       align-items: center;
       transition: width 0.1s linear;
+      overflow: hidden;
     }
+
+
 
     .break {
       position: absolute;

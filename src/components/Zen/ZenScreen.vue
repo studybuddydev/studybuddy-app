@@ -7,6 +7,7 @@ import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
 import Settings from '@/components/Popup/Settings.vue';
+import Info from '@/components/common/Info.vue';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -24,11 +25,83 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
   return {};
 });
 
+const isPipped = ref(false);
+
+function stopPomodoro() {
+  pomodoro.stopPomodoro();
+  zenMode.value = true;
+}
+
+function toggleZenMode() {
+  zenMode.value = !zenMode.value;
+  if (!zenMode.value && pomodoro.pauseing) {
+    pomodoro.togglePauseStudy();
+  }
+}
+
+async function pipIt() {
+  const player = document.querySelector("#pomocirclepip");
+
+  if (!(window as any).documentPictureInPicture) return;
+
+  if ((window as any).documentPictureInPicture.window) {
+    (window as any).documentPictureInPicture.window.close();
+    isPipped.value = false;
+    return;
+  }
+
+  // Open a Picture-in-Picture window.
+  const pipWindow = await (window as any).documentPictureInPicture.requestWindow();
+
+  // Copy style sheets over from the initial document
+  // so that the player looks the same.
+  [...(document.styleSheets as any)].forEach((styleSheet) => {
+    try {
+      const cssRules = [...styleSheet.cssRules].map((rule) => rule.cssText).join('');
+      const style = document.createElement('style');
+
+      style.textContent = cssRules;
+      pipWindow.document.head.appendChild(style);
+    } catch (e) {
+      const link = document.createElement('link');
+
+      link.rel = 'stylesheet';
+      link.type = styleSheet.type;
+      link.media = styleSheet.media;
+      link.href = styleSheet.href;
+      pipWindow.document.head.appendChild(link);
+    }
+  });
+
+  // Move the player to the Picture-in-Picture window.
+  pipWindow.document.body.append(player);
+  
+  // Move the player back when the Picture-in-Picture window closes.
+  pipWindow.addEventListener("pagehide", (event: any) => {
+    const playerContainer = document.querySelector("#pomocirclepipparent");
+    const pipPlayer = event.target.querySelector("#pomocirclepip");
+    playerContainer?.append(pipPlayer);
+  });
+  isPipped.value = true;
+
+}
+
 </script>
 
 <template>
   <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
     <Settings class="settings" v-model="openSettingsTab" />
+
+    <div class="hide" id="pomocirclepipparent">
+      <div
+        id="pomocirclepip"
+        :class="zenStyle.backgroundImage ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
+        :style="zenStyle">
+        <div class="pomodoro-circle-component-on-pip-wrapper">
+          <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-pip" :in-pip="true" />
+        </div>
+      </div>
+    </div>
 
     <div transition="fade-transition">
       <v-scroll-y-reverse-transition>
@@ -43,14 +116,14 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
           </div>
 
           <!-- top right -->
-          <div class="top-right blur">
+          <div class="top-right blur" v-if="!isLoading">
             <p v-if="isAuthenticated" class="logged-user">
               <span class="text">{{ user?.given_name ?? user?.nickname }}</span>
               <span><v-avatar :image="user?.picture" /></span>
             </p>
             <p class="login-button" v-else @click="loginWithRedirect()">
-              <v-icon size="x-large" class="icon" icon="mdi-account"/>
-              <span class="text">Log In</span>
+              <v-icon v-ripple size="x-large" class="icon" icon="mdi-account"/>
+              <span class="text">Login</span>
             </p>
           </div>
 
@@ -71,63 +144,78 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
               <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
               <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
             </div>
-
-            <PomodoroCircle class="pomodoro-circle blur" v-if="!settings.userSettings.hideTime && pomodoro.going" />
-            <div class="pomopause">
-              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="pomodoro.created"
-                @click="pomodoro.startPomodoro()">
-                <span>{{ $t("pause.study") }}</span>
-                <v-icon class="icon">mdi-play</v-icon>
-              </v-btn>
+            
+            <div class="pomodoro-circle-component-on-zen-wrapper">
+              <PomodoroCircle
+                class="pomodoro-circle-component pomodoro-circle-component-on-zen"
+                v-if="!settings.userSettings.hideTime && pomodoro.going" :in-pip="false"
+                />
             </div>
-
             <!-- report table-->
             <div class="report font-press" v-if="pomodoro.report">
               <div class="grid-container">
-                <p>{{ "Tempo studio:" }}</p>
+                <p>{{ $t("pause.studyTime") }}</p>
                 <p class="report-value">{{ pomodoro.report.timeStudy }}</p>
-                <p>{{ "Tempo pausa:" }}</p>
+                <p>{{ $t("pause.pauseTime") }}</p>
                 <p class="report-value">{{ pomodoro.report.timeBreak }}</p>
-                <p>{{ "Tempo totale:" }}</p>
+                <p>{{ $t("pause.totalTime") }}</p>
                 <p class="report-value">{{ pomodoro.report.timeTotal }}</p>
-                <p>{{ "Nr. pause:" }}</p>
+                <p>{{ $t("pause.pauseNumber") }}</p>
                 <p class="report-value">{{ pomodoro.report.nrBreaks }}</p>
-                <p class="report-total">{{ "Punteggio:" }}</p>
+                <p class="report-total">{{ $t("pause.score") }}</p>
                 <p class="report-value report-total">{{ pomodoro.report.points }}%</p>
               </div>
             </div>
 
-            <!-- pomodoro bar -->
+            <div class="pomopause">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+                @click="pomodoro.startPomodoro()">
+                <span>{{ $t("pause.study") }}</span>
+                <v-icon class="icon" icon="mdi-play" />
+              </v-btn>
+            </div>
 
           </div>
         </div>
       </v-scroll-y-reverse-transition>
 
       <v-dialog v-model="terminatePomoDialog" width="auto">
-        <v-card text="Sei sicuro di voler terminare il pomodoro">
+        <v-card :text="$t('zen.confirm')">
           <v-card-actions>
             <v-spacer />
-            <v-btn @click="terminatePomoDialog = false">No</v-btn>
-            <v-btn color="primary" @click="pomodoro.stopPomodoro(); terminatePomoDialog = false">Si</v-btn>
+            <v-btn @click="terminatePomoDialog = false">{{ $t("no") }}</v-btn>
+            <v-btn color="primary" @click="stopPomodoro(); terminatePomoDialog = false">{{ $t("yes") }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </div>
     <div class="bottom-bar">
-      <v-btn
-        density="comfortable"
-        icon="mdi-cog"
-        class="btn-edit bg-background"
-        @click="openSettingsTab =  pomodoro.going ? 'theme' : 'pomodoro'"
-      />
+      <div class="quick-settings" v-if="zenMode">
+        <v-btn
+          density="comfortable" size="small" class="btn-edit bg-surface"
+          :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'"
+          @click="pipIt()"
+        />
+        <v-btn
+          density="comfortable" size="small" class="btn-edit bg-surface"
+          :icon="settings.userSettings.hideTime ? 'mdi-eye' : 'mdi-eye-off'"
+          @click="settings.userSettings.hideTime = !settings.userSettings.hideTime"
+        />
+        <v-btn
+          density="comfortable" class="btn-edit btn-edit-main bg-background"
+          icon="mdi-cog"
+          @click="openSettingsTab =  pomodoro.going ? 'theme' : 'pomodoro'"
+        />
+
+      </div>
 
       <div :class="zenMode ? 'pull-up-panel blur' : 'pull-up-panel blur pull-up-panel-zenmode'">
-        <div class="handle" v-ripple @click="zenMode = !zenMode">
+        <div class="handle" v-ripple @click="toggleZenMode()">
           <v-icon :icon="zenMode ? 'mdi-chevron-down' : 'mdi-chevron-up'" />
         </div>
 
         <div class="pomodoro-bar">
-          <div class="button-wrapper font-press pomo-left" v-if="!pomodoro.created">
+          <div class="button-wrapper font-press pomo-left" v-if="pomodoro.going">
             <div>
               <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created || pomodoro.terminated">
                 <v-icon class="icon" icon="mdi-play" />
@@ -143,12 +231,13 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
             </div>
           </div>
           <PomodoroFlex class="pomo-flex" />
-          <div class="button-wrapper pomo-right" v-if="!pomodoro.created">
+          <div class="button-wrapper pomo-right" v-if="pomodoro.going">
             <div class="time-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
-                <p v-if="!settings.userSettings.hideTime">{{ pomodoro.timeSinceStart }}</p>
+                <p v-if="!settings.userSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
               </div>
-              <div class="pomo-box pomo-stop" @click="pomodoro.done ? pomodoro.stopPomodoro() : terminatePomoDialog = true">
+              <div :class="pomodoro.terminated ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
+                    @click="(pomodoro.freeMode || !pomodoro.done) ? terminatePomoDialog = true : stopPomodoro()">
                 <v-icon icon="mdi-stop" />
               </div>
             </div>
@@ -167,10 +256,31 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
   src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
 }
 
-.pomodoro-circle {
-  height: min(50vh, 80vw);
-  width: min(50vh, 80vw);
-  border-radius: 50%;
+.pomodoro-circle-component-on-zen-wrapper {
+  position: relative;
+
+  .pomodoro-circle-component-on-zen {
+    height: min(50vh, 80vw);
+    width: min(50vh, 80vw);
+  }
+}
+.pomodoro-circle-component-on-pip-wrapper-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: rgb(var(--v-theme-surface));
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  .pomodoro-circle-component-on-pip-wrapper {
+    width: 100vmin;
+    height: 100vmin;
+    padding: 1rem;
+    .pomodoro-circle-component-on-pip {
+      height: 100%;
+    }
+  }
 }
 
 
@@ -180,7 +290,7 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
 
 .img-background {
   .blur {
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
     background-color: rgba(var(--v-theme-background), 0.7);
   }
 }
@@ -469,11 +579,26 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
   z-index: 1500;
   justify-content: flex-end;
 
-  .btn-edit {
+  .quick-settings {
     pointer-events: auto;
     align-self: flex-end;
-    margin: 1rem
+    margin: 1rem;
+
+    &:hover {
+      .btn-edit {
+        display: inline;
+      }
+    }
+
+    .btn-edit {
+      display: none;
+      margin: 0.2rem;
+    }
+    .btn-edit-main {
+      display: inline;
+    }
   }
+
 
   .pull-up-panel {
     padding-top: 0.8rem;

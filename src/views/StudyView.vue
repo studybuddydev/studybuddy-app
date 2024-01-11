@@ -113,6 +113,7 @@ const isMobile = computed(() => window.innerWidth <= 600);
   display: grid;
   grid-template-columns: 3fr 1fr;
   grid-template-rows: auto auto;
+  margin-bottom: 3rem;
 
 }
 .blur-effect {

@@ -2,7 +2,7 @@
 
   <v-menu location="end" transition="scale-transition">
     <template v-slot:activator="{ props }">
-      <v-btn class="add-button" icon="mdi-plus" color="primary" :elevation="12" size="x-large" v-bind="props" />
+      <v-btn class="add-button" icon="mdi-plus" color="primary" :elevation="4" size="x-large" v-bind="props" />
     </template>
 
     <v-list class="mx-1">
