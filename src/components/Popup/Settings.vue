@@ -177,6 +177,7 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import { themeList } from '@/assets/themes'
 import { useAuth0 } from "@auth0/auth0-vue";
 import CountryFlag from 'vue-country-flag-next'
+import { onUnmounted } from 'vue';
 
 const state = useStateStore();
 const settingsStore = useSettingsStore();
@@ -199,9 +200,12 @@ function updateHoursMinutes() {
 }
 const totalLength = computed(() => settingsStore.settings!.pomodoro!.totalLength)
 const endsAt = ref('00:00');
+const intUpdateTime = setInterval(() => updateHoursMinutes(), 1000 * 10);
+onUnmounted(() => clearInterval(intUpdateTime));
 updateHoursMinutes();
 watch(endsAt, () => updateTotalLength(), { deep: true });
 watch(totalLength, () => updateHoursMinutes());
+
 
 // ----- MODE
 const modeSwitch = computed({
