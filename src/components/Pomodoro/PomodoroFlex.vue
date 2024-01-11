@@ -14,10 +14,10 @@
         }"><v-icon size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
 
       <div class="time-indicator time-indicator-break" v-for="b in pomodoro.displayBreaks" :key="b.index"
-        :style="{ marginLeft: `${b.startPerc + (b.lengthPerc / 2)}%` }">{{b.lengthTime}}</div>
+        :style="{ marginLeft: `${b.startPerc + (b.lengthPerc / 2)}%` }"><p>{{b.lengthTime}}</p></div>
 
       <div class="time-indicator time-indicator-study" v-for="s in pomodoro.displayStudy" :key="s.index"
-        :style="{ marginLeft: `${s.startPerc + (s.lengthPerc / 2)}%` }">{{s.lengthTime}}</div>
+        :style="{ marginLeft: `${s.startPerc + (s.lengthPerc / 2)}%` }"><p>{{s.lengthTime}}</p></div>
 
     </div>
   </div>
@@ -33,14 +33,12 @@ const theme = useTheme();
 
 
 <style lang="scss" scoped>
-$bar-height: 2em;
 
 
 .pomodoro {
   display: flex;
   flex-direction: column;
   align-items: center;
-  // border-radius: calc($bar-height / 2);
   overflow: hidden;
   border-radius: 1rem;
   margin: 0.5em 0;
@@ -58,16 +56,16 @@ $bar-height: 2em;
     position: relative;
 
     .time-indicator {
+      height: 100%;
+      align-items: center;
+      justify-content: center;
       display: none;
       position: absolute;
       left: 0;
-      height: $bar-height;
-      line-height: $bar-height;
       bottom: 0;
       transform: translateX(-50%);
       overflow: hidden;
       color: rgba(var(--v-theme-on-success));
-      // italic
       font-style: italic;
     }
 
@@ -76,7 +74,7 @@ $bar-height: 2em;
         display: none;
       }
       .time-indicator {
-        display: block;
+        display: flex;
       }
     }
 

@@ -63,12 +63,6 @@ const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  })
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    // background: conic-gradient(transparent 0deg,
-    //     orange 2deg,
-    //     orange 90deg,
-    //     transparent 90deg,
-    //     transparent 360deg);
-    // clip-path: circle(46% at center);
     -webkit-mask-image: radial-gradient(transparent 54%, black 54.3%);
     mask-image: radial-gradient(transparent 54%, black 54.3%);
   }
@@ -81,10 +75,6 @@ const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  })
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    .pause-text {
-      // margin-top: 4em;
-    }
 
     .buttons {
       display: flex;
