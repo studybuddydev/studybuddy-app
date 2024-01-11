@@ -1,5 +1,5 @@
 <template>
-  <div :class="inPip ? 'pomodoro-circle blur pip' : 'pomodoro-circle blur'" ref="el">
+  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''} ${pomodoro.timeToBreak || pomodoro.timeToStudy ? 'breathing' : ''}`" ref="el">
 
     <div class="progress-bar" :style="{
       background: `conic-gradient(
@@ -24,6 +24,10 @@
         <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5' v-if="!pomodoro.studing"
           @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro()" :style="{ height: `${width / 10}px` }">
           <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-play" />
+        </v-btn>
+        <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5' v-if="inPip && pomodoro.studing"
+          @click="pomodoro.togglePauseStudy()" :style="{ height: `${width / 10}px` }">
+          <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-pause" />
         </v-btn>
       </div>
     </div>

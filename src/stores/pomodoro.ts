@@ -423,6 +423,23 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const terminated = computed(() => getCurrentPomo()?.state === PomodoroState.TERMINATED);
   const going      = computed(() => studing.value || pauseing.value);
 
+  const timeToBreak = computed(() => {
+    if (!studing.value) return false;
+    const pomo = getCurrentPomo();
+    const nextStart = pomo?.breaksTodo[0]?.start;
+    if (!pomo || !nextStart) return false;
+    return nextStart - 500 < getNow(pomo?.startedAt);
+  });
+
+  const timeToStudy = computed(() => {
+    if (!pauseing.value) return false;
+    const pomo = getCurrentPomo();
+    const nextStop = pomo?.breaksDone.at(-1)?.end;
+    const now = getNow(pomo?.startedAt);
+    if (!pomo || !nextStop) return false;
+    return nextStop - 500 < getNow(pomo?.startedAt);
+  });
+
   const displayBreaks = computed(getDisplayBreaks);
   const displayStudy = computed(getDisplayStudy);
   const percentage = computed(getNowInPercentage);
@@ -442,7 +459,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
     getCurrentPomo, getBreaks,
     percentage, displayBreaks, displayStudy, report,
-    created, going, studing, pauseing, terminated, done, freeMode,
+    created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState
   }
 

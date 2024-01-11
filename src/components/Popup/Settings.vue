@@ -200,7 +200,7 @@ function updateHoursMinutes() {
 }
 const totalLength = computed(() => settingsStore.settings!.pomodoro!.totalLength)
 const endsAt = ref('00:00');
-const intUpdateTime = setInterval(() => updateHoursMinutes(), 1000 * 10);
+const intUpdateTime = setInterval(() => updateHoursMinutes(), 1000 * 60);
 onUnmounted(() => clearInterval(intUpdateTime));
 updateHoursMinutes();
 watch(endsAt, () => updateTotalLength(), { deep: true });
