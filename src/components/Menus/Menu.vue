@@ -66,7 +66,7 @@
     />
   </v-navigation-drawer>
 
-  <UserSettings v-model="openUserSettings" />
+  <Settings v-model="openUserSettings" />
 
 </template> 
 
@@ -77,7 +77,7 @@ import { ref, computed } from "vue";
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import type { Chapter, Exam } from '@/types';
-import UserSettings from '@/components/Popup/UserSettings.vue';
+import Settings from '@/components/Popup/Settings.vue';
 
 const route = useRoute()
 const state = useStateStore();

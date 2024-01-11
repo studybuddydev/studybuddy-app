@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1 class="ma-4">{{ $t("welcome", { 'name': settings.settingsWithDefaults.user?.username } ) }}</h1>
     <Timeline class="ma-10" />
   </div>
 </template>
