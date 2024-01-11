@@ -51,7 +51,7 @@ export const themes = {
     }
   },
   nord: {
-    dark: false,
+    dark: true,
     colors: {
       background: '#4C566A',
       surface: '#3B4252',
