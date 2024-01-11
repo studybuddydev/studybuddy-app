@@ -62,10 +62,16 @@
             <!-- POMODORO -->
             <v-window-item value="pomodoro">
               <v-row>
-                <v-col cols="12 d-flex justify-space-around pa-6">
+                <v-col cols="6" class="d-flex justify-space-around">
                   <v-btn-toggle color="primary" group rounded="xl" variant="flat" v-model="modeSwitch">
-                    <v-btn value="classic" class="bg-background">{{ $t("pause.timer.classic") }}</v-btn>
                     <v-btn value="free" class="bg-background">{{ $t("pause.timer.free") }}</v-btn>
+                    <v-btn value="classic" class="bg-background">{{ $t("pause.timer.classic") }}</v-btn>
+                  </v-btn-toggle>
+                </v-col>
+                <v-col cols="6" class="d-flex justify-space-around">
+                  <v-btn-toggle color="primary" group variant="flat" v-model="selectedPreset" :disabled="freeMode">
+                    <v-btn value="115-15-3" class="bg-background">{{ $t("25/5") }}</v-btn>
+                    <v-btn value="110-10-1" class="bg-background">{{ $t("50/10") }}</v-btn>
                   </v-btn-toggle>
                 </v-col>
               </v-row>
@@ -90,8 +96,6 @@
                     </template>
               </v-slider>
 
-
-
               <div class="text-h6">{{ settingsStore.settings!.pomodoro!.breaksLength }} {{ $t("pause.timer.breaksLength")
               }}
               </div>
@@ -106,22 +110,6 @@
               <div class="text-h6">{{ $t("pause.timer.volume") }}</div>
               <v-slider v-model="settingsStore.settings!.pomodoro!.soundVolume" :min="0" :max="100" :step="1" thumb-label :disabled="freeMode"
                 class="pr-4" :prepend-icon="volumeIcon(settingsStore.settings!.pomodoro!.soundVolume)" />
-
-              <v-row>
-                <v-spacer />
-                <v-col> 
-                  <v-btn variant="tonal"  :disabled="freeMode" @click="() => {
-                    presetPomo(115, 15, 3);}">
-                    {{ $t("25/5") }}
-                  </v-btn> 
-                </v-col>
-                <v-spacer />
-
-                <v-col> <v-btn variant="tonal" :disabled="freeMode" @click="() => {
-                  presetPomo(110, 10, 1);
-                }">{{ $t("50/10") }}</v-btn> </v-col>
-                <v-spacer />
-              </v-row>
 
             </v-window-item>
 
@@ -164,6 +152,10 @@
             </v-window-item>
           </v-window>
         </v-container>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="flat" color="primary" @click="modelDialog = false">{{ $t("save") }}</v-btn>
+        </v-card-actions>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -213,6 +205,23 @@ const modeSwitch = computed({
   set(value) { settingsStore.settings!.pomodoro!.freeMode = value === 'free'; }
 })
 const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
+
+
+function presetPomo(totalLength = 2, breaksLength = 15, numberOfBreak = 3) {
+  settingsStore.settings!.pomodoro!.totalLength = totalLength;
+  settingsStore.settings!.pomodoro!.breaksLength = breaksLength;
+  settingsStore.settings!.pomodoro!.numberOfBreak = numberOfBreak;
+}
+const selectedPreset = computed({
+  get() { 
+    return `${settingsStore.settings!.pomodoro!.totalLength}-${settingsStore.settings!.pomodoro!.breaksLength}-${settingsStore.settings!.pomodoro!.numberOfBreak}`;
+  },
+  set(value) { 
+    const [totalLength, breaksLength, numberOfBreak] = value.split('-');
+    presetPomo(+totalLength, +breaksLength, +numberOfBreak);
+    
+  }
+})
 
 // ----- LANG
 // $i18n.availableLocales
@@ -274,11 +283,6 @@ function importData() {
   state.uploadData();
 }
 
-function presetPomo(totalLength = 2, breaksLength = 15, numberOfBreak = 3) {
-  settingsStore.settings!.pomodoro!.totalLength = totalLength;
-  settingsStore.settings!.pomodoro!.breaksLength = breaksLength;
-  settingsStore.settings!.pomodoro!.numberOfBreak = numberOfBreak;
-}
 
 //// ---- Volume
 const volumeIcon = computed(() => ((volume: number) => {
