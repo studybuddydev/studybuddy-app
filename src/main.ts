@@ -29,10 +29,7 @@ const hotjarVersion = 6;
 
 Hotjar.init(siteId, hotjarVersion);
 useRegisterSW({
-  immediate: true,
-  onNeedRefresh() {
-    console.log('Serve un refreshone')
-  },
+  immediate: true
 })
 
 const vuetify = createVuetify({

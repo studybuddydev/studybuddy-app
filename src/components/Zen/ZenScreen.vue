@@ -7,7 +7,6 @@ import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
 import Settings from '@/components/Popup/Settings.vue';
-import Info from '@/components/common/Info.vue';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -26,6 +25,7 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
 });
 
 const isPipped = ref(false);
+const pipSupported = computed(() => (window as any).documentPictureInPicture);
 
 function stopPomodoro() {
   pomodoro.stopPomodoro();
@@ -92,7 +92,7 @@ async function pipIt() {
   <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
     <Settings class="settings" v-model="openSettingsTab" />
 
-    <div class="hide" id="pomocirclepipparent">
+    <div v-if="pipSupported" class="hide" id="pomocirclepipparent">
       <div
         id="pomocirclepip"
         :class="zenStyle.backgroundImage ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
@@ -191,12 +191,12 @@ async function pipIt() {
     </div>
     <div class="bottom-bar">
       <div class="quick-settings" v-if="zenMode">
-        <v-btn
+        <v-btn v-if="pomodoro.going && pipSupported"
           density="comfortable" size="small" class="btn-edit bg-surface"
           :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'"
           @click="pipIt()"
         />
-        <v-btn
+        <v-btn v-if="pomodoro.going"
           density="comfortable" size="small" class="btn-edit bg-surface"
           :icon="settings.userSettings.hideTime ? 'mdi-eye' : 'mdi-eye-off'"
           @click="settings.userSettings.hideTime = !settings.userSettings.hideTime"
