@@ -17,6 +17,11 @@ export default defineConfig({
     }),
     vueJsx(),
     VitePWA({
+      registerType: 'autoUpdate',
+      workbox: {
+        cleanupOutdatedCaches: false,
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}']
+      },
       manifest: {
         name: 'StudyBuddy',
         short_name: 'StudyBuddy',
@@ -36,15 +41,6 @@ export default defineConfig({
     }),
 
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        entryFileNames: `[name]` + hash + `.js`,
-        chunkFileNames: `[name]` + hash + `.js`,
-        assetFileNames: `[name]` + hash + `.[ext]`
-      }
-    }
-  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
