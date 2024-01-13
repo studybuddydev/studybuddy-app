@@ -1,6 +1,6 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "node_modules/vite-plugin-pwa/client.d.ts"],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "target": "esnext",
   "module": "esnext",
   "compilerOptions": {
@@ -10,7 +10,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": [
+      "vite-plugin-pwa/vue"
+    ]
   },
 
   "references": [
