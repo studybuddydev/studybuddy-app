@@ -70,8 +70,8 @@
                 </v-col>
                 <v-col cols="6" class="d-flex justify-space-around">
                   <v-btn-toggle color="primary" group variant="flat" v-model="selectedPreset" :disabled="freeMode">
-                    <v-btn value="115-15-3" class="bg-background">{{ $t("25/5") }}</v-btn>
-                    <v-btn value="110-10-1" class="bg-background">{{ $t("50/10") }}</v-btn>
+                    <v-btn value="115-15-3" class="bg-background">25/5</v-btn>
+                    <v-btn value="110-10-1" class="bg-background">50/10</v-btn>
                   </v-btn-toggle>
                 </v-col>
               </v-row>
@@ -202,7 +202,9 @@ watch(totalLength, () => updateHoursMinutes());
 // ----- MODE
 const modeSwitch = computed({
   get() { return settingsStore.settings!.pomodoro!.freeMode ? 'free' : 'classic'; },
-  set(value) { settingsStore.settings!.pomodoro!.freeMode = value === 'free'; }
+  set(value) {
+    if (value) settingsStore.settings!.pomodoro!.freeMode = value === 'free';
+  }
 })
 const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
 

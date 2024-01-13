@@ -7,6 +7,8 @@ import { createI18n } from "vue-i18n";
 import App from './App.vue'
 import router from './router'
 import messages from "@intlify/unplugin-vue-i18n/messages";
+/// <reference types="vite-plugin-pwa/client" />
+import { useRegisterSW } from 'virtual:pwa-register/vue'
 
 // Vuetify
 import 'vuetify/styles'
@@ -26,6 +28,9 @@ const siteId = 3579956;
 const hotjarVersion = 6;
 
 Hotjar.init(siteId, hotjarVersion);
+useRegisterSW({
+  immediate: true
+})
 
 const vuetify = createVuetify({
   components,
