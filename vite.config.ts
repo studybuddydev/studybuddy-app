@@ -36,8 +36,8 @@ export default defineConfig({
         short_name: 'StudyBuddy',
         start_url: '/',
         display: 'standalone',
-        background_color: '#009999',
-        theme_color: '#FF7600',
+        background_color: '#094D4E',
+        theme_color: '#094D4E',
         icons: [
           {
             src: '/images/logo.png',
