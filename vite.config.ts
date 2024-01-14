@@ -20,10 +20,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         cleanupOutdatedCaches: false,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2,ttf}', '**/*.{ttf,woff2}?*'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2,ttf}', '**/*.{ttf,woff2}\?*'],
         runtimeCaching: [
           {
-            urlPattern: new RegExp('*/assets/(?!exclude.txt)'),
+            urlPattern: new RegExp('.*/assets/'),
             handler: 'CacheFirst',
             options: {
               cacheName: 'fonts',
