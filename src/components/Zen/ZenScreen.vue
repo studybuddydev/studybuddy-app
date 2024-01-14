@@ -86,7 +86,7 @@ async function pipIt() {
 
 }
 
-const offline = ref(false);
+const offline = ref(!navigator.onLine);
 window.addEventListener('online', () => offline.value = false);
 window.addEventListener('offline', () => offline.value = true);
 
