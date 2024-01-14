@@ -20,7 +20,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         cleanupOutdatedCaches: false,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2,ttf}', '**/*.{ttf,woff2}?*']
       },
       manifest: {
         name: 'StudyBuddy',
