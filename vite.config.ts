@@ -20,13 +20,13 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         cleanupOutdatedCaches: false,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2,ttf}', '**/*.{ttf,woff2}\?*'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2,ttf}'],
         runtimeCaching: [
           {
             urlPattern: new RegExp('.*/assets/'),
             handler: 'CacheFirst',
             options: {
-              cacheName: 'fonts',
+              cacheName: 'assets',
             }
           }
         ]
@@ -36,8 +36,8 @@ export default defineConfig({
         short_name: 'StudyBuddy',
         start_url: '/',
         display: 'standalone',
-        background_color: '#ffffff',
-        theme_color: '#000000',
+        background_color: '#009999',
+        theme_color: '#FF7600',
         icons: [
           {
             src: '/images/logo.png',
