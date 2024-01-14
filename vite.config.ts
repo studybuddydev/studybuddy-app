@@ -23,7 +23,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2,ttf}', '**/*.{ttf,woff2}?*'],
         runtimeCaching: [
           {
-            urlPattern: new RegExp('**/*.{ttf,woff2}*'),
+            urlPattern: new RegExp('*/assets/(?!exclude.txt)'),
             handler: 'CacheFirst',
             options: {
               cacheName: 'fonts',
