@@ -6,17 +6,20 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
-export const hash = Math.floor(Math.random() * 90000) + 10000;
+// import mkcert from 'vite-plugin-mkcert'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  //server: { https: true },
   plugins: [
+    //mkcert(),
     vue(),
     VueI18nPlugin({
       include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**'),
     }),
     vueJsx(),
     VitePWA({
+      devOptions: { enabled: true },
       registerType: 'autoUpdate',
       workbox: {
         cleanupOutdatedCaches: false,
@@ -54,6 +57,9 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  define: {
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true'
   }
 })
 

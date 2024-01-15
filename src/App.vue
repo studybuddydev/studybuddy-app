@@ -48,6 +48,9 @@ const updateWidth = () => { windowWidth.value = window.innerWidth; };
 onMounted(() => { window.addEventListener('resize', updateWidth); });
 onUnmounted(() => { window.removeEventListener('resize', updateWidth); });
 
+Notification.requestPermission().then((result) => {
+  if (result === "granted") {}
+});
 
 </script>
 
