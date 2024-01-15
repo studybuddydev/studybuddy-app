@@ -1,5 +1,5 @@
 <template>
-  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''} ${pomodoro.timeToBreak || pomodoro.timeToStudy ? 'breathing' : ''}`" ref="el">
+  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''} ${!pomodoro.freeMode && (pomodoro.timeToBreak || pomodoro.timeToStudy) ? 'breathing' : ''}`" ref="el">
 
     <div class="progress-bar" :style="{
       background: `conic-gradient(

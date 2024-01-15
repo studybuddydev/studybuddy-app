@@ -289,7 +289,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       const lengthPerc = Math.min(100 - startPerc, (100 * (end / pomo.end)) - startPerc);
       return {
         startPerc, lengthPerc,
-        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, false),
+        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, false, false),
         done: b.done,
         index: i
       }
@@ -353,7 +353,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     audio.play();
   }
 
-  function timeFormatted(seconds: number, html: boolean = true) {
+  function timeFormatted(seconds: number, html: boolean = true, showSeconds: boolean = true) {
     let secondsLeft = seconds; // Math.floor(time  / MINUTE_MULTIPLIER * 60);
     const h = Math.floor(secondsLeft / 3600);
     secondsLeft -= h * 3600;
@@ -366,9 +366,9 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const hStr = h > 0 ? `${h}:` : '';
     const cssClass = h > 0 ? 'small seconds' : 'seconds';
 
-    return html ? 
-      `${hStr}${mStr}<span class="${cssClass}">:${sStr}</span>`
-      : `${hStr}${mStr}:${sStr}`;
+    return showSeconds ?
+        (html ?  `${hStr}${mStr}<span class="${cssClass}">:${sStr}</span>` : `${hStr}${mStr}:${sStr}`)
+        : `${hStr}${mStr}`;
   }
 
   function timeSinceStartFormatted() {
