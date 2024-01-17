@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 import { resolve, dirname } from "node:path";
 import { VitePWA } from 'vite-plugin-pwa'
+import manifest from './manifest';
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -14,9 +15,7 @@ export default defineConfig({
   plugins: [
     //mkcert(),
     vue(),
-    VueI18nPlugin({
-      include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**'),
-    }),
+    VueI18nPlugin({ include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**') }),
     vueJsx(),
     VitePWA({
       devOptions: { enabled: true },
@@ -34,22 +33,7 @@ export default defineConfig({
           }
         ]
       },
-      manifest: {
-        name: 'StudyBuddy',
-        short_name: 'StudyBuddy',
-        start_url: '/',
-        display: 'standalone',
-        background_color: '#094D4E',
-        theme_color: '#094D4E',
-        icons: [
-          {
-            src: '/images/logo.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          
-        ],
-      },
+      manifest: manifest
     }),
 
   ],
