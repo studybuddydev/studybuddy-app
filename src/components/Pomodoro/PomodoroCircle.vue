@@ -1,5 +1,5 @@
 <template>
-  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''} ${pomodoro.timeToBreak || pomodoro.timeToStudy ? 'breathing' : ''}`" ref="el">
+  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''} ${!pomodoro.freeMode && (pomodoro.timeToBreak || pomodoro.timeToStudy) ? 'breathing' : ''}`" ref="el">
 
     <div class="progress-bar" :style="{
       background: `conic-gradient(
@@ -14,9 +14,9 @@
           v-html="pomodoro.timeInCurrentStudy" :style="{ fontSize: `${width / 12}px` }"></p>
 
         <div v-else-if="pomodoro.pauseing" class="pause-text">
-          <p :style="{ fontSize: `${width / 20}px` }" class="font-press pause-p">{{ $t("pause.youare") }}</p>
-          <p :style="{ fontSize: `${width / 15}px` }" class="text-primary font-press">{{ $t("pause.break") }}</p>
-          <p :style="{ fontSize: `${width / 20}px` }" class="font-press pause-p">{{ $t("pause.for") }} <span class="text-primary font-casio" v-html="pomodoro.timeInCurrentBreak"></span></p>
+          <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.youare") }}</p>
+          <p :style="{ fontSize: `${width / 10}px` }" class="text-primary font-press">{{ $t("pause.break") }}</p>
+          <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.for") }} <span class="text-primary font-casio" v-html="pomodoro.timeInCurrentBreak"></span></p>
         </div>
       </div>
 

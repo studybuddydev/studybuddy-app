@@ -7,6 +7,7 @@ import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
 import Settings from '@/components/Popup/Settings.vue';
+import { watch } from 'vue';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -29,6 +30,10 @@ const pipSupported = computed(() => (window as any).documentPictureInPicture);
 
 function stopPomodoro() {
   pomodoro.stopPomodoro();
+  zenMode.value = true;
+}
+function pausePomodoro() {
+  pomodoro.togglePauseStudy();
   zenMode.value = true;
 }
 
@@ -86,6 +91,10 @@ async function pipIt() {
 
 }
 
+const offline = ref(!navigator.onLine);
+window.addEventListener('online', () => offline.value = false);
+window.addEventListener('offline', () => offline.value = true);
+
 </script>
 
 <template>
@@ -117,7 +126,11 @@ async function pipIt() {
 
           <!-- top right -->
           <div class="top-right blur" v-if="!isLoading">
-            <p v-if="isAuthenticated" class="logged-user">
+            <p class="logged-user" v-if="offline" >
+              <v-icon v-ripple size="x-large" class="icon" icon="mdi-wifi-off" color="warning"/>
+              <span class="text">Offline</span>
+            </p>
+            <p v-else-if="isAuthenticated" class="logged-user">
               <span class="text">{{ user?.given_name ?? user?.nickname }}</span>
               <span><v-avatar :image="user?.picture" /></span>
             </p>
@@ -148,7 +161,7 @@ async function pipIt() {
             <div class="pomodoro-circle-component-on-zen-wrapper">
               <PomodoroCircle
                 class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-                v-if="!settings.userSettings.hideTime && pomodoro.going" :in-pip="false"
+                v-if="pomodoro.going && (!settings.userSettings.hideTime || pomodoro.pauseing)" :in-pip="false"
                 />
             </div>
             <!-- report table-->
@@ -220,7 +233,7 @@ async function pipIt() {
               <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created || pomodoro.terminated">
                 <v-icon class="icon" icon="mdi-play" />
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => { pomodoro.togglePauseStudy(); zenMode = true; }" v-else-if="pomodoro.studing">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.studing">
                 <v-icon class="icon" icon="mdi-pause" />
               </v-btn>
               <v-btn class='btn bg-secondary pomo-btn pomo-box pomo-box-disabled' v-else>

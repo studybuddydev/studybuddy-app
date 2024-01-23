@@ -87,6 +87,7 @@ export type DisplaySession = {
   lengthTime: string;
   done?: boolean;
   index: number;
+  small?: boolean;
 }
 
 export type PomoReport = {

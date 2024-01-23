@@ -68,19 +68,15 @@ export const useSettingsStore = defineStore('settings', () => {
   function updateTheme(newTheme?: string) {
     theme.global.name.value = newTheme ?? themeSettings.value.theme ?? DEFAULT_THEME;
   }
-  function updateLanguage() {
-    i18n.locale.value = userSettings.value.lang ?? DEFAULT_LANG;
-  }
 
   updateTheme();
-  updateLanguage();
   
   return {
     settings,
     userSettings, pomoSettings, themeSettings,
     defaultSettings,
     updateSettings, updatePomodoroSettings,
-    updateTheme, updateLanguage,
+    updateTheme,
     save
   };
 });

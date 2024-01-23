@@ -9,7 +9,7 @@ const SECONDS_MULTIPLIER = 1000;
 const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 
-enum ESound {
+enum ENotification {
   BreakStart = 'pomo.wav',
   BreakDone = 'break.wav',
   PomodoroDone = 'pomodoro.wav',
@@ -184,7 +184,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       pomo.end = now;
       if (!pomo.soundEnd) {
         pomo.soundEnd = true;
-        playSound(ESound.PomodoroDone);
+        playNotification(ENotification.PomodoroDone);
       }
     }
 
@@ -196,7 +196,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
           currBreak.end = now;                                          // set current break end to now ( if you are in a new break you are moving the break end every second)
           if (!currBreak.soundEnd) {                                    // if sound is not played yet   
             currBreak.soundEnd = true;                                  // set sound played to true     
-            playSound(ESound.BreakDone);                                // play sound 
+            playNotification(ENotification.BreakDone);                                // play sound 
           }
         }
         while (toSteal > 0) {                                          // while there is time to steal      
@@ -222,7 +222,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
       if (nextBreak && curEndProgress > nextBreak.start && !nextBreak.soundStart) {
         nextBreak.soundStart = true;
-        playSound(ESound.BreakStart);
+        playNotification(ENotification.BreakStart);
       }
 
       if (nextBreak && curEndProgress > nextBreak.start) {
@@ -289,11 +289,12 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       const lengthPerc = Math.min(100 - startPerc, (100 * (end / pomo.end)) - startPerc);
       return {
         startPerc, lengthPerc,
-        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, false),
+        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, false, false),
         done: b.done,
-        index: i
+        index: i,
+        small: lengthPerc < 3
       }
-    }).filter(b => b.lengthPerc >= 0.2)
+    })
   }
 
   function getDisplayBreaks(): DisplaySession[] {
@@ -325,11 +326,12 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const pomo = getCurrentPomo();
     if (!pomo) return { timeTotal: '', timeStudy: '', timeBreak: '', nrBreaks: '', points: '' };
     const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
-    const timeStudy = (pomo.endedAt ?? pomo.end) - timeBreak;
-    const points = Math.max( ((timeStudy - timeBreak) / timeStudy * 100), 0 );
+    const timeTotal = pomo.endedAt ?? pomo.end;
+    const timeStudy = timeTotal - timeBreak;
+    const points = Math.max(Math.min((timeStudy / timeTotal) * 100, 100), 0);
 
     return {
-      timeTotal: timeFormatted((pomo.endedAt ?? pomo.end) / SECONDS_MULTIPLIER, false),
+      timeTotal: timeFormatted(timeTotal / SECONDS_MULTIPLIER, false),
       timeStudy: timeFormatted(timeStudy / SECONDS_MULTIPLIER, false),
       timeBreak: timeFormatted(timeBreak / SECONDS_MULTIPLIER, false),
       nrBreaks: pomo.breaksDone.length.toString(),
@@ -345,15 +347,32 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return (b.end ?? b.start) - b.start;
   }
 
-  async function playSound(sound: ESound) {
-    const audio = new Audio(`/sounds/${sound}`);
+  async function playNotification(type: ENotification) {
+    if (Notification.permission === "granted") {
+      let text = '';
+      if (ENotification.BreakStart === type) text = 'Time to break';
+      else if (ENotification.BreakDone === type) text = 'Time to study';
+      else if (ENotification.PomodoroDone === type) text = 'Nice job!';
+
+      let body = '';
+      if (ENotification.BreakStart === type) text = 'You studied enough, take a break!';
+      else if (ENotification.BreakDone === type) text = 'Your break is over, get back to work!';
+      else if (ENotification.PomodoroDone === type) text = 'You completed your pomodoro!';
+
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.showNotification(text, { body });
+      });
+    }
+
+    // sound
+    const audio = new Audio(`/sounds/${type}`);
     let volume = settingsStore.pomoSettings.soundVolume;
     if (volume === undefined) volume = 0.5;
     audio.volume = volume / 100;
     audio.play();
   }
 
-  function timeFormatted(seconds: number, html: boolean = true) {
+  function timeFormatted(seconds: number, html: boolean = true, showSeconds: boolean = true) {
     let secondsLeft = seconds; // Math.floor(time  / MINUTE_MULTIPLIER * 60);
     const h = Math.floor(secondsLeft / 3600);
     secondsLeft -= h * 3600;
@@ -366,9 +385,9 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const hStr = h > 0 ? `${h}:` : '';
     const cssClass = h > 0 ? 'small seconds' : 'seconds';
 
-    return html ? 
-      `${hStr}${mStr}<span class="${cssClass}">:${sStr}</span>`
-      : `${hStr}${mStr}:${sStr}`;
+    return showSeconds ?
+        (html ?  `${hStr}${mStr}<span class="${cssClass}">:${sStr}</span>` : `${hStr}${mStr}:${sStr}`)
+        : `${hStr}${mStr}`;
   }
 
   function timeSinceStartFormatted() {

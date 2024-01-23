@@ -8,16 +8,16 @@
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" /> </div>
       <div v-for="b in pomodoro.displayBreaks" :key="b.index" class="break"
         :style="{
-          backgroundColor: b.done ? theme.current.value.colors.warning : theme.current.value.colors.apple,
+          backgroundColor: b.done ? theme.current.value.colors.warning : (theme.current.value.colors.apple ?? theme.current.value.colors.error),
           marginLeft: `${b.startPerc}%`,
           width: `${b.lengthPerc}%`,
-        }"><v-icon size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
+        }"><v-icon v-if="!b.small" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
 
       <div class="time-indicator time-indicator-break" v-for="b in pomodoro.displayBreaks" :key="b.index"
-        :style="{ marginLeft: `${b.startPerc + (b.lengthPerc / 2)}%` }"><p>{{b.lengthTime}}</p></div>
+        :style="{ marginLeft: `${b.startPerc + (b.lengthPerc / 2)}%` }"><p>{{b.lengthTime ? '' : b.lengthTime }}</p></div>
 
       <div class="time-indicator time-indicator-study" v-for="s in pomodoro.displayStudy" :key="s.index"
-        :style="{ marginLeft: `${s.startPerc + (s.lengthPerc / 2)}%` }"><p>{{s.lengthTime}}</p></div>
+        :style="{ marginLeft: `${s.startPerc + (s.lengthPerc / 2)}%` }"><p>{{s.lengthTime ? '' : s.lengthTime }}</p></div>
 
     </div>
   </div>

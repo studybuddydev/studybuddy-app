@@ -48,7 +48,6 @@ const updateWidth = () => { windowWidth.value = window.innerWidth; };
 onMounted(() => { window.addEventListener('resize', updateWidth); });
 onUnmounted(() => { window.removeEventListener('resize', updateWidth); });
 
-
 </script>
 
 <style lang="scss">

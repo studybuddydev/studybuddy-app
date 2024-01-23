@@ -24,14 +24,12 @@ import Hotjar from '@hotjar/browser';
 
 import { createAuth0 } from '@auth0/auth0-vue';
 
-const siteId = 3579956;
-const hotjarVersion = 6;
 
-Hotjar.init(siteId, hotjarVersion);
-useRegisterSW({
-  immediate: true
-})
+// Hotjar
+Hotjar.init(3579956, 6);
+useRegisterSW({ immediate: true })
 
+// Vuetify
 const vuetify = createVuetify({
   components,
   directives,
@@ -41,20 +39,34 @@ const vuetify = createVuetify({
     sets: { mdi }
   },
   theme: {
-    defaultTheme: JSON.parse(localStorage.getItem('state') ?? '{}')?.settings?.user?.theme ?? 'verdone',
+    defaultTheme: 'bio',
     themes: themes,
   },
 })
 
+
+// Language
+const availableLocales = ["en", "it", "fr", "es"];
+const defaultLang = 'en';
+function getLanguage() {
+  let lang = localStorage.getItem('lang');
+  if (!lang) {
+    const userLanguages = (navigator.languages || [navigator.language]).map((lang) => lang.split('-')[0]);
+    lang = userLanguages.find((lang) => availableLocales.includes(lang)) ?? defaultLang;
+    localStorage.setItem('lang', lang);
+  }
+  return lang;
+}
 const i18n = createI18n({
   legacy: false,
   globalInjection: true,
-  locale: localStorage.getItem('lang') ?? 'it',
-  fallbackLocale: "it",
-  availableLocales: ["en", "it", "fr", "es"],
+  locale: getLanguage(),
+  fallbackLocale: defaultLang,
+  availableLocales: availableLocales,
   messages: messages,
 });
 
+// Auth0
 const auth0 = createAuth0({
   domain: "studybuddyit.eu.auth0.com",
   clientId: "ZyUtaogYVjzqmWoglOEV5vT7XeHRzDtz",
@@ -65,12 +77,11 @@ const auth0 = createAuth0({
 
 const pinia = createPinia();
 
-const app = createApp(App)
-
-app.use(router);
-app.use(pinia);
-app.use(vuetify);
-app.use(i18n);
-app.use(setupCalendar, {})
-app.use(auth0);
-app.mount('#app');
+createApp(App)
+  .use(router)
+  .use(pinia)
+  .use(vuetify)
+  .use(i18n)
+  .use(auth0)
+  .use(setupCalendar, {})
+  .mount('#app');
