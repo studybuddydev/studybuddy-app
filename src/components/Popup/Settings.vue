@@ -25,7 +25,7 @@
               <v-row>
                 <v-col cols="12">
                   <v-select :label="$t('pause.general.language')" v-model="$i18n.locale" :items="langs"
-                    @update:model-value="($event) => settingsStore.settings!.user!.lang = $event" >
+                    @update:model-value="($event) => updateLanguage($event)" >
                     <template #item="{ props, item }">
                       <v-list-item v-bind="props">
                         <template #prepend>
@@ -234,6 +234,9 @@ const langs = [
   { title: 'French', value: 'fr', country: 'fr' },
   { title: 'German', value: 'de', country: 'de' }
 ]
+function updateLanguage(lang: string) {
+  localStorage.setItem('lang', lang);
+}
 
 // ----- THEME
 type Theme = { theme: string, img: string }
