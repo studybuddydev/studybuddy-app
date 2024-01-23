@@ -91,10 +91,6 @@ async function pipIt() {
 
 }
 
-watch(() => pomodoro.pauseing, (pause) => {
-  console.log('pause', pause);
-});
-
 const offline = ref(!navigator.onLine);
 window.addEventListener('online', () => offline.value = false);
 window.addEventListener('offline', () => offline.value = true);

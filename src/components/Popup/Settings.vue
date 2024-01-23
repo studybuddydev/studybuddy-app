@@ -185,7 +185,6 @@ setInterval(() => time.value = new Date().getTime(), 1000 * 60);
 const endsAt = computed({
   get () {
     const date = new Date(time.value + settingsStore.settings!.pomodoro!.totalLength*60000);
-    console.log(date);
     return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
   },
   set (newValue) {
@@ -193,7 +192,6 @@ const endsAt = computed({
     const [h, m] = newValue.split(':');
     date.setHours(+h);
     date.setMinutes(+m);
-    console.log('updateTotalLength', date);
 
     const res = Math.floor((date.getTime() - Date.now()) / 1000 / 60);
     settingsStore.settings!.pomodoro!.totalLength = res < 0 ? res + (24 * 60) : res;

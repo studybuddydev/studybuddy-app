@@ -291,9 +291,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
         startPerc, lengthPerc,
         lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, false, false),
         done: b.done,
-        index: i
+        index: i,
+        small: lengthPerc < 3
       }
-    }).filter(b => b.lengthPerc >= 0.2)
+    })
   }
 
   function getDisplayBreaks(): DisplaySession[] {
@@ -325,11 +326,12 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const pomo = getCurrentPomo();
     if (!pomo) return { timeTotal: '', timeStudy: '', timeBreak: '', nrBreaks: '', points: '' };
     const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
-    const timeStudy = (pomo.endedAt ?? pomo.end) - timeBreak;
-    const points = Math.max( ((timeStudy - timeBreak) / timeStudy * 100), 0 );
+    const timeTotal = pomo.endedAt ?? pomo.end;
+    const timeStudy = timeTotal - timeBreak;
+    const points = Math.max(Math.min((timeStudy / timeTotal) * 100, 100), 0);
 
     return {
-      timeTotal: timeFormatted((pomo.endedAt ?? pomo.end) / SECONDS_MULTIPLIER, false),
+      timeTotal: timeFormatted(timeTotal / SECONDS_MULTIPLIER, false),
       timeStudy: timeFormatted(timeStudy / SECONDS_MULTIPLIER, false),
       timeBreak: timeFormatted(timeBreak / SECONDS_MULTIPLIER, false),
       nrBreaks: pomo.breaksDone.length.toString(),
