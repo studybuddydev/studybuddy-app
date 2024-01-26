@@ -39,14 +39,22 @@ import Menu from '@/components/Menus/Menu.vue';
 import ZenScreen from '@/components/Zen/ZenScreen.vue';
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useAuth0 } from "@auth0/auth0-vue";
-const { loginWithRedirect, isLoading, isAuthenticated } = useAuth0();
+import { usePomodoroStore } from "@/stores/pomodoro";
 
+const { loginWithRedirect, isLoading, isAuthenticated } = useAuth0();
 const popupFirstLogin = ref(true);
+const pomodoro = usePomodoroStore();
+
 
 const windowWidth = ref(window.innerWidth);
 const updateWidth = () => { windowWidth.value = window.innerWidth; };
-onMounted(() => { window.addEventListener('resize', updateWidth); });
-onUnmounted(() => { window.removeEventListener('resize', updateWidth); });
+
+onMounted(() => {
+  window.addEventListener('resize', updateWidth);
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWidth);
+});
 
 </script>
 

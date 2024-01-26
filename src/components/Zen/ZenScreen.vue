@@ -7,7 +7,7 @@ import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
 import Settings from '@/components/Popup/Settings.vue';
-import { watch } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -92,8 +92,32 @@ async function pipIt() {
 }
 
 const offline = ref(!navigator.onLine);
-window.addEventListener('online', () => offline.value = false);
-window.addEventListener('offline', () => offline.value = true);
+
+const onKeyUp = (e: KeyboardEvent) => {
+  if (e.code === 'Space') {
+    // if (pomodoro.going)
+    //   pomodoro.togglePauseStudy();
+    // else
+    //   pomodoro.startPomodoro();
+  } else if (e.code === 'Escape') {
+    zenMode.value = !zenMode.value;
+  }
+};
+const setOffline = () => offline.value = !navigator.onLine;
+
+onMounted(() => {
+  window.addEventListener('online', () => setOffline);
+  window.addEventListener('offline', () => setOffline);
+  window.addEventListener('keyup', onKeyUp);
+
+});
+onUnmounted(() => {
+  window.removeEventListener('online', () => setOffline);
+  window.removeEventListener('offline', () => setOffline);
+  window.removeEventListener('keyup', onKeyUp);
+});
+
+
 
 </script>
 
@@ -117,12 +141,12 @@ window.addEventListener('offline', () => offline.value = true);
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
           <!-- top left  -->
-          <div class="top-left title blur">
+          <a class="top-left title blur" href="https://studybuddy.it" target="_blank">
             <img src="/images/logo.png" alt="logo" class="logo" />
             <h3 class="text-primary" v-if="!pomodoro.created">StudyBuddy
               <span class="bg-primary beta">BETA</span>
             </h3>
-          </div>
+          </a>
 
           <!-- top right -->
           <div class="top-right blur" v-if="!isLoading">
