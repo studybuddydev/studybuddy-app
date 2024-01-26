@@ -8,7 +8,7 @@
     </v-main>
     <ZenScreen />
 
-    <!-- <v-dialog width="500" v-model="popupFirstLogin" v-if="false && windowWidth > 600 && !isLoading && !isAuthenticated">
+    <v-dialog width="500" v-model="popupFirstLogin" v-if="false && windowWidth > 600 && !isLoading && !isAuthenticated">
       <v-card>
         <v-toolbar dark color="primary">
           <v-toolbar-title>{{ $t("welcomeToSB") }}</v-toolbar-title>
@@ -29,7 +29,7 @@
           </v-card-actions>
         </v-card-text>
       </v-card>
-    </v-dialog> -->
+    </v-dialog>
   </v-app>
 </template>
 
@@ -38,11 +38,11 @@
 import Menu from '@/components/Menus/Menu.vue';
 import ZenScreen from '@/components/Zen/ZenScreen.vue';
 import { ref, onMounted, onUnmounted } from 'vue';
-// import { useAuth0 } from "@auth0/auth0-vue";
-// import { usePomodoroStore } from "@/stores/pomodoro";
+import { useAuth0 } from "@auth0/auth0-vue";
+import { usePomodoroStore } from "@/stores/pomodoro";
 
-// const { loginWithRedirect, isLoading, isAuthenticated } = useAuth0();
-// const popupFirstLogin = ref(true);
+const { loginWithRedirect, isLoading, isAuthenticated } = useAuth0();
+const popupFirstLogin = ref(true);
 
 const windowWidth = ref(window.innerWidth);
 const updateWidth = () => { windowWidth.value = window.innerWidth; };
