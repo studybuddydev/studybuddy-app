@@ -6,7 +6,7 @@ import { computed, ref, watch } from 'vue';
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 0.1 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 
 enum ENotification {
@@ -91,8 +91,14 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   function stopPomodoro() {
     const pomo = getCurrentPomo();
     if (pomo) {
-      pomo.state = PomodoroState.TERMINATED;
       pomo.endedAt = getNow(pomo.startedAt);
+      if (pomo.state === PomodoroState.BREAK) {
+        const lastBreak = pomo.breaksDone.pop();
+        if (lastBreak) {
+          pomo.endedAt = lastBreak.start;
+        }
+      }
+      pomo.state = PomodoroState.TERMINATED;
     }
     report.value = getPomoReport();
     saveStatus();
