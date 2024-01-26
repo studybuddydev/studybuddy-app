@@ -149,16 +149,16 @@ onUnmounted(() => {
           </a>
 
           <!-- top right -->
-          <div class="top-right blur" v-if="!isLoading">
+          <div class="top-right blur" v-if="!isLoading"  @click="!isAuthenticated ? loginWithRedirect() : openSettingsTab = 'general'">
             <p class="logged-user" v-if="offline" >
               <v-icon v-ripple size="x-large" class="icon" icon="mdi-wifi-off" color="warning"/>
               <span class="text">Offline</span>
             </p>
-            <p v-else-if="isAuthenticated" class="logged-user">
+            <p v-else-if="isAuthenticated" class="logged-user" >
               <span class="text">{{ user?.given_name ?? user?.nickname }}</span>
               <span><v-avatar :image="user?.picture" /></span>
             </p>
-            <p class="login-button" v-else @click="loginWithRedirect()">
+            <p class="login-button" v-else>
               <v-icon v-ripple size="x-large" class="icon" icon="mdi-account"/>
               <span class="text">Login</span>
             </p>
