@@ -9,6 +9,7 @@ const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
 const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
+const OPTIMAL_BREAK_RATIO = 1/6;
 
 enum ENotification {
   BreakStart = 'pomo.wav',
@@ -342,14 +343,14 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
     const timeTotal = pomo.endedAt ?? pomo.end;
     const timeStudy = timeTotal - timeBreak;
-    const points = Math.max(Math.min((timeStudy / timeTotal) * 100, 100), 0);
+    const points =  1 - Math.abs((timeStudy - ((1 - OPTIMAL_BREAK_RATIO) * timeTotal)) / timeTotal);
 
     return {
       timeTotal: timeFormatted(timeTotal / SECONDS_MULTIPLIER, false),
       timeStudy: timeFormatted(timeStudy / SECONDS_MULTIPLIER, false),
       timeBreak: timeFormatted(timeBreak / SECONDS_MULTIPLIER, false),
       nrBreaks: pomo.breaksDone.length.toString(),
-      points: points.toFixed(1)
+      points: (points * 100).toFixed(1)
     };
   }
 
