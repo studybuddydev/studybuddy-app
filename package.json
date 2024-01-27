@@ -22,6 +22,7 @@
     "file-saver": "^2.0.5",
     "ical-generator": "^4.1.0",
     "ics": "^3.7.2",
+    "idb": "^8.0.0",
     "pinia": "^2.1.7",
     "qalendar": "^2.5.0",
     "realm": "^12.5.1",

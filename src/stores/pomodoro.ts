@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
-import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplaySession } from '@/types';
+import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplaySession, type PomodoroRecord, type Pomodoro } from '@/types';
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { computed, ref, watch } from 'vue';
+import { openDB, type IDBPDatabase } from 'idb';
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
@@ -99,6 +100,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
         }
       }
       pomo.state = PomodoroState.TERMINATED;
+      addPomodoroToRecords();
     }
     report.value = getPomoReport();
     saveStatus();
@@ -284,11 +286,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     ];
   }
 
-  function parseDisplaySession(l: { start: number, end?: number, done?: boolean }[]): DisplaySession[] {
-    const pomo = getCurrentPomo();
-    if (!pomo) return [];
-    const now = getNow(pomo.startedAt);
-
+  function parseDisplaySession(pomo: Pomodoro, l: { start: number, end?: number, done?: boolean }[], now: number): DisplaySession[] {
     return l.filter(b => b.end).map((b, i) => {
       const startPerc = Math.min(100, 100 * b.start / pomo.end);
       const end = b.end ?? now;
@@ -303,11 +301,20 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     })
   }
 
-  function getDisplayBreaks(): DisplaySession[] {
-    return parseDisplaySession(getBreaks());
+  function getDisplayBreaksCurrent(): DisplaySession[] {
+    const pomo = getCurrentPomo();
+    if (!pomo) return [];
+    const breaks = getBreaks();
+    const now = getNow(pomo.startedAt);
+    return parseDisplaySession(pomo, breaks, now);
   }
 
-  function getDisplayStudy(): DisplaySession[] {
+  function getDisplayBreaksRecord(pomo: PomodoroRecord): DisplaySession[] {
+    const breaks = pomo.breaksDone.map(x => ({...x, done: true})) ?? [];
+    return parseDisplaySession(pomo, breaks, 0);
+  }
+
+  function getDisplayStudyCurrent(): DisplaySession[] {
     const pomo = getCurrentPomo();
     if (!pomo || pomo.state === PomodoroState.CREATED) return [];
     const now = getNow(pomo.startedAt);
@@ -318,7 +325,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       if (b.end && b.end + 5000 < now) res.push({ start: b.end });
     }
     if (res.at(-1)!.end === undefined) res.at(-1)!.end = now;
-    return parseDisplaySession(res);
+
+    return parseDisplaySession(pomo, res, now);
   }
 
   function getNowInPercentage() {
@@ -465,8 +473,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return nextStop - 500 < getNow(pomo?.startedAt);
   });
 
-  const displayBreaks = computed(getDisplayBreaks);
-  const displayStudy = computed(getDisplayStudy);
+  const displayBreaks = computed(getDisplayBreaksCurrent);
+  const displayStudy = computed(getDisplayStudyCurrent);
   const percentage = computed(getNowInPercentage);
   const timeSinceStart = computed(() => timeSinceStartFormatted());
   const timeInCurrentBreak = computed(() => timeInCurrentBreakFormatted());
@@ -479,13 +487,53 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   });
   const freeMode = computed(() => getCurrentPomo()?.freeMode ?? false);
 
+  // ---------- HISTORY ----------
+  const pomodoroRecords = ref<PomodoroRecord[]>([]);
+
+  async function addPomodoroToRecords() {
+    const pomo = getCurrentPomo();
+    if (!pomo) return;
+
+    const record: PomodoroRecord = {
+      end: pomo.end,
+      breaksDone: pomo.breaksDone.map(b => ({ start: b.start, end: b.end ?? b.start })),
+      freeMode: pomo.freeMode,
+      datetime: new Date()
+    }
+
+    const db = await openDB('sb-db', 1, {
+      upgrade (db) {
+        if (!db.objectStoreNames.contains('pomodori')) {
+          db.createObjectStore('pomodori', { keyPath: 'id', autoIncrement: true });
+        }
+      }
+    });
+    await db.add('pomodori', record);
+
+    updatePomodoroRecords(db);
+  }
+
+  async function getPomodoroRecords(db: IDBPDatabase | null = null): Promise<PomodoroRecord[]> {
+    if (!db) db = await openDB('sb-db', 1);
+    return await db.getAll('pomodori');
+  }
+  async function updatePomodoroRecords(db: IDBPDatabase | null = null) {
+    const pomos = await getPomodoroRecords(db);
+    pomos.forEach(p => {
+      p.displayBreaks = getDisplayBreaksRecord(p);
+    });
+    pomodoroRecords.value = pomos;
+  }
+  updatePomodoroRecords();
+
   // ---------- RETURN ----------
   return {
     startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
     getCurrentPomo, getBreaks,
     percentage, displayBreaks, displayStudy, report,
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy,
-    timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState
+    timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
+    getPomodoroRecords, pomodoroRecords
   }
 
 })

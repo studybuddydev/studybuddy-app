@@ -6,6 +6,7 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
+import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
 import Settings from '@/components/Popup/Settings.vue';
 import { onMounted, onUnmounted } from 'vue';
 import Info from '@/components/common/Info.vue'
@@ -282,6 +283,7 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
+        <PomodoroHistory />
       </div>
     </div>
   </div>
