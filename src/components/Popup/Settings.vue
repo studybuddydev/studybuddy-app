@@ -12,9 +12,10 @@
       </v-toolbar>
 
       <v-card-text>
+        
         <v-container>
           <v-window v-model="modelTab" :touch="false">
-
+            
             <!-- PROFILE -->
             <v-window-item value="general">
               <v-row>
@@ -61,6 +62,7 @@
 
             <!-- POMODORO -->
             <v-window-item value="pomodoro">
+              <Info :text="$t('todo', 'il testo sostanzioso per le info del timer')" class="info-settings" />
               <v-alert v-if="pomodoro.going" variant="tonal" class="mb-5" type="warning" text="To modify the timer properties you must stop it first" />
 
               <div v-if="!pomodoro.going">
@@ -173,7 +175,7 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import { themeList } from '@/assets/themes'
 import { useAuth0 } from "@auth0/auth0-vue";
 import CountryFlag from 'vue-country-flag-next'
-import { onUnmounted } from 'vue';
+import Info from '@/components/common/Info.vue'
 
 const state = useStateStore();
 const settingsStore = useSettingsStore();
@@ -303,6 +305,12 @@ const volumeIcon = computed(() => ((volume: number) => {
 </script>
 
 <style scoped lang="scss">
+
+.info-settings {
+  top: 64px;
+  right: 0;
+  margin: 1rem;
+}
 .text-bottom {
   display: flex;
   align-items: center;

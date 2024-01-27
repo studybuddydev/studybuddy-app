@@ -16,8 +16,12 @@
         <div v-else-if="pomodoro.pauseing" class="pause-text">
           <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.youare") }}</p>
           <p :style="{ fontSize: `${width / 10}px` }" class="text-primary font-press">{{ $t("pause.break") }}</p>
-          <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.for") }} <span class="text-primary font-casio" v-html="pomodoro.timeInCurrentBreak"></span></p>
+          <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.for") }}
+            <span class="text-primary font-casio" v-html="pomodoro.timeInCurrentBreak"></span>
+          </p>
+          <Info :text="$t('todo', 'info per il break')" class="info-pause" />
         </div>
+
       </div>
 
       <div class="buttons" >
@@ -40,24 +44,26 @@ import { useTheme } from 'vuetify'
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useElementSize } from '@vueuse/core'
 import { ref } from 'vue';
+import Info from '@/components/common/Info.vue'
 
 const el = ref(null)
 const { width } = useElementSize(el)
 
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
-
 const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  });
 </script>
 
 
 <style lang="scss" scoped>
-
-
 .pomodoro-circle {
   position: relative;
   border-radius: 50%;
 
+  .info-pause {
+    top: 0;
+    right: 0;
+  }
   .progress-bar {
     position: absolute;
     width: 100%;

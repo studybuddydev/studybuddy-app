@@ -17,7 +17,7 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .info-tip {
-  position: relative;
+  position: fixed;
 
   .info-box {
     position: absolute;
@@ -25,7 +25,7 @@ const props = defineProps<{
     left: 0.5em;
     transform: translateX(-50%);
     z-index: 1;
-    width: 200px;
+    width: 300px;
     padding: 1em;
     background-color: rgb(var(--v-theme-surface));
     border-radius: 1em;
@@ -33,6 +33,7 @@ const props = defineProps<{
     visibility: hidden;
     transition: opacity 0.2s ease-in-out;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    font-size: 0.8em;
 
   }
 
