@@ -103,7 +103,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     pomo.state = PomodoroState.TERMINATED;
       addPomodoroToRecords();
     }
-    report.value = getPomoReport();
+    report.value = getPomoReport(pomo);
     saveStatus();
   }
   // between start and stop you alternate between study and pause, this method is called when you press the pause/play button during a pomdoo
@@ -337,9 +337,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return 100 * getNow(pomo.startedAt) / pomo.end;
   }
 
-  function getPomoReport(): PomoReport {
-    const pomo = getCurrentPomo();
-    if (!pomo) return { timeTotal: '', timeStudy: '', timeBreak: '', nrBreaks: '', points: '' };
+  function getPomoReport(pomo: Pomodoro | undefined): PomoReport {
+    if (!pomo) return { timeTotal: '', timeStudy: '', timeBreak: '', nrBreaks: '', points: '', pointsValue: 0 };
     const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
     const timeTotal = pomo.endedAt ?? pomo.end;
     const timeStudy = timeTotal - timeBreak;
@@ -350,7 +349,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       timeStudy: timeFormatted(timeStudy / SECONDS_MULTIPLIER, false),
       timeBreak: timeFormatted(timeBreak / SECONDS_MULTIPLIER, false),
       nrBreaks: pomo.breaksDone.length.toString(),
-      points: (points * 100).toFixed(1)
+      points: (points * 100).toFixed(1),
+      pointsValue: points
     };
   }
 
@@ -491,42 +491,57 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // ---------- HISTORY ----------
   const pomodoroRecords = ref<PomodoroRecord[]>([]);
 
+  let _db: IDBPDatabase | null = null;
+  async function getDb(): Promise<IDBPDatabase> {
+    if (!_db) {
+      _db = await openDB('sb-db', 1, {
+        upgrade (db) {
+          if (!db.objectStoreNames.contains('pomodori')) {
+            const pomodori = db.createObjectStore('pomodori', { keyPath: 'id', autoIncrement: true });
+            pomodori.createIndex('datetime', 'datetime', { unique: false });
+            
+          }
+        }
+      });
+    }
+    return _db;
+  }
+
   async function addPomodoroToRecords() {
     const pomo = getCurrentPomo();
     if (!pomo) return;
 
     const record: PomodoroRecord = {
       end: pomo.end,
+      endedAt: pomo.endedAt,
       breaksDone: pomo.breaksDone.map(b => ({ start: b.start, end: b.end ?? b.start })),
       freeMode: pomo.freeMode,
       datetime: new Date(),
       percentage: percentage.value
     }
 
-    const db = await openDB('sb-db', 1, {
-      upgrade (db) {
-        if (!db.objectStoreNames.contains('pomodori')) {
-          db.createObjectStore('pomodori', { keyPath: 'id', autoIncrement: true });
-        }
-      }
-    });
-    await db.add('pomodori', record);
+    await (await getDb()).add('pomodori', record);
 
-    updatePomodoroRecords(db);
+    updatePomodoroRecords();
   }
 
-  async function getPomodoroRecords(db: IDBPDatabase | null = null): Promise<PomodoroRecord[]> {
-    if (!db) db = await openDB('sb-db', 1);
-    return await db.getAll('pomodori');
+  async function getPomodoroRecords(): Promise<PomodoroRecord[]> {
+    // get pomodori in the last 10 days
+    const pomodori = await (await getDb())
+      .getAllFromIndex('pomodori', 'datetime',
+        IDBKeyRange.lowerBound(new Date(Date.now() - (30 * 24 * 60 * 60 * 1000)))
+      )
+    return pomodori.sort((a, b) => b.datetime.getTime() - a.datetime.getTime());
   }
-  
-  async function updatePomodoroRecords(db: IDBPDatabase | null = null) {
-    const pomos = await getPomodoroRecords(db);
+
+  async function updatePomodoroRecords() {
+    const pomos = await getPomodoroRecords();
     pomos.forEach(p => {
       p.displayBreaks = getDisplayBreaksRecord(p);
+      p.report = getPomoReport(p);
     });
 
-    pomodoroRecords.value = pomos.sort((a, b) => b.datetime.getTime() - a.datetime.getTime());
+    pomodoroRecords.value = pomos
   }
   updatePomodoroRecords();
 
@@ -537,7 +552,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     percentage, displayBreaks, displayStudy, report,
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
-    getPomodoroRecords, pomodoroRecords
+    getPomodoroRecords, pomodoroRecords, timeFormatted
   }
 
 })
