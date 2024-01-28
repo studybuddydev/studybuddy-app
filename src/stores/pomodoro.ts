@@ -7,7 +7,7 @@ import { openDB, type IDBPDatabase } from 'idb';
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 0.1 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 const OPTIMAL_BREAK_RATIO = 1/6;
 
@@ -100,7 +100,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
           pomo.endedAt = lastBreak.start;
         }
       }
-      pomo.state = PomodoroState.TERMINATED;
+    pomo.state = PomodoroState.TERMINATED;
       addPomodoroToRecords();
     }
     report.value = getPomoReport();
@@ -499,7 +499,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       end: pomo.end,
       breaksDone: pomo.breaksDone.map(b => ({ start: b.start, end: b.end ?? b.start })),
       freeMode: pomo.freeMode,
-      datetime: new Date()
+      datetime: new Date(),
+      percentage: percentage.value
     }
 
     const db = await openDB('sb-db', 1, {
@@ -518,12 +519,14 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     if (!db) db = await openDB('sb-db', 1);
     return await db.getAll('pomodori');
   }
+  
   async function updatePomodoroRecords(db: IDBPDatabase | null = null) {
     const pomos = await getPomodoroRecords(db);
     pomos.forEach(p => {
       p.displayBreaks = getDisplayBreaksRecord(p);
     });
-    pomodoroRecords.value = pomos;
+
+    pomodoroRecords.value = pomos.sort((a, b) => b.datetime.getTime() - a.datetime.getTime());
   }
   updatePomodoroRecords();
 

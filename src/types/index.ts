@@ -102,7 +102,6 @@ export type Pomodoro = {
   end: number;
   breaksDone: Break[];
   freeMode: boolean;
-
 }
 
 export interface PomodotoStatus extends Pomodoro {
@@ -120,6 +119,7 @@ export interface PomodoroRecord extends Pomodoro {
   datetime: Date;
   displayBreaks?: DisplaySession[];
   displayStudy?: DisplaySession[];
+  percentage?: number;
 }
 
 // ---------- SETTINGS ----------

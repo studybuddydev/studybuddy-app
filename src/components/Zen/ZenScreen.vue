@@ -270,7 +270,12 @@ onUnmounted(() => {
             <v-btn class="btn bg-error btn-endsession bottom-box" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</v-btn> -->
             </div>
           </div>
-          <PomodoroFlex class="pomo-flex" />
+          <PomodoroFlex
+            class="pomo-flex"
+            :percentage="pomodoro.percentage"
+            :displayBreaks="pomodoro.displayBreaks"
+            :displayStudy="pomodoro.displayStudy"
+          />
           <div class="button-wrapper pomo-right" v-if="pomodoro.going">
             <div class="time-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
