@@ -96,21 +96,33 @@ export type PomoReport = {
   timeBreak: string;
   nrBreaks: string;
   points: string;
+  pointsValue: number;
 }
 
-export type PomodotoStatus = {
-  // lastTick: number;
-  version: number;
-  startedAt?: number;
-  endedAt?: number;
+export type Pomodoro = {
   end: number;
-  state: PomodoroState;
+  endedAt?: number;
   breaksDone: Break[];
-  breaksTodo: Break[];
-  soundEnd?: boolean;
   freeMode: boolean;
 }
 
+export interface PomodotoStatus extends Pomodoro {
+  // lastTick: number;
+  version: number;
+  startedAt?: number;
+  state: PomodoroState;
+  breaksTodo: Break[];
+  soundEnd?: boolean;
+}
+
+export interface PomodoroRecord extends Pomodoro {
+  id?: number;
+  datetime: Date;
+  displayBreaks?: DisplaySession[];
+  displayStudy?: DisplaySession[];
+  percentage?: number;
+  report?: PomoReport;
+}
 
 // ---------- SETTINGS ----------
 export type PomodoroSettings = {

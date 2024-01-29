@@ -6,9 +6,12 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
+import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
+import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import Settings from '@/components/Popup/Settings.vue';
 import { onMounted, onUnmounted } from 'vue';
 import Info from '@/components/common/Info.vue'
+import { watch } from 'vue';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -16,6 +19,7 @@ const settings = useSettingsStore();
 const terminatePomoDialog = ref(false);
 
 const zenMode = ref(true);
+const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
   if (settings.settings.theme?.backgroundImg) {
@@ -81,7 +85,7 @@ async function pipIt() {
 
   // Move the player to the Picture-in-Picture window.
   pipWindow.document.body.append(player);
-  
+
   // Move the player back when the Picture-in-Picture window closes.
   pipWindow.addEventListener("pagehide", (event: any) => {
     const playerContainer = document.querySelector("#pomocirclepipparent");
@@ -127,8 +131,7 @@ onUnmounted(() => {
     <Settings class="settings" v-model="openSettingsTab" />
 
     <div v-if="pipSupported" class="hide" id="pomocirclepipparent">
-      <div
-        id="pomocirclepip"
+      <div id="pomocirclepip"
         :class="zenStyle.backgroundImage ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
         :style="zenStyle">
         <div class="pomodoro-circle-component-on-pip-wrapper">
@@ -150,17 +153,18 @@ onUnmounted(() => {
           </a>
 
           <!-- top right -->
-          <div class="top-right blur" v-if="!isLoading"  @click="!isAuthenticated ? loginWithRedirect() : openSettingsTab = 'general'">
-            <p class="logged-user" v-if="offline" >
-              <v-icon v-ripple size="x-large" class="icon" icon="mdi-wifi-off" color="warning"/>
+          <div class="top-right blur" v-if="!isLoading"
+            @click="!isAuthenticated ? loginWithRedirect() : openSettingsTab = 'general'">
+            <p class="logged-user" v-if="offline">
+              <v-icon v-ripple size="x-large" class="icon" icon="mdi-wifi-off" color="warning" />
               <span class="text">Offline</span>
             </p>
-            <p v-else-if="isAuthenticated" class="logged-user" >
+            <p v-else-if="isAuthenticated" class="logged-user">
               <span class="text">{{ user?.given_name ?? user?.nickname }}</span>
               <span><v-avatar :image="user?.picture" /></span>
             </p>
             <p class="login-button" v-else>
-              <v-icon v-ripple size="x-large" class="icon" icon="mdi-account"/>
+              <v-icon v-ripple size="x-large" class="icon" icon="mdi-account" />
               <span class="text">Login</span>
             </p>
           </div>
@@ -170,7 +174,7 @@ onUnmounted(() => {
             <!-- welcome screen -->
             <div v-if="pomodoro.created" class="created-box">
               <div class="blur rounded-box pa-7">
-                <Info :text="$t('todo', 'info per il welcome')" class="info-welcome"/>
+                <Info :text="$t('todo', 'info per il welcome')" class="info-welcome" />
                 <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
                 <div class="title">
                   <img src="/images/logo.png" alt="logo" class='logo' />
@@ -183,34 +187,23 @@ onUnmounted(() => {
               <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
               <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
             </div>
-            
+
             <div class="pomodoro-circle-component-on-zen-wrapper">
-              <PomodoroCircle
-                class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-                v-if="pomodoro.going && (!settings.userSettings.hideTime || pomodoro.pauseing)" :in-pip="false"
-                />
+              <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen"
+                v-if="pomodoro.going && (!settings.userSettings.hideTime || pomodoro.pauseing)" :in-pip="false" />
             </div>
             <!-- report table-->
-            <div class="report font-press" v-if="pomodoro.report">
-              <div class="grid-container">
-                <p>{{ $t("pause.studyTime") }}</p>
-                <p class="report-value">{{ pomodoro.report.timeStudy }}</p>
-                <p>{{ $t("pause.pauseTime") }}</p>
-                <p class="report-value">{{ pomodoro.report.timeBreak }}</p>
-                <p>{{ $t("pause.totalTime") }}</p>
-                <p class="report-value">{{ pomodoro.report.timeTotal }}</p>
-                <p>{{ $t("pause.pauseNumber") }}</p>
-                <p class="report-value">{{ pomodoro.report.nrBreaks }}</p>
-                <p class="report-total">{{ $t("pause.score") }}</p>
-                <p class="report-value report-total">{{ pomodoro.report.points }}%</p>
-              </div>
-            </div>
+            <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
 
             <div class="pomopause">
               <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
                 @click="pomodoro.startPomodoro()">
                 <span>{{ $t("pause.study") }}</span>
                 <v-icon class="icon" icon="mdi-play" />
+              </v-btn>
+              <v-btn class='btn bg-primary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+                @click="showPomoHistory = true">
+                <v-icon class="icon" icon="mdi-history" />
               </v-btn>
             </div>
 
@@ -230,36 +223,32 @@ onUnmounted(() => {
     </div>
     <div class="bottom-bar">
       <div class="quick-settings" v-if="zenMode">
-        <v-btn v-if="pomodoro.going && pipSupported"
-          density="comfortable" size="small" class="btn-edit bg-surface"
-          :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'"
-          @click="pipIt()"
-        />
-        <v-btn v-if="pomodoro.going"
-          density="comfortable" size="small" class="btn-edit bg-surface"
+        <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-edit bg-surface"
+          :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'" @click="pipIt()" />
+        <v-btn v-if="pomodoro.going" density="comfortable" size="small" class="btn-edit bg-surface"
           :icon="settings.userSettings.hideTime ? 'mdi-eye' : 'mdi-eye-off'"
-          @click="settings.userSettings.hideTime = !settings.userSettings.hideTime"
-        />
-        <v-btn
-          density="comfortable" class="btn-edit btn-edit-main bg-background"
-          icon="mdi-cog"
-          @click="openSettingsTab =  pomodoro.going ? 'theme' : 'pomodoro'"
-        />
+          @click="settings.userSettings.hideTime = !settings.userSettings.hideTime" />
+        <v-btn density="comfortable" class="btn-edit btn-edit-main bg-background" icon="mdi-cog"
+          @click="openSettingsTab = pomodoro.going ? 'theme' : 'pomodoro'" />
 
       </div>
-
-      <div :class="zenMode ? 'pull-up-panel blur' : 'pull-up-panel blur pull-up-panel-zenmode'">
-        <div class="handle" v-ripple @click="toggleZenMode()">
+      <div :class="`pull-up-panel blur ${zenMode ? '' : 'pull-up-panel-zenmode'} ${showPomoHistory ? 'no-frost' : ''}`">
+        <div class="handle" v-ripple @click="showPomoHistory = false" v-if="showPomoHistory">
+          <v-icon icon="mdi-close" />
+        </div>
+        <div class="handle handle-zen" v-ripple @click="toggleZenMode()" v-else>
           <v-icon :icon="zenMode ? 'mdi-chevron-down' : 'mdi-chevron-up'" />
         </div>
 
         <div class="pomodoro-bar">
           <div class="button-wrapper font-press pomo-left" v-if="pomodoro.going">
             <div>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created || pomodoro.terminated">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()"
+                v-if="pomodoro.created || pomodoro.terminated">
                 <v-icon class="icon" icon="mdi-play" />
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.studing">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => pausePomodoro()"
+                v-else-if="pomodoro.studing">
                 <v-icon class="icon" icon="mdi-pause" />
               </v-btn>
               <v-btn class='btn bg-secondary pomo-btn pomo-box pomo-box-disabled' v-else>
@@ -269,19 +258,21 @@ onUnmounted(() => {
             <v-btn class="btn bg-error btn-endsession bottom-box" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</v-btn> -->
             </div>
           </div>
-          <PomodoroFlex class="pomo-flex" />
+          <PomodoroFlex class="pomo-flex" :percentage="pomodoro.percentage" :displayBreaks="pomodoro.displayBreaks"
+            :displayStudy="pomodoro.displayStudy" />
           <div class="button-wrapper pomo-right" v-if="pomodoro.going">
             <div class="time-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
                 <p v-if="!settings.userSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
               </div>
               <div :class="pomodoro.terminated ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
-                    @click="(pomodoro.freeMode || !pomodoro.done) ? terminatePomoDialog = true : stopPomodoro()">
+                @click="(pomodoro.freeMode || !pomodoro.done) ? terminatePomoDialog = true : stopPomodoro()">
                 <v-icon icon="mdi-stop" />
               </div>
             </div>
           </div>
         </div>
+        <PomodoroHistory :class="`pomo-history ${showPomoHistory ? '' : 'hide-pomo-history'}`" />
       </div>
     </div>
   </div>
@@ -303,6 +294,7 @@ onUnmounted(() => {
     width: min(50vh, 80vw);
   }
 }
+
 .pomodoro-circle-component-on-pip-wrapper-wrapper {
   display: flex;
   align-items: center;
@@ -312,10 +304,12 @@ onUnmounted(() => {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+
   .pomodoro-circle-component-on-pip-wrapper {
     width: 100vmin;
     height: 100vmin;
     padding: 1rem;
+
     .pomodoro-circle-component-on-pip {
       height: 100%;
     }
@@ -325,12 +319,18 @@ onUnmounted(() => {
 
 .blur {
   background-color: rgba(var(--v-theme-background));
+  transition: background-color 0.2s ease-in-out;
 }
 
 .img-background {
   .blur {
     backdrop-filter: blur(5px);
     background-color: rgba(var(--v-theme-background), 0.7);
+
+    &.no-frost {
+      background-color: rgb(var(--v-theme-background));
+
+    }
   }
 }
 
@@ -341,6 +341,7 @@ onUnmounted(() => {
 .settings {
   z-index: 2000;
 }
+
 .pomo-btn {
   display: flex;
   flex-direction: column;
@@ -370,19 +371,24 @@ onUnmounted(() => {
   background-color: rgb(var(--v-theme-secondary-darken-1));
   filter: saturate(0.5);
   opacity: 0.5;
-  pointer-events: none; /* Disable user interaction */
+  pointer-events: none;
+  /* Disable user interaction */
 
 }
+
 .coffee-cup {
   animation: cupOnButton 2s infinite;
 }
+
 @keyframes cupOnButton {
   0% {
     transform: translateY(0) rotate(0);
   }
+
   50% {
     transform: translateY(-5px) rotate(5deg);
   }
+
   100% {
     transform: translateY(0) rotate(0);
   }
@@ -393,7 +399,7 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh ;
+  height: 100vh;
   z-index: 1500;
   background-color: rgb(var(--v-theme-surface));
   background-size: cover;
@@ -407,11 +413,13 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
     // margin-top: -6em;         // check this
     @media (max-width: 600px) {
       justify-content: flex-start;
       margin-top: 20vh;
     }
+
     .created-box {
       @media (max-width: 600px) {
         .title {
@@ -419,6 +427,7 @@ onUnmounted(() => {
           flex-direction: column;
         }
       }
+
       .info-welcome {
         margin: 1rem;
         top: 0;
@@ -434,47 +443,20 @@ onUnmounted(() => {
 
       @media (max-width: 600px) {
         padding: 1rem;
+
         p {
           font-size: 0.7rem;
         }
+
         h2 {
           font-size: 1rem;
-        }
-      }
-    }
-    .report {
-      background: rgb(var(--v-theme-background));
-      border: 1px solid rgb(var(--v-theme-primary));
-      padding: 0.8rem 1.5rem 1rem;
-      margin-top: 2rem;
-      border-radius: 1rem;
-
-      .grid-container {
-        display: grid;
-        grid-template-columns: auto auto;
-        gap: 0.2rem 1.2rem;
-        h2 {
-          grid-column: 1 / span 2;
-          text-align: center;
-          margin-bottom: 0.3rem;
-          font-size: 1.5rem;
-        }
-        p {
-          text-align: left;
-        }
-
-        .report-value {
-          text-align: right;
-        }
-        .report-total {
-          margin-top: 1rem;
-
         }
       }
     }
 
     .btn-main-start {
       width: auto;
+      margin-left: 1em;
     }
 
     .btn-main {
@@ -496,6 +478,7 @@ onUnmounted(() => {
 
     h1 {
       font-size: 5rem;
+
       @media (max-width: 600px) {
         font-size: 3rem;
       }
@@ -527,6 +510,7 @@ onUnmounted(() => {
       img {
         height: 7rem;
         margin-right: 0.5em;
+
         @media (max-width: 600px) {
           display: none;
         }
@@ -551,6 +535,7 @@ onUnmounted(() => {
     padding: 0.5rem;
     height: 5rem;
     text-decoration: none;
+
     .logo {
       height: 4rem;
     }
@@ -579,14 +564,17 @@ onUnmounted(() => {
     .icon {
       display: none;
     }
+
     @media (max-width: 600px) {
       .text {
         display: none;
       }
+
       .icon {
         display: block;
       }
     }
+
     &:hover {
       background-color: #FFF4;
       cursor: pointer;
@@ -639,6 +627,7 @@ onUnmounted(() => {
       display: none;
       margin: 0.2rem;
     }
+
     .btn-edit-main {
       display: inline;
     }
@@ -653,6 +642,19 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
 
+    .pomo-history {
+      height: 66vh;
+      margin: 1em;
+      transition: height 0.1s ease-in-out;
+      overflow-y: auto;
+
+      &.hide-pomo-history {
+        height: 0;
+        overflow: hidden;
+        margin: 0;
+      }
+    }
+
     .handle {
       align-self: center;
       margin: 0 0.8rem 0 0.8rem;
@@ -664,11 +666,14 @@ onUnmounted(() => {
       justify-content: center;
       background-color: #FFFFFF00;
       transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
+
       &:hover {
         background-color: #FFFFFF10;
       }
+    }
 
-      @media screen and (max-width: 600px) {
+    @media screen and (max-width: 600px) {
+      .handle-zen {
         display: none;
       }
     }
@@ -690,11 +695,13 @@ onUnmounted(() => {
           grid-row: 1;
           justify-self: start;
         }
+
         .pomo-right {
           grid-column: 2;
           grid-row: 1;
           justify-self: end;
         }
+
         .pomo-flex {
           grid-column: 1 / span 2;
           grid-row: 2;
@@ -705,18 +712,21 @@ onUnmounted(() => {
         height: 2rem;
         margin: 0.5rem 0;
       }
-      .pomo-flex, .pomo-box {
+
+      .pomo-flex,
+      .pomo-box {
         transition: height 0.1s ease-in-out, margin 0.1s ease-in-out;
       }
+
       .button-wrapper {
         width: 10rem;
         margin: 0 0.5rem;
 
-      @media (max-width: 600px) {
-        width: 100%;
-        margin: 0;
-        padding: 0.2rem;
-      }
+        @media (max-width: 600px) {
+          width: 100%;
+          margin: 0;
+          padding: 0.2rem;
+        }
 
         .time-button-wrapper {
           display: flex;
@@ -762,6 +772,7 @@ onUnmounted(() => {
         border-radius: 0.4rem;
         font-size: 0.8rem;
       }
+
       .pomodoro-bar {
         padding: 0.5rem 1rem 0.5rem;
       }
@@ -771,7 +782,7 @@ onUnmounted(() => {
           height: 2rem !important;
           line-height: 2rem;
         }
-        
+
         .pomo-flex {
           height: 1.4rem;
           margin: 0.3rem 0;

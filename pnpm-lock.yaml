@@ -38,6 +38,9 @@ dependencies:
   ics:
     specifier: ^3.7.2
     version: 3.7.2
+  idb:
+    specifier: ^8.0.0
+    version: 8.0.0
   pinia:
     specifier: ^2.1.7
     version: 2.1.7(typescript@4.7.4)(vue@3.4.15)
@@ -3783,6 +3786,10 @@ packages:
   /idb@7.1.1:
     resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
     dev: true
+
+  /idb@8.0.0:
+    resolution: {integrity: sha512-l//qvlAKGmQO31Qn7xdzagVPPaHTxXx199MhrAFuVBTPqydcPYBWjkrbv4Y0ktB+GmWOiwHl237UUOrLmQxLvw==}
+    dev: false
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
