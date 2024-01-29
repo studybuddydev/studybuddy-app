@@ -25,7 +25,7 @@
             </v-container>
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="flat" color="primary" @click="loginWithRedirect()">Login {{ documentTitle }}</v-btn>
+            <v-btn variant="flat" color="primary" @click="loginWithRedirect()">Login</v-btn>
           </v-card-actions>
         </v-card-text>
       </v-card>
