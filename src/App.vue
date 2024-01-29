@@ -25,7 +25,7 @@
             </v-container>
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="flat" color="primary" @click="loginWithRedirect()">Login</v-btn>
+            <v-btn variant="flat" color="primary" @click="loginWithRedirect()">Login {{ documentTitle }}</v-btn>
           </v-card-actions>
         </v-card-text>
       </v-card>
@@ -37,10 +37,11 @@
 <script setup lang="ts">
 import Menu from '@/components/Menus/Menu.vue';
 import ZenScreen from '@/components/Zen/ZenScreen.vue';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch,computed } from 'vue';
 import { useAuth0 } from "@auth0/auth0-vue";
 import { usePomodoroStore } from "@/stores/pomodoro";
 
+const pomodoro = usePomodoroStore();
 const { loginWithRedirect, isLoading, isAuthenticated } = useAuth0();
 const popupFirstLogin = ref(true);
 
@@ -53,6 +54,8 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', updateWidth);
 });
+
+watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
 
 </script>
 

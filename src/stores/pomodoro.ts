@@ -28,6 +28,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       createPomodoro();
   });
 
+
   // const currentPomodoro = ref(stateStore.getPomodoroStatus());
   // const pomo = computed(() => stateStore.getPomodoroStatus())
   function getCurrentPomo() {
@@ -412,21 +413,21 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return timeFormatted( start );
   }
 
-  function timeInCurrentBreakFormatted() {
+  function timeInCurrentBreakFormatted(html: boolean = true, showSeconds: boolean = true) {
     const pomo = getCurrentPomo()
     const startLastPause = pomo?.breaksDone.at(-1)?.start;
     if (!pomo || !startLastPause) return '0:00';
     const startS = Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER)
     const startLastPauseS = Math.floor(startLastPause / SECONDS_MULTIPLIER)
-    return timeFormatted( startS - startLastPauseS );
+    return timeFormatted( startS - startLastPauseS, html, showSeconds);
   }
-  function timeInCurrentStudyFormatted() {
+  function timeInCurrentStudyFormatted(html: boolean = true, showSeconds: boolean = true) {
     const pomo = getCurrentPomo()
     if (!pomo) return '0:00';
     const startLastStudy = pomo?.breaksDone.at(-1)?.end ?? 0;
     const startS = Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER)
     const startLastStudyS = Math.floor(startLastStudy / SECONDS_MULTIPLIER)
-    return timeFormatted( startS - startLastStudyS );
+    return timeFormatted( startS - startLastStudyS, html, showSeconds);
   }
 
   function getCurrentStatePercentage() {
@@ -481,6 +482,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const timeInCurrentBreak = computed(() => timeInCurrentBreakFormatted());
   const timeInCurrentStudy = computed(() => timeInCurrentStudyFormatted());
   const percInCurrentState = computed(() => getCurrentStatePercentage());
+  const timeInTitle = computed(() => {
+    if (!going.value) return 'StudyBuddy';
+    return  pauseing.value ? `StudyBuddy | ⏸ ${timeInCurrentBreakFormatted(false, true)}` : `StudyBuddy | ▶ ${timeInCurrentStudyFormatted(false, true)}`;
+  })
   const done = computed(() => {
     const pomo = getCurrentPomo();
     if (!pomo) return false;
@@ -552,7 +557,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     percentage, displayBreaks, displayStudy, report,
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
-    getPomodoroRecords, pomodoroRecords, timeFormatted
+    getPomodoroRecords, pomodoroRecords, timeFormatted, timeInTitle
   }
 
 })
