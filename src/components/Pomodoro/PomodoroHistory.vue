@@ -47,7 +47,7 @@ function getPointsColorClass(points: number) {
       <div v-for="p in value" :class="`pomo-info ${p.id === openReportId ? 'pomo-info-open' : ''}`">
         <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
           <p class="lenght">{{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, false) }}</p>
-          <p class="time">{{ p.datetime.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) }}</p>
+          <p class="time">{{ p.datetime.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: false }) }}</p>
           <div class="pomo-wrapper">
             <div class="pomo-width" :style="{ width: `${(p.end / longestPomodoro) * 100}%` }">
               <PomodoroFlex class="pomo-flex" :percentage="p.percentage ?? 100" :displayBreaks="p.displayBreaks ?? []"
