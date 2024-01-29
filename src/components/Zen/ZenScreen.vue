@@ -7,6 +7,7 @@ import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
 import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
+import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import Settings from '@/components/Popup/Settings.vue';
 import { onMounted, onUnmounted } from 'vue';
 import Info from '@/components/common/Info.vue'
@@ -194,20 +195,7 @@ onUnmounted(() => {
                 />
             </div>
             <!-- report table-->
-            <div class="report font-press" v-if="pomodoro.report">
-              <div class="grid-container">
-                <p>{{ $t("pause.studyTime") }}</p>
-                <p class="report-value">{{ pomodoro.report.timeStudy }}</p>
-                <p>{{ $t("pause.pauseTime") }}</p>
-                <p class="report-value">{{ pomodoro.report.timeBreak }}</p>
-                <p>{{ $t("pause.totalTime") }}</p>
-                <p class="report-value">{{ pomodoro.report.timeTotal }}</p>
-                <p>{{ $t("pause.pauseNumber") }}</p>
-                <p class="report-value">{{ pomodoro.report.nrBreaks }}</p>
-                <p class="report-total">{{ $t("pause.score") }}</p>
-                <p class="report-value report-total">{{ pomodoro.report.points }}%</p>
-              </div>
-            </div>
+            <PomodoroReport :report="pomodoro.report" />
 
             <div class="pomopause">
               <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
@@ -459,36 +447,6 @@ onUnmounted(() => {
         }
         h2 {
           font-size: 1rem;
-        }
-      }
-    }
-    .report {
-      background: rgb(var(--v-theme-background));
-      border: 1px solid rgb(var(--v-theme-primary));
-      padding: 0.8rem 1.5rem 1rem;
-      margin-top: 2rem;
-      border-radius: 1rem;
-
-      .grid-container {
-        display: grid;
-        grid-template-columns: auto auto;
-        gap: 0.2rem 1.2rem;
-        h2 {
-          grid-column: 1 / span 2;
-          text-align: center;
-          margin-bottom: 0.3rem;
-          font-size: 1.5rem;
-        }
-        p {
-          text-align: left;
-        }
-
-        .report-value {
-          text-align: right;
-        }
-        .report-total {
-          margin-top: 1rem;
-
         }
       }
     }
