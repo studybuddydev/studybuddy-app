@@ -34,7 +34,7 @@ type Props<G> = {
 
 const propsND = defineProps<Props<T>>()
 const props = ref<Props<T>>({
-  title: 'Dialog',
+  // title: 'Dialog',
   modelTab: '',
   ...propsND,
 });

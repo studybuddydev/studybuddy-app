@@ -26,7 +26,7 @@
               <v-row>
                 <v-col cols="12">
                   <v-select :label="$t('pause.general.language')" v-model="$i18n.locale" :items="langs"
-                    @update:model-value="($event) => updateLanguage($event)" >
+                    @update:model-value="($event: any) => updateLanguage($event)" >
                     <template #item="{ props, item }">
                       <v-list-item v-bind="props">
                         <template #prepend>

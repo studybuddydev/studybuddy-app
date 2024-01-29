@@ -69,8 +69,6 @@ import PostIt from '@/components/PostIt/PostIt.vue'
 import ToDo from '@/components/ToDo/ToDo.vue'
 import Add from '@/components/Add/Add.vue'
 import { EStudyView } from '@/types';
-import BaseDialog from '@/components/common/BaseDialog.vue'
-const baseDialog = ref(true);
 import { computed } from 'vue';
 
 
