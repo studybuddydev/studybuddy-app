@@ -10,6 +10,7 @@ import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
 import Settings from '@/components/Popup/Settings.vue';
 import { onMounted, onUnmounted } from 'vue';
 import Info from '@/components/common/Info.vue'
+import { watch } from 'vue';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -17,6 +18,7 @@ const settings = useSettingsStore();
 const terminatePomoDialog = ref(false);
 
 const zenMode = ref(true);
+const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
   if (settings.settings.theme?.backgroundImg) {
@@ -213,6 +215,10 @@ onUnmounted(() => {
                 <span>{{ $t("pause.study") }}</span>
                 <v-icon class="icon" icon="mdi-play" />
               </v-btn>
+              <v-btn class='btn bg-primary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+                @click="showPomoHistory = true">
+                <v-icon class="icon" icon="mdi-history" />
+              </v-btn>
             </div>
 
           </div>
@@ -248,9 +254,11 @@ onUnmounted(() => {
         />
 
       </div>
-
-      <div :class="zenMode ? 'pull-up-panel blur' : 'pull-up-panel blur pull-up-panel-zenmode'">
-        <div class="handle" v-ripple @click="toggleZenMode()">
+      <div :class="`pull-up-panel blur ${zenMode ? '' : 'pull-up-panel-zenmode'} ${showPomoHistory ? 'no-frost' : ''}`">
+        <div class="handle" v-ripple @click="showPomoHistory = false" v-if="showPomoHistory">
+          <v-icon icon="mdi-close" />
+        </div>
+        <div class="handle" v-ripple @click="toggleZenMode()" v-else>
           <v-icon :icon="zenMode ? 'mdi-chevron-down' : 'mdi-chevron-up'" />
         </div>
 
@@ -288,7 +296,7 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
-        <PomodoroHistory />
+        <PomodoroHistory :class="`pomo-history ${showPomoHistory ? '' : 'hide-pomo-history'}`" />
       </div>
     </div>
   </div>
@@ -332,12 +340,17 @@ onUnmounted(() => {
 
 .blur {
   background-color: rgba(var(--v-theme-background));
+  transition: background-color 0.2s ease-in-out;
 }
 
 .img-background {
   .blur {
     backdrop-filter: blur(5px);
     background-color: rgba(var(--v-theme-background), 0.7);
+    &.no-frost {
+      background-color: rgb(var(--v-theme-background));
+    
+    }
   }
 }
 
@@ -482,6 +495,7 @@ onUnmounted(() => {
 
     .btn-main-start {
       width: auto;
+      margin-left: 1em;
     }
 
     .btn-main {
@@ -659,6 +673,18 @@ onUnmounted(() => {
     border-radius: 1em 1em 0 0;
     display: flex;
     flex-direction: column;
+
+    .pomo-history {
+      height: 66vh;
+      margin: 1em;
+      transition: height 0.1s ease-in-out;
+      overflow-y: auto;
+      &.hide-pomo-history {
+        height: 0;
+        overflow: hidden;
+        margin: 0;
+      }
+    }
 
     .handle {
       align-self: center;

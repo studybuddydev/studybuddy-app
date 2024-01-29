@@ -116,9 +116,6 @@ const isMobile = computed(() => window.innerWidth <= 600);
   margin-bottom: 3rem;
 
 }
-.blur-effect {
-  filter: blur(90px);
-}
 
 .link {
   grid-column: 1 / 3;

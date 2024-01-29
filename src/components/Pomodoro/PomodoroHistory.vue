@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
-import { useTheme } from 'vuetify'
 import type { PomodoroRecord } from '@/types';
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 
 const pomodoro = usePomodoroStore();
-const theme = useTheme();
 
 const dailyPomodoriGroups = computed(() => {
   const groups: Record<string, PomodoroRecord[]> = {};
@@ -19,6 +17,9 @@ const dailyPomodoriGroups = computed(() => {
   });
   return groups;
 });
+const longestPomodoro = computed(() => 
+  pomodoro.pomodoroRecords.reduce((m, p) => Math.max(p.end, m), 0)
+);
 
 function getPointsColorClass(points: number) {
   if (points < 0.6) {
@@ -32,14 +33,18 @@ function getPointsColorClass(points: number) {
 
 </script>
 <template>
-  <div class="ma-5">
+  <div class="pomo-history">
     <div v-for="(value, key) in dailyPomodoriGroups">
       <h3 class="text-center">{{ key }}</h3>
       <div v-for="p in value" class="pomodoro-line">
         <p class="lenght">{{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, false) }}</p>
         <p class="time">{{ p.datetime.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) }}</p>
-        <PomodoroFlex class="pomo-flex" :percentage="p.percentage ?? 100" :displayBreaks="p.displayBreaks ?? []"
-        :displayStudy="[]" />
+        <div class="pomo-wrapper">
+          <div class="pomo-width" :style="{ width: `${(p.end / longestPomodoro) * 100}%` }">
+            <PomodoroFlex class="pomo-flex"
+            :percentage="p.percentage ?? 100" :displayBreaks="p.displayBreaks ?? []" :displayStudy="[]" />
+          </div>
+        </div>
         <p :class="getPointsColorClass(p.report?.pointsValue ?? 0)">{{ p.report?.points }}%</p>
       </div>
     </div>
@@ -52,6 +57,16 @@ function getPointsColorClass(points: number) {
   margin: 0.5rem;
 }
 
+.pomo-wrapper {
+  width: 100%;
+  .pomo-width {
+    display: flex;
+  }
+}
+
+.pomo-history {
+  overflow-y: autoz;
+}
 
 .pomodoro-line {
   display: flex;
