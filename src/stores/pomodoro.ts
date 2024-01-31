@@ -11,6 +11,8 @@ const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 const OPTIMAL_BREAK_RATIO = 1/6;
 
+const SHORT_POMO_THRESHOLD = 5 * MINUTE_MULTIPLIER;
+
 enum ENotification {
   BreakStart = 'pomo.wav',
   BreakDone = 'break.wav',
@@ -101,11 +103,15 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
           pomo.endedAt = lastBreak.start;
         }
       }
-    pomo.state = PomodoroState.TERMINATED;
-      addPomodoroToRecords();
+      pomo.state = PomodoroState.TERMINATED;
+
+      report.value = getPomoReport(pomo);
+      if (pomo.endedAt - (pomo.startedAt ?? 0) > SHORT_POMO_THRESHOLD) {
+        addPomodoroToRecords();
+        report.value.shortPomo = true;
+      }
+      saveStatus();
     }
-    report.value = getPomoReport(pomo);
-    saveStatus();
   }
   // between start and stop you alternate between study and pause, this method is called when you press the pause/play button during a pomdoo
   function togglePauseStudy() {
@@ -550,6 +556,13 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
   updatePomodoroRecords();
 
+  function deletePomodoroRecord(id: number) {
+    (async () => {
+      await (await getDb()).delete('pomodori', id);
+      pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);
+    })();
+  }
+
   // ---------- RETURN ----------
   return {
     startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
@@ -557,7 +570,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     percentage, displayBreaks, displayStudy, report,
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
-    getPomodoroRecords, pomodoroRecords, timeFormatted, timeInTitle
+    getPomodoroRecords, pomodoroRecords, timeFormatted, timeInTitle,
+    deletePomodoroRecord
   }
 
 })

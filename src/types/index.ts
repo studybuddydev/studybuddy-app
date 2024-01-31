@@ -97,6 +97,7 @@ export type PomoReport = {
   nrBreaks: string;
   points: string;
   pointsValue: number;
+  shortPomo?: boolean;
 }
 
 export type Pomodoro = {

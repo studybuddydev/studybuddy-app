@@ -7,7 +7,11 @@ import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import { ref } from 'vue';
 
 const pomodoro = usePomodoroStore();
-const openReportId = ref(-1);
+const openDetailsPomoId = ref(-1);
+const deletePomoDialog = ref(false);
+const deletingPomoId = ref(-1);
+
+defineEmits(['startPomodoro']);
 
 const dailyPomodoriGroups = computed(() => {
   const groups: Record<string, PomodoroRecord[]> = {};
@@ -26,7 +30,7 @@ const longestPomodoro = computed(() =>
 
 function toggleReport(id: number | undefined) {
   if (id !== undefined)
-  openReportId.value = openReportId.value === id ? -1 : id;
+  openDetailsPomoId.value = openDetailsPomoId.value === id ? -1 : id;
 }
 
 function getPointsColorClass(points: number) {
@@ -42,9 +46,17 @@ function getPointsColorClass(points: number) {
 </script>
 <template>
   <div class="pomo-history">
+    <div v-if="pomodoro.pomodoroRecords.length === 0" class="no-history">
+      <p class="text-center text-medium-emphasis">Non hai ancora fatto un pomodoro di almeno 5 minuti</p>
+      <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+        @click="$emit('startPomodoro')">
+        <span>Inizia ora</span>
+        <v-icon class="icon" icon="mdi-play" />
+      </v-btn>
+    </div>
     <div v-for="(value, key) in dailyPomodoriGroups">
       <h3 class="text-center">{{ key }}</h3>
-      <div v-for="p in value" :class="`pomo-info ${p.id === openReportId ? 'pomo-info-open' : ''}`">
+      <div v-for="p in value" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
         <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
           <p class="lenght">{{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, false) }}</p>
           <p class="time">{{ p.datetime.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: false }) }}</p>
@@ -57,11 +69,21 @@ function getPointsColorClass(points: number) {
           <p :class="getPointsColorClass(p.report?.pointsValue ?? 0)">{{ p.report?.points }}%</p>
         </div>
 
-        <div class="report-wrapper" v-if="p.id === openReportId && p.report">
-          <PomodoroReport class="report" :report="p.report" />
+        <div class="pomo-details" v-if="p.id === openDetailsPomoId">
+          <PomodoroReport class="report" :report="p.report" v-if="p.report" />
+          <v-btn color="error" class="pomo-delete-btn"  @click="deletingPomoId = p.id; deletePomoDialog = true;"><v-icon icon="mdi-delete" /></v-btn>
         </div>
       </div>
     </div>
+    <v-dialog v-model="deletePomoDialog" width="auto">
+      <v-card :text="$t('zen.confirm')">
+        <v-card-actions>
+          <v-spacer />
+          <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
+          <v-btn color="primary" @click="pomodoro.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{ $t("yes") }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -69,6 +91,17 @@ function getPointsColorClass(points: number) {
 .pomo-flex {
   height: 1rem;
   margin: 0.5rem;
+}
+
+.no-history {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+
+  .btn {
+    margin: 1em;
+  }
 }
 
 .pomo-wrapper {
@@ -80,7 +113,7 @@ function getPointsColorClass(points: number) {
 }
 
 .pomo-history {
-  overflow-y: autoz;
+  overflow-y: auto;
 }
 
 .pomo-info {
@@ -95,12 +128,18 @@ function getPointsColorClass(points: number) {
     }
   }
 
-  .report-wrapper {
+  .pomo-details {
     display: flex;
     justify-content: center;
+    position: relative;
 
     .report {
       margin: 1em;
+    }
+    .pomo-delete-btn {
+      position: absolute;
+      bottom: 1em;
+      right: 1em;
     }
   }
 

@@ -184,8 +184,8 @@ onUnmounted(() => {
             </div>
             <!-- finish screen -->
             <div v-else-if="pomodoro.terminated" class="blur rounded-box finish-box">
-              <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
-              <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
+              <p class="pause font-press text-center">{{ pomodoro.report?.shortPomo ? $t("pause.pomoDone") : $t("pomoDoneShort") }}</p>
+              <h2 class="text-primary font-press text-center">{{ pomodoro.report?.shortPomo ? $t("pause.goodjob") : $t("pause.goodjobShort") }}</h2>
             </div>
 
             <div class="pomodoro-circle-component-on-zen-wrapper">
@@ -272,7 +272,10 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
-        <PomodoroHistory :class="`pomo-history ${showPomoHistory ? '' : 'hide-pomo-history'}`" />
+        <PomodoroHistory
+          :class="`pomo-history ${showPomoHistory ? '' : 'hide-pomo-history'}`"
+          @start-pomodoro="pomodoro.startPomodoro(); showPomoHistory = false"
+          />
       </div>
     </div>
   </div>

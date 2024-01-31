@@ -72,6 +72,9 @@ const props = defineProps<{
       overflow: hidden;
       color: rgba(var(--v-theme-on-success));
       font-style: italic;
+      p {
+        padding: 2px;
+      }
     }
 
     &:hover {

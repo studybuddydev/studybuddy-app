@@ -60,25 +60,9 @@ watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
 </script>
 
 <style lang="scss">
-// .scrollbar::-webkit-scrollbar-track {
-//   // background: var(--v-theme-primary);
-// }
-
-// .scrollbar::-webkit-scrollbar-thumb {
-//   // background-color: var(--v-theme-primary);
-//   border-radius: 2px;
-// }
-
-// .scrollbar::-webkit-scrollbar-thumb:hover {
-//   // background-color: var(--v-theme-primary);
-// }
-
-
 .small {
   font-size: 0.5em;
 }
-
-
 
 .hide {
   display: none !important;
