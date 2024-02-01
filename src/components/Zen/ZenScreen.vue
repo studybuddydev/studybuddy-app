@@ -204,14 +204,14 @@ onUnmounted(() => {
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
 
             <div class="pomopause">
+              <v-btn class='btn bg-primary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+                @click="showPomoHistory = true">
+                <v-icon class="icon" icon="mdi-folder-clock-outline" />
+              </v-btn>
               <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
                 @click="pomodoro.startPomodoro()">
                 <span>{{ $t("pause.study") }}</span>
                 <v-icon class="icon" icon="mdi-play" />
-              </v-btn>
-              <v-btn class='btn bg-primary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
-                @click="showPomoHistory = true">
-                <v-icon class="icon" icon="mdi-history" />
               </v-btn>
             </div>
 
