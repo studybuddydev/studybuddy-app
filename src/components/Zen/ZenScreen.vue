@@ -11,7 +11,6 @@ import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import Settings from '@/components/Popup/Settings.vue';
 import { onMounted, onUnmounted } from 'vue';
 import Info from '@/components/common/Info.vue'
-import { watch } from 'vue';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -106,6 +105,10 @@ const onKeyUp = (e: KeyboardEvent) => {
     //   pomodoro.startPomodoro();
   } else if (e.code === 'Escape') {
     zenMode.value = !zenMode.value;
+    if (!zenMode.value) {
+      showPomoHistory.value = false;
+    }
+    
   }
 };
 const setOffline = () => offline.value = !navigator.onLine;

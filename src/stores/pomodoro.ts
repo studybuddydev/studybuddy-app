@@ -11,7 +11,7 @@ const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 const OPTIMAL_BREAK_RATIO = 1/6;
 
-const SHORT_POMO_THRESHOLD = 5 * MINUTE_MULTIPLIER;
+const SHORT_POMO_THRESHOLD = 1 * MINUTE_MULTIPLIER;
 
 enum ENotification {
   BreakStart = 'pomo.wav',
@@ -106,7 +106,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       pomo.state = PomodoroState.TERMINATED;
 
       report.value = getPomoReport(pomo);
-      if (pomo.endedAt - (pomo.startedAt ?? 0) > SHORT_POMO_THRESHOLD) {
+      if (pomo.endedAt > SHORT_POMO_THRESHOLD) {
         addPomodoroToRecords();
         report.value.shortPomo = true;
       }
