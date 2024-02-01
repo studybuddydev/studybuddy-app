@@ -114,6 +114,7 @@ export interface PomodotoStatus extends Pomodoro {
   state: PomodoroState;
   breaksTodo: Break[];
   soundEnd?: boolean;
+  onLongBreak?: boolean;
 }
 
 export interface PomodoroRecord extends Pomodoro {

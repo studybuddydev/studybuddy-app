@@ -11,7 +11,8 @@ const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 const OPTIMAL_BREAK_RATIO = 1/6;
 
-const SHORT_POMO_THRESHOLD = 1 * MINUTE_MULTIPLIER;
+const SHORT_POMO_THRESHOLD =  5 * MINUTE_MULTIPLIER;
+const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
 
 enum ENotification {
   BreakStart = 'pomo.wav',
@@ -96,6 +97,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   function stopPomodoro() {
     const pomo = getCurrentPomo();
     if (pomo) {
+      pomo.onLongBreak = false;
       pomo.endedAt = getNow(pomo.startedAt);
       if (pomo.state === PomodoroState.BREAK) {
         const lastBreak = pomo.breaksDone.pop();
@@ -152,6 +154,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   function study() {
     const pomo = getCurrentPomo();
     if (!pomo) {
+      stopPomodoro();
+      return;
+    }
+    if (pomo.onLongBreak) {
       stopPomodoro();
       return;
     }
@@ -230,6 +236,11 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
         }
       } else {
         currBreak.end = now;
+      }
+
+      // check pausa lunga
+      if (pomo.onLongBreak || currBreak.end - currBreak.start > LONG_BREAK_THRESHOLD) {
+        pomo.onLongBreak = true;
       }
 
     } else if (pomo.state === PomodoroState.STUDY) {                                    // STUDY
@@ -463,6 +474,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const pauseing   = computed(() => getCurrentPomo()?.state === PomodoroState.BREAK);
   const terminated = computed(() => getCurrentPomo()?.state === PomodoroState.TERMINATED);
   const going      = computed(() => studing.value || pauseing.value);
+  const onLongPause = computed(() => getCurrentPomo()?.onLongBreak ?? false);
 
   const timeToBreak = computed(() => {
     if (!studing.value) return false;
@@ -568,7 +580,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
     getCurrentPomo, getBreaks,
     percentage, displayBreaks, displayStudy, report,
-    created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy,
+    created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy, onLongPause,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
     getPomodoroRecords, pomodoroRecords, timeFormatted, timeInTitle,
     deletePomodoroRecord

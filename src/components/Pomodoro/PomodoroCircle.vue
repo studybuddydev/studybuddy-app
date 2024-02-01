@@ -1,10 +1,10 @@
 <template>
-  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''} ${!pomodoro.freeMode && (pomodoro.timeToBreak || pomodoro.timeToStudy) ? 'breathing' : ''}`" ref="el">
+  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''}  ${pomodoro.onLongPause ? 'long-pause' : ''} ${!pomodoro.freeMode && (pomodoro.timeToBreak || pomodoro.timeToStudy) && !pomodoro.onLongPause ? 'breathing' : ''}`" ref="el">
 
     <div class="progress-bar" :style="{
       background: `conic-gradient(
-        ${pomodoro.studing ? theme.current.value.colors.primary : theme.current.value.colors.warning} 0deg,
-        ${pomodoro.studing ? theme.current.value.colors.primary : theme.current.value.colors.warning} ${pomodoro.percInCurrentState * 360}deg,
+        ${getCircleColor()} 0deg,
+        ${getCircleColor()} ${pomodoro.percInCurrentState * 360}deg,
         transparent ${(pomodoro.percInCurrentState * 360) + 0.2}deg,
         transparent 360deg)`
     }"></div>
@@ -52,6 +52,18 @@ const { width } = useElementSize(el)
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
 const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  });
+
+
+function getCircleColor() {
+  if (pomodoro.studing) {
+    return theme.current.value.colors.primary
+  }
+  if (pomodoro.onLongPause) {
+    return '#000000'
+  }
+  return theme.current.value.colors.warning
+}
+
 </script>
 
 
@@ -59,6 +71,10 @@ const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  })
 .pomodoro-circle {
   position: relative;
   border-radius: 50%;
+
+  &.long-pause {
+    background-color: #000000B0 !important
+  }
 
   .info-pause {
     top: 0;

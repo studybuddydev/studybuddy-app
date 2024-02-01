@@ -20,9 +20,13 @@ const terminatePomoDialog = ref(false);
 const zenMode = ref(true);
 const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
-const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
+const zenStyle = computed<{ background?: string, backgroundColor?: string }>(() => {
   if (settings.settings.theme?.backgroundImg) {
-    return { backgroundImage: `url(${settings.settings.theme?.backgroundImg})` }
+    if (!pomodoro.onLongPause) {
+      return { background: `url(${settings.settings.theme?.backgroundImg})` }
+    } else {
+      return { background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${settings.settings.theme?.backgroundImg})` }
+    }
   } else if (settings.settings.theme?.backgroundColor) {
     return { backgroundColor: settings.settings.theme?.backgroundColor }
   }
@@ -130,12 +134,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
+  <div :class="zenStyle.background ? 'img-background' : ''">
     <Settings class="settings" v-model="openSettingsTab" />
 
     <div v-if="pipSupported" class="hide" id="pomocirclepipparent">
       <div id="pomocirclepip"
-        :class="zenStyle.backgroundImage ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
+        :class="zenStyle.background ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
         :style="zenStyle">
         <div class="pomodoro-circle-component-on-pip-wrapper">
           <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-pip" :in-pip="true" />
@@ -174,6 +178,7 @@ onUnmounted(() => {
 
           <!-- main content in the center-->
           <div class="main-content">
+
             <!-- welcome screen -->
             <div v-if="pomodoro.created" class="created-box">
               <div class="blur rounded-box pa-7">
