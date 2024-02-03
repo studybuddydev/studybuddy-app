@@ -77,7 +77,7 @@ import { ref, computed } from "vue";
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import type { Chapter, Exam } from '@/types';
-import Settings from '@/components/Popup/Settings.vue';
+import Settings from '@/components/Settings/Settings.vue';
 
 const route = useRoute()
 const state = useStateStore();

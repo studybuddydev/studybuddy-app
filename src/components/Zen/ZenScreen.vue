@@ -8,7 +8,7 @@ import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
 import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
-import Settings from '@/components/Popup/Settings.vue';
+import Settings from '@/components/Settings/Settings.vue';
 import { onMounted, onUnmounted } from 'vue';
 import Info from '@/components/common/Info.vue'
 
