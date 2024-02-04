@@ -12,12 +12,8 @@
 
     <div v-if="!pomodoro.going">
       <div class="pomo-presets">
-        <div v-for="p in presets" :class="`preset-box ${settingsStore.settings!.pomodoro!.totalLength === p.totalLength &&
-          settingsStore.settings!.pomodoro!.breaksLength === p.breaksLength &&
-          settingsStore.settings!.pomodoro!.numberOfBreak === p.numberOfBreak
-          ? 'bg-primary'
-          : 'bg-background'
-          }`" v-ripple @click="presetPomo(p.totalLength, p.breaksLength, p.numberOfBreak)">{{ p.name }}</div>
+        <div v-for="t in timerStore.timers" :class="`preset-box ${timerSelected === t.id ? 'bg-primary' : 'bg-background'}`"
+          v-ripple @click="setTimer(t)">{{ t.title }}</div>
       </div>
 
       <v-expansion-panels>
@@ -67,9 +63,25 @@ import { computed, ref } from 'vue'
 import Info from '@/components/common/Info.vue'
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
+import { useTimerStore } from "@/stores/settings/timer";
+import type { Timer } from '@/types';
 const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
+const timerStore = useTimerStore();
 
+const timerSelected = computed(() =>
+  timerStore.timers.find(timer => {
+    const numberOfBreak = timer.repetitions - 1;
+    const breaksLength = timer.breakLength * numberOfBreak;
+    const totalLength = (timer.studyLength * timer.repetitions) + breaksLength;
+
+    return (
+          settingsStore.settings!.pomodoro!.totalLength === totalLength
+      &&  settingsStore.settings!.pomodoro!.breaksLength === breaksLength
+      &&  settingsStore.settings!.pomodoro!.numberOfBreak === numberOfBreak
+    );
+  })?.id
+);
 
 // ----- ENDS AT
 const time = ref(new Date().getTime());
@@ -91,42 +103,18 @@ const endsAt = computed({
 });
 
 
-// ----- PRESET
-type Preset = { name: string, totalLength: number, breaksLength: number, numberOfBreak: number };
-const presets = [
-  { name: '50/10', totalLength: 115, breaksLength: 15, numberOfBreak: 3 },
-  { name: '25/5', totalLength: 25, breaksLength: 5, numberOfBreak: 3 },
-  { name: 'Free', totalLength: 0, breaksLength: 0, numberOfBreak: 0 }
-];
+function setTimer(timer: Timer) {
+  const numberOfBreak = timer.repetitions - 1;
+  const breaksLength = timer.breakLength * numberOfBreak;
+  const totalLength = (timer.studyLength * timer.repetitions) + breaksLength;
 
-
-function presetPomo(totalLength = 2, breaksLength = 15, numberOfBreak = 3) {
   settingsStore.settings!.pomodoro!.totalLength = totalLength;
   settingsStore.settings!.pomodoro!.breaksLength = breaksLength;
   settingsStore.settings!.pomodoro!.numberOfBreak = numberOfBreak;
+  settingsStore.settings!.pomodoro!.freeMode = timer.freeMode;
 }
-const selectedPreset = computed({
-  get() {
-    return `${settingsStore.settings!.pomodoro!.totalLength}-${settingsStore.settings!.pomodoro!.breaksLength}-${settingsStore.settings!.pomodoro!.numberOfBreak}`;
-  },
-  set(value) {
-    if (value) {
-      const [totalLength, breaksLength, numberOfBreak] = value.split('-');
-      presetPomo(+totalLength, +breaksLength, +numberOfBreak);
-    }
-
-  }
-})
-
-
-// ----- MODE
-const modeSwitch = computed({
-  get() { return settingsStore.settings!.pomodoro!.freeMode ? 'free' : 'classic'; },
-  set(value) {
-    if (value) settingsStore.settings!.pomodoro!.freeMode = value === 'free';
-  }
-});
 const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
+
 </script>
 <style lang="scss" scoped>
 .pomo-presets {

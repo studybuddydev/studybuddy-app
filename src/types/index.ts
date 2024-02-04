@@ -151,12 +151,21 @@ export type Settings = {
   theme: ThemeSettings;
 }
 
+// ---- DBs ----
 export interface Theme {
   id?: number;
   title?: string;
   palette?: string;
   backgroundColor?: string;
   backgroundImg?: string;
+}
+export interface Timer {
+  id?: number;
+  title: string;
+  studyLength: number;
+  breakLength: number;
+  repetitions: number;
+  freeMode?: boolean;
 }
 
 

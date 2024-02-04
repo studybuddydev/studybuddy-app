@@ -21,7 +21,7 @@
 
           <div class="text-h6">{{ $t('pause.theme.colors') }}</div>
             <div class="themes">
-              <div v-for="t in paletteList" class="theme-box" :style="{ backgroundColor: t.background }" @click="settingsStore.updateTheme(t.value)">
+              <div v-for="t in paletteList" class="theme-box" :style="{ backgroundColor: t.background }" @click="settingsStore.updatePalette(t.value)">
                 <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0,0 30,0 30,30" :style="{
                     fill: t.color,
@@ -52,7 +52,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useThemeStore } from "@/stores/theme";
+import { useThemeStore } from "@/stores/settings/theme";
 import { useSettingsStore } from "@/stores/settings";
 import { paletteList } from '@/assets/themes'
 import type { Theme } from '@/types';

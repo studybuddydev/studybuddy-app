@@ -1,17 +1,26 @@
-import { defineStore } from 'pinia'
 import Dexie, { type Table } from 'dexie';
-import type { Theme } from '@/types';
-import { ref } from 'vue';
+import type { Timer, Theme } from '@/types';
+import { defineStore } from 'pinia'
 
-class ThemeDatabase extends Dexie {
-  public themes!: Table<Theme, number>; // id is number in this case
+export class StudyBuddyDB extends Dexie {
+  public timer!: Table<Timer, number>;
+  public themes!: Table<Theme, number>;
 
   public constructor() {
-    super("ThemeDatabase");
+    super("StudyBuddyDB");
     this.version(1).stores({
+      timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,backgroundColor, backgroundImg"
     });
+
     this.on("populate", () => {
+      // Timers
+      this.timer.bulkAdd([
+        { title: '25/5', studyLength: 25, breakLength: 5, repetitions: 4, freeMode: false },
+        { title: '50/10', studyLength: 50, breakLength: 10, repetitions: 3, freeMode: false },
+        { title: 'Free', studyLength: 0, breakLength: 0, repetitions: 1, freeMode: true },
+      ]);
+      //Themes
       this.themes.bulkAdd([
         { title: 'Forest', palette: 'bio', backgroundImg: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' },
         { title: 'Clouds', palette: 'nord', backgroundImg: 'https://images.alphacoders.com/133/1332707.png' },
@@ -30,26 +39,11 @@ class ThemeDatabase extends Dexie {
   }
 }
 
+export const useDBStore = defineStore('dbStore', () => {
+  const studyBuddyDB = new StudyBuddyDB();
 
-export const useThemeStore = defineStore('themeStore', () => {
+  const themes = studyBuddyDB.themes;
+  const timers = studyBuddyDB.timer;
 
-  const themeDatabase = new ThemeDatabase();
-  const themes = ref<Theme[] >([]);
-
-  async function getAllThemes() {
-    return await themeDatabase.themes.toArray();
-  }
-
-  async function addTheme(theme: Theme) {
-    return await themeDatabase.themes.add(theme);
-  }
-
-  async function load() {
-    themes.value = await getAllThemes();
-  }
-  load();
-
-  return {
-    getAllThemes, addTheme, themes
-  };
+  return { themes, timers };
 });
