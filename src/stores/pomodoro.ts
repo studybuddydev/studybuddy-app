@@ -159,6 +159,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     }
     if (pomo.onLongBreak) {
       stopPomodoro();
+      startPomodoro();
       return;
     }
     adjustPomo();

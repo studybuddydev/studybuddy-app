@@ -29,6 +29,9 @@ dependencies:
   axios:
     specifier: ^1.6.7
     version: 1.6.7
+  dexie:
+    specifier: ^3.2.4
+    version: 3.2.4
   file-saver:
     specifier: ^2.0.5
     version: 2.0.5
@@ -3003,6 +3006,11 @@ packages:
   /detect-libc@2.0.2:
     resolution: {integrity: sha512-UX6sGumvvqSaXgdKGUsgZWqcUyIXZ/vZTrlRT/iobiKhGL0zL4d3osHj3uqllWJK+i+sixDS/3COVEOFbupFyw==}
     engines: {node: '>=8'}
+    dev: false
+
+  /dexie@3.2.4:
+    resolution: {integrity: sha512-VKoTQRSv7+RnffpOJ3Dh6ozknBqzWw/F3iqMdsZg958R0AS8AnY9x9d1lbwENr0gzeGJHXKcGhAMRaqys6SxqA==}
+    engines: {node: '>=6.0'}
     dev: false
 
   /dir-glob@3.0.1:

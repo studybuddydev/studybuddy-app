@@ -168,8 +168,7 @@ export const themes: {[id: string]: {
       snake: '#80ff80',           // Neon green (same as primary)
       apple: '#ff3333',           // Darker red
     }
-  }, 
-  
+  },
 }
 
 const paletteTitles: { [id: string]: string } = {

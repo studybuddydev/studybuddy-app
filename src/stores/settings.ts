@@ -1,12 +1,11 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import type { PomodoroSettings, Settings, ThemeSettings, UserSettings } from '@/types'
-import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify'
 
 const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
-const DEFAULT_THEME = 'bio';
+const DEFAULT_PALETTE = 'bio';
 const DEFAULT_ICONS = 'mdi-icon';
 
 const defaultSettings: Settings = {
@@ -25,7 +24,7 @@ const defaultSettings: Settings = {
 
   theme: {
     icon: DEFAULT_ICONS,
-    theme: DEFAULT_THEME,
+    palette: DEFAULT_PALETTE,
     backgroundColor: undefined,
     backgroundImg: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg',
   }
@@ -34,7 +33,6 @@ const defaultSettings: Settings = {
 export const useSettingsStore = defineStore('settings', () => {
 
   const theme = useTheme();
-  const i18n = useI18n();
 
   const settings = ref<Settings>(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}'));
   settings.value.user = { ...defaultSettings.user, ...settings.value.user } as UserSettings;
@@ -65,18 +63,18 @@ export const useSettingsStore = defineStore('settings', () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings.value));
   }
 
-  function updateTheme(newTheme?: string) {
-    theme.global.name.value = newTheme ?? themeSettings.value.theme ?? DEFAULT_THEME;
+  function updatePalette(newPalette?: string) {
+    theme.global.name.value = newPalette ?? themeSettings.value.palette ?? DEFAULT_PALETTE;
   }
 
-  updateTheme();
+  updatePalette();
   
   return {
     settings,
     userSettings, pomoSettings, themeSettings,
     defaultSettings,
     updateSettings, updatePomodoroSettings,
-    updateTheme,
+    updatePalette,
     save
   };
 });

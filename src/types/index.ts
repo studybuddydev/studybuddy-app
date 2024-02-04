@@ -139,7 +139,7 @@ export type UserSettings = {
   hideTime: boolean;
 }
 export type ThemeSettings = {
-  theme: string;
+  palette: string;
   icon: string;
   backgroundColor?: string;
   backgroundImg?: string;
@@ -149,6 +149,14 @@ export type Settings = {
   pomodoro: PomodoroSettings;
   user: UserSettings;
   theme: ThemeSettings;
+}
+
+export interface Theme {
+  id?: number;
+  title?: string;
+  palette?: string;
+  backgroundColor?: string;
+  backgroundImg?: string;
 }
 
 

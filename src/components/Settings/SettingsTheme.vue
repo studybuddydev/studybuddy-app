@@ -2,13 +2,13 @@
   <div>
 
     <div class="themes">
-      <div v-for="t in themes" :class="`theme-box ${selectedTheme?.title === t.title ? 'selected' : ''}`" :style="{
-        border: `2px solid ${t.primaryColor}`,
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${t.img})`
+      <div v-for="t in themeStore.themes" :class="`theme-box ${selectedTheme?.title === t.title ? 'selected' : ''}`" :style="{
+        border: `2px solid ${primaryColorsMapping[t.palette ?? '']}`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${t.backgroundImg})`
       }" @click="setTheme(t)">
         <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
           <polygon points="0,0 30,0 30,30" :style="{
-            fill: t.primaryColor,
+            fill: primaryColorsMapping[t.palette ?? ''],
           }" />
         </svg>
         <div class="theme-title">{{ t.title }}</div>
@@ -52,38 +52,23 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useThemeStore } from "@/stores/theme";
 import { useSettingsStore } from "@/stores/settings";
 import { paletteList } from '@/assets/themes'
+import type { Theme } from '@/types';
 
+const themeStore = useThemeStore();
 const settingsStore = useSettingsStore();
 
-function getPaletteColor(theme: string) {
-  return paletteList.find((t) => t.value === theme)?.color;
-}
-
-// ----- THEME
-type Theme = { title: string, theme: string, img: string, primaryColor?: string }
-const themes: Theme[] = [
-  { title: 'Forest', theme: 'bio', img: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' },
-  { title: 'Clouds', theme: 'nord', img: 'https://images.alphacoders.com/133/1332707.png' },
-  { title: 'Aurora', theme: 'blallo', img: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg' },
-  { title: 'Space', theme: 'gptnight', img: 'https://live.staticflickr.com/65535/52259221868_b757d6cdea_k_d.jpg' },
-  { title: 'Mountain', theme: 'nord', img: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' },
-  { title: 'Beach', theme: 'pastel', img: 'https://images.pexels.com/photos/65322/pexels-photo-65322.jpeg' },
-  { title: 'Vaporwave', theme: 'vaporwave', img: 'https://images.alphacoders.com/124/1249674.jpg' },
-  { title: 'LOFI', theme: 'gptnight', img: 'https://i.redd.it/injl33v9myl51.jpg' },
-  { title: 'Barbie', theme: 'pastel', img: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' },
-  { title: 'Oppenheimer', theme: 'gptnight', img: 'https://venezianews.b-cdn.net/wp-content/uploads/elementor/thumbs/Oppenheimer-qcqe56sjf98g5iharhgvboxysohac64vt3kbim5lio.jpg' },
-  { title: 'OG', theme: 'verdone', img: 'https://images.pexels.com/photos/66997/pexels-photo-66997.jpeg' },
-  { title: 'Gandalf', theme: 'blallo', img: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' }
-].map(x => ({ ...x, primaryColor: getPaletteColor(x.theme) }))
+const primaryColorsMapping: { [id: string]: string } = {};
+paletteList.forEach((t) => { primaryColorsMapping[t.value] = t.color; });
 
 const selectedTheme = ref<Theme | null>(null);
 function setTheme(newTheme: Theme) {
   selectedTheme.value = newTheme;
-  settingsStore.updateTheme(newTheme.theme);
-  settingsStore.settings!.theme!.theme = newTheme.theme;
-  settingsStore.settings!.theme!.backgroundImg = newTheme.img;
+  settingsStore.updatePalette(newTheme.palette!);
+  settingsStore.settings!.theme!.palette = newTheme.palette!;
+  settingsStore.settings!.theme!.backgroundImg = newTheme.backgroundImg;
 }
 </script>
 

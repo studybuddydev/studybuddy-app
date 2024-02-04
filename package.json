@@ -19,6 +19,7 @@
     "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^10.7.2",
     "axios": "^1.6.7",
+    "dexie": "^3.2.4",
     "file-saver": "^2.0.5",
     "ical-generator": "^4.1.0",
     "ics": "^3.7.2",
