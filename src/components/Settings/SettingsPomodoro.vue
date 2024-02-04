@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Info :text="$t('todo', 'il testo sostanzioso per le info del timer')" class="info-settings" />
+    <Info text="il testo sostanzioso per le info del timer" class="info-settings" />
     <div v-if="pomodoro.going">
       <v-alert variant="tonal" class="mb-5" type="warning">
         <div class="pomo-running-alert">
@@ -12,8 +12,31 @@
 
     <div v-if="!pomodoro.going">
       <div class="pomo-presets">
-        <div v-for="t in timerStore.timers" :class="`preset-box ${timerSelected === t.id ? 'bg-primary' : 'bg-background'}`"
-          v-ripple @click="setTimer(t)">{{ t.title }}</div>
+        <div v-for="t in timerStore.timers"
+          :class="`preset-box ${timerSelected === t.id ? 'bg-primary' : 'bg-background'}`" v-ripple @click="setTimerPreset(t)">
+          {{ t.title }}</div>
+      </div>
+
+      <div class="text-h6">{{ selectedTimer.repetitions }} ripetizioni</div>
+      <v-slider v-model="selectedTimer.repetitions" :min="1" :max="8" :step="1" thumb-label class="pr-4" :disabled="selectedTimer.freeMode"
+        prepend-icon="mdi-tally-mark-5" />
+
+      <div v-if="creatingPreset">
+        <div class="text-h6">{{ creatingPreset.studyLength }} minuti di studio</div>
+        <v-slider v-model="creatingPreset.studyLength" :min="1" :max="60" :step="1" thumb-label class="pr-4"
+          prepend-icon="mdi-timer" />
+
+        <div class="text-h6">{{ creatingPreset.breakLength }} minuti di pausa</div>
+        <v-slider v-model="creatingPreset.breakLength" :min="1" :max="30" :step="1" thumb-label class="pr-4"
+          prepend-icon="mdi-coffee" />
+
+
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="flat" color="primary" @click="savePreset()">Aggiungi</v-btn>
+        </v-card-actions>
+
       </div>
 
       <v-expansion-panels>
@@ -59,7 +82,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import Info from '@/components/common/Info.vue'
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
@@ -69,6 +92,31 @@ const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
 const timerStore = useTimerStore();
 
+
+// creating preset
+const creatingPreset = ref<Timer | null>(null);
+function setCreatingPreset() {
+  creatingPreset.value = {
+    title: 'New preset',
+    studyLength: 25,
+    breakLength: 5,
+    repetitions: 4,
+    freeMode: false
+  };
+}
+// watch(creatingPreset, (newValue) => {
+//   if (newValue)
+//     setTimer(newValue)
+// }, { deep: true });
+function savePreset() {
+  if (creatingPreset.value) {
+    timerStore.addTimer(creatingPreset.value);
+    creatingPreset.value = null;
+  }
+}
+
+
+
 const timerSelected = computed(() =>
   timerStore.timers.find(timer => {
     const numberOfBreak = timer.repetitions - 1;
@@ -76,9 +124,9 @@ const timerSelected = computed(() =>
     const totalLength = (timer.studyLength * timer.repetitions) + breaksLength;
 
     return (
-          settingsStore.settings!.pomodoro!.totalLength === totalLength
-      &&  settingsStore.settings!.pomodoro!.breaksLength === breaksLength
-      &&  settingsStore.settings!.pomodoro!.numberOfBreak === numberOfBreak
+      settingsStore.settings!.pomodoro!.totalLength === totalLength
+      && settingsStore.settings!.pomodoro!.breaksLength === breaksLength
+      && settingsStore.settings!.pomodoro!.numberOfBreak === numberOfBreak
     );
   })?.id
 );
@@ -103,15 +151,34 @@ const endsAt = computed({
 });
 
 
-function setTimer(timer: Timer) {
-  const numberOfBreak = timer.repetitions - 1;
-  const breaksLength = timer.breakLength * numberOfBreak;
-  const totalLength = (timer.studyLength * timer.repetitions) + breaksLength;
+// selection
+const selectedTimer = ref<Timer>({
+  title: '',
+  studyLength: settingsStore.settings!.pomodoro!.totalLength - settingsStore.settings!.pomodoro!.breaksLength,
+  breakLength: settingsStore.settings!.pomodoro!.breaksLength / settingsStore.settings!.pomodoro!.numberOfBreak,
+  repetitions: settingsStore.settings!.pomodoro!.numberOfBreak + 1,
+  freeMode: settingsStore.settings!.pomodoro!.freeMode
+});
+function setTimerPreset(timer: Timer) {
+  selectedTimer.value.breakLength = timer.breakLength;
+  selectedTimer.value.studyLength = timer.studyLength;
+  selectedTimer.value.repetitions = timer.repetitions;
+  selectedTimer.value.freeMode = timer.freeMode;
+  setTimer();
+}
+watch(selectedTimer, () => {
+  setTimer();
+}, { deep: true });
+
+function setTimer() {
+  const numberOfBreak = selectedTimer.value.repetitions - 1;
+  const breaksLength = selectedTimer.value.breakLength * numberOfBreak;
+  const totalLength = (selectedTimer.value.studyLength * selectedTimer.value.repetitions) + breaksLength;
 
   settingsStore.settings!.pomodoro!.totalLength = totalLength;
   settingsStore.settings!.pomodoro!.breaksLength = breaksLength;
   settingsStore.settings!.pomodoro!.numberOfBreak = numberOfBreak;
-  settingsStore.settings!.pomodoro!.freeMode = timer.freeMode;
+  settingsStore.settings!.pomodoro!.freeMode = selectedTimer.value.freeMode;
 }
 const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
 
@@ -131,6 +198,18 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
     padding: 1rem;
     width: 100%;
     border-radius: 1rem;
+  }
+
+  .add-box {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    padding: 0;
+
+    .add-btn {
+      width: 100%;
+      height: 3rem;
+      border-radius: 1rem;
+    }
   }
 }
 
@@ -153,5 +232,4 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
     width: 9em;
     justify-self: right;
   }
-}
-</style>
+}</style>

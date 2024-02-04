@@ -182,7 +182,7 @@ onUnmounted(() => {
             <!-- welcome screen -->
             <div v-if="pomodoro.created" class="created-box">
               <div class="blur rounded-box pa-7">
-                <Info :text="$t('todo', 'info per il welcome')" class="info-welcome" />
+                <Info text="info per il welcome" class="info-welcome" />
                 <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
                 <div class="title">
                   <img src="/images/logo.png" alt="logo" class='logo' />

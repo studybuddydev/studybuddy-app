@@ -12,8 +12,15 @@ export const useTimerStore = defineStore('timerStore', () => {
     return await db.timers.toArray();
   }
 
-  async function addTimer(theme: Timer) {
-    const res = await db.timers.add(theme);
+  async function addTimer(timer: Timer) {
+    const toAddTimer: Timer = {
+      title: timer.title,
+      breakLength: timer.breakLength,
+      repetitions: timer.repetitions,
+      studyLength: timer.studyLength,
+      freeMode: timer.freeMode
+    }
+    const res = await db.timers.add(toAddTimer);
     update();
     return res;
   }
