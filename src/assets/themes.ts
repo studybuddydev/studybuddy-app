@@ -1,4 +1,20 @@
-export const themes = {
+export const themes: {[id: string]: {
+  dark: boolean,
+  colors: {
+    background: string,
+    surface: string,
+    primary: string,
+    'primary-darken-1': string,
+    secondary: string,
+    'secondary-darken-1': string,
+    error: string,
+    info: string,
+    success: string,
+    warning: string,
+    snake: string,
+    apple: string,
+  }
+}} = {
   verdone: {
     dark: false,
     colors: {
@@ -156,15 +172,23 @@ export const themes = {
   
 }
 
-export const themeList = [
-  { value: 'light', title: 'Light', color: 'white' },
-  { value: 'dark', title: 'Dark', color: 'black' },
-  { value: 'verdone', title: 'Verdone', color: '#207178' },
-  { value: 'pastel', title: 'Pastellone', color: '#ffc6ff' },
-  { value: 'bio', title: 'Biologico', color: '#606c38' },
-  { value: 'nord', title: 'Nordico', color: '#88C0D0' },
-  { value: 'blallo', title: 'Blallo', color: '#fdd93d' },
-  { value: 'gptday', title: 'GPT Day', color: '#0077C2' },
-  { value: 'gptnight', title: 'GPT Night', color: '#005DA6' },
-  { value: 'vaporwave', title: 'Vaporwave', color: '#ff61c6' },
-]
+const paletteTitles: { [id: string]: string } = {
+  "light": 'Light',
+  "dark": 'Dark',
+  "verdone": 'Verdone',
+  "pastel": 'Pastellone',
+  "bio": 'Biologico',
+  "nord": 'Nordico',
+  "blallo": 'Blallo',
+  "gptday": 'GPT Day',
+  "gptnight": 'GPT Night',
+  "vaporwave": 'Vaporwave'
+}
+
+
+export const paletteList = Object.keys(themes).map((key) => ({
+  value: key,
+  title: paletteTitles[key],
+  color: themes[key].colors.primary,
+  background: themes[key].colors.background
+}))

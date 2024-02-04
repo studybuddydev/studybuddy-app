@@ -15,6 +15,14 @@
       </v-col>
     </v-row>
     <v-row>
+      <v-col cols="12">
+        <div class="text-h6">{{ $t("pause.timer.volume") }}</div>
+        <v-slider v-model="settingsStore.settings!.pomodoro!.soundVolume" :min="0" :max="100" :step="1" thumb-label
+          class="pr-4" :prepend-icon="volumeIcon(settingsStore.settings!.pomodoro!.soundVolume)" />
+      </v-col>
+    </v-row>
+
+    <v-row>
       <v-spacer />
       <v-col> <v-btn class="bg-background ma-2" @click="exportData()" icon="mdi-tray-arrow-down"
           :title="$t('pause.general.exportData')" color="background" /> </v-col>
@@ -28,12 +36,24 @@
 </template>
 
 <script lang="ts" setup>
-import CountryFlag from 'vue-country-flag-next'
+import { computed } from 'vue'
 import { useStateStore } from "@/stores/state";
 import { useAuth0 } from "@auth0/auth0-vue";
+import { useSettingsStore } from "@/stores/settings";
+import CountryFlag from 'vue-country-flag-next'
 
+const settingsStore = useSettingsStore();
 const state = useStateStore();
 const { logout } = useAuth0();
+
+//// ---- Volume
+const volumeIcon = computed(() => ((volume: number) => {
+  if (!volume) return 'mdi-volume-off';
+  if (volume < 33) return 'mdi-volume-low';
+  if (volume < 66) return 'mdi-volume-medium';
+  return 'mdi-volume-high';
+}))
+
 
 // ----- LANG
 // $i18n.availableLocales
