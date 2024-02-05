@@ -16,9 +16,9 @@ export class StudyBuddyDB extends Dexie {
     this.on("populate", () => {
       // Timers
       this.timer.bulkAdd([
+        { title: 'Free', studyLength: 0, breakLength: 0, repetitions: 1, freeMode: true },
         { title: '25/5', studyLength: 25, breakLength: 5, repetitions: 4, freeMode: false },
         { title: '50/10', studyLength: 50, breakLength: 10, repetitions: 3, freeMode: false },
-        { title: 'Free', studyLength: 0, breakLength: 0, repetitions: 1, freeMode: true },
       ]);
       //Themes
       this.themes.bulkAdd([

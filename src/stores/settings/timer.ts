@@ -30,7 +30,14 @@ export const useTimerStore = defineStore('timerStore', () => {
   }
   update();
 
+  async function deleteTimer(id?: number) {
+    if (id !== undefined) {
+      await db.timers.delete(id);
+      update();
+    }
+  }
+
   return {
-    getAllTimers, addTimer, timers
+    getAllTimers, addTimer, deleteTimer, timers
   };
 });
