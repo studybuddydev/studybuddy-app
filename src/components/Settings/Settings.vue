@@ -35,7 +35,7 @@
         </v-container>
         <v-card-actions>
           <v-spacer />
-          <v-btn variant="flat" color="primary" @click="modelDialog = false">{{ $t("save") }}</v-btn>
+          <v-btn variant="outlined" color="primary" @click="modelDialog = false">Done</v-btn>
         </v-card-actions>
       </v-card-text>
     </v-card>

@@ -12,7 +12,13 @@ export const useThemeStore = defineStore('themeStore', () => {
   }
 
   async function addTheme(theme: Theme) {
-    const res = await db.themes.add(theme);
+    const toAddTheme: Theme = {
+      title: theme.title,
+      palette: theme.palette,
+      backgroundColor: theme.backgroundColor,
+      backgroundImg: theme.backgroundImg,
+    }
+    const res = await db.themes.add(toAddTheme);
     update();
     return res;
   }
@@ -22,7 +28,14 @@ export const useThemeStore = defineStore('themeStore', () => {
   }
   update();
 
+  async function deleteTheme(id?: number) {
+    if (id !== undefined) {
+      await db.themes.delete(id);
+      update();
+    }
+  }
+
   return {
-    getAllThemes, addTheme, themes
+    getAllThemes, addTheme, deleteTheme, themes
   };
 });
