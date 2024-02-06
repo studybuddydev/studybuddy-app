@@ -19,7 +19,7 @@
           <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.for") }}
             <span class="text-primary font-casio" v-html="pomodoro.timeInCurrentBreak"></span>
           </p>
-          <Info text="info per il break" class="info-pause" />
+          <Info :text="$t('info.pause')" class="info-pause" />
         </div>
 
       </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Info text="il testo sostanzioso per le info del timer" class="info-settings" />
+    <Info :text="$t('info.timer')" class="info-settings" />
     <div v-if="pomodoro.going">
       <v-alert variant="tonal" class="mb-5" type="warning">
         <div class="pomo-running-alert">

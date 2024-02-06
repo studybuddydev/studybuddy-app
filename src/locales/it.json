@@ -21,6 +21,7 @@
               "for": "da",
               "pomoDone": "Hai fatto un Pomodoro",
               "goodjob": "Ottimo Lavoro!",
+              "goodjobShort": "bravo hai fatto un veloce pomodoro per vedere come funziona, ",
               "youdid": "Hai fatto",
               "studyMin": " minuti di studio",
               "pauseMin": " minuti di pausa totali",
@@ -119,5 +120,14 @@
                      "yyyy": "aaaa"
               },
               "introMessage": "Ciao! Qui sotto è appena partito il timer rappresentato da un serpente verde. Premi il tasto pausa quando ti fermi. Buono Studio!"
+       },
+       "info": {
+              "welcome": "Apri le impostazioni per decidere quanto tempo voi dedicare allo studio. Premi play per iniziare una sessione di 2 ore con 3 pause da 5 minuti l'una. \n\nLe pause sono solo indicative, puoi farle quando vuoi. Dopo aver premuto play l'unica cosa che devi fare è studiare fino alla prima pausa.",
+              "pause": "Quando sei in pausa breve, cerca di non usare il telefono ed evita i social. Usa questa manciata di minuti per riposare gli occhi, sgranchirti, andare in bagno e bere acqua. Rilassati e permetti al tuo cervello di rielaborare quello che hai fatto fino a quel momento.",
+              "timer": "due modalità diverse per tracciare il tuo tempo: Classico: decidi a priori quanto tempo dedicare allo studio e quanto alle pause. Se sfori non è un problema. Libero: decidi tu quando è il momento della pausa secondo il tuo ritmo.",
+              "tema": "Qui puoi decidere il tema che preferisci tra quelli presenti. Se vuoi, puoi creare il tuo tema aggiungengo una foto dal web.",
+              "feedback": "Se hai suggerimenti o vuoi segnalare un bug, segnalalo qui"
        }
+
+       
 }
