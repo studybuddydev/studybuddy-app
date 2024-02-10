@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import type { PomoReport } from '@/types';
+import { usePomodoroStore } from "@/stores/pomodoro";
+
+const pomodoro = usePomodoroStore();
 const props = defineProps<{
   report: PomoReport,
 }>();
@@ -9,15 +12,15 @@ const props = defineProps<{
   <div class="report font-press" v-if="report">
     <div class="grid-container">
       <p>{{ $t("pause.studyTime") }}</p>
-      <p class="report-value">{{ report.timeStudy }}</p>
+      <p class="report-value">{{ pomodoro.parseTime(report.timeStudy) }}</p>
       <p>{{ $t("pause.pauseTime") }}</p>
-      <p class="report-value">{{ report.timeBreak }}</p>
+      <p class="report-value">{{ pomodoro.parseTime(report.timeBreak) }}</p>
       <p>{{ $t("pause.totalTime") }}</p>
-      <p class="report-value">{{ report.timeTotal }}</p>
+      <p class="report-value">{{ pomodoro.parseTime(report.timeTotal) }}</p>
       <p>{{ $t("pause.pauseNumber") }}</p>
-      <p class="report-value">{{ report.nrBreaks }}</p>
+      <p class="report-value">{{ pomodoro.parseTime(report.nrBreaks) }}</p>
       <p class="report-total">{{ $t("pause.score") }}</p>
-      <p class="report-value report-total">{{ report.points }}%</p>
+      <p class="report-value report-total">{{ pomodoro.parsePoints(report.points) }}%</p>
     </div>
   </div>
 </template>

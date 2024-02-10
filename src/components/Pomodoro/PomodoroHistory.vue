@@ -21,18 +21,24 @@ const hEnd = computed(() => settings.settings.general.dayStartEndHours[1]);
 
 const dailyPomodoriGroups = computed(() => {
   const groups: Record<string, {
+    date: string,
     dailySummary: DisplaySession[],
-    pomos: PomodoroRecord[]
+    pomos: PomodoroRecord[],
+    points: number,
+    totalTime: number
   }> = {};
   pomodoro.pomodoroRecords.forEach((pomodoroRecord) => {
     const dateKey = new Date(pomodoroRecord.datetime).toLocaleDateString();
     if (!groups[dateKey]) {
       groups[dateKey] = {
+        date: pomodoroRecord.datetime.toLocaleDateString(undefined, { weekday: 'short', month: 'numeric', day: 'numeric' }),
         dailySummary: [],
-        pomos: []
+        pomos: [],
+        points: 0,
+        totalTime: 0
       };
     }
-    groups[dateKey].pomos.push(pomodoroRecord);
+    groups[dateKey].pomos.unshift(pomodoroRecord);
   });
 
   const TIMEZONE_OFFSET = new Date().getTimezoneOffset() * 60000;
@@ -43,12 +49,14 @@ const dailyPomodoriGroups = computed(() => {
 
   for (const key in groups) {
     const group = groups[key];
+    group.points = group.pomos.reduce((m, p) => m + (p.report?.points ?? 0), 0) / group.pomos.length;
+    group.totalTime = group.pomos.reduce((m, p) => m + (p.endedAt ?? 0), 0);
     group.dailySummary = group.pomos.map((p, i) => {
       const startMs = ((p.datetime.getTime() % DAY_IN_MS) - DAY_START) / DAY_LENGTH;
       const endMs = ((p.endedAt ?? 0) % DAY_IN_MS) / DAY_LENGTH;
       return {
         startPerc: startMs * 100,
-        lengthPerc: endMs * 100,
+        lengthPerc: endMs * 10000,
         lengthTime: pomodoro.timeFormatted(p.endedAt ?? 0, false),
         index: i
       } as DisplaySession
@@ -94,9 +102,11 @@ function getPointsColorClass(points: number) {
     <div v-for="(g, key) in dailyPomodoriGroups" :class="`day-info  ${openDay === key ? 'day-info-open' : ''}`">
 
       <div class="day-line" @click="toggleOpenDay(key)">
-        <h3 class="text-center">{{ key }}</h3>
-        <PomodoroFlex class="pomo-flex" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]"
+        <h3 class="text-center">{{ g.date }}</h3>
+        <PomodoroFlex class="pomo-flex pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]"
           :percentage="100" />
+        <p class="lenght"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, false) }}</p>
+        <p :class="getPointsColorClass(g.points)">{{ pomodoro.parsePoints(g.points) }}%</p>
       </div>
 
       <div class="pomo-infos" v-if="openDay === key">
@@ -112,7 +122,7 @@ function getPointsColorClass(points: number) {
               </div>
             </div>
             <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, false) }}</p>
-            <p :class="getPointsColorClass(p.report?.pointsValue ?? 0)">{{ p.report?.points }}%</p>
+            <p :class="getPointsColorClass(p.report?.points ?? 0)">{{ pomodoro.parsePoints(p.report?.points ?? 0) }}%</p>
           </div>
 
           <div class="pomo-details" v-if="p.id === openDetailsPomoId">
@@ -142,6 +152,10 @@ function getPointsColorClass(points: number) {
 .pomo-flex {
   height: 1rem;
   margin: 0.5rem;
+
+  &.pomo-flex-day {
+    height: 1.5rem;
+  }
 }
 
 .no-history {
@@ -161,6 +175,23 @@ function getPointsColorClass(points: number) {
   .pomo-width {
     display: flex;
   }
+}
+
+
+.points {
+  width: 3.3em;
+  text-align: center;
+  border-radius: 0.5em;
+  margin-left: 0.4em;
+}
+.lenght {
+  width: 3em;
+  text-align: right;
+}
+
+.time {
+  width: 5em;
+  text-align: right;
 }
 
 .pomo-history {
@@ -191,6 +222,10 @@ function getPointsColorClass(points: number) {
       }
 
     }
+  }
+
+  .pomo-infos {
+    padding: 0 1rem;
   }
 
   .pomo-info {
@@ -234,25 +269,6 @@ function getPointsColorClass(points: number) {
       &:hover {
         background-color: #FFFFFF10;
       }
-
-
-      .lenght {
-        width: 3em;
-        text-align: right;
-      }
-
-      .time {
-        width: 5em;
-        text-align: right;
-      }
-
-      .points {
-        width: 3.3em;
-        text-align: center;
-        border-radius: 0.5em;
-        margin-left: 0.4em;
-      }
-
     }
   }
 }

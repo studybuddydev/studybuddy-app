@@ -361,20 +361,26 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
 
   function getPomoReport(pomo: Pomodoro | undefined): PomoReport {
-    if (!pomo) return { timeTotal: '', timeStudy: '', timeBreak: '', nrBreaks: '', points: '', pointsValue: 0 };
+    if (!pomo) return { timeTotal: 0, timeStudy: 0, timeBreak: 0, nrBreaks: 0, points: 0 };
     const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
     const timeTotal = pomo.endedAt ?? pomo.end;
     const timeStudy = timeTotal - timeBreak;
     const points =  1 - Math.abs((timeStudy - ((1 - OPTIMAL_BREAK_RATIO) * timeTotal)) / timeTotal);
 
     return {
-      timeTotal: timeFormatted(timeTotal / SECONDS_MULTIPLIER, false),
-      timeStudy: timeFormatted(timeStudy / SECONDS_MULTIPLIER, false),
-      timeBreak: timeFormatted(timeBreak / SECONDS_MULTIPLIER, false),
-      nrBreaks: pomo.breaksDone.length.toString(),
-      points: (points * 100).toFixed(1),
-      pointsValue: points
+      timeTotal: timeTotal,
+      timeStudy: timeStudy,
+      timeBreak: timeBreak,
+      nrBreaks: pomo.breaksDone.length,
+      points: points,
     };
+  }
+
+  function parsePoints(points: number) {
+    return (points * 100).toFixed(1);
+  }
+  function parseTime(time: number) {
+    return timeFormatted(time / SECONDS_MULTIPLIER, false);
   }
 
   function saveStatus() {
@@ -587,6 +593,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy, onLongPause,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
     getPomodoroRecords, pomodoroRecords, timeFormatted, timeInTitle,
+    parseTime, parsePoints,
     deletePomodoroRecord
   }
 

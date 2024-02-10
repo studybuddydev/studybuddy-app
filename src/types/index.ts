@@ -91,12 +91,11 @@ export type DisplaySession = {
 }
 
 export type PomoReport = {
-  timeTotal: string;
-  timeStudy: string;
-  timeBreak: string;
-  nrBreaks: string;
-  points: string;
-  pointsValue: number;
+  timeTotal: number;
+  timeStudy: number;
+  timeBreak: number;
+  nrBreaks: number;
+  points: number;
   shortPomo?: boolean;
 }
 
