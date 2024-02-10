@@ -18,7 +18,7 @@ const props = defineProps<{
       <p>{{ $t("pause.totalTime") }}</p>
       <p class="report-value">{{ pomodoro.parseTime(report.timeTotal) }}</p>
       <p>{{ $t("pause.pauseNumber") }}</p>
-      <p class="report-value">{{ pomodoro.parseTime(report.nrBreaks) }}</p>
+      <p class="report-value">{{ report.nrBreaks }}</p>
       <p class="report-total">{{ $t("pause.score") }}</p>
       <p class="report-value report-total">{{ pomodoro.parsePoints(report.points) }}%</p>
     </div>
