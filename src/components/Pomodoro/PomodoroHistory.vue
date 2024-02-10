@@ -10,6 +10,7 @@ import { ref } from 'vue';
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
 const openDetailsPomoId = ref(-1);
+const openDay = ref('');
 const deletePomoDialog = ref(false);
 const deletingPomoId = ref(-1);
 
@@ -20,7 +21,7 @@ const hEnd = computed(() => settings.settings.general.dayStartEndHours[1]);
 
 const dailyPomodoriGroups = computed(() => {
   const groups: Record<string, {
-    dailySummary: DisplaySession[], 
+    dailySummary: DisplaySession[],
     pomos: PomodoroRecord[]
   }> = {};
   pomodoro.pomodoroRecords.forEach((pomodoroRecord) => {
@@ -62,7 +63,10 @@ const longestPomodoro = computed(() =>
 
 function toggleReport(id: number | undefined) {
   if (id !== undefined)
-  openDetailsPomoId.value = openDetailsPomoId.value === id ? -1 : id;
+    openDetailsPomoId.value = openDetailsPomoId.value === id ? -1 : id;
+}
+function toggleOpenDay(day: string) {
+  openDay.value = openDay.value === day ? '' : day;
 }
 
 function getPointsColorClass(points: number) {
@@ -87,27 +91,35 @@ function getPointsColorClass(points: number) {
       </v-btn>
     </div>
 
-    <div v-for="(g, key) in dailyPomodoriGroups">
-      <h3 class="text-center">{{ key }}</h3>
+    <div v-for="(g, key) in dailyPomodoriGroups" :class="`day-info  ${openDay === key ? 'day-info-open' : ''}`">
 
-      <PomodoroFlex class="pomo-flex" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]" :percentage="100" />
+      <div class="day-line" @click="toggleOpenDay(key)">
+        <h3 class="text-center">{{ key }}</h3>
+        <PomodoroFlex class="pomo-flex" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]"
+          :percentage="100" />
+      </div>
 
-      <div v-for="p in g.pomos" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
-        <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
-          <p class="time">{{ p.datetime.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: false }) }}</p>
-          <div class="pomo-wrapper">
-            <div class="pomo-width" :style="{ width: `${(p.end / longestPomodoro) * 100}%` }">
-              <PomodoroFlex class="pomo-flex" :percentage="p.percentage ?? 100" :displayBreaks="p.displayBreaks ?? []"
-                :displayStudy="[]" />
+      <div class="pomo-infos" v-if="openDay === key">
+        <div v-for="p in g.pomos" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
+          <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
+            <p class="time">{{ p.datetime.toLocaleTimeString(undefined, {
+              hour: 'numeric', minute: '2-digit', hour12: false
+            }) }}</p>
+            <div class="pomo-wrapper">
+              <div class="pomo-width" :style="{ width: `${(p.end / longestPomodoro) * 100}%` }">
+                <PomodoroFlex class="pomo-flex" :percentage="p.percentage ?? 100" :displayBreaks="p.displayBreaks ?? []"
+                  :displayStudy="[]" />
+              </div>
             </div>
+            <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, false) }}</p>
+            <p :class="getPointsColorClass(p.report?.pointsValue ?? 0)">{{ p.report?.points }}%</p>
           </div>
-          <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, false) }}</p>
-          <p :class="getPointsColorClass(p.report?.pointsValue ?? 0)">{{ p.report?.points }}%</p>
-        </div>
 
-        <div class="pomo-details" v-if="p.id === openDetailsPomoId">
-          <PomodoroReport class="report" :report="p.report" v-if="p.report" />
-          <v-btn color="error" class="pomo-delete-btn"  @click="deletingPomoId = p.id; deletePomoDialog = true;"><v-icon icon="mdi-delete" /></v-btn>
+          <div class="pomo-details" v-if="p.id === openDetailsPomoId">
+            <PomodoroReport class="report" :report="p.report" v-if="p.report" />
+            <v-btn color="error" class="pomo-delete-btn" @click="deletingPomoId = p.id; deletePomoDialog = true;"><v-icon
+                icon="mdi-delete" /></v-btn>
+          </div>
         </div>
       </div>
     </div>
@@ -118,7 +130,8 @@ function getPointsColorClass(points: number) {
         <v-card-actions>
           <v-spacer />
           <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
-          <v-btn color="primary" @click="pomodoro.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{ $t("yes") }}</v-btn>
+          <v-btn color="primary" @click="pomodoro.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
+            $t("yes") }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -152,66 +165,95 @@ function getPointsColorClass(points: number) {
 
 .pomo-history {
   overflow-y: auto;
-}
 
-.pomo-info {
-  margin: 0.5rem;
-  border-radius: 1em;
+  .day-info {
+    border: 1px solid #00000000;
+    border-radius: 1rem;
+    
+    &.day-info-open {
+      border: 1px solid rgb(var(--v-theme-primary));
+      .day-line {
+        background-color: #FFFFFF10;
+      }
+    }
 
-  &.pomo-info-open {
-    background-color: #FFFFFF10;
+    .day-line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
+      padding: 0.2rem 1rem;
+
+      &:hover {
+        background-color: #FFFFFF10;
+      }
+
+    }
+  }
+
+  .pomo-info {
+    margin: 0.5rem;
+    border-radius: 1em;
+
+
+    &.pomo-info-open {
+      background-color: #FFFFFF10;
+
+      .pomo-line {
+        background-color: #FFFFFF10;
+      }
+    }
+
+    .pomo-details {
+      display: flex;
+      justify-content: center;
+      position: relative;
+
+      .report {
+        margin: 1em;
+      }
+
+      .pomo-delete-btn {
+        position: absolute;
+        bottom: 1em;
+        right: 1em;
+      }
+    }
 
     .pomo-line {
-      background-color: #FFFFFF10;
+      padding: 0.2rem 0.8rem;
+      border-radius: 1em;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
+
+      &:hover {
+        background-color: #FFFFFF10;
+      }
+
+
+      .lenght {
+        width: 3em;
+        text-align: right;
+      }
+
+      .time {
+        width: 5em;
+        text-align: right;
+      }
+
+      .points {
+        width: 3.3em;
+        text-align: center;
+        border-radius: 0.5em;
+        margin-left: 0.4em;
+      }
+
     }
-  }
-
-  .pomo-details {
-    display: flex;
-    justify-content: center;
-    position: relative;
-
-    .report {
-      margin: 1em;
-    }
-    .pomo-delete-btn {
-      position: absolute;
-      bottom: 1em;
-      right: 1em;
-    }
-  }
-
-  .pomo-line {
-    padding: 0.2rem 0.8rem;
-    border-radius: 1em;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
-
-    &:hover {
-      background-color: #FFFFFF10;
-    }
-
-
-    .lenght {
-      width: 3em;
-      text-align: right;
-    }
-
-    .time {
-      width: 5em;
-      text-align: right;
-    }
-
-    .points {
-      width: 3.3em;
-      text-align: center;
-      border-radius: 0.5em;
-      margin-left: 0.4em;
-    }
-
   }
 }
 </style>
