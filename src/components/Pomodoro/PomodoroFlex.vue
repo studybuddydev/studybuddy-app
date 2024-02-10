@@ -1,7 +1,7 @@
 <template>
   <div class="pomodoro">
     <div class="progress-bar">
-      <div class="progress" :style="{
+      <div class="progress" v-if="!dailyPomo" :style="{
         backgroundColor: theme.current.value.colors.snake,
         color: theme.current.value.colors.surface,
         width: `${percentage}%`,
@@ -11,12 +11,12 @@
           backgroundColor: b.done ? theme.current.value.colors.warning : (theme.current.value.colors.apple ?? theme.current.value.colors.error),
           marginLeft: `${b.startPerc}%`,
           width: `${b.lengthPerc}%`,
-        }"><v-icon v-if="!b.small" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
+        }"><v-icon v-if="!b.small && !dailyPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
 
-      <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index"
+      <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
         :style="{ marginLeft: `${b.startPerc + (b.lengthPerc / 2)}%` }"><p>{{b.lengthTime}}</p></div>
 
-      <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index"
+      <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index" v-if="!dailyPomo"
         :style="{ marginLeft: `${s.startPerc + (s.lengthPerc / 2)}%` }"><p>{{s.lengthTime}}</p></div>
 
     </div>
@@ -28,11 +28,17 @@ import { useTheme } from 'vuetify'
 import type { DisplaySession } from '@/types';
 
 const theme = useTheme();
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   percentage: number,
   displayBreaks: DisplaySession[],
   displayStudy: DisplaySession[],
-}>();
+  dailyPomo?: boolean
+}>(), {
+  percentage: 0,
+  displayBreaks: () => [],
+  displayStudy: () => [],
+  dailyPomo: false,
+});
 
 </script>
 

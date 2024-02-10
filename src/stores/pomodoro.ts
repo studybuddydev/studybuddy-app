@@ -493,7 +493,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     if (!pauseing.value) return false;
     const pomo = getCurrentPomo();
     const nextStop = pomo?.breaksDone.at(-1)?.end;
-    const now = getNow(pomo?.startedAt);
     if (!pomo || !nextStop) return false;
     return nextStop - 500 < getNow(pomo?.startedAt);
   });
@@ -544,7 +543,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       endedAt: pomo.endedAt,
       breaksDone: pomo.breaksDone.map(b => ({ start: b.start, end: b.end ?? b.start })),
       freeMode: pomo.freeMode,
-      datetime: new Date(),
+      datetime: new Date(pomo.startedAt ?? Date.now()),
       percentage: percentage.value
     }
 

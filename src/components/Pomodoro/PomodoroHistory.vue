@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
-import type { PomodoroRecord } from '@/types';
+import type { DisplaySession, PomodoroRecord } from '@/types';
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import { ref } from 'vue';
@@ -13,15 +13,49 @@ const deletingPomoId = ref(-1);
 
 defineEmits(['startPomodoro']);
 
+
+
 const dailyPomodoriGroups = computed(() => {
-  const groups: Record<string, PomodoroRecord[]> = {};
+  const groups: Record<string, {
+    dailySummary: DisplaySession[], 
+    pomos: PomodoroRecord[]
+  }> = {};
   pomodoro.pomodoroRecords.forEach((pomodoroRecord) => {
     const dateKey = new Date(pomodoroRecord.datetime).toLocaleDateString();
     if (!groups[dateKey]) {
-      groups[dateKey] = [];
+      groups[dateKey] = {
+        dailySummary: [],
+        pomos: []
+      };
     }
-    groups[dateKey].push(pomodoroRecord);
+    groups[dateKey].pomos.push(pomodoroRecord);
   });
+
+  const hStart = 16;
+  const mStart = 0;
+  const hEnd = 18;
+  const mEnd = 0;
+
+  const TIMEZONE_OFFSET = new Date().getTimezoneOffset() * 60000;
+  const DAY_IN_MS = 24 * 60 * 60000;
+  const DAY_START = ((hStart * 60) + mStart) * 60000 + TIMEZONE_OFFSET;
+  const DAY_END = ((hEnd * 60) + mEnd) * 60000 + TIMEZONE_OFFSET;
+  const DAY_LENGTH = DAY_END - DAY_START;
+
+  for (const key in groups) {
+    const group = groups[key];
+    group.dailySummary = group.pomos.map((p, i) => {
+      const startMs = ((p.datetime.getTime() % DAY_IN_MS) - DAY_START) / DAY_LENGTH;
+      const endMs = ((p.endedAt ?? 0) % DAY_IN_MS) / DAY_LENGTH;
+      return {
+        startPerc: startMs * 100,
+        lengthPerc: endMs * 100,
+        lengthTime: pomodoro.timeFormatted(p.endedAt ?? 0, false),
+        index: i
+      } as DisplaySession
+    })
+  }
+
   return groups;
 });
 const longestPomodoro = computed(() =>
@@ -54,9 +88,13 @@ function getPointsColorClass(points: number) {
         <v-icon class="icon" icon="mdi-play" />
       </v-btn>
     </div>
-    <div v-for="(value, key) in dailyPomodoriGroups">
+
+    <div v-for="(g, key) in dailyPomodoriGroups">
       <h3 class="text-center">{{ key }}</h3>
-      <div v-for="p in value" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
+
+      <PomodoroFlex class="pomo-flex" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]" :percentage="100" />
+
+      <div v-for="p in g.pomos" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
         <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
           <p class="time">{{ p.datetime.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: false }) }}</p>
           <div class="pomo-wrapper">
@@ -75,6 +113,8 @@ function getPointsColorClass(points: number) {
         </div>
       </div>
     </div>
+
+
     <v-dialog v-model="deletePomoDialog" width="auto">
       <v-card :text="$t('zen.confirm')">
         <v-card-actions>
