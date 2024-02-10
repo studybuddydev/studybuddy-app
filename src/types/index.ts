@@ -139,6 +139,7 @@ export type GeneralSettings = {
   hideTime: boolean;
   soundVolume: number;
   pulsingPause: boolean;
+  dayStartEndHours: [number, number];
 }
 export type ThemeSettings = {
   palette: string;

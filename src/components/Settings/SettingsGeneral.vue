@@ -16,6 +16,41 @@
     </v-row>
     <v-row>
       <v-col cols="12">
+        {{ settingsStore.settings!.general!.dayStartEndHours }}
+        <div class="text-h6">Day</div>
+        <v-range-slider
+          v-model="startEndTime"
+          :max="32"
+          :min="0"
+          :step="1"
+          hide-details
+          class="align-center"
+        >
+          <template v-slot:prepend>
+            <v-text-field
+              v-model="startTime"
+              hide-details
+              single-line
+              type="number"
+              variant="outlined"
+              density="compact"
+              style="width: 70px"
+            ></v-text-field>
+          </template>
+          <template v-slot:append>
+            <v-text-field
+              v-model="endTime"
+              hide-details
+              single-line
+              type="number"
+              variant="outlined"
+              style="width: 70px"
+              density="compact"
+            ></v-text-field>
+          </template>
+        </v-range-slider>
+      </v-col>
+      <v-col cols="12">
         <div class="text-h6">{{ $t("pause.timer.volume") }}</div>
         <v-slider v-model="settingsStore.settings!.general!.soundVolume" :min="0" :max="100" :step="1" thumb-label
           class="pr-4" :prepend-icon="volumeIcon(settingsStore.settings!.general!.soundVolume)" />
@@ -40,7 +75,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useStateStore } from "@/stores/state";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
@@ -49,6 +84,54 @@ import CountryFlag from 'vue-country-flag-next'
 const settingsStore = useSettingsStore();
 const state = useStateStore();
 const { logout } = useAuth0();
+
+let endDayAfter = settingsStore.settings.general.dayStartEndHours[1] >= 24;
+const endDayH = ref(settingsStore.settings.general.dayStartEndHours[1] % 24);
+
+const startEndTime = computed({
+  get() { return settingsStore.settings!.general!.dayStartEndHours },
+  set(newValue) {
+    endDayAfter = newValue[1] >= 24;
+    endDayH.value = newValue[1] - (endDayAfter ? 24 : 0);
+    settingsStore.settings!.general!.dayStartEndHours = newValue;
+  }
+})
+const startTime = computed({
+  get() { return settingsStore.settings!.general!.dayStartEndHours[0] },
+  set(newValue) {
+    newValue = +newValue;
+    if (newValue > 23) newValue = 23;
+    if (newValue < 0) newValue = 0;
+    if (newValue >= settingsStore.settings.general.dayStartEndHours[1]) {
+      newValue = settingsStore.settings.general.dayStartEndHours[1] - 1;
+    }
+    settingsStore.settings!.general!.dayStartEndHours[0] = +newValue;
+  }
+})
+const endTime = computed({
+  get() { return endDayH.value },
+  set(newValue) {
+    endDayH.value = +newValue;
+    if (endDayH.value >= 24) {
+      endDayAfter = true;
+      endDayH.value = endDayH.value - 24;
+    }
+    if (endDayAfter && endDayH.value > 8) {
+      endDayH.value = 8;
+    }
+    if (endDayH.value < 0 && endDayAfter) {
+      endDayAfter = false;
+      endDayH.value = endDayH.value + 24;
+    }
+    if (endDayH.value < 0) {
+      endDayH.value = 0;
+    }
+    if (!endDayAfter && endDayH.value <= settingsStore.settings.general.dayStartEndHours[0]) {
+      endDayH.value = settingsStore.settings.general.dayStartEndHours[0] + 1;
+    }
+    settingsStore.settings!.general!.dayStartEndHours[1] = endDayH.value + (endDayAfter ? 24 : 0);
+  }
+})
 
 //// ---- Volume
 const volumeIcon = computed(() => ((volume: number) => {

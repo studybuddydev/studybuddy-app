@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
+import { useSettingsStore } from "@/stores/settings";
 import type { DisplaySession, PomodoroRecord } from '@/types';
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import { ref } from 'vue';
 
 const pomodoro = usePomodoroStore();
+const settings = useSettingsStore();
 const openDetailsPomoId = ref(-1);
 const deletePomoDialog = ref(false);
 const deletingPomoId = ref(-1);
 
 defineEmits(['startPomodoro']);
 
-
+const hStart = computed(() => settings.settings.general.dayStartEndHours[0]);
+const hEnd = computed(() => settings.settings.general.dayStartEndHours[1]);
 
 const dailyPomodoriGroups = computed(() => {
   const groups: Record<string, {
@@ -31,15 +34,10 @@ const dailyPomodoriGroups = computed(() => {
     groups[dateKey].pomos.push(pomodoroRecord);
   });
 
-  const hStart = 16;
-  const mStart = 0;
-  const hEnd = 18;
-  const mEnd = 0;
-
   const TIMEZONE_OFFSET = new Date().getTimezoneOffset() * 60000;
   const DAY_IN_MS = 24 * 60 * 60000;
-  const DAY_START = ((hStart * 60) + mStart) * 60000 + TIMEZONE_OFFSET;
-  const DAY_END = ((hEnd * 60) + mEnd) * 60000 + TIMEZONE_OFFSET;
+  const DAY_START = ((hStart.value * 60) + 0) * 60000 + TIMEZONE_OFFSET;
+  const DAY_END = ((hEnd.value * 60) + 0) * 60000 + TIMEZONE_OFFSET;
   const DAY_LENGTH = DAY_END - DAY_START;
 
   for (const key in groups) {
