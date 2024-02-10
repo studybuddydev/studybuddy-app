@@ -93,6 +93,7 @@ function getCircleColor() {
     border-radius: 50%;
     -webkit-mask-image: radial-gradient(transparent 54%, black 54.3%);
     mask-image: radial-gradient(transparent 54%, black 54.3%);
+    scale: 1.001;
   }
 
   .progress-bar-content {

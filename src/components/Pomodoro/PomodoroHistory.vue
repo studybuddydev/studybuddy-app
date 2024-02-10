@@ -6,7 +6,9 @@ import type { DisplaySession, PomodoroRecord } from '@/types';
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import { ref } from 'vue';
+import { useAuth0 } from "@auth0/auth0-vue";
 
+const { isAuthenticated, loginWithRedirect } = useAuth0();
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
 const openDetailsPomoId = ref(-1);
@@ -99,7 +101,14 @@ function getPointsColorClass(points: number) {
 </script>
 <template>
   <div class="pomo-history">
-    <div v-if="pomodoro.pomodoroRecords.length === 0" class="no-history">
+    <div v-if="!isAuthenticated" class="no-history">
+      <p class="text-center text-medium-emphasis">Effettua il login per visualizzare la cronologia dei tuoi pomodori</p>
+      <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' @click="loginWithRedirect()">
+        <span>Login</span>
+      </v-btn>
+    </div>
+
+    <div v-else-if="pomodoro.pomodoroRecords.length === 0" class="no-history">
       <p class="text-center text-medium-emphasis">Non hai ancora fatto un pomodoro di almeno 5 minuti</p>
       <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
         @click="$emit('startPomodoro')">
@@ -108,55 +117,58 @@ function getPointsColorClass(points: number) {
       </v-btn>
     </div>
 
-    <div v-for="(m, mKey) in dailyPomodoriGroups" >
-      <p class="text-center text-h5">{{ mKey }}</p>
-      <div v-for="(g, key) in m" :class="`day-info  ${openDay === key ? 'day-info-open' : ''}`">
+    <div v-else>
+      <div v-for="(m, mKey) in dailyPomodoriGroups">
+        <p class="text-center text-h5">{{ mKey }}</p>
+        <div v-for="(g, key) in m" :class="`day-info  ${openDay === key ? 'day-info-open' : ''}`">
 
-        <div class="day-line" @click="toggleOpenDay(key)">
-          <h3 class="day">{{ g.date }}</h3>
-          <PomodoroFlex class="pomo-flex pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]"
-            :percentage="100" />
-          <p class="lenght"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, false) }}</p>
-          <p :class="getPointsColorClass(g.points)">{{ pomodoro.parsePoints(g.points) }}%</p>
-        </div>
+          <div class="day-line" @click="toggleOpenDay(key)">
+            <h3 class="day">{{ g.date }}</h3>
+            <PomodoroFlex class="pomo-flex pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary"
+              :displayStudy="[]" :percentage="100" />
+            <p class="lenght"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, false) }}</p>
+            <p :class="getPointsColorClass(g.points)">{{ pomodoro.parsePoints(g.points) }}%</p>
+          </div>
 
-        <div class="pomo-infos" v-if="openDay === key">
-          <div v-for="p in g.pomos" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
-            <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
-              <p class="time">{{ p.datetime.toLocaleTimeString(undefined, {
-                hour: 'numeric', minute: '2-digit', hour12: false
-              }) }}</p>
-              <div class="pomo-wrapper">
-                <div class="pomo-width" :style="{ width: `${(p.end / g.maxLength) * 100}%` }">
-                  <PomodoroFlex class="pomo-flex" :percentage="p.percentage ?? 100" :displayBreaks="p.displayBreaks ?? []"
-                    :displayStudy="[]" />
+          <div class="pomo-infos" v-if="openDay === key">
+            <div v-for="p in g.pomos" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
+              <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
+                <p class="time">{{ p.datetime.toLocaleTimeString(undefined, {
+                  hour: 'numeric', minute: '2-digit', hour12: false
+                }) }}</p>
+                <div class="pomo-wrapper">
+                  <div class="pomo-width" :style="{ width: `${(p.end / g.maxLength) * 100}%` }">
+                    <PomodoroFlex class="pomo-flex" :percentage="p.percentage ?? 100"
+                      :displayBreaks="p.displayBreaks ?? []" :displayStudy="[]" />
+                  </div>
                 </div>
+                <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, false) }}</p>
+                <p :class="getPointsColorClass(p.report?.points ?? 0)">{{ pomodoro.parsePoints(p.report?.points ?? 0) }}%
+                </p>
               </div>
-              <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, false) }}</p>
-              <p :class="getPointsColorClass(p.report?.points ?? 0)">{{ pomodoro.parsePoints(p.report?.points ?? 0) }}%</p>
-            </div>
 
-            <div class="pomo-details" v-if="p.id === openDetailsPomoId">
-              <PomodoroReport class="report" :report="p.report" v-if="p.report" />
-              <v-btn color="error" class="pomo-delete-btn" @click="deletingPomoId = p.id; deletePomoDialog = true;"><v-icon
-                  icon="mdi-delete" /></v-btn>
+              <div class="pomo-details" v-if="p.id === openDetailsPomoId">
+                <PomodoroReport class="report" :report="p.report" v-if="p.report" />
+                <v-btn color="error" class="pomo-delete-btn"
+                  @click="deletingPomoId = p.id; deletePomoDialog = true;"><v-icon icon="mdi-delete" /></v-btn>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
 
-  </div>
-
-    <v-dialog v-model="deletePomoDialog" width="auto">
-      <v-card :text="$t('zen.confirm')">
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
-          <v-btn color="primary" @click="pomodoro.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
-            $t("yes") }}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <v-dialog v-model="deletePomoDialog" width="auto">
+        <v-card :text="$t('zen.confirm')">
+          <v-card-actions>
+            <v-spacer />
+            <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
+            <v-btn color="primary" @click="pomodoro.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
+              $t("yes") }}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
   </div>
 </template>
 
@@ -189,15 +201,15 @@ function getPointsColorClass(points: number) {
   }
 }
 
-
 .points {
   width: 3.3em;
   text-align: center;
   border-radius: 0.5em;
   margin-left: 0.4em;
 }
+
 .lenght {
-  width: 3em;
+  width: 3.7em;
   text-align: right;
 }
 
@@ -209,15 +221,17 @@ function getPointsColorClass(points: number) {
 .day {
   width: 3.5em;
 }
+
 .pomo-history {
   overflow-y: auto;
 
   .day-info {
     border: 1px solid #00000000;
     border-radius: 1rem;
-    
+
     &.day-info-open {
       border: 1px solid rgb(var(--v-theme-primary));
+
       .day-line {
         background-color: #FFFFFF10;
       }

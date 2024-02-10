@@ -160,7 +160,7 @@ onUnmounted(() => {
           </a>
 
           <!-- top right -->
-          <div class="top-right blur" v-if="!isLoading"
+          <div class="top-right blur" v-if="!isLoading && !showPomoHistory"
             @click="!isAuthenticated ? loginWithRedirect() : openSettingsTab = 'general'">
             <p class="logged-user" v-if="offline">
               <v-icon v-ripple size="x-large" class="icon" icon="mdi-wifi-off" color="warning" />
@@ -236,8 +236,10 @@ onUnmounted(() => {
         <v-btn v-if="pomodoro.going" density="comfortable" size="small" class="btn-edit bg-surface"
           :icon="settings.generalSettings.hideTime ? 'mdi-eye' : 'mdi-eye-off'"
           @click="settings.generalSettings.hideTime = !settings.generalSettings.hideTime" />
-        <v-btn density="comfortable" class="btn-edit btn-edit-main bg-background" icon="mdi-cog"
-          @click="openSettingsTab = pomodoro.going ? 'theme' : 'pomodoro'" />
+        <v-btn density="comfortable" class="btn-edit btn-edit-main bg-background" icon="mdi-cog" size="large"
+          @click="openSettingsTab = pomodoro.going ? 'theme' : 'pomodoro'">
+          <v-icon class="icon" icon="mdi-cog" size="large" />
+          </v-btn>
 
       </div>
       <div :class="`pull-up-panel blur ${zenMode ? '' : 'pull-up-panel-zenmode'} ${showPomoHistory ? 'no-frost' : ''}`">
@@ -654,7 +656,7 @@ onUnmounted(() => {
     flex-direction: column;
 
     .pomo-history {
-      height: 66vh;
+      height: 73vh;
       margin: 1em;
       transition: height 0.1s ease-in-out;
       overflow-y: auto;
