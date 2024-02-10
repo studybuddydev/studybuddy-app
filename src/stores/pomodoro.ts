@@ -314,13 +314,14 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
 
   function parseDisplaySession(pomo: Pomodoro, l: { start: number, end?: number, done?: boolean }[], now: number): DisplaySession[] {
+    const showSeconds = settings.generalSettings.showSeconds;
     return l.filter(b => b.end).map((b, i) => {
       const startPerc = Math.min(100, 100 * b.start / pomo.end);
       const end = b.end ?? now;
       const lengthPerc = Math.min(100 - startPerc, (100 * (end / pomo.end)) - startPerc);
       return {
         startPerc, lengthPerc,
-        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, false, false),
+        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, false, showSeconds),
         done: b.done,
         index: i,
         small: lengthPerc < 3
@@ -429,7 +430,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     let secondsLeft = seconds; // Math.floor(time  / MINUTE_MULTIPLIER * 60);
     const h = Math.floor(secondsLeft / 3600);
     secondsLeft -= h * 3600;
-    const m = Math.floor(secondsLeft / 60);
+    const m = showSeconds ? Math.floor(secondsLeft / 60) : Math.round(secondsLeft / 60);
     secondsLeft -= m * 60;
     const s = Math.floor(secondsLeft);
 

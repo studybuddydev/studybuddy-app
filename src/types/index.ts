@@ -138,6 +138,7 @@ export type GeneralSettings = {
   hideTime: boolean;
   soundVolume: number;
   pulsingPause: boolean;
+  showSeconds: boolean;
   dayStartEndHours: [number, number];
 }
 export type ThemeSettings = {

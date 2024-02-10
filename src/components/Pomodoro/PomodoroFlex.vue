@@ -5,13 +5,13 @@
         backgroundColor: theme.current.value.colors.snake,
         color: theme.current.value.colors.surface,
         width: `${percentage}%`,
-      }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" /> </div>
+      }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" v-if="mainPomo" /> </div>
       <div v-for="b in displayBreaks" :key="b.index" class="break"
         :style="{
           backgroundColor: getBackgroundColor(),
           marginLeft: `${b.startPerc}%`,
           width: `${b.lengthPerc}%`,
-        }"><v-icon v-if="!b.small && !dailyPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
+        }"><v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
 
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
         :style="{ marginLeft: `${b.startPerc + (b.lengthPerc / 2)}%` }"><p>{{b.lengthTime}}</p></div>

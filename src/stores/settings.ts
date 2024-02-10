@@ -14,6 +14,7 @@ const defaultSettings: Settings = {
     hideTime: false,
     soundVolume: 50,
     pulsingPause: true,
+    showSeconds: false,
     dayStartEndHours: [8, 10],
   },
 
