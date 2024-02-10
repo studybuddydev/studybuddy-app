@@ -56,7 +56,7 @@ const dailyPomodoriGroups = computed(() => {
       const endMs = ((p.endedAt ?? 0) % DAY_IN_MS) / DAY_LENGTH;
       return {
         startPerc: startMs * 100,
-        lengthPerc: endMs * 10000,
+        lengthPerc: endMs * 100,
         lengthTime: pomodoro.timeFormatted(p.endedAt ?? 0, false),
         index: i
       } as DisplaySession
