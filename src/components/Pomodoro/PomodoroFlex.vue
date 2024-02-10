@@ -1,5 +1,5 @@
 <template>
-  <div class="pomodoro">
+  <div :class="`pomodoro ${mainPomo ? 'pomodoro-main' : ''}`">
     <div class="progress-bar">
       <div class="progress" v-if="!dailyPomo" :style="{
         backgroundColor: theme.current.value.colors.snake,
@@ -33,11 +33,13 @@ const props = withDefaults(defineProps<{
   displayBreaks: DisplaySession[],
   displayStudy: DisplaySession[],
   dailyPomo?: boolean
+  mainPomo?: boolean
 }>(), {
   percentage: 0,
   displayBreaks: () => [],
   displayStudy: () => [],
   dailyPomo: false,
+  mainPomo: false
 });
 
 function getBackgroundColor() {
@@ -60,11 +62,14 @@ function getBackgroundColor() {
   border-radius: 1rem;
   margin: 0.5em 0;
   height: 100%;
-  background-color: #222;
+  background-color: #2222220A;
+  // background-color: rgba(var(--v-theme-surface));
   filter: drop-shadow(0 0 0em #000);
   flex-grow: 1;
 
-
+  &.pomodoro-main {
+    background-color: #222222;
+  }
   .progress-bar {
     display: flex;
     align-items: center;

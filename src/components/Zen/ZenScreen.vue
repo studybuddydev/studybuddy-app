@@ -267,7 +267,7 @@ onUnmounted(() => {
             </div>
           </div>
           <PomodoroFlex class="pomo-flex" :percentage="pomodoro.percentage" :displayBreaks="pomodoro.displayBreaks"
-            :displayStudy="pomodoro.displayStudy" />
+            :displayStudy="pomodoro.displayStudy" :main-pomo="true" />
           <div class="button-wrapper pomo-right" v-if="pomodoro.going">
             <div class="time-button-wrapper">
               <div class="pomo-box pomo-time font-casio">

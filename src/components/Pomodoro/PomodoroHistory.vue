@@ -113,7 +113,7 @@ function getPointsColorClass(points: number) {
       <div v-for="(g, key) in m" :class="`day-info  ${openDay === key ? 'day-info-open' : ''}`">
 
         <div class="day-line" @click="toggleOpenDay(key)">
-          <h3 class="text-center">{{ g.date }}</h3>
+          <h3 class="day">{{ g.date }}</h3>
           <PomodoroFlex class="pomo-flex pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]"
             :percentage="100" />
           <p class="lenght"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, false) }}</p>
@@ -206,6 +206,9 @@ function getPointsColorClass(points: number) {
   text-align: right;
 }
 
+.day {
+  width: 3.5em;
+}
 .pomo-history {
   overflow-y: auto;
 
