@@ -16,7 +16,6 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        {{ settingsStore.settings!.general!.dayStartEndHours }}
         <div class="text-h6">Day</div>
         <v-range-slider
           v-model="startEndTime"
@@ -52,12 +51,13 @@
       </v-col>
       <v-col cols="12">
         <div class="text-h6">{{ $t("pause.timer.volume") }}</div>
-        <v-slider v-model="settingsStore.settings!.general!.soundVolume" :min="0" :max="100" :step="1" thumb-label
+        <v-slider v-model="settingsStore.settings!.general!.soundVolume" :min="0" :max="100" :step="1" thumb-label hide-details
           class="pr-4" :prepend-icon="volumeIcon(settingsStore.settings!.general!.soundVolume)" />
       </v-col>
       <v-col cols="12">
         <div class="text-h6">Interface</div>
-        <v-switch label="Pause Pulsing" color="primary" inset v-model="settingsStore.settings!.general!.pulsingPause"></v-switch>
+        <v-switch label="Pause Pulsing" color="primary" inset v-model="settingsStore.settings!.general!.pulsingPause" hide-details/>
+        <v-switch label="Hide Time" color="primary" inset v-model="settingsStore.settings!.general!.hideTime" hide-details/>
       </v-col>
     </v-row>
 

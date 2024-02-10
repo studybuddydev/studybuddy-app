@@ -23,10 +23,10 @@ enum ENotification {
 export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // ---------- PROPERTIES ----------
-  const settingsStore = useSettingsStore();
+  const settings = useSettingsStore();
   const stateStore = useStateStore();
 
-  watch(settingsStore.pomoSettings, () => {
+  watch(settings.pomoSettings, () => {
     if (getCurrentPomo()?.state === PomodoroState.CREATED)
       createPomodoro();
   });
@@ -58,12 +58,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // set up pomodoro ( a study session using the data from the settings), this method modify the currentPomodoro object
   function createPomodoro() {
     clearStuff();
-    const settings = settingsStore.pomoSettings;
-
-    const free = !!settings.freeMode;
-    const totalLength   = free ? 0 : settings.totalLength * MINUTE_MULTIPLIER;
-    const breaksLength  = free ? 0 : settings.breaksLength * MINUTE_MULTIPLIER;
-    const nrOfBreaks    = free ? 0 : settings.numberOfBreak;
+    const free = !!settings.pomoSettings.freeMode;
+    const totalLength   = free ? 0 : settings.pomoSettings.totalLength * MINUTE_MULTIPLIER;
+    const breaksLength  = free ? 0 : settings.pomoSettings.breaksLength * MINUTE_MULTIPLIER;
+    const nrOfBreaks    = free ? 0 : settings.pomoSettings.numberOfBreak;
 
     // currentPomodoro.value = {
     const pomo: PomodotoStatus = {
@@ -173,17 +171,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     const lastBreak = pomo.breaksDone[pomo.breaksDone.length - 1];        // get last break and set the end 
     lastBreak.end = now;
-
-    // const breakTimeDone = pomo.breaksDone.reduce((acc, curr) => acc + (curr.end ?? curr.start) - curr.start, 0);    // get total break time done
-    // const nrOfBreaksDone = pomo.breaksDone.filter(b => (b.end ?? b.start) - b.start > 60*1000).length;               // get number of breaks done
     
-    // generate new breaks using the remaining time, the length of the breaks and the number of breaks left
-    // pomo.breaksTodo = generateBreaks(
-    //   pomo.end - now,
-    //   (settingsStore.pomodoroFlexSettings.breaksLength * MINUTE_MULTIPLIER) - breakTimeDone,
-    //   settingsStore.pomodoroFlexSettings.numberOfBreak - nrOfBreaksDone
-    // );
-
     saveStatus();
   }
   
@@ -206,12 +194,27 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       return;
     }
     const now = getNow(pomo.startedAt);
-    
+
     if (pomo.end < now) {
-      pomo.end = now;
-      if (!pomo.soundEnd) {
-        pomo.soundEnd = true;
-        playNotification(ENotification.PomodoroDone);
+
+      // add next slot
+      if (!freeMode.value && pomo.state === PomodoroState.BREAK) {
+        const pSettings = settings.pomoSettings;
+        const pauseLength = (pSettings.breaksLength * MINUTE_MULTIPLIER) / pSettings.numberOfBreak;
+        const studyLength = ((pSettings.totalLength - pSettings.breaksLength) * MINUTE_MULTIPLIER) / (pSettings.numberOfBreak + 1);
+        
+        const currBreak = pomo.breaksDone[pomo.breaksDone.length - 1];
+        const currBreakLength = (currBreak.end ?? currBreak.start) - currBreak.start;
+        if (currBreakLength < pauseLength) {
+          currBreak.end = currBreak.start + pauseLength;
+        }
+        pomo.end = (currBreak.end ?? currBreak.start) + studyLength;
+      } else {
+        pomo.end = now;
+        if (!pomo.soundEnd) {
+          pomo.soundEnd = true;
+          playNotification(ENotification.PomodoroDone);
+        }
       }
     }
 
@@ -391,6 +394,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return (b.end ?? b.start) - b.start;
   }
 
+  let oneSoundLimit = false;
   async function playNotification(type: ENotification) {
     if (Notification.permission === "granted") {
       let text = '';
@@ -409,11 +413,16 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     }
 
     // sound
-    const audio = new Audio(`/sounds/${type}`);
-    let volume = settingsStore.generalSettings.soundVolume;
-    if (volume === undefined) volume = 0.5;
-    audio.volume = volume / 100;
-    audio.play();
+    if (!oneSoundLimit) {
+      const audio = new Audio(`/sounds/${type}`);
+      let volume = settings.generalSettings.soundVolume;
+      if (volume === undefined) volume = 0.5;
+      audio.volume = volume / 100;
+      audio.play();
+      oneSoundLimit = true;
+      setTimeout(() => oneSoundLimit = false, 1000);
+    }
+
   }
 
   function timeFormatted(seconds: number, html: boolean = true, showSeconds: boolean = true) {

@@ -315,8 +315,8 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
 
       &.timer-title {
         font-size: 1.1rem;
+        line-height: 1.1rem;
         font-weight: 500;
-        margin-bottom: 0.5rem;
       }
 
       &.timer-info {

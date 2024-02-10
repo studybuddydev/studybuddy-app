@@ -8,7 +8,7 @@
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" /> </div>
       <div v-for="b in displayBreaks" :key="b.index" class="break"
         :style="{
-          backgroundColor: getBackgroundColor(b.done),
+          backgroundColor: getBackgroundColor(),
           marginLeft: `${b.startPerc}%`,
           width: `${b.lengthPerc}%`,
         }"><v-icon v-if="!b.small && !dailyPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
@@ -40,9 +40,9 @@ const props = withDefaults(defineProps<{
   dailyPomo: false,
 });
 
-function getBackgroundColor(done?: boolean) {
+function getBackgroundColor() {
   if (props.dailyPomo) return theme.current.value.colors.snake;
-  return done ? theme.current.value.colors.success : (theme.current.value.colors.apple ?? theme.current.value.colors.error);
+  return theme.current.value.colors.apple ?? theme.current.value.colors.error;
 
 }
 
