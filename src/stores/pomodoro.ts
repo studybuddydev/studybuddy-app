@@ -7,7 +7,7 @@ import { openDB, type IDBPDatabase } from 'idb';
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 0.5 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 const OPTIMAL_BREAK_RATIO = 1/6;
 
@@ -89,6 +89,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     pomo = getCurrentPomo();
     pomo!.startedAt = Date.now();
     pomo!.state = PomodoroState.STUDY;
+    pomo!.originalEnd = pomo!.end;
     interval = setInterval(tick, TICK_TIME);
     saveStatus();
   }
@@ -103,6 +104,9 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
         const lastBreak = pomo.breaksDone.pop();
         if (lastBreak) {
           pomo.endedAt = lastBreak.start;
+          if (!((pomo.originalEnd ?? 0) > pomo.end)) {
+            pomo.end = Math.max(pomo.originalEnd ?? 0, lastBreak.start)
+          }
         }
       }
       pomo.state = PomodoroState.TERMINATED;
@@ -353,7 +357,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const pomo = getCurrentPomo();
     if (!pomo || pomo.state === PomodoroState.CREATED)
       return 0;
-    return 100 * getNow(pomo.startedAt) / pomo.end;
+    return 100 * Math.min(getNow(pomo.startedAt) / pomo.end, 1);
   }
 
   function getPomoReport(pomo: Pomodoro | undefined): PomoReport {
@@ -400,7 +404,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     // sound
     const audio = new Audio(`/sounds/${type}`);
-    let volume = settingsStore.pomoSettings.soundVolume;
+    let volume = settingsStore.generalSettings.soundVolume;
     if (volume === undefined) volume = 0.5;
     audio.volume = volume / 100;
     audio.play();

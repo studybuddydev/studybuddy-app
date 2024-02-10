@@ -115,6 +115,7 @@ export interface PomodotoStatus extends Pomodoro {
   breaksTodo: Break[];
   soundEnd?: boolean;
   onLongBreak?: boolean;
+  originalEnd?: number;
 }
 
 export interface PomodoroRecord extends Pomodoro {
@@ -132,11 +133,12 @@ export type PomodoroSettings = {
   numberOfBreak: number;
   breaksLength: number;
   totalLength: number;
-  soundVolume: number;
 }
-export type UserSettings = {
+export type GeneralSettings = {
   lang: string;
   hideTime: boolean;
+  soundVolume: number;
+  pulsingPause: boolean;
 }
 export type ThemeSettings = {
   palette: string;
@@ -147,7 +149,7 @@ export type ThemeSettings = {
 
 export type Settings = {
   pomodoro: PomodoroSettings;
-  user: UserSettings;
+  general: GeneralSettings;
   theme: ThemeSettings;
 }
 

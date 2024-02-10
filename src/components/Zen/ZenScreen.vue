@@ -198,7 +198,7 @@ onUnmounted(() => {
 
             <div class="pomodoro-circle-component-on-zen-wrapper">
               <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-                v-if="pomodoro.going && (!settings.userSettings.hideTime || pomodoro.pauseing)" :in-pip="false" />
+                v-if="pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)" :in-pip="false" />
             </div>
             <!-- report table-->
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
@@ -234,8 +234,8 @@ onUnmounted(() => {
         <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-edit bg-surface"
           :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'" @click="pipIt()" />
         <v-btn v-if="pomodoro.going" density="comfortable" size="small" class="btn-edit bg-surface"
-          :icon="settings.userSettings.hideTime ? 'mdi-eye' : 'mdi-eye-off'"
-          @click="settings.userSettings.hideTime = !settings.userSettings.hideTime" />
+          :icon="settings.generalSettings.hideTime ? 'mdi-eye' : 'mdi-eye-off'"
+          @click="settings.generalSettings.hideTime = !settings.generalSettings.hideTime" />
         <v-btn density="comfortable" class="btn-edit btn-edit-main bg-background" icon="mdi-cog"
           @click="openSettingsTab = pomodoro.going ? 'theme' : 'pomodoro'" />
 
@@ -271,7 +271,7 @@ onUnmounted(() => {
           <div class="button-wrapper pomo-right" v-if="pomodoro.going">
             <div class="time-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
-                <p v-if="!settings.userSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
+                <p v-if="!settings.generalSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
               </div>
               <div :class="pomodoro.terminated ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
                 @click="(pomodoro.freeMode || !pomodoro.done) ? terminatePomoDialog = true : stopPomodoro()">

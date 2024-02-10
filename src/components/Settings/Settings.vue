@@ -18,7 +18,7 @@
             
             <!-- PROFILE -->
             <v-window-item value="general">
-              <SettingsProfile />
+              <SettingsGeneral />
             </v-window-item>
 
             <!-- POMODORO -->
@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import SettingsPomodoro from './SettingsPomodoro.vue';
-import SettingsProfile from './SettingsProfile.vue';
+import SettingsGeneral from './SettingsGeneral.vue';
 import SettingsTheme from './SettingsTheme.vue';
 
 const props = defineProps<{ modelValue: string | boolean }>()

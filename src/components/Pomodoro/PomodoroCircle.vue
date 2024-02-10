@@ -1,5 +1,5 @@
 <template>
-  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''}  ${pomodoro.onLongPause ? 'long-pause' : ''} ${!pomodoro.freeMode && (pomodoro.timeToBreak || pomodoro.timeToStudy) && !pomodoro.onLongPause ? 'breathing' : ''}`" ref="el">
+  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''}  ${pomodoro.onLongPause ? 'long-pause' : ''} ${pulsing ? 'breathing' : ''  }`" ref="el">
 
     <div class="progress-bar" :style="{
       background: `conic-gradient(
@@ -42,17 +42,23 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
 import { usePomodoroStore } from "@/stores/pomodoro";
+import { useSettingsStore } from "@/stores/settings";
 import { useElementSize } from '@vueuse/core'
 import { ref } from 'vue';
 import Info from '@/components/common/Info.vue'
+import { computed } from 'vue';
 
 const el = ref(null)
 const { width } = useElementSize(el)
 
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
+const settings = useSettingsStore();
 const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  });
 
+const pulsing = computed(() =>
+  settings.generalSettings.pulsingPause && !pomodoro.freeMode && (pomodoro.timeToBreak || pomodoro.timeToStudy) && !pomodoro.onLongPause
+)
 
 function getCircleColor() {
   if (pomodoro.studing) {
