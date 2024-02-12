@@ -321,7 +321,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       const lengthPerc = Math.min(100 - startPerc, (100 * (end / pomo.end)) - startPerc);
       return {
         startPerc, lengthPerc,
-        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, false, showSeconds),
+        lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, { html: false, showSeconds }),
         done: b.done,
         index: i,
         small: lengthPerc < 3
@@ -369,14 +369,14 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
     const timeTotal = pomo.endedAt ?? pomo.end;
     const timeStudy = timeTotal - timeBreak;
-    const points =   Math.abs(1 -(timeStudy - ((1 - OPTIMAL_BREAK_RATIO) * timeTotal)) / timeTotal);
+    const points = Math.abs(1 -(timeStudy - ((1 - OPTIMAL_BREAK_RATIO) * timeTotal)) / timeTotal);
 
     return {
       timeTotal: timeTotal,
       timeStudy: timeStudy,
       timeBreak: timeBreak,
       nrBreaks: pomo.breaksDone.length,
-      points: points,
+      points: Math.min(points, 1),
     };
   }
 
@@ -384,7 +384,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return (points * 100).toFixed(1);
   }
   function parseTime(time: number) {
-    return timeFormatted(time / SECONDS_MULTIPLIER, false);
+    return timeFormatted(time / SECONDS_MULTIPLIER, { html: false });
   }
 
   function saveStatus() {
@@ -426,22 +426,37 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   }
 
-  function timeFormatted(seconds: number, html: boolean = true, showSeconds: boolean = true) {
+  const defaultOptions = {
+    html: true,
+    showSeconds: true,
+    format: 'semicolon' as 'hms' | 'semicolon'
+  }
+  function timeFormatted(seconds: number, options: {
+    html?: boolean,
+    showSeconds?: boolean,
+    format?: 'hms' | 'semicolon'
+  } = {}) {
+    options = { ...defaultOptions, ...options };
+
     let secondsLeft = seconds; // Math.floor(time  / MINUTE_MULTIPLIER * 60);
     const h = Math.floor(secondsLeft / 3600);
     secondsLeft -= h * 3600;
-    const m = showSeconds ? Math.floor(secondsLeft / 60) : Math.round(secondsLeft / 60);
+    const m = options.showSeconds ? Math.floor(secondsLeft / 60) : Math.round(secondsLeft / 60);
     secondsLeft -= m * 60;
     const s = Math.floor(secondsLeft);
 
+
     const sStr = `${s.toString().padStart(2, '0')}`;
     const mStr = `${h > 0 ? m.toString().padStart(2, '0') : m.toString()}`;
-    const hStr = h > 0 ? `${h}:` : '';
-    const cssClass = h > 0 ? 'small seconds' : 'seconds';
 
-    return showSeconds ?
-        (html ?  `${hStr}${mStr}<span class="${cssClass}">:${sStr}</span>` : `${hStr}${mStr}:${sStr}`)
-        : `${hStr}${mStr}`;
+    if (options.format === 'semicolon') {
+      const sss = options.html ? `<span class="${h > 0 ? 'small seconds' : 'seconds'}">:${sStr}</span>` : `:${sStr}`;
+      const hhh = h > 0 ? `${h}:` : '';
+      return `${hhh}${mStr}${options.showSeconds ? sss : ''}`;
+    } else if (options.format === 'hms') {
+      return `${h > 0 ? ` ${h}h ` : ''}${mStr}m${options.showSeconds ? ` ${sStr}s` : ''}` ;
+    }
+    return '';
   }
 
   function timeSinceStartFormatted() {
@@ -457,7 +472,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     if (!pomo || !startLastPause) return '0:00';
     const startS = Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER)
     const startLastPauseS = Math.floor(startLastPause / SECONDS_MULTIPLIER)
-    return timeFormatted( startS - startLastPauseS, html, showSeconds);
+    return timeFormatted( startS - startLastPauseS, { html, showSeconds });
   }
   function timeInCurrentStudyFormatted(html: boolean = true, showSeconds: boolean = true) {
     const pomo = getCurrentPomo()
@@ -465,7 +480,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const startLastStudy = pomo?.breaksDone.at(-1)?.end ?? 0;
     const startS = Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER)
     const startLastStudyS = Math.floor(startLastStudy / SECONDS_MULTIPLIER)
-    return timeFormatted( startS - startLastStudyS, html, showSeconds);
+    return timeFormatted( startS - startLastStudyS, { html, showSeconds });
   }
 
   function getCurrentStatePercentage() {

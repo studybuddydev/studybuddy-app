@@ -16,6 +16,8 @@ const openDay = ref('');
 const deletePomoDialog = ref(false);
 const deletingPomoId = ref(-1);
 
+const timeFormat = { html: false, showSeconds: false, format: 'hms' as 'hms' }
+
 defineEmits(['startPomodoro']);
 
 const hStart = computed(() => settings.settings.general.dayStartEndHours[0]);
@@ -72,7 +74,7 @@ const dailyPomodoriGroups = computed(() => {
       return {
         startPerc: startMs * 100,
         lengthPerc: endMs * 100,
-        lengthTime: pomodoro.timeFormatted(p.endedAt ?? 0, false),
+        lengthTime: pomodoro.timeFormatted(p.endedAt ?? 0, { html: false }),
         index: i
       } as DisplaySession
     })
@@ -126,7 +128,7 @@ function getPointsColorClass(points: number) {
             <h3 class="day">{{ g.date }}</h3>
             <PomodoroFlex class="pomo-flex pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary"
               :displayStudy="[]" :percentage="100" />
-            <p class="lenght"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, false) }}</p>
+            <p class="lenght"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
             <p :class="getPointsColorClass(g.points)">{{ pomodoro.parsePoints(g.points) }}%</p>
           </div>
 
@@ -142,7 +144,7 @@ function getPointsColorClass(points: number) {
                       :displayBreaks="p.displayBreaks ?? []" :displayStudy="[]" />
                   </div>
                 </div>
-                <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, false) }}</p>
+                <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, timeFormat) }}</p>
                 <p :class="getPointsColorClass(p.report?.points ?? 0)">{{ pomodoro.parsePoints(p.report?.points ?? 0) }}%
                 </p>
               </div>
@@ -202,14 +204,14 @@ function getPointsColorClass(points: number) {
 }
 
 .points {
-  width: 3.3em;
+  width: 4em;
   text-align: center;
   border-radius: 0.5em;
   margin-left: 0.4em;
 }
 
 .lenght {
-  width: 3.7em;
+  width: 4em;
   text-align: right;
 }
 
