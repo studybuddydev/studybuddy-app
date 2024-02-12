@@ -7,7 +7,7 @@ import { openDB, type IDBPDatabase } from 'idb';
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 0.5 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 const OPTIMAL_BREAK_RATIO = 1/6;
 
@@ -369,7 +369,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
     const timeTotal = pomo.endedAt ?? pomo.end;
     const timeStudy = timeTotal - timeBreak;
-    const points =  1 - Math.abs((timeStudy - ((1 - OPTIMAL_BREAK_RATIO) * timeTotal)) / timeTotal);
+    const points =   Math.abs(1 -(timeStudy - ((1 - OPTIMAL_BREAK_RATIO) * timeTotal)) / timeTotal);
 
     return {
       timeTotal: timeTotal,

@@ -15,7 +15,7 @@ const defaultSettings: Settings = {
     soundVolume: 50,
     pulsingPause: true,
     showSeconds: false,
-    dayStartEndHours: [8, 10],
+    dayStartEndHours: [8, 18],
   },
 
   pomodoro: {
