@@ -180,7 +180,7 @@ onUnmounted(() => {
           <div class="main-content">
 
             <!-- welcome screen -->
-            <div v-if="pomodoro.created" class="created-box">
+            <div v-if="pomodoro.created && !pomodoro.going" class="created-box">
               <div class="blur rounded-box pa-7">
                 <Info :text="$t('info.welcome')" class="info-welcome" />
                 <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
@@ -191,14 +191,14 @@ onUnmounted(() => {
               </div>
             </div>
             <!-- finish screen -->
-            <div v-else-if="pomodoro.terminated" class="blur rounded-box finish-box">
+            <div v-else-if="pomodoro.terminated && !pomodoro.going" class="blur rounded-box finish-box">
               <p class="pause font-press text-center">{{ pomodoro.report?.shortPomo ? $t("pause.pomoDone") : $t("pomoDoneShort") }}</p>
               <h2 class="text-primary font-press text-center">{{ pomodoro.report?.shortPomo ? $t("pause.goodjob") : $t("pause.goodjobShort") }}</h2>
             </div>
 
             <div class="pomodoro-circle-component-on-zen-wrapper">
               <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-                v-if="pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)" :in-pip="false" />
+                v-if="pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing))" :in-pip="false" />
             </div>
             <!-- report table-->
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />

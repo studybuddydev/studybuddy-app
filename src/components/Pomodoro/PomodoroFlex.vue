@@ -1,10 +1,10 @@
 <template>
   <div :class="`pomodoro ${mainPomo ? 'pomodoro-main' : ''}`">
     <div class="progress-bar">
-      <div class="progress" v-if="!dailyPomo" :style="{
+      <div :class="`progress ${pomodoro.countdownRunning ? 'timer-animation' : ''}`" v-if="!dailyPomo" :style="{
         backgroundColor: theme.current.value.colors.snake,
         color: theme.current.value.colors.surface,
-        width: `${percentage}%`,
+        width: progressPercentage,
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" v-if="mainPomo" /> </div>
       <div v-for="b in displayBreaks" :key="b.index" class="break"
         :style="{
@@ -26,6 +26,9 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
 import type { DisplaySession } from '@/types';
+import { usePomodoroStore } from '@/stores/pomodoro';
+import { computed } from 'vue';
+const pomodoro = usePomodoroStore();
 
 const theme = useTheme();
 const props = withDefaults(defineProps<{
@@ -45,8 +48,13 @@ const props = withDefaults(defineProps<{
 function getBackgroundColor() {
   if (props.dailyPomo) return theme.current.value.colors.snake;
   return theme.current.value.colors.apple ?? theme.current.value.colors.error;
-
 }
+
+const snakeHeadPercent = 3;
+const ratioProgressLeft = (100 - snakeHeadPercent) / 100;
+const progressPercentage = computed(() => {
+  return `${snakeHeadPercent + (pomodoro.countdownRunning ? 0 : props.percentage * ratioProgressLeft)}%`;
+});
 
 </script>
 
@@ -112,9 +120,11 @@ function getBackgroundColor() {
       align-items: center;
       transition: width 0.1s linear;
       overflow: hidden;
+
+      &.timer-animation {
+        transition: width 3s linear;
+      }
     }
-
-
 
     .break {
       position: absolute;

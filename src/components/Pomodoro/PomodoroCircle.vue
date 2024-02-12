@@ -21,10 +21,13 @@
           </p>
           <Info :text="$t('info.pause')" class="info-pause" />
         </div>
-
       </div>
 
-      <div class="buttons" >
+      <div v-if="pomodoro.countdownRunning">
+        <div :class="pomodoro.countdownRunning ? 'countdown' : ''"></div>
+      </div>
+
+      <div v-else class="buttons" >
         <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5' v-if="!pomodoro.studing"
           @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro()" :style="{ height: `${width / 10}px` }">
           <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-play" />
@@ -74,6 +77,21 @@ function getCircleColor() {
 
 
 <style lang="scss" scoped>
+.countdown {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  counter-reset: my-count 4;
+  animation: countdown 5s linear infinite;
+  
+  &::after {
+    content: counter(my-count);
+    font-size: 10em;
+  }
+}
+
+
 .pomodoro-circle {
   position: relative;
   border-radius: 50%;
@@ -174,6 +192,104 @@ function getCircleColor() {
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1);
+  }
+}
+
+
+@keyframes countdown {
+  // 3 ---
+  0% { // 0%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -1;
+  }
+  1% { // 5%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -1;
+  }
+  10% { // 50%
+    opacity: 1;
+    counter-increment: my-count -1;
+  }
+  15% { // 75%
+    opacity: 1;
+    counter-increment: my-count -1;
+  }
+  18% { // 95%
+    font-size: 1em;
+    opacity: 0;
+    counter-increment: my-count -1;
+  }
+  19% { // 100%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -1;
+  }
+  // 2 ---
+  20% { // 0%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -2;
+  }
+  21% { // 5%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -2;
+  }
+  30% { // 50%
+    opacity: 1;
+    counter-increment: my-count -2;
+  }
+  35% { // 75%
+    opacity: 1;
+    counter-increment: my-count -2;
+  }
+  38% { // 95%
+    font-size: 1em;
+    opacity: 0;
+    counter-increment: my-count -2;
+  }
+  39% { // 100%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -2;
+  }
+  
+  // 1 ---
+  40% { // 0%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -3;
+  }
+  41% { // 5%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -3;
+  }
+  50% { // 50%
+    opacity: 1;
+    counter-increment: my-count -3;
+  }
+  55% { // 75%
+    opacity: 1;
+    counter-increment: my-count -3;
+  }
+  58% { // 95%
+    font-size: 1em;
+    opacity: 0;
+    counter-increment: my-count -3;
+  }
+  59% { // 100%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -3;
+  }
+
+  100% {
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -2;
   }
 }
 

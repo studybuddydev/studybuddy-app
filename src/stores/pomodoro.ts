@@ -80,16 +80,18 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // when you first press start you set the start time of the pomodoro and sets the state to study
   function startPomodoro() {
     clearStuff();
-    let pomo = getCurrentPomo();
-    if (!pomo || pomo.state === PomodoroState.TERMINATED) {
-      createPomodoro();
-    }
-    pomo = getCurrentPomo();
-    pomo!.startedAt = Date.now();
-    pomo!.state = PomodoroState.STUDY;
-    pomo!.originalEnd = pomo!.end;
-    interval = setInterval(tick, TICK_TIME);
-    saveStatus();
+    startCountdown(() => {
+      let pomo = getCurrentPomo();
+      if (!pomo || pomo.state === PomodoroState.TERMINATED) {
+        createPomodoro();
+      }
+      pomo = getCurrentPomo();
+      pomo!.startedAt = Date.now();
+      pomo!.state = PomodoroState.STUDY;
+      pomo!.originalEnd = pomo!.end;
+      interval = setInterval(tick, TICK_TIME);
+      saveStatus();
+    });
   }
 
   // when you press stop you set the end time of the pomodoro and sets the state to terminated
@@ -437,6 +439,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     format?: 'hms' | 'semicolon'
   } = {}) {
     options = { ...defaultOptions, ...options };
+    seconds = Math.max(0, Math.floor(seconds));
 
     let secondsLeft = seconds; // Math.floor(time  / MINUTE_MULTIPLIER * 60);
     const h = Math.floor(secondsLeft / 3600);
@@ -444,7 +447,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const m = options.showSeconds ? Math.floor(secondsLeft / 60) : Math.round(secondsLeft / 60);
     secondsLeft -= m * 60;
     const s = Math.floor(secondsLeft);
-
 
     const sStr = `${s.toString().padStart(2, '0')}`;
     const mStr = `${h > 0 ? m.toString().padStart(2, '0') : m.toString()}`;
@@ -509,7 +511,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const studing    = computed(() => getCurrentPomo()?.state === PomodoroState.STUDY);
   const pauseing   = computed(() => getCurrentPomo()?.state === PomodoroState.BREAK);
   const terminated = computed(() => getCurrentPomo()?.state === PomodoroState.TERMINATED);
-  const going      = computed(() => studing.value || pauseing.value);
+  const going      = computed(() => studing.value || pauseing.value || countdownRunning.value);
   const onLongPause = computed(() => getCurrentPomo()?.onLongBreak ?? false);
 
   const timeToBreak = computed(() => {
@@ -610,6 +612,17 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     })();
   }
 
+  // ---------- COUNTDOWN ----------
+  const countdownRunning = ref(false);
+  function startCountdown(callback: () => void, ms: number = 3000) {
+    if (countdownRunning.value) return;
+    countdownRunning.value = true;
+    setTimeout(() => {
+      countdownRunning.value = false;
+      callback();
+    }, ms);
+  }
+
   // ---------- RETURN ----------
   return {
     startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
@@ -618,6 +631,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy, onLongPause,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
     getPomodoroRecords, pomodoroRecords, timeFormatted, timeInTitle,
+    startCountdown, countdownRunning,
     parseTime, parsePoints,
     deletePomodoroRecord
   }
