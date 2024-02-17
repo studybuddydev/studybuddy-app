@@ -24,6 +24,7 @@
           :step="1"
           hide-details
           class="align-center"
+          color="primary" 
         >
           <template v-slot:prepend>
             <v-text-field
@@ -52,7 +53,7 @@
       <v-col cols="12">
         <div class="text-h6">{{ $t("pause.timer.volume") }}</div>
         <v-slider v-model="settingsStore.settings!.general!.soundVolume" :min="0" :max="100" :step="1" thumb-label hide-details
-          class="pr-4" :prepend-icon="volumeIcon(settingsStore.settings!.general!.soundVolume)" />
+          class="pr-4 primary-thumb" :prepend-icon="volumeIcon(settingsStore.settings!.general!.soundVolume)" color="primary" />
       </v-col>
       <v-col cols="12">
         <div class="text-h6">Interface</div>

@@ -19,6 +19,8 @@
       <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index" v-if="!dailyPomo"
         :style="{ marginLeft: `${s.startPerc + (s.lengthPerc / 2)}%` }"><p>{{s.lengthTime}}</p></div>
 
+      <div v-for="t in ticks" :key="t.h" class="hour-idicator" :style="{ marginLeft: `${t.position}%` }" v-if="dailyPomo"></div>
+
     </div>
   </div>
 </template>
@@ -27,8 +29,10 @@
 import { useTheme } from 'vuetify'
 import type { DisplaySession } from '@/types';
 import { usePomodoroStore } from '@/stores/pomodoro';
+import { useSettingsStore } from '@/stores/settings';
 import { computed } from 'vue';
 const pomodoro = usePomodoroStore();
+const settings = useSettingsStore();
 
 const theme = useTheme();
 const props = withDefaults(defineProps<{
@@ -44,6 +48,23 @@ const props = withDefaults(defineProps<{
   dailyPomo: false,
   mainPomo: false
 });
+
+const ticks = computed(() => {
+  const ticks: { position: number, h: number }[] = [];
+
+  const end = settings.generalSettings.dayStartEndHours[1];
+  const start = settings.generalSettings.dayStartEndHours[0];
+  const delta = end - start;
+  for (let i = 1; i < (delta); i++) {
+    ticks.push({
+      position: (i / delta) * 100,
+      h: start + i
+    });
+  }
+  return ticks;
+});
+
+
 
 function getBackgroundColor() {
   if (props.dailyPomo) return theme.current.value.colors.snake;
@@ -109,6 +130,18 @@ const progressPercentage = computed(() => {
       .time-indicator {
         display: flex;
       }
+    }
+
+    .hour-idicator {
+      position: absolute;
+      bottom: 0;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 1px;
+      background-color: rgba(var(--v-theme-primary), 0.15);
     }
 
     .break,

@@ -64,6 +64,13 @@ watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
   font-size: 0.5em;
 }
 
+.primary-thumb .v-slider-thumb__label {
+  background-color: rgb(var(--v-theme-primary));
+  &::after {
+    background-color: rgb(var(--v-theme-primary));
+  }
+}
+
 .hide {
   display: none !important;
 }

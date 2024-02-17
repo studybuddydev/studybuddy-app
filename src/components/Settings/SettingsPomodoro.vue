@@ -57,8 +57,8 @@
                   </v-col>
                 </v-row>
 
-                <v-slider v-model="settingsStore.settings!.pomodoro!.totalLength" :min="0" :max="240" :step="5"
-                  thumb-label :disabled="freeMode" class="pr-4" prepend-icon="mdi-timer">
+                <v-slider v-model="settingsStore.settings!.pomodoro!.totalLength" :min="0" :max="240" :step="5" color="primary" 
+                  thumb-label :disabled="freeMode" class="pr-4 primary-thumb" prepend-icon="mdi-timer">
                   <template v-slot:thumb-label>
                     {{ Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }}h{{
                       settingsStore.settings!.pomodoro!.totalLength % 60 }}m
@@ -70,12 +70,12 @@
                 }}
                 </div>
                 <v-slider v-model="settingsStore.settings!.pomodoro!.breaksLength" :min="1" :max="60" :step="1"
-                  thumb-label :disabled="freeMode" class="pr-4" prepend-icon="mdi-coffee" />
+                  thumb-label :disabled="freeMode" class="pr-4 primary-thumb" prepend-icon="mdi-coffee" color="primary"  />
 
                 <div class="text-h6">{{ settingsStore.settings!.pomodoro!.numberOfBreak }}
                   {{ $t("pause.timer.breaksNumber") }}</div>
                 <v-slider v-model="settingsStore.settings!.pomodoro!.numberOfBreak" :min="0" :max="10" :step="1"
-                  thumb-label :disabled="freeMode" show-ticks="always" class="pr-4" prepend-icon="mdi-tally-mark-5" />
+                  thumb-label :disabled="freeMode" show-ticks="always" class="pr-4 primary-thumb" prepend-icon="mdi-tally-mark-5" color="primary" /> 
               </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -95,7 +95,7 @@
             <v-row align="center" class="mb-2">
               <v-col cols="9" >
                 <v-slider v-model="newTimer.studyLength" :min="1" :max="60" :step="1" thumb-label hide-details
-                  prepend-icon="mdi-timer" />
+                  prepend-icon="mdi-timer" color="primary" class="primary-thumb" />
               </v-col>
               <v-col cols="3">
                 <v-text-field v-model="newTimer.studyLength" :min="1" :max="60" type="number" hide-details />
@@ -106,7 +106,7 @@
             <v-row align="center" class="mb-2">
               <v-col cols="9" >
                 <v-slider v-model="newTimer.breakLength" :min="1" :max="30" :step="1" thumb-label hide-details
-                  prepend-icon="mdi-coffee" />
+                  prepend-icon="mdi-coffee" color="primary" class="primary-thumb" />
               </v-col>
               <v-col cols="3">
                 <v-text-field v-model="newTimer.breakLength" :min="1" :max="30" type="number" hide-details />
@@ -117,7 +117,7 @@
             <v-row align="center" class="mb-2">
               <v-col cols="9">
                 <v-slider v-model="newTimer.repetitions" :min="1" :max="8" :step="1" thumb-label hide-details
-                  prepend-icon="mdi-tally-mark-5" />
+                  prepend-icon="mdi-tally-mark-5" color="primary" class="primary-thumb" />
               </v-col>
               <v-col cols="3">
                 <v-text-field v-model="newTimer.repetitions" :min="1" :max="8" type="number" hide-details />

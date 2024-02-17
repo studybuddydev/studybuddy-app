@@ -1,7 +1,7 @@
 <template>
   <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''}  ${pomodoro.onLongPause ? 'long-pause' : ''} ${pulsing ? 'breathing' : ''  }`" ref="el">
 
-    <div class="progress-bar" :style="{
+    <div class="progress-bar" v-if="!pomodoro.countdownRunning" :style="{
       background: `conic-gradient(
         ${getCircleColor()} 0deg,
         ${getCircleColor()} ${pomodoro.percInCurrentState * 360}deg,
@@ -23,8 +23,8 @@
         </div>
       </div>
 
-      <div v-if="pomodoro.countdownRunning">
-        <div :class="pomodoro.countdownRunning ? 'countdown' : ''"></div>
+      <div v-if="pomodoro.countdownRunning" class="font-casio text-primary">
+        <div :class="pomodoro.countdownRunning ? 'countdown text-primary' : ''"></div>
       </div>
 
       <div v-else class="buttons" >
@@ -78,7 +78,6 @@ function getCircleColor() {
 
 <style lang="scss" scoped>
 .countdown {
-  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,7 +86,7 @@ function getCircleColor() {
   
   &::after {
     content: counter(my-count);
-    font-size: 10em;
+    font-size: 6em;
   }
 }
 
