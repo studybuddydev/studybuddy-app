@@ -198,7 +198,9 @@ onUnmounted(() => {
 
             <div class="pomodoro-circle-component-on-zen-wrapper">
               <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-                v-if="pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing))" :in-pip="false" />
+              v-if="pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing))" :in-pip="false" />
+              <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-pip bg-surface"
+                :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'" @click="pipIt()" />
             </div>
             <!-- report table-->
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
@@ -231,11 +233,6 @@ onUnmounted(() => {
     </div>
     <div class="bottom-bar">
       <div class="quick-settings" v-if="zenMode">
-        <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-edit bg-surface"
-          :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'" @click="pipIt()" />
-        <v-btn v-if="pomodoro.going" density="comfortable" size="small" class="btn-edit bg-surface"
-          :icon="settings.generalSettings.hideTime ? 'mdi-eye' : 'mdi-eye-off'"
-          @click="settings.generalSettings.hideTime = !settings.generalSettings.hideTime" />
         <v-btn density="comfortable" class="btn-edit btn-edit-main bg-background" icon="mdi-cog" size="large"
           @click="openSettingsTab = pomodoro.going ? 'theme' : 'pomodoro'">
           <v-icon class="icon" icon="mdi-cog" size="large" />
@@ -301,6 +298,17 @@ onUnmounted(() => {
 
 .pomodoro-circle-component-on-zen-wrapper {
   position: relative;
+
+  .btn-pip {
+    position: absolute;
+    display: none;
+    top: 0;
+    right: 0;
+  }
+
+  &:hover .btn-pip {
+    display: block;
+  }
 
   .pomodoro-circle-component-on-zen {
     height: min(50vh, 80vw);
@@ -629,21 +637,6 @@ onUnmounted(() => {
     pointer-events: auto;
     align-self: flex-end;
     margin: 1rem;
-
-    &:hover {
-      .btn-edit {
-        display: inline;
-      }
-    }
-
-    .btn-edit {
-      display: none;
-      margin: 0.2rem;
-    }
-
-    .btn-edit-main {
-      display: inline;
-    }
   }
 
 

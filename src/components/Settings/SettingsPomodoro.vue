@@ -289,22 +289,24 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
       display: none;
     }
 
-    &:hover {
-      border: 2px solid rgb(var(--v-theme-primary));
+    @media (hover: hover) {
+      &:hover {
+        border: 2px solid rgb(var(--v-theme-primary));
 
-      .front {
-        display: none;
-      }
+        .front {
+          display: none;
+        }
 
-      .back {
-        display: flex;
-      }
+        .back {
+          display: flex;
+        }
 
-      .btn-delete {
-        display: block;
+        .btn-delete {
+          display: block;
 
-        &:hover {
-          opacity: 1;
+          &:hover {
+            opacity: 1;
+          }
         }
       }
     }

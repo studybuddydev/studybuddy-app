@@ -99,8 +99,8 @@ function getPointsColorClass(points: number) {
   }
   return 'points bg-success';
 }
-
 </script>
+
 <template>
   <div class="pomo-history">
     <div v-if="!isAuthenticated" class="no-history">
