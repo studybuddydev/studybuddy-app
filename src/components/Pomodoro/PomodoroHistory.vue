@@ -99,6 +99,57 @@ function getPointsColorClass(points: number) {
   }
   return 'points bg-success';
 }
+
+// ---- ADJUST DAY -------
+let endDayAfter = settings.settings.general.dayStartEndHours[1] >= 24;
+const endDayH = ref(settings.settings.general.dayStartEndHours[1] % 24);
+
+const startEndTime = computed({
+  get() { return settings.settings!.general!.dayStartEndHours },
+  set(newValue) {
+    endDayAfter = newValue[1] >= 24;
+    endDayH.value = newValue[1] - (endDayAfter ? 24 : 0);
+    settings.settings!.general!.dayStartEndHours = newValue;
+  }
+})
+const startTime = computed({
+  get() { return settings.settings!.general!.dayStartEndHours[0] },
+  set(newValue) {
+    newValue = +newValue;
+    if (newValue > 23) newValue = 23;
+    if (newValue < 0) newValue = 0;
+    if (newValue >= settings.settings.general.dayStartEndHours[1]) {
+      newValue = settings.settings.general.dayStartEndHours[1] - 1;
+    }
+    settings.settings!.general!.dayStartEndHours[0] = +newValue;
+  }
+})
+const endTime = computed({
+  get() { return endDayH.value },
+  set(newValue) {
+    endDayH.value = +newValue;
+    if (endDayH.value >= 24) {
+      endDayAfter = true;
+      endDayH.value = endDayH.value - 24;
+    }
+    if (endDayAfter && endDayH.value > 8) {
+      endDayH.value = 8;
+    }
+    if (endDayH.value < 0 && endDayAfter) {
+      endDayAfter = false;
+      endDayH.value = endDayH.value + 24;
+    }
+    if (endDayH.value < 0) {
+      endDayH.value = 0;
+    }
+    if (!endDayAfter && endDayH.value <= settings.settings.general.dayStartEndHours[0]) {
+      endDayH.value = settings.settings.general.dayStartEndHours[0] + 1;
+    }
+    settings.settings!.general!.dayStartEndHours[1] = endDayH.value + (endDayAfter ? 24 : 0);
+  }
+})
+
+
 </script>
 
 <template>
@@ -157,7 +208,20 @@ function getPointsColorClass(points: number) {
             </div>
           </div>
         </div>
-
+        <div class="day-settings">
+          <p class="text-center">Adjust your day</p>
+          <v-range-slider v-model="startEndTime" class="align-center slider" color="primary" 
+            :max="32" :min="0" :step="1" hide-details>
+            <template v-slot:prepend>
+              <v-text-field v-model="startTime" hide-details single-line
+              type="number" variant="outlined" density="compact" class="day-h-input" />
+            </template>
+            <template v-slot:append>
+              <v-text-field v-model="endTime" hide-details single-line
+              type="number" variant="outlined" density="compact" class="day-h-input"/>
+            </template>
+          </v-range-slider>
+        </div>
       </div>
 
       <v-dialog v-model="deletePomoDialog" width="auto">
@@ -175,6 +239,20 @@ function getPointsColorClass(points: number) {
 </template>
 
 <style lang="scss" scoped>
+.day-settings {
+  background-color: #00000022;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    border-radius: 1rem 1rem 0 0;
+
+  .day-h-input {
+    width: 4.5em;
+    text-align: center;
+  }
+}
 .pomo-flex {
   height: 1rem;
   margin: 0.5rem;

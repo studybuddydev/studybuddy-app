@@ -161,6 +161,7 @@ export interface Theme {
   palette?: string;
   backgroundColor?: string;
   backgroundImg?: string;
+  previewImg?: string;
 }
 export interface Timer {
   id?: number;

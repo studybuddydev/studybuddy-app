@@ -10,7 +10,7 @@
         <div v-for="t in themeStore.themes" :class="`theme-box ${selectedTheme?.title === t.title ? 'selected' : ''}`"
           :style="{
             border: `2px solid ${primaryColorsMapping[t.palette ?? '']}`,
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${t.backgroundImg})`
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${t.previewImg ?? t.backgroundImg})`
           }" @click="setTheme(t)">
           <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
             <polygon points="0,0 30,0 30,30" :style="{
