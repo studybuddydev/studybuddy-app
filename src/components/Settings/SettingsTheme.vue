@@ -62,6 +62,9 @@ import { useThemeStore } from "@/stores/settings/theme";
 import { useSettingsStore } from "@/stores/settings";
 import { paletteList } from '@/assets/themes'
 import type { Theme } from '@/types';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const themeStore = useThemeStore();
 const settingsStore = useSettingsStore();
@@ -88,7 +91,7 @@ const newThemeTitle = ref<string | undefined>(undefined);
 let ogTheme: Theme | null = null;
 function setUpNewTheme() {
   step.value = 2;
-  newThemeTitle.value = 'New Theme'
+  newThemeTitle.value =  t('pause.theme.newTheme');
   ogTheme = {
     palette: settingsStore.settings!.theme!.palette,
     backgroundImg: settingsStore.settings!.theme!.backgroundImg,
