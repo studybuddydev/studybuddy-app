@@ -25,21 +25,17 @@
     </v-window-item>
     <v-window-item :value="2" class="theme-settings">
       <div class="header">
-        <v-btn @click="step = 1" color="primary" variant="text" prepend-icon="mdi-arrow-left">Back</v-btn>
-        <div class="text-h6">Create your theme</div>
+        <v-btn @click="back()" color="primary" variant="text" prepend-icon="mdi-arrow-left">Back</v-btn>
+        <v-btn @click="saveTheme()" color="primary">Save Theme</v-btn>
       </div>
 
-      <div v-if="newTheme" class="theme-preview theme-box" :style="themePreviewStyle">
-        <div class="theme-title">{{ newTheme.title }}</div>
-      </div>
+      <div class="new-theme-settings">
 
-      <div v-if="newTheme" class="new-theme-settings">
-
-        <v-text-field label="Title" v-model="newTheme.title" />
+        <v-text-field label="Title" v-model="newThemeTitle" />
 
         <div class="themes">
           <div v-for="t in paletteList" class="theme-box" :style="{ backgroundColor: t.background }"
-            @click="newTheme.palette = t.value">
+            @click="setPalette(t.value)">
             <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
               <polygon points="0,0 30,0 30,30" :style="{
                 fill: t.color,
@@ -51,14 +47,11 @@
           </div>
         </div>
 
-        <v-text-field :label="$t('pause.theme.bgColor')" v-model="newTheme.backgroundColor"
+        <v-text-field :label="$t('pause.theme.bgColor')" v-model="settingsStore.settings!.theme!.backgroundColor"
           type="color" clearable />
-        <v-text-field :label="$t('pause.theme.url')" v-model="newTheme.backgroundImg"
+        <v-text-field :label="$t('pause.theme.url')" v-model="settingsStore.settings!.theme!.backgroundImg"
           type="string" clearable />
 
-        <v-col class="text-right">
-          <v-btn @click="saveTheme()" color="primary">Save</v-btn>
-        </v-col>
       </div>
     </v-window-item>
   </v-window>
@@ -86,38 +79,43 @@ function setTheme(newTheme: Theme) {
   settingsStore.settings!.theme!.backgroundImg = newTheme.backgroundImg;
 }
 
-const themePreviewStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
-  if (newTheme.value?.backgroundImg) {
-    return {
-      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${newTheme.value?.backgroundImg})`,
-      border: `2px solid ${primaryColorsMapping[newTheme.value?.palette ?? '']}`
-    }
-  } else if (newTheme.value?.backgroundColor) {
-    return {
-      backgroundColor: newTheme.value?.backgroundColor,
-      border: `2px solid ${primaryColorsMapping[newTheme.value?.palette ?? '']}`
-    }
-  }
-  return { border: `2px solid ${primaryColorsMapping[newTheme.value?.palette ?? '']}` };
-});
+function setPalette(palette: string) {
+  settingsStore.settings!.theme!.palette = palette;
+  settingsStore.updatePalette(palette);
+}
 
-const newTheme = ref<Theme | null>(null);
+const newThemeTitle = ref<string | undefined>(undefined);
+let ogTheme: Theme | null = null;
 function setUpNewTheme() {
   step.value = 2;
-  newTheme.value = {
-    title: 'New Theme',
-    palette: paletteList[0].value,
-    backgroundImg: '',
-  };
+  newThemeTitle.value = 'New Theme'
+  ogTheme = {
+    palette: settingsStore.settings!.theme!.palette,
+    backgroundImg: settingsStore.settings!.theme!.backgroundImg,
+  }
+}
+
+function back() {
+  step.value = 1;
+  newThemeTitle.value = undefined;
+  if (ogTheme) {
+    settingsStore.settings!.theme!.palette = ogTheme.palette!;
+    settingsStore.settings!.theme!.backgroundImg = ogTheme.backgroundImg;
+  }
+  ogTheme = null;
+  settingsStore.updatePalette(settingsStore.settings!.theme!.palette);
 }
 
 function saveTheme() {
-  if (newTheme.value) {
-    themeStore.addTheme(newTheme.value);
-    setTheme(newTheme.value);
-    newTheme.value = null;
-    step.value = 1;
-  }
+  const newTheme: Theme = {
+    title: newThemeTitle.value,
+    palette: settingsStore.settings!.theme!.palette,
+    backgroundImg: settingsStore.settings!.theme!.backgroundImg,
+  };
+  themeStore.addTheme(newTheme);
+  setTheme(newTheme);
+  newThemeTitle.value = undefined;
+  step.value = 1;
 }
 </script>
 
@@ -144,10 +142,6 @@ function saveTheme() {
   cursor: pointer;
 }
 
-.theme-preview {
-  height: 7rem !important;
-}
-
 .theme-box {
   display: grid;
   place-items: center;
@@ -166,9 +160,6 @@ function saveTheme() {
     right: 0;
   }
 
-  .theme-title {
-    color: white;
-  }
   .btn-delete {
     display: none;
     position: absolute;

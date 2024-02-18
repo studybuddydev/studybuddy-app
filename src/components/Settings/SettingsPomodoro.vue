@@ -158,6 +158,8 @@ function setupNewTimer() {
 }
 function saveTimer() {
   if (newTimer.value) {
+    if (!newTimer.value.title)
+      newTimer.value.title = newTimerTitle.value;
     timerStore.addTimer(newTimer.value);
     // setTheme(newPreset.value);
     newTimer.value = null;

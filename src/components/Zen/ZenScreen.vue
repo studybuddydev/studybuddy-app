@@ -300,7 +300,7 @@ onUnmounted(() => {
     position: absolute;
     display: none;
     top: 0;
-    right: 0;
+    left: 0;
   }
 
   &:hover .btn-pip {
