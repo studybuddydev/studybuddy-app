@@ -94,6 +94,7 @@ async function pipIt() {
     const playerContainer = document.querySelector("#pomocirclepipparent");
     const pipPlayer = event.target.querySelector("#pomocirclepip");
     playerContainer?.append(pipPlayer);
+    isPipped.value = false;
   });
   isPipped.value = true;
 
@@ -192,13 +193,25 @@ onUnmounted(() => {
             </div>
             <!-- finish screen -->
             <div v-else-if="pomodoro.terminated && !pomodoro.going" class="blur rounded-box finish-box">
-              <p class="pause font-press text-center">{{ pomodoro.report?.shortPomo ? $t("pause.pomoDone") : $t("pomoDoneShort") }}</p>
-              <h2 class="text-primary font-press text-center">{{ pomodoro.report?.shortPomo ? $t("pause.goodjob") : $t("pause.goodjobShort") }}</h2>
+              <div v-if="pomodoro.report?.shortPomo">
+                <p class="pause font-press text-center">{{ $t("pause.pomoDoneShort") }}</p>
+                <h3 class="text-primary font-press text-center">{{ $t("pause.goodjobShort") }}</h3>
+              </div>
+              <div v-else-if="(pomodoro.report?.points ?? 0) > 0.5">
+                <p class="pause font-press text-center">{{ $t("pause.pomoDoneBad") }}</p>
+                <h2 class="text-primary font-press text-center">{{ $t("pause.goodjobBad") }}</h2>
+              </div>
+              <div v-else>
+                <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
+                <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
+              </div>
             </div>
 
-            <div class="pomodoro-circle-component-on-zen-wrapper">
+            <div class="pomodoro-circle-component-on-zen-wrapper" v-if="!isPipped">
               <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-                v-if="pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing))" :in-pip="false" />
+                v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))" :in-pip="false" />
+              <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-pip bg-surface"
+                icon="mdi-flip-to-front" @click="pipIt()" />
             </div>
             <!-- report table-->
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
@@ -208,10 +221,15 @@ onUnmounted(() => {
                 @click="showPomoHistory = true">
                 <v-icon class="icon" icon="mdi-folder-clock-outline" />
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going && !pomodoro.report?.shortPomo"
                 @click="pomodoro.startPomodoro()">
                 <span>{{ $t("pause.study") }}</span>
                 <v-icon class="icon" icon="mdi-play" />
+              </v-btn>
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going && pomodoro.report?.shortPomo"
+                @click="pomodoro.createPomodoro()">
+                <span>{{ $t("backHome") }}</span>
+                <v-icon class="icon" icon="mdi-home" />
               </v-btn>
             </div>
 
@@ -231,11 +249,6 @@ onUnmounted(() => {
     </div>
     <div class="bottom-bar">
       <div class="quick-settings" v-if="zenMode">
-        <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-edit bg-surface"
-          :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'" @click="pipIt()" />
-        <v-btn v-if="pomodoro.going" density="comfortable" size="small" class="btn-edit bg-surface"
-          :icon="settings.generalSettings.hideTime ? 'mdi-eye' : 'mdi-eye-off'"
-          @click="settings.generalSettings.hideTime = !settings.generalSettings.hideTime" />
         <v-btn density="comfortable" class="btn-edit btn-edit-main bg-background" icon="mdi-cog" size="large"
           @click="openSettingsTab = pomodoro.going ? 'theme' : 'pomodoro'">
           <v-icon class="icon" icon="mdi-cog" size="large" />
@@ -282,10 +295,7 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
-        <PomodoroHistory
-          :class="`pomo-history ${showPomoHistory ? '' : 'hide-pomo-history'}`"
-          @start-pomodoro="pomodoro.startPomodoro(); showPomoHistory = false"
-          />
+        <PomodoroHistory :open="showPomoHistory" @start-pomodoro="pomodoro.startPomodoro(); showPomoHistory = false" />
       </div>
     </div>
   </div>
@@ -301,6 +311,17 @@ onUnmounted(() => {
 
 .pomodoro-circle-component-on-zen-wrapper {
   position: relative;
+
+  .btn-pip {
+    position: absolute;
+    display: none;
+    top: 0;
+    left: 0;
+  }
+
+  &:hover .btn-pip {
+    display: block;
+  }
 
   .pomodoro-circle-component-on-zen {
     height: min(50vh, 80vw);
@@ -629,21 +650,6 @@ onUnmounted(() => {
     pointer-events: auto;
     align-self: flex-end;
     margin: 1rem;
-
-    &:hover {
-      .btn-edit {
-        display: inline;
-      }
-    }
-
-    .btn-edit {
-      display: none;
-      margin: 0.2rem;
-    }
-
-    .btn-edit-main {
-      display: inline;
-    }
   }
 
 
@@ -654,19 +660,6 @@ onUnmounted(() => {
     border-radius: 1em 1em 0 0;
     display: flex;
     flex-direction: column;
-
-    .pomo-history {
-      height: 73vh;
-      margin: 1em;
-      transition: height 0.1s ease-in-out;
-      overflow-y: auto;
-
-      &.hide-pomo-history {
-        height: 0;
-        overflow: hidden;
-        margin: 0;
-      }
-    }
 
     .handle {
       align-self: center;

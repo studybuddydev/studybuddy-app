@@ -158,6 +158,8 @@ function setupNewTimer() {
 }
 function saveTimer() {
   if (newTimer.value) {
+    if (!newTimer.value.title)
+      newTimer.value.title = newTimerTitle.value;
     timerStore.addTimer(newTimer.value);
     // setTheme(newPreset.value);
     newTimer.value = null;
@@ -289,22 +291,24 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
       display: none;
     }
 
-    &:hover {
-      border: 2px solid rgb(var(--v-theme-primary));
+    @media (hover: hover) {
+      &:hover {
+        border: 2px solid rgb(var(--v-theme-primary));
 
-      .front {
-        display: none;
-      }
+        .front {
+          display: none;
+        }
 
-      .back {
-        display: flex;
-      }
+        .back {
+          display: flex;
+        }
 
-      .btn-delete {
-        display: block;
+        .btn-delete {
+          display: block;
 
-        &:hover {
-          opacity: 1;
+          &:hover {
+            opacity: 1;
+          }
         }
       }
     }

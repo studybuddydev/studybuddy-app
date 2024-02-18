@@ -9,7 +9,6 @@ const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
 const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
-const OPTIMAL_BREAK_RATIO = 1/6;
 
 const SHORT_POMO_THRESHOLD =  5 * MINUTE_MULTIPLIER;
 const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
@@ -114,6 +113,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       report.value = getPomoReport(pomo);
       if (pomo.endedAt > SHORT_POMO_THRESHOLD) {
         addPomodoroToRecords();
+      } else {
         report.value.shortPomo = true;
       }
       saveStatus();
@@ -366,19 +366,32 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return 100 * Math.min(getNow(pomo.startedAt) / pomo.end, 1);
   }
 
+
+  const WEIGHT_EFFICIENCY = 0.5;
+  const WEIGHT_DURATION = 0.5;
+  const OPTIMAL_STUDY_RATIO = 5/6;
+
   function getPomoReport(pomo: Pomodoro | undefined): PomoReport {
     if (!pomo) return { timeTotal: 0, timeStudy: 0, timeBreak: 0, nrBreaks: 0, points: 0 };
     const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
     const timeTotal = pomo.endedAt ?? pomo.end;
     const timeStudy = timeTotal - timeBreak;
-    const points = Math.abs(1 -(timeStudy - ((1 - OPTIMAL_BREAK_RATIO) * timeTotal)) / timeTotal);
+
+    const avgPomo = (timeStudy / (pomo.breaksDone.length + 1)) / 60000;
+    const score = 
+      (WEIGHT_EFFICIENCY * ( 1 - Math.abs((timeStudy / timeTotal) - (OPTIMAL_STUDY_RATIO)) ) )
+      + (
+        WEIGHT_DURATION * (
+          avgPomo < 20 ? (avgPomo / 20) : ( avgPomo > 50 ? (50 / avgPomo) : 1 )
+        )
+      )
 
     return {
       timeTotal: timeTotal,
       timeStudy: timeStudy,
       timeBreak: timeBreak,
       nrBreaks: pomo.breaksDone.length,
-      points: Math.min(points, 1),
+      points: Math.max(Math.min(score, 1), 0)
     };
   }
 
@@ -614,18 +627,25 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // ---------- COUNTDOWN ----------
   const countdownRunning = ref(false);
+
+
+
   function startCountdown(callback: () => void, ms: number = 3000) {
     if (countdownRunning.value) return;
-    countdownRunning.value = true;
-    setTimeout(() => {
-      countdownRunning.value = false;
+    if (settings.generalSettings.disableCountdown) {
       callback();
-    }, ms);
+    } else {
+      countdownRunning.value = true;
+      setTimeout(() => {
+        countdownRunning.value = false;
+        callback();
+      }, ms);
+    }
   }
 
   // ---------- RETURN ----------
   return {
-    startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
+    createPomodoro, startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
     getCurrentPomo, getBreaks,
     percentage, displayBreaks, displayStudy, report,
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy, onLongPause,

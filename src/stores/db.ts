@@ -8,7 +8,7 @@ export class StudyBuddyDB extends Dexie {
 
   public constructor() {
     super("StudyBuddyDB");
-    this.version(1).stores({
+    this.version(2).stores({
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,backgroundColor, backgroundImg"
     });
@@ -22,18 +22,18 @@ export class StudyBuddyDB extends Dexie {
       ]);
       //Themes
       this.themes.bulkAdd([
-        { title: 'Forest', palette: 'bio', backgroundImg: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' },
-        { title: 'Clouds', palette: 'nord', backgroundImg: 'https://images.alphacoders.com/133/1332707.png' },
-        { title: 'Aurora', palette: 'blallo', backgroundImg: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg' },
-        { title: 'Space', palette: 'gptnight', backgroundImg: 'https://live.staticflickr.com/65535/52259221868_b757d6cdea_k_d.jpg' },
-        { title: 'Mountain', palette: 'nord', backgroundImg: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' },
-        { title: 'Beach', palette: 'pastel', backgroundImg: 'https://images.pexels.com/photos/65322/pexels-photo-65322.jpeg' },
-        { title: 'Vaporwave', palette: 'vaporwave', backgroundImg: 'https://images.alphacoders.com/124/1249674.jpg' },
-        { title: 'LOFI', palette: 'gptnight', backgroundImg: 'https://i.redd.it/injl33v9myl51.jpg' },
-        { title: 'Barbie', palette: 'pastel', backgroundImg: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' },
-        { title: 'Oppenheimer', palette: 'gptnight', backgroundImg: 'https://venezianews.b-cdn.net/wp-content/uploads/elementor/thumbs/Oppenheimer-qcqe56sjf98g5iharhgvboxysohac64vt3kbim5lio.jpg' },
-        { title: 'OG', palette: 'verdone', backgroundImg: 'https://images.pexels.com/photos/66997/pexels-photo-66997.jpeg' },
-        { title: 'Gandalf', palette: 'blallo', backgroundImg: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' }
+        { title: 'Forest',      palette: 'bio',       previewImg: '/images/themes/Forest.webp',      backgroundImg: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' },
+        { title: 'Clouds',      palette: 'nord',      previewImg: '/images/themes/Clouds.webp',      backgroundImg: 'https://images.alphacoders.com/133/1332707.png' },
+        { title: 'Aurora',      palette: 'blallo',    previewImg: '/images/themes/Aurora.webp',      backgroundImg: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg' },
+        { title: 'Space',       palette: 'gptnight',  previewImg: '/images/themes/Space.webp',       backgroundImg: 'https://live.staticflickr.com/65535/52259221868_b757d6cdea_k_d.jpg' },
+        { title: 'Mountain',    palette: 'nord',      previewImg: '/images/themes/Mountain.webp',    backgroundImg: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' },
+        { title: 'Beach',       palette: 'pastel',    previewImg: '/images/themes/Beach.webp',       backgroundImg: 'https://images.pexels.com/photos/65322/pexels-photo-65322.jpeg' },
+        { title: 'Vaporwave',   palette: 'vaporwave', previewImg: '/images/themes/Vaporwave.webp',   backgroundImg: 'https://images.alphacoders.com/124/1249674.jpg' },
+        { title: 'LOFI',        palette: 'gptnight',  previewImg: '/images/themes/LOFI.webp',        backgroundImg: 'https://i.redd.it/injl33v9myl51.jpg' },
+        { title: 'Barbie',      palette: 'pastel',    previewImg: '/images/themes/Barbie.webp',      backgroundImg: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' },
+        { title: 'Oppenheimer', palette: 'gptnight',  previewImg: '/images/themes/Oppenheimer.webp', backgroundImg: 'https://venezianews.b-cdn.net/wp-content/uploads/elementor/thumbs/Oppenheimer-qcqe56sjf98g5iharhgvboxysohac64vt3kbim5lio.jpg' },
+        { title: 'Wave',        palette: 'nord',      previewImg: '/images/themes/Wave.webp',        backgroundImg: 'https://r4.wallpaperflare.com/wallpaper/283/881/127/the-great-wave-off-kanagawa-painting-japanese-waves-wallpaper-0e19ea97218f10d82b15fbcaa3f2b7ee.jpg' },
+        { title: 'Gandalf',     palette: 'blallo',    previewImg: '/images/themes/Gandalf.webp',     backgroundImg: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' }
       ]);
     })
   }

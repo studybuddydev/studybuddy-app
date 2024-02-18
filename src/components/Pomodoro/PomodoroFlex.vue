@@ -4,22 +4,22 @@
       <div :class="`progress ${pomodoro.countdownRunning ? 'timer-animation' : ''}`" v-if="!dailyPomo" :style="{
         backgroundColor: theme.current.value.colors.snake,
         color: theme.current.value.colors.surface,
-        width: progressPercentage,
+        width: parsePercentage(percentage),
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" v-if="mainPomo" /> </div>
       <div v-for="b in displayBreaks" :key="b.index" class="break"
         :style="{
           backgroundColor: getBackgroundColor(),
-          marginLeft: `${b.startPerc}%`,
-          width: `${b.lengthPerc}%`,
+          marginLeft: parsePercentage(b.startPerc),
+          width: parsePercentage(b.lengthPerc, true),
         }"><v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
 
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
-        :style="{ marginLeft: `${b.startPerc + (b.lengthPerc / 2)}%` }"><p>{{b.lengthTime}}</p></div>
+        :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }"><p>{{b.lengthTime}}</p></div>
 
       <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index" v-if="!dailyPomo"
-        :style="{ marginLeft: `${s.startPerc + (s.lengthPerc / 2)}%` }"><p>{{s.lengthTime}}</p></div>
+        :style="{ marginLeft: parsePercentage(s.startPerc + (s.lengthPerc / 2)) }"><p>{{s.lengthTime}}</p></div>
 
-      <div v-for="t in ticks" :key="t.h" class="hour-idicator" :style="{ marginLeft: `${t.position}%` }" v-if="dailyPomo"></div>
+      <div v-for="t in ticks" :key="t.h" class="hour-idicator" :style="{ marginLeft: parsePercentage(t.position) }" v-if="dailyPomo"></div>
 
     </div>
   </div>
@@ -73,9 +73,17 @@ function getBackgroundColor() {
 
 const snakeHeadPercent = 3;
 const ratioProgressLeft = (100 - snakeHeadPercent) / 100;
-const progressPercentage = computed(() => {
-  return `${snakeHeadPercent + (pomodoro.countdownRunning ? 0 : props.percentage * ratioProgressLeft)}%`;
-});
+// const progressPercentage = computed(() => {
+//   return `${snakeHeadPercent + (pomodoro.countdownRunning ? 0 : props.percentage * ratioProgressLeft)}%`;
+// });
+
+function parsePercentage(percentage: number, skipHead: boolean = false) {
+  if (props.dailyPomo) {
+    return `${percentage}%`;
+  } else {
+    return `${(skipHead ? 0 : snakeHeadPercent) + (pomodoro.countdownRunning ? 0 : percentage * ratioProgressLeft)}%`;
+  }
+}
 
 </script>
 

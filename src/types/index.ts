@@ -136,6 +136,7 @@ export type PomodoroSettings = {
 export type GeneralSettings = {
   lang: string;
   hideTime: boolean;
+  disableCountdown: boolean;
   soundVolume: number;
   pulsingPause: boolean;
   showSeconds: boolean;
@@ -161,6 +162,7 @@ export interface Theme {
   palette?: string;
   backgroundColor?: string;
   backgroundImg?: string;
+  previewImg?: string;
 }
 export interface Timer {
   id?: number;
