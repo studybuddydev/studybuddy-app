@@ -279,10 +279,7 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
-        <PomodoroHistory
-          :class="`pomo-history ${showPomoHistory ? '' : 'hide-pomo-history'}`"
-          @start-pomodoro="pomodoro.startPomodoro(); showPomoHistory = false"
-          />
+        <PomodoroHistory :open="showPomoHistory" @start-pomodoro="pomodoro.startPomodoro(); showPomoHistory = false" />
       </div>
     </div>
   </div>
@@ -647,19 +644,6 @@ onUnmounted(() => {
     border-radius: 1em 1em 0 0;
     display: flex;
     flex-direction: column;
-
-    .pomo-history {
-      height: 73vh;
-      margin: 1em;
-      transition: height 0.1s ease-in-out;
-      overflow-y: auto;
-
-      &.hide-pomo-history {
-        height: 0;
-        overflow: hidden;
-        margin: 0;
-      }
-    }
 
     .handle {
       align-self: center;

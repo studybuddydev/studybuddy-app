@@ -8,7 +8,7 @@ export class StudyBuddyDB extends Dexie {
 
   public constructor() {
     super("StudyBuddyDB");
-    this.version(1).stores({
+    this.version(2).stores({
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,backgroundColor, backgroundImg"
     });
