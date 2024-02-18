@@ -2,8 +2,8 @@
   <v-window v-model="step">
     <v-window-item :value="1" class="theme-settings">
       <div class="header">
-        <div class="text-h6">Choose a theme</div>
-        <v-btn @click="setUpNewTheme()" color="primary" variant="text" prepend-icon="mdi-plus">Create new</v-btn>
+        <div class="text-h6">{{ $t('pause.theme.chooseTheme') }}</div>
+        <v-btn @click="setUpNewTheme()" color="primary" variant="text" prepend-icon="mdi-plus">{{ $t('pause.timer.createNew') }}</v-btn>
       </div>
 
       <div class="themes">
@@ -25,7 +25,7 @@
     </v-window-item>
     <v-window-item :value="2" class="theme-settings">
       <div class="header">
-        <v-btn @click="step = 1" color="primary" variant="text" prepend-icon="mdi-arrow-left">Back</v-btn>
+        <v-btn @click="step = 1" color="primary" variant="text" prepend-icon="mdi-arrow-left">{{ $t('back') }}</v-btn>
         <div class="text-h6">Create your theme</div>
       </div>
 

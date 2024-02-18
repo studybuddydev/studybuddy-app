@@ -1,8 +1,11 @@
 {
     "save": "Speichern",
+    "done": "Erledigt",
     "cancel": "Abbrechen",
+    "advanced": "fortschrittlich",
     "yes": "Ja",
     "no": "Nein",
+    "back": "Rückwärts",
     "delete": "Löschen",
     "welcomeToSB": "Willkommen bei StudyBuddy",
     "loginMsg": "Hallo, du bist in der Testversion von Studybuddy. Möchtest du uns helfen und Tester werden?",
@@ -21,6 +24,10 @@
       "for": "seit",
       "pomoDone": "Du hast einen Pomodoro abgeschlossen",
       "goodjob": "Gute Arbeit!",
+      "goodjobShort": "bravo...",
+      //"youdid":
+      "studyMin": "Minuten des Studiums",
+      "pauseMin": "Gesamtpausenminuten",
       "studyTime": "Studiendauer:",
       "pauseTime": "Pausezeit:",
       "totalTime": "Gesamtzeit:",
@@ -35,7 +42,10 @@
         "exportData": "Daten exportieren",
         "importData": "Daten importieren",
         "resetTutorial": "Tutorial zurücksetzen",
-        "resetted": "Das Tutorial wurde zurückgesetzt"
+        "resetted": "Das Tutorial wurde zurückgesetzt",
+        "interface": "Interfaccia",
+        "pulsingPause": "Pochende Pause",
+        "showSeconds": "Sekunden anzeigen"
       },
       "timer": {
         "timer": "Timer",
@@ -45,14 +55,29 @@
         "sessionLength": "Sitzungsdauer",
         "breaksNumber": "Pausen",
         "breaksLength": "Gesamte Pausenzeit",
+        "breakLength": "Pausenminuten",
+        "studyLength": "Minuten des Studiums",
         "volume": "Benachrichtigungslautstärke",
         "default": "Standardwerte wiederherstellen",
         "endTime": "Endet um",
         "classic": "Klassisch",
-        "free": "Frei"
+        "free": "Frei",
+        "chooseTimer": "Wählen Sie den Timer",
+        "createNew": "Erstelle neu",
+        "studyMinShort": "Min Studiums",
+        "breakMinShort": "Min Pause",
+        "repetitions": "Wiederholungen",
+        "freeMode": "Lernen Sie in Ihrem eigenen Tempo",
+        "stopFirst": "Um die Eigenschaften des Timers zu ändern, müssen Sie ihn zunächst stoppen.",
+        "stopNow": "Hör jetzt auf",
+        "saveTimer": "Timer speichern"
+
+
       },
       "theme": {
         "theme": "Thema",
+        "chooseTheme": "Wähle ein Thema",
+        "newTheme": "Neues Thema",
         "colors": "Palette",
         "bgColor": "Hintergrundfarbe",
         "url": "Benutzerdefinierte Bild-URL"
@@ -116,6 +141,13 @@
         "yyyy": "JJJJ"
       },
       "introMessage": "Hallo! Unten ist gerade der Timer gestartet, dargestellt durch eine grüne Schlange. Drücke die Pausentaste, wenn du eine Pause machst. Viel Erfolg beim Studieren!"
+    },
+    "info": {
+      "welcome": "Hallo! \nÖffnen Sie die Einstellungen, um zu entscheiden, wie viel Zeit Sie dem Lernen widmen möchten. Oder drücken Sie „Play“, um eine zweistündige Sitzung mit drei 5-minütigen Pausen zu starten. \n\nDie Pausen dienen nur zur Orientierung. Sie können sie jederzeit einlegen, indem Sie die Pause-Taste drücken. Nach dem Drücken der Play-Taste müssen Sie sich nur noch bis zur ersten Pause konzentrieren.",
+      "pause": "Wenn Sie in einer Sitzung pausieren, versuchen Sie, Ihr Telefon nicht zu benutzen und meiden Sie insbesondere soziale Medien. Nutzen Sie diese paar Minuten, um Ihre Augen auszuruhen, sich zu dehnen, auf die Toilette zu gehen und Wasser zu trinken. Entspannen Sie sich und lassen Sie Ihr Gehirn verarbeiten, was Sie bisher getan haben.",
+      "timer": "Es gibt zwei verschiedene Möglichkeiten, Ihre Zeit zu erfassen: Kostenlos: Sie entscheiden in Ihrem eigenen Tempo, wann es Zeit für eine Pause ist. Klassisch: Legen Sie im Voraus fest, wie viel Zeit Sie dem Lernen widmen und wie viel Sie Pausen einlegen möchten. Wenn Sie darüber hinweggehen, ist das kein Problem. Sie können die klassischen Pomodoro-Intervalle verwenden oder neue erstellen.",
+      "theme": "Hier können Sie unter den Anwesenden entscheiden, welches Thema Ihnen am besten gefällt. Wenn Sie möchten, können Sie Ihr eigenes Thema erstellen, indem Sie ein Foto aus dem Internet hinzufügen.",
+      "feedback": "Wenn Sie Vorschläge haben oder einen Fehler melden möchten, können Sie dies hier tun. Danke schön!"
     }
-  }
+}
   

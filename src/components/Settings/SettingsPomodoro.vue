@@ -4,8 +4,8 @@
     <div v-if="pomodoro.going">
       <v-alert variant="tonal" class="mb-5" type="warning">
         <div class="pomo-running-alert">
-          <p>To modify the timer properties you must stop it first</p>
-          <v-btn @click="pomodoro.stopPomodoro()" color="error" class="stop-btn">{{ $t("stop now") }}</v-btn>
+          <p>{{ $t('pause.timer.stopFirst') }}</p>
+          <v-btn @click="pomodoro.stopPomodoro()" color="error" class="stop-btn">{{ $t('pause.timer.stopNow') }}</v-btn>
         </div>
       </v-alert>
     </div>
@@ -14,8 +14,8 @@
       <v-window v-model="step">
         <v-window-item :value="1" class="timer-settings">
           <div class="header">
-            <div class="text-h6">Choose a timer</div>
-            <v-btn @click="setupNewTimer()" color="primary" variant="text" prepend-icon="mdi-plus">Create new</v-btn>
+            <div class="text-h6">{{ $t('pause.timer.chooseTimer') }}</div>
+            <v-btn @click="setupNewTimer()" color="primary" variant="text" prepend-icon="mdi-plus">{{ $t('pause.timer.createNew') }}</v-btn>
           </div>
 
           <div class="pomo-presets">
@@ -28,19 +28,19 @@
                 <p class="timer-title">{{ t.title }}</p>
               </div>
               <div class="timer-card back" v-if="!t.freeMode">
-                <p class="timer-info">{{ t.studyLength }} min studio</p>
-                <p class="timer-info">{{ t.breakLength }} min pausa</p>
-                <p class="timer-info">{{ t.repetitions }} ripetizioni</p>
+                <p class="timer-info">{{ t.studyLength }} {{ $t('pause.timer.studyMinShort') }}</p>
+                <p class="timer-info">{{ t.breakLength }} {{ $t('pause.timer.breakMinShort') }}</p>
+                <p class="timer-info">{{ t.repetitions }} {{ $t('pause.timer.repetitions') }}</p>
               </div>
               <div class="timer-card back" v-else>
-                <p class="timer-info">Studia e riposati con i tuoi ritmi</p>
+                <p class="timer-info">{{ $t('pause.timer.freeMode') }}</p>
               </div>
 
             </div>
           </div>
 
           <v-expansion-panels>
-            <v-expansion-panel title="Advanced">
+            <v-expansion-panel :title="$t('advanced')">
               <v-expansion-panel-text>
                 <v-row>
                   <v-col cols="9">
@@ -83,15 +83,15 @@
         </v-window-item>
         <v-window-item :value="2" class="timer-settings">
           <div class="header">
-            <v-btn @click="step = 1" color="primary" variant="text" prepend-icon="mdi-arrow-left">Back</v-btn>
-            <v-btn @click="saveTimer()" color="primary">Save timer</v-btn>
+            <v-btn @click="step = 1" color="primary" variant="text" prepend-icon="mdi-arrow-left">{{ $t('back') }}</v-btn>
+            <v-btn @click="saveTimer()" color="primary">{{ $t('pause.timer.saveTimer') }}</v-btn>
           </div>
 
           <div v-if="newTimer" class="mt-6">
 
             <v-text-field :label="newTimerTitle" v-model="newTimer.title" />
 
-            <div class="text-h6">{{ newTimer.studyLength }} minuti di studio</div>
+            <div class="text-h6">{{ newTimer.studyLength }} {{ $t('pause.timer.studyLength') }}</div>
             <v-row align="center" class="mb-2">
               <v-col cols="9" >
                 <v-slider v-model="newTimer.studyLength" :min="1" :max="60" :step="1" thumb-label hide-details
@@ -102,7 +102,7 @@
               </v-col>
             </v-row>
 
-            <div class="text-h6">{{ newTimer.breakLength }} minuti di pausa</div>
+            <div class="text-h6">{{ newTimer.breakLength }} {{ $t('pause.timer.breakLength') }}</div>
             <v-row align="center" class="mb-2">
               <v-col cols="9" >
                 <v-slider v-model="newTimer.breakLength" :min="1" :max="30" :step="1" thumb-label hide-details
@@ -113,7 +113,7 @@
               </v-col>
             </v-row>
 
-            <div class="text-h6">{{ newTimer.repetitions }} ripetizioni</div>
+            <div class="text-h6">{{ newTimer.repetitions }} {{ $t('pause.timer.repetitions') }}</div>
             <v-row align="center" class="mb-2">
               <v-col cols="9">
                 <v-slider v-model="newTimer.repetitions" :min="1" :max="8" :step="1" thumb-label hide-details

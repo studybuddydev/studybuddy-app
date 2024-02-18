@@ -56,10 +56,10 @@
           class="pr-4 primary-thumb" :prepend-icon="volumeIcon(settingsStore.settings!.general!.soundVolume)" color="primary" />
       </v-col>
       <v-col cols="12">
-        <div class="text-h6">Interface</div>
-        <v-switch label="Pause Pulsing" color="primary" inset v-model="settingsStore.settings!.general!.pulsingPause" hide-details/>
-        <v-switch label="Show Seconds" color="primary" inset v-model="settingsStore.settings!.general!.showSeconds" hide-details/>
-        <v-switch label="Hide Time" color="primary" inset v-model="settingsStore.settings!.general!.hideTime" hide-details/>
+        <div class="text-h6">{{ $t('pause.general.interface') }}</div>
+        <v-switch :label="$t('pause.general.pulsingPause')" color="primary" inset v-model="settingsStore.settings!.general!.pulsingPause" hide-details/>
+        <v-switch :label="$t('pause.general.showSeconds')" color="primary" inset v-model="settingsStore.settings!.general!.showSeconds" hide-details/>
+        <v-switch :label="$t('pause.general.hideTime')" color="primary" inset v-model="settingsStore.settings!.general!.hideTime" hide-details/>
       </v-col>
     </v-row>
 

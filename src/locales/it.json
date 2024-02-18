@@ -1,8 +1,11 @@
 {
        "save": "Salva",
+       "done": "Fatto",
        "cancel": "Annulla",
+       "advanced": "Avanzate",
        "yes": "Sì",
        "no": "No",
+       "back": "Indietro",
        "delete": "Elimina",
        "welcomeToSB": "Benvenuto su StudyBuddy",
        "loginMsg": "Ciao, sei nella versione di test di Studybuddy, vuoi aiutarci diventando tester?",
@@ -21,10 +24,10 @@
               "for": "da",
               "pomoDone": "Hai fatto un Pomodoro",
               "goodjob": "Ottimo Lavoro!",
-              "goodjobShort": "bravo hai fatto un veloce pomodoro per vedere come funziona, ",
+              "goodjobShort": "Ok, hai fatto una prova. Torna alla home per cominciare a studiare davvero.",
               "youdid": "Hai fatto",
-              "studyMin": " minuti di studio",
-              "pauseMin": " minuti di pausa totali",
+              "studyMin": "minuti di studio",
+              "pauseMin": "minuti di pausa totali",
               "studyTime": "Tempo studio:",
               "pauseTime": "Tempo pausa:",
               "totalTime": "Tempo totale:",
@@ -39,7 +42,10 @@
                      "exportData": "Esporta Dati",
                      "importData": "Importa Dati",
                      "resetTutorial": "Ripristina Tutorial",
-                     "resetted": "Il tutorial è stato ripristinato"
+                     "resetted": "Il tutorial è stato ripristinato",
+                     "interface": "Interfaccia",
+                     "pulsingPause": "Pausa pulsante",
+                     "showSeconds": "Mostra secondi"
               },
               "timer": {
                      "timer": "Timer",
@@ -49,14 +55,27 @@
                      "sessionLength": "Durata sessione",
                      "breaksNumber": "pause",
                      "breaksLength": "minuti di pausa totali",
+                     "breakLength": "minuti di pausa",
+                     "studyLength": "minuti di studio",
                      "volume": "Volume notifica",
                      "default": "Ripristina valori predefiniti",
                      "endTime": "Termina alle",
                      "classic": "Classico",
-                     "free": "Libero"
+                     "free": "Libero",
+                     "chooseTimer": "Scegli timer",
+                     "createNew": "Crea nuovo",
+                     "studyMinShort": "min studio",
+                     "breakMinShort": "min pausa",
+                     "repetitions": "ripetizioni",
+                     "freeMode": "Studia e riposa coi tuoi ritmi",
+                     "stopFirst": "Per modificare le proprietà del timer devi prima fermarlo.",
+                     "stopNow": "Ferma ora",
+                     "saveTimer": "Salva timer"
               },
               "theme":{
                      "theme": "Tema",
+                     "chooseTheme": "Scegli un tema",
+                     "newTheme": "Nuovo Tema",
                      "colors": "Palette",
                      "bgColor": "Colore sfondo",
                      "url": "Url immagine custom"
@@ -119,15 +138,13 @@
                      "mm": "mm",
                      "yyyy": "aaaa"
               },
-              "introMessage": "Ciao! Qui sotto è appena partito il timer rappresentato da un serpente verde. Premi il tasto pausa quando ti fermi. Buono Studio!"
+              "introMessage": "Hey, hai scoperto la modalità pianificazione! Al momento è ancora un cantiere ma puoi già aggiungere i tuoi esami e capitoli. Clicca su ESAME 1 per scoprire di più, oppure sulla freccina in basso per tornare al timer."
        },
        "info": {
-              "welcome": "Apri le impostazioni per decidere quanto tempo voi dedicare allo studio. Premi play per iniziare una sessione di 2 ore con 3 pause da 5 minuti l'una. \n\nLe pause sono solo indicative, puoi farle quando vuoi. Dopo aver premuto play l'unica cosa che devi fare è studiare fino alla prima pausa.",
-              "pause": "Quando sei in pausa breve, cerca di non usare il telefono ed evita i social. Usa questa manciata di minuti per riposare gli occhi, sgranchirti, andare in bagno e bere acqua. Rilassati e permetti al tuo cervello di rielaborare quello che hai fatto fino a quel momento.",
-              "timer": "due modalità diverse per tracciare il tuo tempo: Classico: decidi a priori quanto tempo dedicare allo studio e quanto alle pause. Se sfori non è un problema. Libero: decidi tu quando è il momento della pausa secondo il tuo ritmo.",
-              "tema": "Qui puoi decidere il tema che preferisci tra quelli presenti. Se vuoi, puoi creare il tuo tema aggiungengo una foto dal web.",
-              "feedback": "Se hai suggerimenti o vuoi segnalare un bug, segnalalo qui"
+              "welcome": "Ciao! \nApri le impostazioni per decidere quanto tempo voi dedicare allo studio. Oppure premi play per iniziare una sessione di 2 ore con 3 pause da 5 minuti l'una. \n\nLe pause sono solo indicative, puoi farle quando vuoi premendo il tasto pausa. Dopo aver premuto play l'unica cosa che devi fare è mantenere la concentrazione fino alla prima pausa.",
+              "pause": "Quando sei in pausa all'interno di una sessione, cerca di non usare il telefono ed evita soprattutto i social. Usa questa manciata di minuti per riposare gli occhi, sgranchirti, andare in bagno e bere acqua. Rilassati e permetti al tuo cervello di rielaborare quello che hai fatto fino a quel momento.",
+              "timer": "Ci sono due modalità diverse per tracciare il tuo tempo: Libero: decidi tu quando è il momento della pausa secondo il tuo ritmo. Classico: decidi a priori quanto tempo dedicare allo studio e quanto alle pause. Se sfori non è un problema. Puoi usare gli intervalli classici del Pomodoro o crearne di nuovi.",
+              "theme": "Qui puoi decidere il tema che preferisci tra quelli presenti. Se vuoi, puoi creare il tuo tema aggiungendo una foto dal web.",
+              "feedback": "Se hai suggerimenti o vuoi segnalare un bug, puoi farlo qui. Grazie!"
        }
-
-       
 }
