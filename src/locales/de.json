@@ -38,6 +38,7 @@
         "username": "Benutzername",
         "language": "Sprache",
         "hideTime": "Zeit ausblenden",
+        "hideCountdown": "Countdown ausblenden",
         "theme": "Thema",
         "exportData": "Daten exportieren",
         "importData": "Daten importieren",
@@ -71,8 +72,6 @@
         "stopFirst": "Um die Eigenschaften des Timers zu ändern, müssen Sie ihn zunächst stoppen.",
         "stopNow": "Hör jetzt auf",
         "saveTimer": "Timer speichern"
-
-
       },
       "theme": {
         "theme": "Thema",

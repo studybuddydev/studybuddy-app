@@ -25,6 +25,9 @@
     "pomoDone": "Has completado un Pomodoro",
     "goodjob": "¡Excelente!",
     "goodjobShort": "Vale, hiciste una prueba. ¿Listo para estudiar de verdad?",
+    "youdid": "Has hecho",
+    "studyMin": "minutos de estudio",
+    "pauseMin": "minutos de pausa totales",
     "studyTime": "Tiempo de estudio:",
     "pauseTime": "Tiempo de pausa:",
     "totalTime": "Tiempo total:",
@@ -35,11 +38,15 @@
       "username": "Nombre de usuario",
       "language": "Idioma",
       "hideTime": "Ocultar tiempo",
+      "hideCountdown": "Ocultar cuenta regresiva",
       "theme": "Tema",
       "exportData": "Exportar datos",
       "importData": "Importar datos",
       "resetTutorial": "Restablecer tutorial",
-      "resetted": "El tutorial ha sido restablecido"
+      "resetted": "El tutorial ha sido restablecido",
+      "interface": "Interfaz",
+      "pulsingPause": "Pausa palpitante",
+      "showSeconds": "Muestra segundos"
     },
     "timer": {
       "timer": "Temporizador",
@@ -49,14 +56,27 @@
       "sessionLength": "Duración de la sesión",
       "breaksNumber": "pausas",
       "breaksLength": "minutos de pausa total",
+      "breakLength": "minutos de pausa",
+      "studyLength": "minutos de estudio",
       "volume": "Volumen de notificación",
       "default": "Restaurar valores predeterminados",
       "endTime": "Termina a las",
       "classic": "Clásico",
-      "free": "Libre"
+      "free": "Libre",
+      "chooseTimer": "Eligir temporizador",
+      "createNew": "Crear nuevo",
+      "studyMinShort": "min estudio",
+      "breakMinShort": "min pausa",
+      "repetitions": "repeticiones",
+      "freeMode": "Estudia i descansa como prefieres",
+      "stopFirst": "Para cambiar las propiedades del temporizador primero tienes que pararlo.",
+      "stopNow": "para ahora",
+      "saveTimer": "Guardar temporizador"
     },
     "theme": {
       "theme": "Tema",
+      "chooseTheme": "Elige un tema",
+      "newTheme": "Nuevo Tema",
       "colors": "Paleta",
       "bgColor": "Color de fondo",
       "url": "URL de imagen personalizada"
@@ -119,6 +139,13 @@
       "mm": "mm",
       "yyyy": "aaaa"
     },
-    "introMessage": "¡Hola! A continuación, el temporizador representado por una serpiente verde acaba de comenzar. Presiona el botón de pausa cuando hagas una pausa. ¡Buen estudio!"
-  }
+    "introMessage": "¡Oye, has descubierto el modo de planificación! Todavía es un sitio de construcción en este momento, pero ya puedes agregar tus exámenes y capítulos. Haz clic en EXAMEN 1 para obtener más información, o en la pequeña flecha en la parte inferior para volver al Temporizador."
+  },
+  "info": {
+    "welcome": "¡Hola! \nAbre la configuración para decidir cuánto tiempo dedicas a estudiar. O presiona play para iniciar una sesión de 2 horas con 3 descansos de 5 minutos. \n\nLas pausas son sólo orientativas, puedes tomarlas cuando quieras pulsando el botón de pausa. Tras pulsar play lo único que tendrás que hacer es mantener la concentración hasta la primera pausa.",
+    "pause": "Cuando esté en pausa en una sesión, trate de no usar su teléfono y, especialmente, evite las redes sociales. Aprovecha estos minutos para descansar la vista, estirarte, ir al baño y beber agua. Relájate y deja que tu cerebro procese lo que has hecho hasta ahora.",
+    "timer": "Hay dos formas diferentes de realizar un seguimiento de tu tiempo: Gratis: tú decides cuándo es el momento de un descanso a tu propio ritmo. Clásico: decide de antemano cuánto tiempo dedicar al estudio y cuánto a los descansos. Si pasas no hay problema. Puedes utilizar los intervalos clásicos de Pomodoro o crear otros nuevos.",
+    "theme": "Aquí podrás decidir el tema que prefieras entre los presentes. Si quieres, puedes crear tu propio tema añadiendo una foto de la web.",
+    "feedback": "Si tiene sugerencias o desea informar un error, puede hacerlo aquí. ¡Gracias!"
+}
 }

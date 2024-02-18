@@ -38,6 +38,7 @@
                      "username": "Nome Utente",
                      "language": "Lingua",
                      "hideTime": "Nascondi tempo",
+                     "hideCountdown": "Nascondi countdown",
                      "theme": "Tema",
                      "exportData": "Esporta Dati",
                      "importData": "Importa Dati",
