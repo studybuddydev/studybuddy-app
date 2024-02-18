@@ -1,31 +1,38 @@
 {
   "save": "Enregistrer",
+  "done": "Fini",
   "cancel": "Annuler",
+  "advanced": "Avancè",
   "yes": "Oui",
   "no": "Non",
+  "back": "En arrière",
   "delete": "Supprimer",
   "welcomeToSB": "Bienvenue sur StudyBuddy",
   "loginMsg": "Salut, tu es dans la version de test de Studybuddy, aimerais-tu nous aider en devenant testeur ?",
   "doLogin": "Connecte-toi maintenant !",
   "pause": {
     "welcome": "Bienvenue sur",
-    "study": "Étude",
+    "study": "Étudie",
     "tutorial": "Tutoriel",
     "settings": "Paramètres",
     "userSettings": "Profil",
     "pomoSettings": "Minuteur",
     "resume": "Reprendre l'étude",
     "endSession": "Terminer la session",
-    "youare": "Tu es dans",
+    "youare": "Tu es en",
     "break": "PAUSE",
     "for": "depuis",
     "pomoDone": "Tu as terminé un Pomodoro",
     "goodjob": "Excellent travail!",
+    "goodjobShort": "bravo...",
+    //youdid
+    "studyMin": "minutes d'étude",
+    "pauseMin": "minutes de pause au total",
     "studyTime": "Temps d'étude :",
     "pauseTime": "Temps de pause :",
     "totalTime": "Temps total :",
     "pauseNumber": "Nr. de pauses :",
-    "score": "Score :",
+    "score": "Score:",
     "general": {
       "general": "Profil",
       "username": "Nom d'utilisateur",
@@ -35,7 +42,10 @@
       "exportData": "Exporter les données",
       "importData": "Importer les données",
       "resetTutorial": "Réinitialiser le tutoriel",
-      "resetted": "Le tutoriel a été réinitialisé"
+      "resetted": "Le tutoriel a été réinitialisé",
+      "interface": "Interfaccia",
+      "pulsingPause": "Pause palpitante",
+      "showSeconds": "Afficher les secondes"
     },
     "timer": {
       "timer": "Minuteur",
@@ -45,14 +55,27 @@
       "sessionLength": "Durée de la session",
       "breaksNumber": "pauses",
       "breaksLength": "minutes de pause au total",
+      "breakLength": "minutes de pause",
+      "studyLength": "minutes d'étude",
       "volume": "Volume de notification",
       "default": "Restaurer les valeurs par défaut",
       "endTime": "Se termine à",
       "classic": "Classique",
-      "free": "Libre"
+      "free": "Libre",
+      "chooseTimer": "Choisir un timer",
+      "createNew": "Créer un nouveau",
+      "studyMinShort": "min étude",
+      "breakMinShort": "min pause",
+      "repetitions": "répétitions",
+      "freeMode": "Étudiez et reposez-vous à votre rythme",
+      "stopFirst": "Pour modifier les propriétés du timer, vous devez d'abord l'arrêter.",
+      "stopNow": "arrêter maintenant",
+      "saveTimer": "enregistrer timer"
     },
     "theme": {
       "theme": "Thème",
+      "chooseTheme": "Choisissez un thème",
+      "newTheme": "Nouveau Thème",
       "colors": "Palette",
       "bgColor": "Couleur de fond",
       "url": "URL de l'image personnalisée"
@@ -116,5 +139,12 @@
       "yyyy": "aaaa"
     },
     "introMessage": "Salut ! Ci-dessous, le minuteur représenté par un serpent vert vient de démarrer. Appuie sur le bouton pause quand tu fais une pause. Bonne étude !"
-  }
+  },
+  "info": {
+    "welcome": "Bonjour! \nOuvrez les paramètres pour décider du temps que vous souhaitez consacrer à étudier. Ou appuyez sur play pour démarrer une séance de 2 heures avec 3 pauses de 5 minutes chacune. \n\nLes pauses ne sont qu'indicatives, vous pouvez les prendre quand vous le souhaitez en appuyant sur le bouton pause. Après avoir appuyé sur play, la seule chose que vous avez à faire est de maintenir votre concentration jusqu'à la première pause.",
+    "pause": "Lorsque vous êtes en pause dans une session, essayez de ne pas utiliser votre téléphone et surtout évitez les réseaux sociaux. Profitez de ces quelques minutes pour reposer vos yeux, vous étirer, aller aux toilettes et boire de l'eau. Détendez-vous et laissez votre cerveau traiter ce que vous avez fait jusqu'à présent.",
+    "timer": "Il existe deux manières différentes de suivre votre temps: Libre: vous décidez quand il est temps de faire une pause à votre rythme. Classique: décidez à l'avance combien de temps consacrer aux études et combien de pauses. Si vous dépassez, ce n'est pas un problème. Vous pouvez utiliser les intervalles Pomodoro classiques ou en créer de nouveaux.",
+    "theme": "Ici, vous pouvez décider du thème que vous préférez parmi les personnes présentes. Si vous le souhaitez, vous pouvez créer votre propre thème en ajoutant une photo du Web.",
+    "feedback": "Si vous avez des suggestions ou souhaitez signaler un bug, vous pouvez le faire ici. Merci!"
+}
 }

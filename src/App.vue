@@ -8,7 +8,7 @@
     </v-main>
     <ZenScreen />
 
-    <v-dialog width="500" v-model="popupFirstLogin" v-if="windowWidth > 600 && !isLoading && !isAuthenticated">
+    <v-dialog width="500" v-model="popupFirstLogin" v-if="false && windowWidth > 600 && !isLoading && !isAuthenticated">
       <v-card>
         <v-toolbar dark color="primary">
           <v-toolbar-title>{{ $t("welcomeToSB") }}</v-toolbar-title>
@@ -37,39 +37,39 @@
 <script setup lang="ts">
 import Menu from '@/components/Menus/Menu.vue';
 import ZenScreen from '@/components/Zen/ZenScreen.vue';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch,computed } from 'vue';
 import { useAuth0 } from "@auth0/auth0-vue";
-const { loginWithRedirect, isLoading, isAuthenticated } = useAuth0();
+import { usePomodoroStore } from "@/stores/pomodoro";
 
+const pomodoro = usePomodoroStore();
+const { loginWithRedirect, isLoading, isAuthenticated } = useAuth0();
 const popupFirstLogin = ref(true);
 
 const windowWidth = ref(window.innerWidth);
 const updateWidth = () => { windowWidth.value = window.innerWidth; };
-onMounted(() => { window.addEventListener('resize', updateWidth); });
-onUnmounted(() => { window.removeEventListener('resize', updateWidth); });
+
+onMounted(() => {
+  window.addEventListener('resize', updateWidth);
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWidth);
+});
+
+watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
 
 </script>
 
 <style lang="scss">
-// .scrollbar::-webkit-scrollbar-track {
-//   // background: var(--v-theme-primary);
-// }
-
-// .scrollbar::-webkit-scrollbar-thumb {
-//   // background-color: var(--v-theme-primary);
-//   border-radius: 2px;
-// }
-
-// .scrollbar::-webkit-scrollbar-thumb:hover {
-//   // background-color: var(--v-theme-primary);
-// }
-
-
 .small {
   font-size: 0.5em;
 }
 
-
+.primary-thumb .v-slider-thumb__label {
+  background-color: rgb(var(--v-theme-primary));
+  &::after {
+    background-color: rgb(var(--v-theme-primary));
+  }
+}
 
 .hide {
   display: none !important;

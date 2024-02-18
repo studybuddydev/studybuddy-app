@@ -1,10 +1,10 @@
 <template>
-  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''} ${!pomodoro.freeMode && (pomodoro.timeToBreak || pomodoro.timeToStudy) ? 'breathing' : ''}`" ref="el">
+  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''}  ${pomodoro.onLongPause ? 'long-pause' : ''} ${pulsing ? 'breathing' : ''  }`" ref="el">
 
-    <div class="progress-bar" :style="{
+    <div class="progress-bar" v-if="!pomodoro.countdownRunning" :style="{
       background: `conic-gradient(
-        ${pomodoro.studing ? theme.current.value.colors.primary : theme.current.value.colors.warning} 0deg,
-        ${pomodoro.studing ? theme.current.value.colors.primary : theme.current.value.colors.warning} ${pomodoro.percInCurrentState * 360}deg,
+        ${getCircleColor()} 0deg,
+        ${getCircleColor()} ${pomodoro.percInCurrentState * 360}deg,
         transparent ${(pomodoro.percInCurrentState * 360) + 0.2}deg,
         transparent 360deg)`
     }"></div>
@@ -16,11 +16,18 @@
         <div v-else-if="pomodoro.pauseing" class="pause-text">
           <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.youare") }}</p>
           <p :style="{ fontSize: `${width / 10}px` }" class="text-primary font-press">{{ $t("pause.break") }}</p>
-          <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.for") }} <span class="text-primary font-casio" v-html="pomodoro.timeInCurrentBreak"></span></p>
+          <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.for") }}
+            <span class="text-primary font-casio" v-html="pomodoro.timeInCurrentBreak"></span>
+          </p>
+          <Info :text="$t('info.pause')" class="info-pause" />
         </div>
       </div>
 
-      <div class="buttons" >
+      <div v-if="pomodoro.countdownRunning" class="font-casio text-primary">
+        <div :class="pomodoro.countdownRunning ? 'countdown text-primary' : ''"></div>
+      </div>
+
+      <div v-else class="buttons" >
         <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5' v-if="!pomodoro.studing"
           @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro()" :style="{ height: `${width / 10}px` }">
           <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-play" />
@@ -38,26 +45,64 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
 import { usePomodoroStore } from "@/stores/pomodoro";
+import { useSettingsStore } from "@/stores/settings";
 import { useElementSize } from '@vueuse/core'
 import { ref } from 'vue';
+import Info from '@/components/common/Info.vue'
+import { computed } from 'vue';
 
 const el = ref(null)
 const { width } = useElementSize(el)
 
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
-
+const settings = useSettingsStore();
 const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  });
+
+const pulsing = computed(() =>
+  settings.generalSettings.pulsingPause && !pomodoro.freeMode && (pomodoro.timeToBreak || pomodoro.timeToStudy) && !pomodoro.onLongPause
+)
+
+function getCircleColor() {
+  if (pomodoro.studing) {
+    return theme.current.value.colors.primary
+  }
+  if (pomodoro.onLongPause) {
+    return '#000000'
+  }
+  return theme.current.value.colors.warning
+}
+
 </script>
 
 
 <style lang="scss" scoped>
+.countdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  counter-reset: my-count 4;
+  animation: countdown 5s linear infinite;
+  
+  &::after {
+    content: counter(my-count);
+    font-size: 6em;
+  }
+}
 
 
 .pomodoro-circle {
   position: relative;
   border-radius: 50%;
 
+  &.long-pause {
+    background-color: #000000B0 !important
+  }
+
+  .info-pause {
+    top: 0;
+    right: 0;
+  }
   .progress-bar {
     position: absolute;
     width: 100%;
@@ -65,6 +110,7 @@ const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  })
     border-radius: 50%;
     -webkit-mask-image: radial-gradient(transparent 54%, black 54.3%);
     mask-image: radial-gradient(transparent 54%, black 54.3%);
+    scale: 1.001;
   }
 
   .progress-bar-content {
@@ -145,6 +191,104 @@ const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  })
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1);
+  }
+}
+
+
+@keyframes countdown {
+  // 3 ---
+  0% { // 0%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -1;
+  }
+  1% { // 5%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -1;
+  }
+  10% { // 50%
+    opacity: 1;
+    counter-increment: my-count -1;
+  }
+  15% { // 75%
+    opacity: 1;
+    counter-increment: my-count -1;
+  }
+  18% { // 95%
+    font-size: 1em;
+    opacity: 0;
+    counter-increment: my-count -1;
+  }
+  19% { // 100%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -1;
+  }
+  // 2 ---
+  20% { // 0%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -2;
+  }
+  21% { // 5%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -2;
+  }
+  30% { // 50%
+    opacity: 1;
+    counter-increment: my-count -2;
+  }
+  35% { // 75%
+    opacity: 1;
+    counter-increment: my-count -2;
+  }
+  38% { // 95%
+    font-size: 1em;
+    opacity: 0;
+    counter-increment: my-count -2;
+  }
+  39% { // 100%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -2;
+  }
+  
+  // 1 ---
+  40% { // 0%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -3;
+  }
+  41% { // 5%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -3;
+  }
+  50% { // 50%
+    opacity: 1;
+    counter-increment: my-count -3;
+  }
+  55% { // 75%
+    opacity: 1;
+    counter-increment: my-count -3;
+  }
+  58% { // 95%
+    font-size: 1em;
+    opacity: 0;
+    counter-increment: my-count -3;
+  }
+  59% { // 100%
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -3;
+  }
+
+  100% {
+    font-size: 2em;
+    opacity: 0;
+    counter-increment: my-count -2;
   }
 }
 

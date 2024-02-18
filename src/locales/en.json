@@ -1,8 +1,11 @@
 {
   "save": "Save",
+  "done": "Done",
   "cancel": "Cancel",
+  "advanced": "Advanced",
   "yes": "Yes",
   "no": "No",
+  "back": "Back",
   "delete": "Delete",
   "welcomeToSB": "Welcome to StudyBuddy",
   "loginMsg": "Hello, you are in the test version of Studybuddy, would you like to help us by becoming a tester?",
@@ -21,21 +24,29 @@
     "for": "for",
     "pomoDone": "You have completed a Pomodoro",
     "goodjob": "Great Job!",
+    "goodjobShort": "Ok, hai fatto una prova. Torna alla home per cominciare a studiare davvero.",
+    "youdid": "You did",
+    "studyMin": "minutes of studying",
+    "pauseMin": "total break minutes",
     "studyTime": "Study Time:",
     "pauseTime": "Break Time:",
     "totalTime": "Total Time:",
     "pauseNumber": "No. of Breaks:",
     "score": "Score:",
     "general": {
-      "general": "Profile",
+      "general": "General",
       "username": "Username",
       "language": "Language",
       "hideTime": "Hide time",
+      "hideCountdown": "Hide countdown",
       "theme": "Theme",
       "exportData": "Export Data",
       "importData": "Import Data",
       "resetTutorial": "Reset Tutorial",
-      "resetted": "The tutorial has been reset"
+      "resetted": "The tutorial has been reset",
+      "interface": "Interface",
+      "pulsingPause": "Pulsing pause",
+      "showSeconds": "Show seconds"
     },
     "timer": {
       "timer": "Timer",
@@ -45,21 +56,34 @@
       "sessionLength": "Session Length",
       "breaksNumber": "breaks",
       "breaksLength": "total break minutes",
+      "breakLength": "break minutes",
+      "studyLength": "study minutes",
       "volume": "Notification Volume",
       "default": "Restore Default Values",
       "endTime": "Ends at",
       "classic": "Classic",
-      "free": "Free"
+      "free": "Free",
+      "chooseTimer": "Choose timer",
+      "createNew": "Create new",
+      "studyMinShort": "study min",
+      "breakMinShort": "break min",
+      "repetitions": "repetitions",
+      "freeMode": "Study and have breaks as you want",
+      "stopFirst": "To modify the timer properties you must stop it first.",
+      "stopNow": "Stop now",
+      "saveTimer": "Save timer"
     },
     "theme": {
       "theme": "Theme",
+      "chooseTheme": "Choose theme",
+      "newTheme": "New theme",
       "colors": "Palette",
       "bgColor": "Background Color",
       "url": "Custom Image URL"
     }
   },
   "zen": {
-    "confirm": "Do you really want to end the Pomodoro?"
+    "confirm": "Are you sure you want to end the Pomodoro?"
   },
   "study": {
     "showTodo": "Show ToDo",
@@ -115,6 +139,13 @@
       "mm": "mm",
       "yyyy": "yyyy"
     },
-    "introMessage": "Hello! Below, the timer represented by a green snake has just started. Press the pause button when you take a break. Happy studying!"
-  }
+    "introMessage": "Hey there, ypu just discovered the planning mode! It's still a work in progress but you can already add your exams and chapters. Click on the first exam on the left column to discover more. Click on the little arrow below to go back to the timer."
+  },
+  "info": {
+    "welcome": "Hi! You can open the settings to set the time you want to study, or you can press play to start a default session of 2 hours with 3 breaks of 5 minutes each. After you press play, the only thing you have to do is mantain focus until it's time for the first break.",
+    "pause": "When you are on a break inside a studying session, try not to use your phone, expecially avoid social media. Instead rest your eyes, drink water or go to the restroom. Use this time to allow your brain to rework what you just studied.",
+    "timer": "2 different ways to track your time. Free: you decide when it's time for a break. Classic: you decide the intervals in advance and then execute them. Doesn't matter if you fall long or short. You can use the classic Pomodoro intervals or create new ones.",
+    "theme": "Here you can choose your favorite theme. You can also create one from scratch adding a picture from the web.",
+    "feedback": "If you have any suggestion or you want to report a bug, you can do it here. Thank you!"
+}
 }

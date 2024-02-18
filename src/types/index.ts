@@ -91,26 +91,40 @@ export type DisplaySession = {
 }
 
 export type PomoReport = {
-  timeTotal: string;
-  timeStudy: string;
-  timeBreak: string;
-  nrBreaks: string;
-  points: string;
+  timeTotal: number;
+  timeStudy: number;
+  timeBreak: number;
+  nrBreaks: number;
+  points: number;
+  shortPomo?: boolean;
 }
 
-export type PomodotoStatus = {
-  // lastTick: number;
-  version: number;
-  startedAt?: number;
-  endedAt?: number;
+export type Pomodoro = {
   end: number;
-  state: PomodoroState;
+  endedAt?: number;
   breaksDone: Break[];
-  breaksTodo: Break[];
-  soundEnd?: boolean;
   freeMode: boolean;
 }
 
+export interface PomodotoStatus extends Pomodoro {
+  // lastTick: number;
+  version: number;
+  startedAt?: number;
+  state: PomodoroState;
+  breaksTodo: Break[];
+  soundEnd?: boolean;
+  onLongBreak?: boolean;
+  originalEnd?: number;
+}
+
+export interface PomodoroRecord extends Pomodoro {
+  id?: number;
+  datetime: Date;
+  displayBreaks?: DisplaySession[];
+  displayStudy?: DisplaySession[];
+  percentage?: number;
+  report?: PomoReport;
+}
 
 // ---------- SETTINGS ----------
 export type PomodoroSettings = {
@@ -118,14 +132,18 @@ export type PomodoroSettings = {
   numberOfBreak: number;
   breaksLength: number;
   totalLength: number;
-  soundVolume: number;
 }
-export type UserSettings = {
+export type GeneralSettings = {
   lang: string;
   hideTime: boolean;
+  disableCountdown: boolean;
+  soundVolume: number;
+  pulsingPause: boolean;
+  showSeconds: boolean;
+  dayStartEndHours: [number, number];
 }
 export type ThemeSettings = {
-  theme: string;
+  palette: string;
   icon: string;
   backgroundColor?: string;
   backgroundImg?: string;
@@ -133,8 +151,26 @@ export type ThemeSettings = {
 
 export type Settings = {
   pomodoro: PomodoroSettings;
-  user: UserSettings;
+  general: GeneralSettings;
   theme: ThemeSettings;
+}
+
+// ---- DBs ----
+export interface Theme {
+  id?: number;
+  title?: string;
+  palette?: string;
+  backgroundColor?: string;
+  backgroundImg?: string;
+  previewImg?: string;
+}
+export interface Timer {
+  id?: number;
+  title: string;
+  studyLength: number;
+  breakLength: number;
+  repetitions: number;
+  freeMode?: boolean;
 }
 
 

@@ -6,8 +6,11 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
-import Settings from '@/components/Popup/Settings.vue';
-import { watch } from 'vue';
+import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
+import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
+import Settings from '@/components/Settings/Settings.vue';
+import { onMounted, onUnmounted } from 'vue';
+import Info from '@/components/common/Info.vue'
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -15,10 +18,15 @@ const settings = useSettingsStore();
 const terminatePomoDialog = ref(false);
 
 const zenMode = ref(true);
+const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
   if (settings.settings.theme?.backgroundImg) {
-    return { backgroundImage: `url(${settings.settings.theme?.backgroundImg})` }
+    if (!pomodoro.onLongPause) {
+      return { backgroundImage: `url(${settings.settings.theme?.backgroundImg})` }
+    } else {
+      return { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${settings.settings.theme?.backgroundImg})` }
+    }
   } else if (settings.settings.theme?.backgroundColor) {
     return { backgroundColor: settings.settings.theme?.backgroundColor }
   }
@@ -80,20 +88,49 @@ async function pipIt() {
 
   // Move the player to the Picture-in-Picture window.
   pipWindow.document.body.append(player);
-  
+
   // Move the player back when the Picture-in-Picture window closes.
   pipWindow.addEventListener("pagehide", (event: any) => {
     const playerContainer = document.querySelector("#pomocirclepipparent");
     const pipPlayer = event.target.querySelector("#pomocirclepip");
     playerContainer?.append(pipPlayer);
+    isPipped.value = false;
   });
   isPipped.value = true;
 
 }
 
 const offline = ref(!navigator.onLine);
-window.addEventListener('online', () => offline.value = false);
-window.addEventListener('offline', () => offline.value = true);
+
+const onKeyUp = (e: KeyboardEvent) => {
+  if (e.code === 'Space') {
+    // if (pomodoro.going)
+    //   pomodoro.togglePauseStudy();
+    // else
+    //   pomodoro.startPomodoro();
+  } else if (e.code === 'Escape') {
+    zenMode.value = !zenMode.value;
+    if (!zenMode.value) {
+      showPomoHistory.value = false;
+    }
+    
+  }
+};
+const setOffline = () => offline.value = !navigator.onLine;
+
+onMounted(() => {
+  window.addEventListener('online', () => setOffline);
+  window.addEventListener('offline', () => setOffline);
+  window.addEventListener('keyup', onKeyUp);
+
+});
+onUnmounted(() => {
+  window.removeEventListener('online', () => setOffline);
+  window.removeEventListener('offline', () => setOffline);
+  window.removeEventListener('keyup', onKeyUp);
+});
+
+
 
 </script>
 
@@ -102,8 +139,7 @@ window.addEventListener('offline', () => offline.value = true);
     <Settings class="settings" v-model="openSettingsTab" />
 
     <div v-if="pipSupported" class="hide" id="pomocirclepipparent">
-      <div
-        id="pomocirclepip"
+      <div id="pomocirclepip"
         :class="zenStyle.backgroundImage ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
         :style="zenStyle">
         <div class="pomodoro-circle-component-on-pip-wrapper">
@@ -117,34 +153,37 @@ window.addEventListener('offline', () => offline.value = true);
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
           <!-- top left  -->
-          <div class="top-left title blur">
+          <a class="top-left title blur" href="https://studybuddy.it" target="_blank">
             <img src="/images/logo.png" alt="logo" class="logo" />
             <h3 class="text-primary" v-if="!pomodoro.created">StudyBuddy
               <span class="bg-primary beta">BETA</span>
             </h3>
-          </div>
+          </a>
 
           <!-- top right -->
-          <div class="top-right blur" v-if="!isLoading">
-            <p class="logged-user" v-if="offline" >
-              <v-icon v-ripple size="x-large" class="icon" icon="mdi-wifi-off" color="warning"/>
+          <div class="top-right blur" v-if="!isLoading && !showPomoHistory"
+            @click="!isAuthenticated ? loginWithRedirect() : openSettingsTab = 'general'">
+            <p class="logged-user" v-if="offline">
+              <v-icon v-ripple size="x-large" class="icon" icon="mdi-wifi-off" color="warning" />
               <span class="text">Offline</span>
             </p>
             <p v-else-if="isAuthenticated" class="logged-user">
               <span class="text">{{ user?.given_name ?? user?.nickname }}</span>
               <span><v-avatar :image="user?.picture" /></span>
             </p>
-            <p class="login-button" v-else @click="loginWithRedirect()">
-              <v-icon v-ripple size="x-large" class="icon" icon="mdi-account"/>
+            <p class="login-button" v-else>
+              <v-icon v-ripple size="x-large" class="icon" icon="mdi-account" />
               <span class="text">Login</span>
             </p>
           </div>
 
           <!-- main content in the center-->
           <div class="main-content">
+
             <!-- welcome screen -->
-            <div v-if="pomodoro.created" class="created-box">
+            <div v-if="pomodoro.created && !pomodoro.going" class="created-box">
               <div class="blur rounded-box pa-7">
+                <Info :text="$t('info.welcome')" class="info-welcome" />
                 <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
                 <div class="title">
                   <img src="/images/logo.png" alt="logo" class='logo' />
@@ -153,38 +192,44 @@ window.addEventListener('offline', () => offline.value = true);
               </div>
             </div>
             <!-- finish screen -->
-            <div v-else-if="pomodoro.terminated" class="blur rounded-box finish-box">
-              <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
-              <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
-            </div>
-            
-            <div class="pomodoro-circle-component-on-zen-wrapper">
-              <PomodoroCircle
-                class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-                v-if="pomodoro.going && (!settings.userSettings.hideTime || pomodoro.pauseing)" :in-pip="false"
-                />
-            </div>
-            <!-- report table-->
-            <div class="report font-press" v-if="pomodoro.report">
-              <div class="grid-container">
-                <p>{{ $t("pause.studyTime") }}</p>
-                <p class="report-value">{{ pomodoro.report.timeStudy }}</p>
-                <p>{{ $t("pause.pauseTime") }}</p>
-                <p class="report-value">{{ pomodoro.report.timeBreak }}</p>
-                <p>{{ $t("pause.totalTime") }}</p>
-                <p class="report-value">{{ pomodoro.report.timeTotal }}</p>
-                <p>{{ $t("pause.pauseNumber") }}</p>
-                <p class="report-value">{{ pomodoro.report.nrBreaks }}</p>
-                <p class="report-total">{{ $t("pause.score") }}</p>
-                <p class="report-value report-total">{{ pomodoro.report.points }}%</p>
+            <div v-else-if="pomodoro.terminated && !pomodoro.going" class="blur rounded-box finish-box">
+              <div v-if="pomodoro.report?.shortPomo">
+                <p class="pause font-press text-center">{{ $t("pause.pomoDoneShort") }}</p>
+                <h3 class="text-primary font-press text-center">{{ $t("pause.goodjobShort") }}</h3>
+              </div>
+              <div v-else-if="(pomodoro.report?.points ?? 0) > 0.5">
+                <p class="pause font-press text-center">{{ $t("pause.pomoDoneBad") }}</p>
+                <h2 class="text-primary font-press text-center">{{ $t("pause.goodjobBad") }}</h2>
+              </div>
+              <div v-else>
+                <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
+                <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
               </div>
             </div>
 
+            <div class="pomodoro-circle-component-on-zen-wrapper" v-if="!isPipped">
+              <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen"
+                v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))" :in-pip="false" />
+              <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-pip bg-surface"
+                icon="mdi-flip-to-front" @click="pipIt()" />
+            </div>
+            <!-- report table-->
+            <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
+
             <div class="pomopause">
-              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+              <v-btn class='btn bg-primary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+                @click="showPomoHistory = true">
+                <v-icon class="icon" icon="mdi-folder-clock-outline" />
+              </v-btn>
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going && !pomodoro.report?.shortPomo"
                 @click="pomodoro.startPomodoro()">
                 <span>{{ $t("pause.study") }}</span>
                 <v-icon class="icon" icon="mdi-play" />
+              </v-btn>
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going && pomodoro.report?.shortPomo"
+                @click="pomodoro.createPomodoro()">
+                <span>{{ $t("backHome") }}</span>
+                <v-icon class="icon" icon="mdi-home" />
               </v-btn>
             </div>
 
@@ -204,36 +249,29 @@ window.addEventListener('offline', () => offline.value = true);
     </div>
     <div class="bottom-bar">
       <div class="quick-settings" v-if="zenMode">
-        <v-btn v-if="pomodoro.going && pipSupported"
-          density="comfortable" size="small" class="btn-edit bg-surface"
-          :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'"
-          @click="pipIt()"
-        />
-        <v-btn v-if="pomodoro.going"
-          density="comfortable" size="small" class="btn-edit bg-surface"
-          :icon="settings.userSettings.hideTime ? 'mdi-eye' : 'mdi-eye-off'"
-          @click="settings.userSettings.hideTime = !settings.userSettings.hideTime"
-        />
-        <v-btn
-          density="comfortable" class="btn-edit btn-edit-main bg-background"
-          icon="mdi-cog"
-          @click="openSettingsTab =  pomodoro.going ? 'theme' : 'pomodoro'"
-        />
+        <v-btn density="comfortable" class="btn-edit btn-edit-main bg-background" icon="mdi-cog" size="large"
+          @click="openSettingsTab = pomodoro.going ? 'theme' : 'pomodoro'">
+          <v-icon class="icon" icon="mdi-cog" size="large" />
+          </v-btn>
 
       </div>
-
-      <div :class="zenMode ? 'pull-up-panel blur' : 'pull-up-panel blur pull-up-panel-zenmode'">
-        <div class="handle" v-ripple @click="toggleZenMode()">
+      <div :class="`pull-up-panel blur ${zenMode ? '' : 'pull-up-panel-zenmode'} ${showPomoHistory ? 'no-frost' : ''}`">
+        <div class="handle" v-ripple @click="showPomoHistory = false" v-if="showPomoHistory">
+          <v-icon icon="mdi-close" />
+        </div>
+        <div class="handle handle-zen" v-ripple @click="toggleZenMode()" v-else>
           <v-icon :icon="zenMode ? 'mdi-chevron-down' : 'mdi-chevron-up'" />
         </div>
 
         <div class="pomodoro-bar">
           <div class="button-wrapper font-press pomo-left" v-if="pomodoro.going">
             <div>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()" v-if="pomodoro.created || pomodoro.terminated">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()"
+                v-if="pomodoro.created || pomodoro.terminated">
                 <v-icon class="icon" icon="mdi-play" />
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.studing">
+              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => pausePomodoro()"
+                v-else-if="pomodoro.studing">
                 <v-icon class="icon" icon="mdi-pause" />
               </v-btn>
               <v-btn class='btn bg-secondary pomo-btn pomo-box pomo-box-disabled' v-else>
@@ -243,19 +281,21 @@ window.addEventListener('offline', () => offline.value = true);
             <v-btn class="btn bg-error btn-endsession bottom-box" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</v-btn> -->
             </div>
           </div>
-          <PomodoroFlex class="pomo-flex" />
+          <PomodoroFlex class="pomo-flex" :percentage="pomodoro.created ? 100 : pomodoro.percentage" :displayBreaks="pomodoro.displayBreaks"
+            :displayStudy="pomodoro.displayStudy" :main-pomo="true" />
           <div class="button-wrapper pomo-right" v-if="pomodoro.going">
             <div class="time-button-wrapper">
               <div class="pomo-box pomo-time font-casio">
-                <p v-if="!settings.userSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
+                <p v-if="!settings.generalSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
               </div>
               <div :class="pomodoro.terminated ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
-                    @click="(pomodoro.freeMode || !pomodoro.done) ? terminatePomoDialog = true : stopPomodoro()">
+                @click="(pomodoro.freeMode || !pomodoro.done) ? terminatePomoDialog = true : stopPomodoro()">
                 <v-icon icon="mdi-stop" />
               </div>
             </div>
           </div>
         </div>
+        <PomodoroHistory :open="showPomoHistory" @start-pomodoro="pomodoro.startPomodoro(); showPomoHistory = false" />
       </div>
     </div>
   </div>
@@ -272,11 +312,23 @@ window.addEventListener('offline', () => offline.value = true);
 .pomodoro-circle-component-on-zen-wrapper {
   position: relative;
 
+  .btn-pip {
+    position: absolute;
+    display: none;
+    top: 0;
+    left: 0;
+  }
+
+  &:hover .btn-pip {
+    display: block;
+  }
+
   .pomodoro-circle-component-on-zen {
     height: min(50vh, 80vw);
     width: min(50vh, 80vw);
   }
 }
+
 .pomodoro-circle-component-on-pip-wrapper-wrapper {
   display: flex;
   align-items: center;
@@ -286,10 +338,12 @@ window.addEventListener('offline', () => offline.value = true);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+
   .pomodoro-circle-component-on-pip-wrapper {
     width: 100vmin;
     height: 100vmin;
     padding: 1rem;
+
     .pomodoro-circle-component-on-pip {
       height: 100%;
     }
@@ -299,12 +353,18 @@ window.addEventListener('offline', () => offline.value = true);
 
 .blur {
   background-color: rgba(var(--v-theme-background));
+  transition: background-color 0.2s ease-in-out;
 }
 
 .img-background {
   .blur {
     backdrop-filter: blur(5px);
     background-color: rgba(var(--v-theme-background), 0.7);
+
+    &.no-frost {
+      background-color: rgb(var(--v-theme-background));
+
+    }
   }
 }
 
@@ -315,6 +375,7 @@ window.addEventListener('offline', () => offline.value = true);
 .settings {
   z-index: 2000;
 }
+
 .pomo-btn {
   display: flex;
   flex-direction: column;
@@ -344,19 +405,24 @@ window.addEventListener('offline', () => offline.value = true);
   background-color: rgb(var(--v-theme-secondary-darken-1));
   filter: saturate(0.5);
   opacity: 0.5;
-  pointer-events: none; /* Disable user interaction */
+  pointer-events: none;
+  /* Disable user interaction */
 
 }
+
 .coffee-cup {
   animation: cupOnButton 2s infinite;
 }
+
 @keyframes cupOnButton {
   0% {
     transform: translateY(0) rotate(0);
   }
+
   50% {
     transform: translateY(-5px) rotate(5deg);
   }
+
   100% {
     transform: translateY(0) rotate(0);
   }
@@ -367,7 +433,7 @@ window.addEventListener('offline', () => offline.value = true);
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh ;
+  height: 100vh;
   z-index: 1500;
   background-color: rgb(var(--v-theme-surface));
   background-size: cover;
@@ -381,17 +447,25 @@ window.addEventListener('offline', () => offline.value = true);
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
     // margin-top: -6em;         // check this
     @media (max-width: 600px) {
       justify-content: flex-start;
       margin-top: 20vh;
     }
+
     .created-box {
       @media (max-width: 600px) {
         .title {
           display: flex;
           flex-direction: column;
         }
+      }
+
+      .info-welcome {
+        margin: 1rem;
+        top: 0;
+        right: 0;
       }
     }
 
@@ -403,47 +477,20 @@ window.addEventListener('offline', () => offline.value = true);
 
       @media (max-width: 600px) {
         padding: 1rem;
+
         p {
           font-size: 0.7rem;
         }
+
         h2 {
           font-size: 1rem;
-        }
-      }
-    }
-    .report {
-      background: rgb(var(--v-theme-background));
-      border: 1px solid rgb(var(--v-theme-primary));
-      padding: 0.8rem 1.5rem 1rem;
-      margin-top: 2rem;
-      border-radius: 1rem;
-
-      .grid-container {
-        display: grid;
-        grid-template-columns: auto auto;
-        gap: 0.2rem 1.2rem;
-        h2 {
-          grid-column: 1 / span 2;
-          text-align: center;
-          margin-bottom: 0.3rem;
-          font-size: 1.5rem;
-        }
-        p {
-          text-align: left;
-        }
-
-        .report-value {
-          text-align: right;
-        }
-        .report-total {
-          margin-top: 1rem;
-
         }
       }
     }
 
     .btn-main-start {
       width: auto;
+      margin-left: 1em;
     }
 
     .btn-main {
@@ -465,6 +512,7 @@ window.addEventListener('offline', () => offline.value = true);
 
     h1 {
       font-size: 5rem;
+
       @media (max-width: 600px) {
         font-size: 3rem;
       }
@@ -496,6 +544,7 @@ window.addEventListener('offline', () => offline.value = true);
       img {
         height: 7rem;
         margin-right: 0.5em;
+
         @media (max-width: 600px) {
           display: none;
         }
@@ -519,6 +568,8 @@ window.addEventListener('offline', () => offline.value = true);
     border-radius: 1rem;
     padding: 0.5rem;
     height: 5rem;
+    text-decoration: none;
+
     .logo {
       height: 4rem;
     }
@@ -547,14 +598,17 @@ window.addEventListener('offline', () => offline.value = true);
     .icon {
       display: none;
     }
+
     @media (max-width: 600px) {
       .text {
         display: none;
       }
+
       .icon {
         display: block;
       }
     }
+
     &:hover {
       background-color: #FFF4;
       cursor: pointer;
@@ -596,20 +650,6 @@ window.addEventListener('offline', () => offline.value = true);
     pointer-events: auto;
     align-self: flex-end;
     margin: 1rem;
-
-    &:hover {
-      .btn-edit {
-        display: inline;
-      }
-    }
-
-    .btn-edit {
-      display: none;
-      margin: 0.2rem;
-    }
-    .btn-edit-main {
-      display: inline;
-    }
   }
 
 
@@ -632,11 +672,14 @@ window.addEventListener('offline', () => offline.value = true);
       justify-content: center;
       background-color: #FFFFFF00;
       transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
+
       &:hover {
         background-color: #FFFFFF10;
       }
+    }
 
-      @media screen and (max-width: 600px) {
+    @media screen and (max-width: 600px) {
+      .handle-zen {
         display: none;
       }
     }
@@ -658,11 +701,13 @@ window.addEventListener('offline', () => offline.value = true);
           grid-row: 1;
           justify-self: start;
         }
+
         .pomo-right {
           grid-column: 2;
           grid-row: 1;
           justify-self: end;
         }
+
         .pomo-flex {
           grid-column: 1 / span 2;
           grid-row: 2;
@@ -673,18 +718,21 @@ window.addEventListener('offline', () => offline.value = true);
         height: 2rem;
         margin: 0.5rem 0;
       }
-      .pomo-flex, .pomo-box {
+
+      .pomo-flex,
+      .pomo-box {
         transition: height 0.1s ease-in-out, margin 0.1s ease-in-out;
       }
+
       .button-wrapper {
         width: 10rem;
         margin: 0 0.5rem;
 
-      @media (max-width: 600px) {
-        width: 100%;
-        margin: 0;
-        padding: 0.2rem;
-      }
+        @media (max-width: 600px) {
+          width: 100%;
+          margin: 0;
+          padding: 0.2rem;
+        }
 
         .time-button-wrapper {
           display: flex;
@@ -730,6 +778,7 @@ window.addEventListener('offline', () => offline.value = true);
         border-radius: 0.4rem;
         font-size: 0.8rem;
       }
+
       .pomodoro-bar {
         padding: 0.5rem 1rem 0.5rem;
       }
@@ -739,7 +788,7 @@ window.addEventListener('offline', () => offline.value = true);
           height: 2rem !important;
           line-height: 2rem;
         }
-        
+
         .pomo-flex {
           height: 1.4rem;
           margin: 0.3rem 0;
