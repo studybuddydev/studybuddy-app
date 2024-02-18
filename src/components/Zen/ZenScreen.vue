@@ -197,7 +197,7 @@ onUnmounted(() => {
                 <p class="pause font-press text-center">{{ $t("pause.pomoDoneShort") }}</p>
                 <h3 class="text-primary font-press text-center">{{ $t("pause.goodjobShort") }}</h3>
               </div>
-              <div v-else-if="(pomodoro.report?.points ?? 0) > 0.5">
+              <div v-else-if="(pomodoro.report?.points ?? 0) < 0.5">
                 <p class="pause font-press text-center">{{ $t("pause.pomoDoneBad") }}</p>
                 <h2 class="text-primary font-press text-center">{{ $t("pause.goodjobBad") }}</h2>
               </div>
