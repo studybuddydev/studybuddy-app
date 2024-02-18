@@ -136,6 +136,7 @@ export type PomodoroSettings = {
 export type GeneralSettings = {
   lang: string;
   hideTime: boolean;
+  disableCountdown: boolean;
   soundVolume: number;
   pulsingPause: boolean;
   showSeconds: boolean;

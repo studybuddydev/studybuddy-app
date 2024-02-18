@@ -25,6 +25,7 @@
         <v-switch label="Pause Pulsing" color="primary" inset v-model="settingsStore.settings!.general!.pulsingPause" hide-details/>
         <v-switch label="Show Seconds" color="primary" inset v-model="settingsStore.settings!.general!.showSeconds" hide-details/>
         <v-switch label="Hide Time" color="primary" inset v-model="settingsStore.settings!.general!.hideTime" hide-details/>
+        <v-switch label="Disable Countdown" color="primary" inset v-model="settingsStore.settings!.general!.disableCountdown" hide-details/>
       </v-col>
     </v-row>
 

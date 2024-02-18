@@ -614,13 +614,20 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // ---------- COUNTDOWN ----------
   const countdownRunning = ref(false);
+
+
+
   function startCountdown(callback: () => void, ms: number = 3000) {
     if (countdownRunning.value) return;
-    countdownRunning.value = true;
-    setTimeout(() => {
-      countdownRunning.value = false;
+    if (settings.generalSettings.disableCountdown) {
       callback();
-    }, ms);
+    } else {
+      countdownRunning.value = true;
+      setTimeout(() => {
+        countdownRunning.value = false;
+        callback();
+      }, ms);
+    }
   }
 
   // ---------- RETURN ----------

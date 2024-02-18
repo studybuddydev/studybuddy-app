@@ -94,6 +94,7 @@ async function pipIt() {
     const playerContainer = document.querySelector("#pomocirclepipparent");
     const pipPlayer = event.target.querySelector("#pomocirclepip");
     playerContainer?.append(pipPlayer);
+    isPipped.value = false;
   });
   isPipped.value = true;
 
@@ -196,11 +197,11 @@ onUnmounted(() => {
               <h2 class="text-primary font-press text-center">{{ pomodoro.report?.shortPomo ? $t("pause.goodjob") : $t("pause.goodjobShort") }}</h2>
             </div>
 
-            <div class="pomodoro-circle-component-on-zen-wrapper">
+            <div class="pomodoro-circle-component-on-zen-wrapper" v-if="!isPipped">
               <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-              v-if="pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing))" :in-pip="false" />
+                v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))" :in-pip="false" />
               <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-pip bg-surface"
-                :icon="isPipped ? 'mdi-flip-to-back' : 'mdi-flip-to-front'" @click="pipIt()" />
+                icon="mdi-flip-to-front" @click="pipIt()" />
             </div>
             <!-- report table-->
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
