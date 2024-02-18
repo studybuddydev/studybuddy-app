@@ -25,7 +25,7 @@
         <v-switch :label="$t('pause.general.pulsingPause')" color="primary" inset v-model="settingsStore.settings!.general!.pulsingPause" hide-details/>
         <v-switch :label="$t('pause.general.showSeconds')" color="primary" inset v-model="settingsStore.settings!.general!.showSeconds" hide-details/>
         <v-switch :label="$t('pause.general.hideTime')" color="primary" inset v-model="settingsStore.settings!.general!.hideTime" hide-details/>
-        <v-switch label="Disable Countdown" color="primary" inset v-model="settingsStore.settings!.general!.disableCountdown" hide-details/>
+        <v-switch :label="$t('pause.general.hideCountdown')" color="primary" inset v-model="settingsStore.settings!.general!.disableCountdown" hide-details/>
       </v-col>
     </v-row>
 

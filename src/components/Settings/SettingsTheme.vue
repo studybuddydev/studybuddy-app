@@ -26,7 +26,7 @@
     <v-window-item :value="2" class="theme-settings">
       <div class="header">
         <v-btn @click="back()" color="primary" variant="text" prepend-icon="mdi-arrow-left">{{ $t('back') }}</v-btn>
-        <v-btn @click="saveTheme()" color="primary">Save Theme</v-btn>
+        <v-btn @click="saveTheme()" color="primary">{{$t('save')}}</v-btn>
       </div>
 
       <div class="new-theme-settings">
