@@ -32,7 +32,7 @@ export class StudyBuddyDB extends Dexie {
         { title: 'LOFI',        palette: 'gptnight',  previewImg: '/images/themes/LOFI.webp',        backgroundImg: 'https://i.redd.it/injl33v9myl51.jpg' },
         { title: 'Barbie',      palette: 'pastel',    previewImg: '/images/themes/Barbie.webp',      backgroundImg: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' },
         { title: 'Oppenheimer', palette: 'gptnight',  previewImg: '/images/themes/Oppenheimer.webp', backgroundImg: 'https://venezianews.b-cdn.net/wp-content/uploads/elementor/thumbs/Oppenheimer-qcqe56sjf98g5iharhgvboxysohac64vt3kbim5lio.jpg' },
-        { title: 'OG',          palette: 'verdone',   previewImg: '/images/themes/OG.webp',          backgroundImg: 'https://images.pexels.com/photos/66997/pexels-photo-66997.jpeg' },
+        { title: 'Wave',        palette: 'nord',      previewImg: '/images/themes/Wave.webp',        backgroundImg: 'https://r4.wallpaperflare.com/wallpaper/283/881/127/the-great-wave-off-kanagawa-painting-japanese-waves-wallpaper-0e19ea97218f10d82b15fbcaa3f2b7ee.jpg' },
         { title: 'Gandalf',     palette: 'blallo',    previewImg: '/images/themes/Gandalf.webp',     backgroundImg: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' }
       ]);
     })

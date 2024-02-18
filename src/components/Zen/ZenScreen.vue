@@ -193,8 +193,18 @@ onUnmounted(() => {
             </div>
             <!-- finish screen -->
             <div v-else-if="pomodoro.terminated && !pomodoro.going" class="blur rounded-box finish-box">
-              <p class="pause font-press text-center">{{ pomodoro.report?.shortPomo ? $t("pause.pomoDone") : $t("pomoDoneShort") }}</p>
-              <h2 class="text-primary font-press text-center">{{ pomodoro.report?.shortPomo ? $t("pause.goodjob") : $t("pause.goodjobShort") }}</h2>
+              <div v-if="pomodoro.report?.shortPomo">
+                <p class="pause font-press text-center">{{ $t("pause.pomoDoneShort") }}</p>
+                <h3 class="text-primary font-press text-center">{{ $t("pause.goodjobShort") }}</h3>
+              </div>
+              <div v-else-if="(pomodoro.report?.points ?? 0) > 0.5">
+                <p class="pause font-press text-center">{{ $t("pause.pomoDoneBad") }}</p>
+                <h2 class="text-primary font-press text-center">{{ $t("pause.goodjobBad") }}</h2>
+              </div>
+              <div v-else>
+                <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
+                <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
+              </div>
             </div>
 
             <div class="pomodoro-circle-component-on-zen-wrapper" v-if="!isPipped">
@@ -211,10 +221,15 @@ onUnmounted(() => {
                 @click="showPomoHistory = true">
                 <v-icon class="icon" icon="mdi-folder-clock-outline" />
               </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going && !pomodoro.report?.shortPomo"
                 @click="pomodoro.startPomodoro()">
                 <span>{{ $t("pause.study") }}</span>
                 <v-icon class="icon" icon="mdi-play" />
+              </v-btn>
+              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going && pomodoro.report?.shortPomo"
+                @click="pomodoro.createPomodoro()">
+                <span>{{ $t("backHome") }}</span>
+                <v-icon class="icon" icon="mdi-home" />
               </v-btn>
             </div>
 

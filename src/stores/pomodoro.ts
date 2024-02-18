@@ -113,6 +113,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       report.value = getPomoReport(pomo);
       if (pomo.endedAt > SHORT_POMO_THRESHOLD) {
         addPomodoroToRecords();
+      } else {
         report.value.shortPomo = true;
       }
       saveStatus();
@@ -644,7 +645,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // ---------- RETURN ----------
   return {
-    startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
+    createPomodoro, startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
     getCurrentPomo, getBreaks,
     percentage, displayBreaks, displayStudy, report,
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy, onLongPause,

@@ -5,7 +5,7 @@ import { useTheme } from 'vuetify'
 
 const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
-const DEFAULT_PALETTE = 'bio';
+const DEFAULT_PALETTE = 'nord';
 const DEFAULT_ICONS = 'mdi-icon';
 
 const defaultSettings: Settings = {
@@ -30,7 +30,7 @@ const defaultSettings: Settings = {
     icon: DEFAULT_ICONS,
     palette: DEFAULT_PALETTE,
     backgroundColor: undefined,
-    backgroundImg: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg',
+    backgroundImg: 'https://images.alphacoders.com/133/1332707.png',
   }
 };
 
