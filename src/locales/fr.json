@@ -23,8 +23,11 @@
     "break": "PAUSE",
     "for": "depuis",
     "pomoDone": "Tu as terminé un Pomodoro",
+    "pomoDoneShort":"test terminé",
+    "pomoDoneBad": "Tu as terminé un Pomodoro",
     "goodjob": "Excellent travail!",
-    "goodjobShort": "bravo...",
+    "goodjobShort": "Ok, vous l'avez essayé. Retournez à la page d'accueil pour vraiment commencer à étudier.",
+    "goodjobBad": "Bon travail, mais vous pouvez faire mieux!",
     //youdid
     "studyMin": "minutes d'étude",
     "pauseMin": "minutes de pause au total",
