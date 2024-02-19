@@ -43,7 +43,8 @@ export default defineConfig({
     }
   },
   define: {
-    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true'
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true',
+    APP_VERSION: JSON.stringify(process.env.npm_package_version),
   }
 })
 

@@ -17,6 +17,8 @@ const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
 const terminatePomoDialog = ref(false);
 
+const appVersion = APP_VERSION;
+
 const zenMode = ref(true);
 const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
@@ -130,8 +132,6 @@ onUnmounted(() => {
   window.removeEventListener('keyup', onKeyUp);
 });
 
-
-
 </script>
 
 <template>
@@ -189,6 +189,7 @@ onUnmounted(() => {
                   <img src="/images/logo.png" alt="logo" class='logo' />
                   <h1 class="text-primary">StudyBuddy</h1>
                 </div>
+                <h6 class="text-version">v{{ appVersion }}</h6>
               </div>
             </div>
             <!-- finish screen -->
@@ -464,6 +465,13 @@ onUnmounted(() => {
           display: flex;
           flex-direction: column;
         }
+      }
+
+      .text-version {
+        text-align: right;
+        margin-right: 3em;
+        margin-top: -1.8em;
+        font-size: 0.9rem;
       }
 
       .info-welcome {
