@@ -244,14 +244,15 @@ const endTime = computed({
 
 <style lang="scss" scoped>
 .day-settings {
-  background-color: #00000022;
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   padding: 0.5rem;
   border-radius: 1rem 1rem 0 0;
-
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  background-color: rgba(var(--v-theme-surface), 0.8);
   .day-h-input {
     width: 4.5em;
     text-align: center;

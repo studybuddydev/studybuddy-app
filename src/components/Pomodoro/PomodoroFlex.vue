@@ -148,7 +148,7 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
       justify-content: center;
       height: 100%;
       width: 1px;
-      background-color: rgba(var(--v-theme-primary), 0.15);
+      background-color: rgba(var(--v-theme-primary), 0.3);
     }
 
     .break,
