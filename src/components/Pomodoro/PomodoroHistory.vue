@@ -17,7 +17,7 @@ const deletePomoDialog = ref(false);
 const deletingPomoId = ref(-1);
 
 const timeFormat = { html: false, showSeconds: false, format: 'hms' as 'hms' }
-
+  
 defineEmits(['startPomodoro']);
 
 const hStart = computed(() => settings.settings.general.dayStartEndHours[0]);
@@ -159,17 +159,17 @@ const endTime = computed({
 <template>
   <div :class="`pomo-history ${open ? '' : 'hide-pomo-history'}`">
     <div v-if="!isAuthenticated" class="no-history">
-      <p class="text-center text-medium-emphasis">Effettua il login per visualizzare la cronologia dei tuoi pomodori</p>
+      <p class="text-center text-medium-emphasis"> {{ $t('history.loginMsg') }}</p>
       <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' @click="loginWithRedirect()">
         <span>Login</span>
       </v-btn>
     </div>
 
     <div v-else-if="pomodoro.pomodoroRecords.length === 0" class="no-history">
-      <p class="text-center text-medium-emphasis">Non hai ancora fatto un pomodoro di almeno 5 minuti</p>
+      <p class="text-center text-medium-emphasis">{{ $t('history.noHistory') }}</p>
       <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
         @click="$emit('startPomodoro')">
-        <span>Inizia ora</span>
+        <span>{{ $t('history.startNow') }}</span>
         <v-icon class="icon" icon="mdi-play" />
       </v-btn>
     </div>

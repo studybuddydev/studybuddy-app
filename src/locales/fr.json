@@ -28,7 +28,6 @@
     "goodjob": "Excellent travail!",
     "goodjobShort": "Ok, vous l'avez essayé. Retournez à la page d'accueil pour vraiment commencer à étudier.",
     "goodjobBad": "Bon travail, mais vous pouvez faire mieux!",
-    //youdid
     "studyMin": "minutes d'étude",
     "pauseMin": "minutes de pause au total",
     "studyTime": "Temps d'étude :",
@@ -149,5 +148,11 @@
     "timer": "Il existe deux manières différentes de suivre votre temps: Libre: vous décidez quand il est temps de faire une pause à votre rythme. Classique: décidez à l'avance combien de temps consacrer aux études et combien de pauses. Si vous dépassez, ce n'est pas un problème. Vous pouvez utiliser les intervalles Pomodoro classiques ou en créer de nouveaux.",
     "theme": "Ici, vous pouvez décider du thème que vous préférez parmi les personnes présentes. Si vous le souhaitez, vous pouvez créer votre propre thème en ajoutant une photo du Web.",
     "feedback": "Si vous avez des suggestions ou souhaitez signaler un bug, vous pouvez le faire ici. Merci!"
-}
+  },
+  "history":{
+    "loginMsg" : "Connectez-vous pour voir l'historique de vos pomodoro",
+    "sliderTitle" : "définissez votre journée",
+    "noHistory": "Vous n'avez pas encore effectué un pomodoro de   5 minutes ou plus",
+    "startNow": "Commencez maintenant"
+  }
 }

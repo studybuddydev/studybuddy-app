@@ -150,5 +150,11 @@
     "timer": "Hay dos formas diferentes de realizar un seguimiento de tu tiempo: Gratis: tú decides cuándo es el momento de un descanso a tu propio ritmo. Clásico: decide de antemano cuánto tiempo dedicar al estudio y cuánto a los descansos. Si pasas no hay problema. Puedes utilizar los intervalos clásicos de Pomodoro o crear otros nuevos.",
     "theme": "Aquí podrás decidir el tema que prefieras entre los presentes. Si quieres, puedes crear tu propio tema añadiendo una foto de la web.",
     "feedback": "Si tiene sugerencias o desea informar un error, puede hacerlo aquí. ¡Gracias!"
-}
+  },
+  "history":{
+    "loginMsg" : "Inicia sesión para ver el historial de tus pomodoros",
+    "sliderTitle" : "establece tu día",
+    "noHistory": "Aún no has completado un pomodoro de al menos   5 minutos",
+    "startNow": "Comienza ahora"
+  }
 }

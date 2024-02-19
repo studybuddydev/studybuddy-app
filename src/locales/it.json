@@ -150,5 +150,11 @@
               "timer": "Ci sono due modalità diverse per tracciare il tuo tempo: Libero: decidi tu quando è il momento della pausa secondo il tuo ritmo. Classico: decidi a priori quanto tempo dedicare allo studio e quanto alle pause. Se sfori non è un problema. Puoi usare gli intervalli classici del Pomodoro o crearne di nuovi.",
               "theme": "Qui puoi decidere il tema che preferisci tra quelli presenti. Se vuoi, puoi creare il tuo tema aggiungendo una foto dal web.",
               "feedback": "Se hai suggerimenti o vuoi segnalare un bug, puoi farlo qui. Grazie!"
+       },
+       "history":{
+              "loginMsg" : "Effettua il login per visualizzare la cronologia dei tuoi pomodori",
+              "sliderTitle" : "setta la tua giornata",
+              "noHistory": "Non hai ancora fatto un pomodoro di almeno 5 minuti",
+              "startNow": "Inizia ora"
        }
 }

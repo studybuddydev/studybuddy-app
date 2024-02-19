@@ -150,5 +150,11 @@
     "timer": "2 different ways to track your time. Free: you decide when it's time for a break. Classic: you decide the intervals in advance and then execute them. Doesn't matter if you fall long or short. You can use the classic Pomodoro intervals or create new ones.",
     "theme": "Here you can choose your favorite theme. You can also create one from scratch adding a picture from the web.",
     "feedback": "If you have any suggestion or you want to report a bug, you can do it here. Thank you!"
-}
+},
+  "history":{
+    "loginMsg" : "Log in to view your pomodoro history",
+    "sliderTitle" : "set your day",
+    "noHistory": "You have not yet completed a pomodoro of at least   5 minutes",
+    "startNow": "Start now"
+  }
 }
