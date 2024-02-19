@@ -397,6 +397,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       durataPomelli.push(pomo.breaksDone[i].start - prevBreakEnd);
       prevBreakEnd = pomo.breaksDone[i].end ?? 0;
     }
+    durataPomelli.push(pomo.end - prevBreakEnd);
     const scorePomelli = durataPomelli.reduce((acc, curr) => acc + (curr < 20 ? (curr / 20) : ( curr > 50 ? (50 / curr) : 1 )), 0) / durataPomelli.length;
     const score = 
       (WEIGHT_EFFICIENCY * ( 1 - Math.abs((timeStudy / timeTotal) - (OPTIMAL_STUDY_RATIO)) ) )
