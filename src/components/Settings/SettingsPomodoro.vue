@@ -326,10 +326,6 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
       &.timer-info {
         font-size: 0.8rem;
       }
-
-
-
-
     }
   }
 
@@ -350,6 +346,7 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
   top: 64px;
   right: 0;
   margin: 1rem;
+  position: fixed !important;
 }
 
 .text-bottom {

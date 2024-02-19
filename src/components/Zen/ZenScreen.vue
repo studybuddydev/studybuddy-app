@@ -182,7 +182,7 @@ onUnmounted(() => {
 
             <!-- welcome screen -->
             <div v-if="pomodoro.created && !pomodoro.going" class="created-box">
-              <div class="blur rounded-box pa-7">
+              <div class="blur rounded-box pa-7 created-box-wrapper">
                 <Info :text="$t('info.welcome')" class="info-welcome" />
                 <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
                 <div class="title">
@@ -288,7 +288,7 @@ onUnmounted(() => {
               <div class="pomo-box pomo-time font-casio">
                 <p v-if="!settings.generalSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
               </div>
-              <div :class="pomodoro.terminated ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
+              <div :class="(pomodoro.terminated && !pomodoro.countdownRunning) ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
                 @click="(pomodoro.freeMode || !pomodoro.done) ? terminatePomoDialog = true : stopPomodoro()">
                 <v-icon icon="mdi-stop" />
               </div>
@@ -359,6 +359,7 @@ onUnmounted(() => {
 .img-background {
   .blur {
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     background-color: rgba(var(--v-theme-background), 0.7);
 
     &.no-frost {
@@ -455,6 +456,9 @@ onUnmounted(() => {
     }
 
     .created-box {
+      .created-box-wrapper {
+        position: relative;
+      }
       @media (max-width: 600px) {
         .title {
           display: flex;
@@ -578,6 +582,10 @@ onUnmounted(() => {
       border-radius: 0.5rem;
       padding: 0.4em;
       margin-right: 1em;
+    }
+
+    &:hover {
+      background-color: #FFF4;
     }
   }
 

@@ -106,15 +106,12 @@ function importData() {
 
 <style scoped lang="scss">
 .title {
-  //font-size: 1.2rem !important;
   span {
     border-radius: 0.5rem;
   }
   
   display: flex; 
   align-items: center;
-  // background-color: rgba(0, 0, 0, 0.8);
-  // backdrop-filter: blur(50px);
   z-index: 30000;
   position: sticky;
 }

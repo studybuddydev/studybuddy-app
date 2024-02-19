@@ -79,23 +79,37 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // when you first press start you set the start time of the pomodoro and sets the state to study
   function startPomodoro() {
     clearStuff();
-    startCountdown(() => {
-      let pomo = getCurrentPomo();
-      if (!pomo || pomo.state === PomodoroState.TERMINATED) {
-        createPomodoro();
-      }
-      pomo = getCurrentPomo();
-      pomo!.startedAt = Date.now();
-      pomo!.state = PomodoroState.STUDY;
-      pomo!.originalEnd = pomo!.end;
-      interval = setInterval(tick, TICK_TIME);
-      saveStatus();
-    });
+    if (countdownRunning.value) {
+      clearTimeout(countDownTimerout);
+      countdownRunning.value = false;
+      _startPomodoro()
+    } else {
+      startCountdown(() => _startPomodoro());
+    }
+  }
+
+  function _startPomodoro() {
+    let pomo = getCurrentPomo();
+    if (!pomo || pomo.state === PomodoroState.TERMINATED) {
+      createPomodoro();
+    }
+    pomo = getCurrentPomo();
+    pomo!.startedAt = Date.now();
+    pomo!.state = PomodoroState.STUDY;
+    pomo!.originalEnd = pomo!.end;
+    interval = setInterval(tick, TICK_TIME);
+    saveStatus();
   }
 
   // when you press stop you set the end time of the pomodoro and sets the state to terminated
   function stopPomodoro() {
     const pomo = getCurrentPomo();
+    if (countdownRunning.value) {
+      clearTimeout(countDownTimerout);
+      countdownRunning.value = false;
+      return;
+    }
+
     if (pomo) {
       pomo.onLongBreak = false;
       pomo.endedAt = getNow(pomo.startedAt);
@@ -367,8 +381,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
 
 
-  const WEIGHT_EFFICIENCY = 0.5;
-  const WEIGHT_DURATION = 0.5;
+  const WEIGHT_EFFICIENCY = 0.7;
+  const WEIGHT_DURATION = 0.3;
   const OPTIMAL_STUDY_RATIO = 5/6;
 
   function getPomoReport(pomo: Pomodoro | undefined): PomoReport {
@@ -377,14 +391,16 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const timeTotal = pomo.endedAt ?? pomo.end;
     const timeStudy = timeTotal - timeBreak;
 
-    const avgPomo = (timeStudy / (pomo.breaksDone.length + 1)) / 60000;
+    const durataPomelli: number[] = [];
+    let prevBreakEnd = 0;
+    for (let i = 0; i < pomo.breaksDone.length; i++) {
+      durataPomelli.push(pomo.breaksDone[i].start - prevBreakEnd);
+      prevBreakEnd = pomo.breaksDone[i].end ?? 0;
+    }
+    const scorePomelli = durataPomelli.reduce((acc, curr) => acc + (curr < 20 ? (curr / 20) : ( curr > 50 ? (50 / curr) : 1 )), 0) / durataPomelli.length;
     const score = 
       (WEIGHT_EFFICIENCY * ( 1 - Math.abs((timeStudy / timeTotal) - (OPTIMAL_STUDY_RATIO)) ) )
-      + (
-        WEIGHT_DURATION * (
-          avgPomo < 20 ? (avgPomo / 20) : ( avgPomo > 50 ? (50 / avgPomo) : 1 )
-        )
-      )
+      + (WEIGHT_DURATION * scorePomelli)
 
     return {
       timeTotal: timeTotal,
@@ -627,18 +643,17 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // ---------- COUNTDOWN ----------
   const countdownRunning = ref(false);
-
-
-
+  let countDownTimerout = -1;
   function startCountdown(callback: () => void, ms: number = 3000) {
     if (countdownRunning.value) return;
     if (settings.generalSettings.disableCountdown) {
       callback();
     } else {
       countdownRunning.value = true;
-      setTimeout(() => {
+      countDownTimerout = setTimeout(() => {
         countdownRunning.value = false;
         callback();
+        countDownTimerout = -1;
       }, ms);
     }
   }
