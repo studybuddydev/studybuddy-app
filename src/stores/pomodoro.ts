@@ -361,15 +361,12 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
 
   function getDisplayStudyRecord(pomo: Pomodoro, now: number = -1): DisplaySession[] {
-    console.log(pomo.breaksDone)
     const res: { start: number, end?: number }[] = [{ start: 0 }];
     for (const b of pomo.breaksDone) {
       res.at(-1)!.end = b.start;
       if (b.end && (now === -1 || b.end + 5000 < now)) res.push({ start: b.end });
     }
     if (res.at(-1)!.end === undefined) res.at(-1)!.end = now === -1 ? (pomo.end ?? pomo.endedAt) : now;
-    console.log(res)
-
     return parseDisplaySession(pomo, res, now);
   }
 
@@ -660,7 +657,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       });
       // delete old db
       const oldDb = await openDB('sb-db', 2);
-      console.log(oldDb);
       if (oldDb) {
         oldDb.close();
         indexedDB.deleteDatabase('sb-db');

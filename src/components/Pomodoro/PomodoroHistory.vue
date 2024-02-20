@@ -182,7 +182,7 @@ const endTime = computed({
             <h3 class="day">{{ g.date }}</h3>
             <PomodoroFlex class="pomo-flex pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary"
               :displayStudy="[]" :percentage="100" />
-            <p class="lenght"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
+            <p class="lenght-header"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
             <p :class="getPointsColorClass(g.points)">{{ pomodoro.parsePoints(g.points) }}%</p>
           </div>
 
@@ -296,8 +296,12 @@ const endTime = computed({
   margin-left: 0.4em;
 }
 
-.lenght {
+.lenght-header {
   width: 4em;
+  text-align: right;
+}
+.lenght {
+  width: 6em;
   text-align: right;
 }
 
