@@ -10,6 +10,7 @@
     "welcomeToSB": "Willkommen bei StudyBuddy",
     "loginMsg": "Hallo, du bist in der Testversion von Studybuddy. Möchtest du uns helfen und Tester werden?",
     "doLogin": "Jetzt anmelden!",
+    "backHome": "Startseite",
     "pause": {
       "welcome": "Willkommen bei",
       "study": "Studium",
@@ -46,7 +47,7 @@
         "importData": "Daten importieren",
         "resetTutorial": "Tutorial zurücksetzen",
         "resetted": "Das Tutorial wurde zurückgesetzt",
-        "interface": "Interfaccia",
+        "interface": "Schnittstelle",
         "pulsingPause": "Pochende Pause",
         "showSeconds": "Sekunden anzeigen"
       },
@@ -152,8 +153,8 @@
     },
     "history":{
       "loginMsg" : "Melden Sie sich an, um Ihre Pomodoro-Historie anzuzeigen",
-      "sliderTitle" : "setzen Sie Ihren Tag",
-      "noHistory": "Sie haben noch keinen Pomodoro von mindestens  5 Minuten abgeschlossen",
+      "sliderTitle" : "Stundenbereich",
+      "noHistory": "Sie haben noch keinen Pomodoro von mindestens 5 Minuten abgeschlossen",
       "startNow": "Jetzt starten"
   }
 }

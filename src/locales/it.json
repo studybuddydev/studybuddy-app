@@ -10,6 +10,7 @@
        "welcomeToSB": "Benvenuto su StudyBuddy",
        "loginMsg": "Ciao, sei nella versione di test di Studybuddy, vuoi aiutarci diventando tester?",
        "doLogin": "Effettua il login ora!",
+       "backHome": "backhome",
        "pause": {
               "welcome": "Benvenuto su",
               "study": "Studia",
@@ -48,7 +49,7 @@
                      "resetTutorial": "Ripristina Tutorial",
                      "resetted": "Il tutorial è stato ripristinato",
                      "interface": "Interfaccia",
-                     "pulsingPause": "Pausa pulsante",
+                     "pulsingPause": "Pausa rimbalzante",
                      "showSeconds": "Mostra secondi"
               },
               "timer": {
@@ -145,7 +146,7 @@
               "introMessage": "Hey, hai scoperto la modalità pianificazione! Al momento è ancora un cantiere ma puoi già aggiungere i tuoi esami e capitoli. Clicca su ESAME 1 per scoprire di più, oppure sulla freccina in basso per tornare al timer."
        },
        "info": {
-              "welcome": "Ciao! \nApri le impostazioni per decidere quanto tempo voi dedicare allo studio. Oppure premi play per iniziare una sessione di 2 ore con 3 pause da 5 minuti l'una. \n\nLe pause sono solo indicative, puoi farle quando vuoi premendo il tasto pausa. Dopo aver premuto play l'unica cosa che devi fare è mantenere la concentrazione fino alla prima pausa.",
+              "welcome": "Ciao! \nApri le impostazioni per decidere quanto tempo voi dedicare allo studio. Oppure premi play per iniziare una sessione di 2 ore con 3 pause da 5 minuti l'una. \n\nLe pause sono solo indicative, puoi farle quando vuoi premendo il tasto pausa. Dopo aver premuto play l'unica cosa che devi fare è mantenere la concentrazione fino alla prima pausa. Buono studio!",
               "pause": "Quando sei in pausa all'interno di una sessione, cerca di non usare il telefono ed evita soprattutto i social. Usa questa manciata di minuti per riposare gli occhi, sgranchirti, andare in bagno e bere acqua. Rilassati e permetti al tuo cervello di rielaborare quello che hai fatto fino a quel momento.",
               "timer": "Ci sono due modalità diverse per tracciare il tuo tempo: Libero: decidi tu quando è il momento della pausa secondo il tuo ritmo. Classico: decidi a priori quanto tempo dedicare allo studio e quanto alle pause. Se sfori non è un problema. Puoi usare gli intervalli classici del Pomodoro o crearne di nuovi.",
               "theme": "Qui puoi decidere il tema che preferisci tra quelli presenti. Se vuoi, puoi creare il tuo tema aggiungendo una foto dal web.",
@@ -153,7 +154,7 @@
        },
        "history":{
               "loginMsg" : "Effettua il login per visualizzare la cronologia dei tuoi pomodori",
-              "sliderTitle" : "setta la tua giornata",
+              "sliderTitle" : "intervallo orario",
               "noHistory": "Non hai ancora fatto un pomodoro di almeno 5 minuti",
               "startNow": "Inizia ora"
        }

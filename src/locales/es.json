@@ -10,6 +10,7 @@
   "welcomeToSB": "Bienvenido a StudyBuddy",
   "loginMsg": "Hola, estás en la versión de prueba de Studybuddy, ¿te gustaría ayudarnos siendo tester?",
   "doLogin": "¡Inicia sesión ahora!",
+  "backHome": "página de inicio",
   "pause": {
     "welcome": "Bienvenido a",
     "study": "Estudio",
@@ -153,8 +154,8 @@
   },
   "history":{
     "loginMsg" : "Inicia sesión para ver el historial de tus pomodoros",
-    "sliderTitle" : "establece tu día",
-    "noHistory": "Aún no has completado un pomodoro de al menos   5 minutos",
+    "sliderTitle" : "rango de horas",
+    "noHistory": "Aún no has completado un pomodoro de al menos 5 minutos",
     "startNow": "Comienza ahora"
   }
 }

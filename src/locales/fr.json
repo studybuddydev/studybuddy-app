@@ -8,8 +8,9 @@
   "back": "En arrière",
   "delete": "Supprimer",
   "welcomeToSB": "Bienvenue sur StudyBuddy",
-  "loginMsg": "Salut, tu es dans la version de test de Studybuddy, aimerais-tu nous aider en devenant testeur ?",
-  "doLogin": "Connecte-toi maintenant !",
+  "loginMsg": "Salut, tu es dans la version de test de Studybuddy, aimerais-tu nous aider en devenant testeur?",
+  "doLogin": "Connecte-toi maintenant!",
+  "backHome": "page d'accueil",
   "pause": {
     "welcome": "Bienvenue sur",
     "study": "Étudie",
@@ -40,12 +41,13 @@
       "username": "Nom d'utilisateur",
       "language": "Langue",
       "hideTime": "Masquer le temps",
+      "hideCountdown": "Masquer le compte à rebours",
       "theme": "Thème",
       "exportData": "Exporter les données",
       "importData": "Importer les données",
       "resetTutorial": "Réinitialiser le tutoriel",
       "resetted": "Le tutoriel a été réinitialisé",
-      "interface": "Interfaccia",
+      "interface": "Interface",
       "pulsingPause": "Pause palpitante",
       "showSeconds": "Afficher les secondes"
     },
@@ -84,7 +86,7 @@
     }
   },
   "zen": {
-    "confirm": "Veux-tu vraiment terminer le Pomodoro ?"
+    "confirm": "Veux-tu vraiment terminer le Pomodoro?"
   },
   "study": {
     "showTodo": "Afficher ToDo",
@@ -92,7 +94,7 @@
     "addLink": "Ajouter un lien",
     "addNote": "Ajouter une note",
     "link": "Lien",
-    "invalidName": "Nom {element} non valide !",
+    "invalidName": "Nom {element} non valide!",
     "examDate": "Date de l'examen",
     "icon": "Icône",
     "color": "Couleur",
@@ -151,7 +153,7 @@
   },
   "history":{
     "loginMsg" : "Connectez-vous pour voir l'historique de vos pomodoro",
-    "sliderTitle" : "définissez votre journée",
+    "sliderTitle" : "plage horaire",
     "noHistory": "Vous n'avez pas encore effectué un pomodoro de   5 minutes ou plus",
     "startNow": "Commencez maintenant"
   }
