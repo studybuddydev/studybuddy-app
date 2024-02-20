@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
-import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplaySession, type PomodoroRecord, type Pomodoro } from '@/types';
+import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplaySession, type PomodoroRecord, type Pomodoro, type PomodoroDBO } from '@/types';
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { computed, ref, watch } from 'vue';
 import { openDB, type IDBPDatabase } from 'idb';
+import { useDBStore } from "@/stores/db";
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
@@ -24,6 +25,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // ---------- PROPERTIES ----------
   const settings = useSettingsStore();
   const stateStore = useStateStore();
+  const db = useDBStore()
 
   watch(settings.pomoSettings, () => {
     if (getCurrentPomo()?.state === PomodoroState.CREATED)
@@ -79,23 +81,37 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // when you first press start you set the start time of the pomodoro and sets the state to study
   function startPomodoro() {
     clearStuff();
-    startCountdown(() => {
-      let pomo = getCurrentPomo();
-      if (!pomo || pomo.state === PomodoroState.TERMINATED) {
-        createPomodoro();
-      }
-      pomo = getCurrentPomo();
-      pomo!.startedAt = Date.now();
-      pomo!.state = PomodoroState.STUDY;
-      pomo!.originalEnd = pomo!.end;
-      interval = setInterval(tick, TICK_TIME);
-      saveStatus();
-    });
+    if (countdownRunning.value) {
+      clearTimeout(countDownTimerout);
+      countdownRunning.value = false;
+      _startPomodoro()
+    } else {
+      startCountdown(() => _startPomodoro());
+    }
+  }
+
+  function _startPomodoro() {
+    let pomo = getCurrentPomo();
+    if (!pomo || pomo.state === PomodoroState.TERMINATED) {
+      createPomodoro();
+    }
+    pomo = getCurrentPomo();
+    pomo!.startedAt = Date.now();
+    pomo!.state = PomodoroState.STUDY;
+    pomo!.originalEnd = pomo!.end;
+    interval = setInterval(tick, TICK_TIME);
+    saveStatus();
   }
 
   // when you press stop you set the end time of the pomodoro and sets the state to terminated
   function stopPomodoro() {
     const pomo = getCurrentPomo();
+    if (countdownRunning.value) {
+      clearTimeout(countDownTimerout);
+      countdownRunning.value = false;
+      return;
+    }
+
     if (pomo) {
       pomo.onLongBreak = false;
       pomo.endedAt = getNow(pomo.startedAt);
@@ -344,19 +360,20 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return parseDisplaySession(pomo, breaks, 0);
   }
 
-  function getDisplayStudyCurrent(): DisplaySession[] {
-    const pomo = getCurrentPomo();
-    if (!pomo || pomo.state === PomodoroState.CREATED) return [];
-    const now = getNow(pomo.startedAt);
-
+  function getDisplayStudyRecord(pomo: Pomodoro, now: number = -1): DisplaySession[] {
     const res: { start: number, end?: number }[] = [{ start: 0 }];
     for (const b of pomo.breaksDone) {
       res.at(-1)!.end = b.start;
-      if (b.end && b.end + 5000 < now) res.push({ start: b.end });
+      if (b.end && (now === -1 || b.end + 5000 < now)) res.push({ start: b.end });
     }
-    if (res.at(-1)!.end === undefined) res.at(-1)!.end = now;
-
+    if (res.at(-1)!.end === undefined) res.at(-1)!.end = now === -1 ? (pomo.end ?? pomo.endedAt) : now;
     return parseDisplaySession(pomo, res, now);
+  }
+
+  function getDisplayStudyCurrent(): DisplaySession[] {
+    const pomo = getCurrentPomo();
+    if (!pomo || pomo.state === PomodoroState.CREATED) return [];
+    return getDisplayStudyRecord(pomo, getNow(pomo.startedAt));
   }
 
   function getNowInPercentage() {
@@ -366,9 +383,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return 100 * Math.min(getNow(pomo.startedAt) / pomo.end, 1);
   }
 
-
-  const WEIGHT_EFFICIENCY = 0.5;
-  const WEIGHT_DURATION = 0.5;
+  const WEIGHT_EFFICIENCY = 0.7;
+  const WEIGHT_DURATION = 0.3;
   const OPTIMAL_STUDY_RATIO = 5/6;
 
   function getPomoReport(pomo: Pomodoro | undefined): PomoReport {
@@ -377,14 +393,21 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const timeTotal = pomo.endedAt ?? pomo.end;
     const timeStudy = timeTotal - timeBreak;
 
-    const avgPomo = (timeStudy / (pomo.breaksDone.length + 1)) / 60000;
+    const durataPomelli: number[] = [];
+    let prevBreakEnd = 0;
+    for (let i = 0; i < pomo.breaksDone.length; i++) {
+      durataPomelli.push(pomo.breaksDone[i].start - prevBreakEnd);
+      prevBreakEnd = pomo.breaksDone[i].end ?? 0;
+    }
+    durataPomelli.push(pomo.end - prevBreakEnd);
+
+    const scorePomelli = durataPomelli
+      .map(p => p / 60000)
+      .map(p => p < 20 ? (p / 20) : ( p > 50 ? (50 / p) : 1 ))
+      .reduce((a, b) => a + b, 0) / durataPomelli.length;
     const score = 
       (WEIGHT_EFFICIENCY * ( 1 - Math.abs((timeStudy / timeTotal) - (OPTIMAL_STUDY_RATIO)) ) )
-      + (
-        WEIGHT_DURATION * (
-          avgPomo < 20 ? (avgPomo / 20) : ( avgPomo > 50 ? (50 / avgPomo) : 1 )
-        )
-      )
+      + (WEIGHT_DURATION * scorePomelli)
 
     return {
       timeTotal: timeTotal,
@@ -561,13 +584,55 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   });
   const freeMode = computed(() => getCurrentPomo()?.freeMode ?? false);
 
-  // ---------- HISTORY ----------
+  // ---------- HISTORY - DB ----------
   const pomodoroRecords = ref<PomodoroRecord[]>([]);
 
-  let _db: IDBPDatabase | null = null;
-  async function getDb(): Promise<IDBPDatabase> {
-    if (!_db) {
-      _db = await openDB('sb-db', 1, {
+  function parsePomodorDbo(p: PomodoroDBO): PomodoroRecord {
+    return {
+      ...p,
+      displayBreaks: getDisplayBreaksRecord(p),
+      displayStudy: getDisplayStudyRecord(p),
+      report: getPomoReport(p),
+      percentage: p.endedAt ? Math.max(100 * p.endedAt / p.end, 100) : 100,
+    }
+  }
+
+  async function updatePomodoroRecords() {
+    pomodoroRecords.value = (
+      await db.pomodori.orderBy('datetime')
+        .reverse()
+        .limit(500)
+        .toArray()
+    ).map(p => parsePomodorDbo(p));
+  }
+
+  async function addPomodoroToRecords() {
+    const pomo = getCurrentPomo();
+    if (!pomo) return;
+
+    const p: PomodoroDBO = {
+      end: pomo.end,
+      endedAt: pomo.endedAt,
+      breaksDone: pomo.breaksDone.map(b => ({ start: b.start, end: b.end ?? b.start })),
+      freeMode: pomo.freeMode,
+      datetime: new Date(pomo.startedAt ?? Date.now())
+    }
+
+    pomodoroRecords.value.unshift(p);
+    await db.pomodori.add(p)
+    
+  }
+  async function deletePomodoroRecord(id: number) {
+    pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);
+    await db.pomodori.delete(id);
+  }
+
+  // migrate to new db -- remove after a while
+  (async () => {
+    if ((await window.indexedDB.databases()).map(db => db.name).includes('sb-db')) {
+      console.log('migrating db');
+
+      const _db = await openDB('sb-db', 2, {
         upgrade (db) {
           if (!db.objectStoreNames.contains('pomodori')) {
             const pomodori = db.createObjectStore('pomodori', { keyPath: 'id', autoIncrement: true });
@@ -576,69 +641,44 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
           }
         }
       });
-    }
-    return _db;
-  }
 
-  async function addPomodoroToRecords() {
-    const pomo = getCurrentPomo();
-    if (!pomo) return;
-
-    const record: PomodoroRecord = {
-      end: pomo.end,
-      endedAt: pomo.endedAt,
-      breaksDone: pomo.breaksDone.map(b => ({ start: b.start, end: b.end ?? b.start })),
-      freeMode: pomo.freeMode,
-      datetime: new Date(pomo.startedAt ?? Date.now()),
-      percentage: percentage.value
-    }
-
-    await (await getDb()).add('pomodori', record);
-
-    updatePomodoroRecords();
-  }
-
-  async function getPomodoroRecords(): Promise<PomodoroRecord[]> {
-    // get pomodori in the last 10 days
-    const pomodori = await (await getDb())
-      .getAllFromIndex('pomodori', 'datetime',
+      const pomos = await _db.getAllFromIndex('pomodori', 'datetime',
         IDBKeyRange.lowerBound(new Date(Date.now() - (30 * 24 * 60 * 60 * 1000)))
       )
-    return pomodori.sort((a, b) => b.datetime.getTime() - a.datetime.getTime());
-  }
-
-  async function updatePomodoroRecords() {
-    const pomos = await getPomodoroRecords();
-    pomos.forEach(p => {
-      p.displayBreaks = getDisplayBreaksRecord(p);
-      p.report = getPomoReport(p);
-    });
-
-    pomodoroRecords.value = pomos
-  }
-  updatePomodoroRecords();
-
-  function deletePomodoroRecord(id: number) {
-    (async () => {
-      await (await getDb()).delete('pomodori', id);
-      pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);
-    })();
-  }
+      pomos.forEach(async (p: any) => {
+        const newP: PomodoroDBO = {
+          end: p.end,
+          endedAt: p.endedAt,
+          breaksDone: p.breaksDone.map((b: any) => ({ start: b.start, end: b.end })),
+          freeMode: p.freeMode,
+          datetime: p.datetime
+        }
+        await db.pomodori.add(newP);
+      });
+      // delete old db
+      const oldDb = await openDB('sb-db', 2);
+      if (oldDb) {
+        oldDb.close();
+        indexedDB.deleteDatabase('sb-db');
+      }
+      console.log('migration done');
+    }
+    await updatePomodoroRecords();
+  })();
 
   // ---------- COUNTDOWN ----------
   const countdownRunning = ref(false);
-
-
-
+  let countDownTimerout = -1;
   function startCountdown(callback: () => void, ms: number = 3000) {
     if (countdownRunning.value) return;
     if (settings.generalSettings.disableCountdown) {
       callback();
     } else {
       countdownRunning.value = true;
-      setTimeout(() => {
+      countDownTimerout = setTimeout(() => {
         countdownRunning.value = false;
         callback();
+        countDownTimerout = -1;
       }, ms);
     }
   }
@@ -650,7 +690,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     percentage, displayBreaks, displayStudy, report,
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy, onLongPause,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
-    getPomodoroRecords, pomodoroRecords, timeFormatted, timeInTitle,
+    pomodoroRecords, timeFormatted, timeInTitle,
     startCountdown, countdownRunning,
     parseTime, parsePoints,
     deletePomodoroRecord

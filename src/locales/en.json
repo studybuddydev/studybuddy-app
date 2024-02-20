@@ -10,6 +10,7 @@
   "welcomeToSB": "Welcome to StudyBuddy",
   "loginMsg": "Hello, you are in the test version of Studybuddy, would you like to help us by becoming a tester?",
   "doLogin": "Log in now!",
+  "backHome": "Homepage",
   "pause": {
     "welcome": "Welcome to",
     "study": "Study",
@@ -23,8 +24,11 @@
     "break": "BREAK",
     "for": "for",
     "pomoDone": "You have completed a Pomodoro",
+    "pomoDoneShort": "Test completed",
+    "pomoDoneBad": "You have completed a Pomodoro",
     "goodjob": "Great Job!",
-    "goodjobShort": "Ok, hai fatto una prova. Torna alla home per cominciare a studiare davvero.",
+    "goodjobShort": "Ok, that was a test. Go back to the home page to start studying for real.",
+    "goodjobBad": "Good job, but you can do better next time!",
     "youdid": "You did",
     "studyMin": "minutes of studying",
     "pauseMin": "total break minutes",
@@ -142,10 +146,16 @@
     "introMessage": "Hey there, ypu just discovered the planning mode! It's still a work in progress but you can already add your exams and chapters. Click on the first exam on the left column to discover more. Click on the little arrow below to go back to the timer."
   },
   "info": {
-    "welcome": "Hi! You can open the settings to set the time you want to study, or you can press play to start a default session of 2 hours with 3 breaks of 5 minutes each. After you press play, the only thing you have to do is mantain focus until it's time for the first break.",
+    "welcome": "Hi! You can open the settings to set the time you want to study, or you can press play to start a default session of 2 hours with 3 breaks of 5 minutes each. After you press play, the only thing you have to do is mantain focus until it's time for the first break. Happy studying!",
     "pause": "When you are on a break inside a studying session, try not to use your phone, expecially avoid social media. Instead rest your eyes, drink water or go to the restroom. Use this time to allow your brain to rework what you just studied.",
-    "timer": "2 different ways to track your time. Free: you decide when it's time for a break. Classic: you decide the intervals in advance and then execute them. Doesn't matter if you fall long or short. You can use the classic Pomodoro intervals or create new ones.",
+    "timer": "2 different ways to track your time. Free: you decide when it's time for a break. Classic: you decide the intervals in advance and then execute them. Doesn't matter if you overshoot. You can use the classic Pomodoro intervals or create new ones.",
     "theme": "Here you can choose your favorite theme. You can also create one from scratch adding a picture from the web.",
     "feedback": "If you have any suggestion or you want to report a bug, you can do it here. Thank you!"
-}
+},
+  "history":{
+    "loginMsg" : "Log in to view your pomodoro history",
+    "sliderTitle" : "set hour range",
+    "noHistory": "You have not yet completed a pomodoro of at least 5 minutes",
+    "startNow": "Start now"
+  }
 }

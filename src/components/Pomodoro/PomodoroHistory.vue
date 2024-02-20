@@ -17,7 +17,6 @@ const deletePomoDialog = ref(false);
 const deletingPomoId = ref(-1);
 
 const timeFormat = { html: false, showSeconds: false, format: 'hms' as 'hms' }
-
 defineEmits(['startPomodoro']);
 
 const hStart = computed(() => settings.settings.general.dayStartEndHours[0]);
@@ -159,17 +158,17 @@ const endTime = computed({
 <template>
   <div :class="`pomo-history ${open ? '' : 'hide-pomo-history'}`">
     <div v-if="!isAuthenticated" class="no-history">
-      <p class="text-center text-medium-emphasis">Effettua il login per visualizzare la cronologia dei tuoi pomodori</p>
+      <p class="text-center text-medium-emphasis"> {{ $t('history.loginMsg') }}</p>
       <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' @click="loginWithRedirect()">
         <span>Login</span>
       </v-btn>
     </div>
 
     <div v-else-if="pomodoro.pomodoroRecords.length === 0" class="no-history">
-      <p class="text-center text-medium-emphasis">Non hai ancora fatto un pomodoro di almeno 5 minuti</p>
+      <p class="text-center text-medium-emphasis">{{ $t('history.noHistory') }}</p>
       <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
         @click="$emit('startPomodoro')">
-        <span>Inizia ora</span>
+        <span>{{ $t('history.startNow') }}</span>
         <v-icon class="icon" icon="mdi-play" />
       </v-btn>
     </div>
@@ -183,7 +182,7 @@ const endTime = computed({
             <h3 class="day">{{ g.date }}</h3>
             <PomodoroFlex class="pomo-flex pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary"
               :displayStudy="[]" :percentage="100" />
-            <p class="lenght"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
+            <p class="lenght-header"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
             <p :class="getPointsColorClass(g.points)">{{ pomodoro.parsePoints(g.points) }}%</p>
           </div>
 
@@ -196,7 +195,7 @@ const endTime = computed({
                 <div class="pomo-wrapper">
                   <div class="pomo-width" :style="{ width: `${(p.end / g.maxLength) * 100}%` }">
                     <PomodoroFlex class="pomo-flex" :percentage="p.percentage ?? 100"
-                      :displayBreaks="p.displayBreaks ?? []" :displayStudy="[]" />
+                      :displayBreaks="p.displayBreaks ?? []" :displayStudy="p.displayStudy ?? []" />
                   </div>
                 </div>
                 <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, timeFormat) }}</p>
@@ -244,14 +243,15 @@ const endTime = computed({
 
 <style lang="scss" scoped>
 .day-settings {
-  background-color: #00000022;
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   padding: 0.5rem;
   border-radius: 1rem 1rem 0 0;
-
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  background-color: rgba(var(--v-theme-surface), 0.8);
   .day-h-input {
     width: 4.5em;
     text-align: center;
@@ -296,8 +296,12 @@ const endTime = computed({
   margin-left: 0.4em;
 }
 
-.lenght {
+.lenght-header {
   width: 4em;
+  text-align: right;
+}
+.lenght {
+  width: 6em;
   text-align: right;
 }
 

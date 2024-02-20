@@ -57,19 +57,26 @@
   </v-window>
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useThemeStore } from "@/stores/settings/theme";
 import { useSettingsStore } from "@/stores/settings";
 import { paletteList } from '@/assets/themes'
 import type { Theme } from '@/types';
 import { useI18n } from 'vue-i18n';
+import { watch } from 'vue';
 
 const { t } = useI18n();
-
 const themeStore = useThemeStore();
 const settingsStore = useSettingsStore();
 
+
 const step = ref(1);
+const emit = defineEmits<{
+  (e: 'hideDone', hide: boolean): void
+}>()
+watch(step, (val) => {
+  emit('hideDone', val === 2);
+});
 
 const primaryColorsMapping: { [id: string]: string } = {};
 paletteList.forEach((t) => { primaryColorsMapping[t.value] = t.color; });
@@ -91,7 +98,7 @@ const newThemeTitle = ref<string | undefined>(undefined);
 let ogTheme: Theme | null = null;
 function setUpNewTheme() {
   step.value = 2;
-  newThemeTitle.value =  t('pause.theme.newTheme');
+  newThemeTitle.value = t('pause.theme.newTheme');
   ogTheme = {
     palette: settingsStore.settings!.theme!.palette,
     backgroundImg: settingsStore.settings!.theme!.backgroundImg,

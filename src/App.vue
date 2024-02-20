@@ -60,6 +60,13 @@ watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
 </script>
 
 <style lang="scss">
+.v-tooltip > .v-overlay__content {
+  background-color: rgba(var(--v-theme-primary), 0.7) !important;
+  color: rgb(var(--v-theme-on-primary)) !important;
+  border-radius: 1rem !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
 .small {
   font-size: 0.5em;
 }

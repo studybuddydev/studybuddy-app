@@ -142,7 +142,12 @@ const pomodoro = usePomodoroStore();
 const timerStore = useTimerStore();
 
 const step = ref(1);
-
+const emit = defineEmits<{
+  (e: 'hideDone', hide: boolean): void
+}>()
+watch(step, (val) => {
+  emit('hideDone', val === 2);
+});
 
 // creating preset
 const newTimer = ref<Timer | null>(null);
@@ -326,10 +331,6 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
       &.timer-info {
         font-size: 0.8rem;
       }
-
-
-
-
     }
   }
 
@@ -350,6 +351,7 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
   top: 64px;
   right: 0;
   margin: 1rem;
+  position: fixed !important;
 }
 
 .text-bottom {

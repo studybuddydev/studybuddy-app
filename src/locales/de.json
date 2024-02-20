@@ -10,6 +10,7 @@
     "welcomeToSB": "Willkommen bei StudyBuddy",
     "loginMsg": "Hallo, du bist in der Testversion von Studybuddy. Möchtest du uns helfen und Tester werden?",
     "doLogin": "Jetzt anmelden!",
+    "backHome": "Startseite",
     "pause": {
       "welcome": "Willkommen bei",
       "study": "Studium",
@@ -23,9 +24,11 @@
       "break": "PAUSE",
       "for": "seit",
       "pomoDone": "Du hast einen Pomodoro abgeschlossen",
+      "pomoDoneShort": "Test abgeschlossen",
+      "pomoDoneBad": "Du hast einen Pomodoro abgeschlossen",
       "goodjob": "Gute Arbeit!",
-      "goodjobShort": "bravo...",
-      //"youdid":
+      "goodjobShort": "Ok, du hast es versucht. Gehen Sie zurück zur Startseite, um wirklich mit dem Lernen zu beginnen.",
+      "goodjobBad": "Gute Arbeit, aber man kann es besser machen!",
       "studyMin": "Minuten des Studiums",
       "pauseMin": "Gesamtpausenminuten",
       "studyTime": "Studiendauer:",
@@ -44,7 +47,7 @@
         "importData": "Daten importieren",
         "resetTutorial": "Tutorial zurücksetzen",
         "resetted": "Das Tutorial wurde zurückgesetzt",
-        "interface": "Interfaccia",
+        "interface": "Schnittstelle",
         "pulsingPause": "Pochende Pause",
         "showSeconds": "Sekunden anzeigen"
       },
@@ -147,6 +150,12 @@
       "timer": "Es gibt zwei verschiedene Möglichkeiten, Ihre Zeit zu erfassen: Kostenlos: Sie entscheiden in Ihrem eigenen Tempo, wann es Zeit für eine Pause ist. Klassisch: Legen Sie im Voraus fest, wie viel Zeit Sie dem Lernen widmen und wie viel Sie Pausen einlegen möchten. Wenn Sie darüber hinweggehen, ist das kein Problem. Sie können die klassischen Pomodoro-Intervalle verwenden oder neue erstellen.",
       "theme": "Hier können Sie unter den Anwesenden entscheiden, welches Thema Ihnen am besten gefällt. Wenn Sie möchten, können Sie Ihr eigenes Thema erstellen, indem Sie ein Foto aus dem Internet hinzufügen.",
       "feedback": "Wenn Sie Vorschläge haben oder einen Fehler melden möchten, können Sie dies hier tun. Danke schön!"
-    }
+    },
+    "history":{
+      "loginMsg" : "Melden Sie sich an, um Ihre Pomodoro-Historie anzuzeigen",
+      "sliderTitle" : "Stundenbereich",
+      "noHistory": "Sie haben noch keinen Pomodoro von mindestens 5 Minuten abgeschlossen",
+      "startNow": "Jetzt starten"
+  }
 }
   

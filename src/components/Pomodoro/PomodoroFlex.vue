@@ -71,18 +71,17 @@ function getBackgroundColor() {
   return theme.current.value.colors.apple ?? theme.current.value.colors.error;
 }
 
-const snakeHeadPercent = 3;
-const ratioProgressLeft = (100 - snakeHeadPercent) / 100;
-// const progressPercentage = computed(() => {
-//   return `${snakeHeadPercent + (pomodoro.countdownRunning ? 0 : props.percentage * ratioProgressLeft)}%`;
-// });
+// const snakeHeadPercent = 3;
+// const ratioProgressLeft = (100 - snakeHeadPercent) / 100;
 
 function parsePercentage(percentage: number, skipHead: boolean = false) {
-  if (props.dailyPomo) {
-    return `${percentage}%`;
-  } else {
-    return `${(skipHead ? 0 : snakeHeadPercent) + (pomodoro.countdownRunning ? 0 : percentage * ratioProgressLeft)}%`;
-  }
+  return `${percentage}%`;
+
+  // if (props.dailyPomo) {
+  //   return `${percentage}%`;
+  // } else {
+  //   return `${(skipHead ? 0 : snakeHeadPercent) + (pomodoro.countdownRunning ? 0 : percentage * ratioProgressLeft)}%`;
+  // }
 }
 
 </script>
@@ -149,7 +148,7 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
       justify-content: center;
       height: 100%;
       width: 1px;
-      background-color: rgba(var(--v-theme-primary), 0.15);
+      background-color: rgba(var(--v-theme-primary), 0.3);
     }
 
     .break,

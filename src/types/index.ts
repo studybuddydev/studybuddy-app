@@ -173,6 +173,11 @@ export interface Timer {
   freeMode?: boolean;
 }
 
+export interface PomodoroDBO extends Pomodoro {
+  id?: number;
+  datetime: Date;
+}
+
 
 export type State = {
   data: {

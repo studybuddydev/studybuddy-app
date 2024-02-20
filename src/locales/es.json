@@ -10,6 +10,7 @@
   "welcomeToSB": "Bienvenido a StudyBuddy",
   "loginMsg": "Hola, estás en la versión de prueba de Studybuddy, ¿te gustaría ayudarnos siendo tester?",
   "doLogin": "¡Inicia sesión ahora!",
+  "backHome": "página de inicio",
   "pause": {
     "welcome": "Bienvenido a",
     "study": "Estudio",
@@ -23,8 +24,11 @@
     "break": "DESCANSO",
     "for": "desde",
     "pomoDone": "Has completado un Pomodoro",
+    "pomoDoneShort": "Prueba completada",
+    "pomoDoneBad": "Has completado un Pomodoro",
     "goodjob": "¡Excelente!",
     "goodjobShort": "Vale, hiciste una prueba. ¿Listo para estudiar de verdad?",
+    "goodjobBad": "¡Buen trabajo, pero puedes hacerlo mejor!",
     "youdid": "Has hecho",
     "studyMin": "minutos de estudio",
     "pauseMin": "minutos de pausa totales",
@@ -147,5 +151,11 @@
     "timer": "Hay dos formas diferentes de realizar un seguimiento de tu tiempo: Gratis: tú decides cuándo es el momento de un descanso a tu propio ritmo. Clásico: decide de antemano cuánto tiempo dedicar al estudio y cuánto a los descansos. Si pasas no hay problema. Puedes utilizar los intervalos clásicos de Pomodoro o crear otros nuevos.",
     "theme": "Aquí podrás decidir el tema que prefieras entre los presentes. Si quieres, puedes crear tu propio tema añadiendo una foto de la web.",
     "feedback": "Si tiene sugerencias o desea informar un error, puede hacerlo aquí. ¡Gracias!"
-}
+  },
+  "history":{
+    "loginMsg" : "Inicia sesión para ver el historial de tus pomodoros",
+    "sliderTitle" : "rango de horas",
+    "noHistory": "Aún no has completado un pomodoro de al menos 5 minutos",
+    "startNow": "Comienza ahora"
+  }
 }

@@ -10,12 +10,15 @@ import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import Settings from '@/components/Settings/Settings.vue';
 import { onMounted, onUnmounted } from 'vue';
-import Info from '@/components/common/Info.vue'
+import Info from '@/components/common/Info.vue';
+import minecraftSentences from '@/assets/minecraft.json';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
 const terminatePomoDialog = ref(false);
+
+const appVersion = APP_VERSION;
 
 const zenMode = ref(true);
 const showPomoHistory = ref(false);
@@ -130,6 +133,7 @@ onUnmounted(() => {
   window.removeEventListener('keyup', onKeyUp);
 });
 
+const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() * minecraftSentences.sentences.length)];
 
 
 </script>
@@ -182,13 +186,15 @@ onUnmounted(() => {
 
             <!-- welcome screen -->
             <div v-if="pomodoro.created && !pomodoro.going" class="created-box">
-              <div class="blur rounded-box pa-7">
+              <div class="blur rounded-box pa-7 created-box-wrapper">
                 <Info :text="$t('info.welcome')" class="info-welcome" />
                 <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
                 <div class="title">
                   <img src="/images/logo.png" alt="logo" class='logo' />
                   <h1 class="text-primary">StudyBuddy</h1>
                 </div>
+                <h6 class="text-version">v{{ appVersion }}</h6>
+                <h3 class="minecraft-sentence font-press">{{minecraftSentence}}</h3>
               </div>
             </div>
             <!-- finish screen -->
@@ -197,7 +203,7 @@ onUnmounted(() => {
                 <p class="pause font-press text-center">{{ $t("pause.pomoDoneShort") }}</p>
                 <h3 class="text-primary font-press text-center">{{ $t("pause.goodjobShort") }}</h3>
               </div>
-              <div v-else-if="(pomodoro.report?.points ?? 0) > 0.5">
+              <div v-else-if="(pomodoro.report?.points ?? 0) < 0.5">
                 <p class="pause font-press text-center">{{ $t("pause.pomoDoneBad") }}</p>
                 <h2 class="text-primary font-press text-center">{{ $t("pause.goodjobBad") }}</h2>
               </div>
@@ -207,11 +213,13 @@ onUnmounted(() => {
               </div>
             </div>
 
-            <div class="pomodoro-circle-component-on-zen-wrapper" v-if="!isPipped">
-              <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-                v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))" :in-pip="false" />
+            <div class="pomodoro-circle-component-on-zen-wrapper" v-if="
+              !isPipped && (pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))
+            ">
+              <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen" :in-pip="false" />
               <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-pip bg-surface"
                 icon="mdi-flip-to-front" @click="pipIt()" />
+              <Info :text="$t('info.pause')" class="info-pause" />
             </div>
             <!-- report table-->
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
@@ -288,7 +296,7 @@ onUnmounted(() => {
               <div class="pomo-box pomo-time font-casio">
                 <p v-if="!settings.generalSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
               </div>
-              <div :class="pomodoro.terminated ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
+              <div :class="(pomodoro.terminated && !pomodoro.countdownRunning) ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
                 @click="(pomodoro.freeMode || !pomodoro.done) ? terminatePomoDialog = true : stopPomodoro()">
                 <v-icon icon="mdi-stop" />
               </div>
@@ -318,6 +326,13 @@ onUnmounted(() => {
     top: 0;
     left: 0;
   }
+
+  
+  .info-pause {
+    top: 0;
+    right: 0;
+  }
+
 
   &:hover .btn-pip {
     display: block;
@@ -359,6 +374,7 @@ onUnmounted(() => {
 .img-background {
   .blur {
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     background-color: rgba(var(--v-theme-background), 0.7);
 
     &.no-frost {
@@ -455,11 +471,40 @@ onUnmounted(() => {
     }
 
     .created-box {
+      .created-box-wrapper {
+        position: relative;
+      }
       @media (max-width: 600px) {
         .title {
           display: flex;
           flex-direction: column;
         }
+      }
+
+      .minecraft-sentence {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 1rem;
+        // color: rgba(var(--v-theme-on-primary));
+        transform: translate(-10%, -0em) rotate(-24deg);
+        animation: breath 0.5s linear infinite alternate;
+      }
+
+      @keyframes breath {
+        0% {
+          scale: 0.9;
+        }
+        100% {
+          scale: 1;
+        }
+      }
+
+      .text-version {
+        text-align: right;
+        margin-right: 3em;
+        margin-top: -1.8em;
+        font-size: 0.9rem;
       }
 
       .info-welcome {
@@ -525,6 +570,9 @@ onUnmounted(() => {
 
     h3 {
       font-size: 1.5rem;
+      @media (max-width: 600px) {
+        font-size: 0.8rem;
+      }
     }
 
     .pomopause {
@@ -578,6 +626,10 @@ onUnmounted(() => {
       border-radius: 0.5rem;
       padding: 0.4em;
       margin-right: 1em;
+    }
+
+    &:hover {
+      background-color: #FFF4;
     }
   }
 
