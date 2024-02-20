@@ -17,7 +17,6 @@ const deletePomoDialog = ref(false);
 const deletingPomoId = ref(-1);
 
 const timeFormat = { html: false, showSeconds: false, format: 'hms' as 'hms' }
-  
 defineEmits(['startPomodoro']);
 
 const hStart = computed(() => settings.settings.general.dayStartEndHours[0]);
@@ -196,7 +195,7 @@ const endTime = computed({
                 <div class="pomo-wrapper">
                   <div class="pomo-width" :style="{ width: `${(p.end / g.maxLength) * 100}%` }">
                     <PomodoroFlex class="pomo-flex" :percentage="p.percentage ?? 100"
-                      :displayBreaks="p.displayBreaks ?? []" :displayStudy="[]" />
+                      :displayBreaks="p.displayBreaks ?? []" :displayStudy="p.displayStudy ?? []" />
                   </div>
                 </div>
                 <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, timeFormat) }}</p>

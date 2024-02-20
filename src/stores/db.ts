@@ -2,6 +2,26 @@ import Dexie, { type Table } from 'dexie';
 import type { Timer, Theme, PomodoroDBO } from '@/types';
 import { defineStore } from 'pinia'
 
+
+const pomos: PomodoroDBO[] = [
+  {
+    end: 8981638,
+    endedAt: 7642818,
+    breaksDone: [{
+      end: 1407357,
+      start: 1151956
+    },{
+      end: 3231131,
+      start: 2900032
+    },{
+      end: 5843623,
+      start: 5076520
+    }],
+    freeMode: false,
+    datetime: new Date("2024-02-04T15:00:00.000Z")
+  }
+]
+
 export class StudyBuddyDB extends Dexie {
   public timer!: Table<Timer, number>;
   public themes!: Table<Theme, number>;
@@ -11,8 +31,8 @@ export class StudyBuddyDB extends Dexie {
     super("StudyBuddyDB");
     this.version(3).stores({
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
-      themes: "++id,title,palette,backgroundColor, backgroundImg",
-      pomodori: "++id,endedAt,end,breaksDone,freeMode,datetime"
+      themes: "++id,title,palette,backgroundColor,backgroundImg",
+      pomodori: "++id,endedAt,end,freeMode,datetime"
     });
 
     this.on("populate", () => {
@@ -37,6 +57,8 @@ export class StudyBuddyDB extends Dexie {
         { title: 'Wave',        palette: 'nord',      previewImg: '/images/themes/Wave.webp',        backgroundImg: 'https://r4.wallpaperflare.com/wallpaper/283/881/127/the-great-wave-off-kanagawa-painting-japanese-waves-wallpaper-0e19ea97218f10d82b15fbcaa3f2b7ee.jpg' },
         { title: 'Gandalf',     palette: 'blallo',    previewImg: '/images/themes/Gandalf.webp',     backgroundImg: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' }
       ]);
+
+      this.pomodori.bulkAdd(pomos)
     })
   }
 }

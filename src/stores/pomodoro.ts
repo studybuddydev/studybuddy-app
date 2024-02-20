@@ -360,19 +360,23 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return parseDisplaySession(pomo, breaks, 0);
   }
 
-  function getDisplayStudyCurrent(): DisplaySession[] {
-    const pomo = getCurrentPomo();
-    if (!pomo || pomo.state === PomodoroState.CREATED) return [];
-    const now = getNow(pomo.startedAt);
-
+  function getDisplayStudyRecord(pomo: Pomodoro, now: number = -1): DisplaySession[] {
+    console.log(pomo.breaksDone)
     const res: { start: number, end?: number }[] = [{ start: 0 }];
     for (const b of pomo.breaksDone) {
       res.at(-1)!.end = b.start;
-      if (b.end && b.end + 5000 < now) res.push({ start: b.end });
+      if (b.end && (now === -1 || b.end + 5000 < now)) res.push({ start: b.end });
     }
-    if (res.at(-1)!.end === undefined) res.at(-1)!.end = now;
+    if (res.at(-1)!.end === undefined) res.at(-1)!.end = now === -1 ? (pomo.end ?? pomo.endedAt) : now;
+    console.log(res)
 
     return parseDisplaySession(pomo, res, now);
+  }
+
+  function getDisplayStudyCurrent(): DisplaySession[] {
+    const pomo = getCurrentPomo();
+    if (!pomo || pomo.state === PomodoroState.CREATED) return [];
+    return getDisplayStudyRecord(pomo, getNow(pomo.startedAt));
   }
 
   function getNowInPercentage() {
@@ -381,7 +385,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       return 0;
     return 100 * Math.min(getNow(pomo.startedAt) / pomo.end, 1);
   }
-
 
   const WEIGHT_EFFICIENCY = 0.7;
   const WEIGHT_DURATION = 0.3;
@@ -400,7 +403,11 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       prevBreakEnd = pomo.breaksDone[i].end ?? 0;
     }
     durataPomelli.push(pomo.end - prevBreakEnd);
-    const scorePomelli = durataPomelli.reduce((acc, curr) => acc + (curr < 20 ? (curr / 20) : ( curr > 50 ? (50 / curr) : 1 )), 0) / durataPomelli.length;
+
+    const scorePomelli = durataPomelli
+      .map(p => p / 60000)
+      .map(p => p < 20 ? (p / 20) : ( p > 50 ? (50 / p) : 1 ))
+      .reduce((a, b) => a + b, 0) / durataPomelli.length;
     const score = 
       (WEIGHT_EFFICIENCY * ( 1 - Math.abs((timeStudy / timeTotal) - (OPTIMAL_STUDY_RATIO)) ) )
       + (WEIGHT_DURATION * scorePomelli)
@@ -587,6 +594,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return {
       ...p,
       displayBreaks: getDisplayBreaksRecord(p),
+      displayStudy: getDisplayStudyRecord(p),
       report: getPomoReport(p),
       percentage: p.endedAt ? Math.max(100 * p.endedAt / p.end, 100) : 100,
     }
