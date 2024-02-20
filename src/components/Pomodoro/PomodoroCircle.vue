@@ -1,45 +1,44 @@
 <template>
-  <div :class="`pomodoro-circle blur ${inPip ? 'pip' : ''}  ${pomodoro.onLongPause ? 'long-pause' : ''} ${pulsing ? 'breathing' : ''  }`" ref="el">
-
-    <div class="progress-bar" v-if="!pomodoro.countdownRunning" :style="{
-      background: `conic-gradient(
+    <div
+      :class="`pomodoro-circle blur ${inPip ? 'pip' : ''}  ${pomodoro.onLongPause ? 'long-pause' : ''} ${pulsing ? 'breathing' : ''}`"
+      ref="el">
+      <div class="progress-bar" v-if="!pomodoro.countdownRunning" :style="{
+        background: `conic-gradient(
         ${getCircleColor()} 0deg,
-        ${getCircleColor()} ${pomodoro.percInCurrentState * 360}deg,
-        transparent ${(pomodoro.percInCurrentState * 360) + 0.2}deg,
+              ${getCircleColor()} ${pomodoro.percInCurrentState * 360}deg,
+              transparent ${(pomodoro.percInCurrentState * 360) + 0.2}deg,
         transparent 360deg)`
-    }"></div>
-    <div class="progress-bar-content">
-      <div v-if="pomodoro.going">
-        <p class="timer timer-inpause font-casio" v-if="pomodoro.studing"
-          v-html="pomodoro.timeInCurrentStudy" :style="{ fontSize: `${width / 12}px` }"></p>
+      }"></div>
+      <div class="progress-bar-content">
+        <div v-if="pomodoro.going">
+          <p class="timer timer-inpause font-casio" v-if="pomodoro.studing" v-html="pomodoro.timeInCurrentStudy"
+            :style="{ fontSize: `${width / 12}px` }"></p>
 
-        <div v-else-if="pomodoro.pauseing" class="pause-text">
-          <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.youare") }}</p>
-          <p :style="{ fontSize: `${width / 10}px` }" class="text-primary font-press">{{ $t("pause.break") }}</p>
-          <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.for") }}
-            <span class="text-primary font-casio" v-html="pomodoro.timeInCurrentBreak"></span>
-          </p>
-          <Info :text="$t('info.pause')" class="info-pause" />
+          <div v-else-if="pomodoro.pauseing" class="pause-text">
+            <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.youare") }}</p>
+            <p :style="{ fontSize: `${width / 10}px` }" class="text-primary font-press">{{ $t("pause.break") }}</p>
+            <p :style="{ fontSize: `${width / 30}px` }" class="font-press pause-p">{{ $t("pause.for") }}
+              <span class="text-primary font-casio" v-html="pomodoro.timeInCurrentBreak"></span>
+            </p>
+          </div>
+        </div>
+
+        <div v-if="pomodoro.countdownRunning" class="font-casio text-primary">
+          <div :class="pomodoro.countdownRunning ? 'countdown text-primary' : ''"></div>
+        </div>
+
+        <div v-else class="buttons">
+          <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5' v-if="!pomodoro.studing"
+            @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro()" :style="{ height: `${width / 10}px` }">
+            <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-play" />
+          </v-btn>
+          <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5'
+            v-if="inPip && pomodoro.studing" @click="pomodoro.togglePauseStudy()" :style="{ height: `${width / 10}px` }">
+            <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-pause" />
+          </v-btn>
         </div>
       </div>
-
-      <div v-if="pomodoro.countdownRunning" class="font-casio text-primary">
-        <div :class="pomodoro.countdownRunning ? 'countdown text-primary' : ''"></div>
-      </div>
-
-      <div v-else class="buttons" >
-        <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5' v-if="!pomodoro.studing"
-          @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro()" :style="{ height: `${width / 10}px` }">
-          <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-play" />
-        </v-btn>
-        <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5' v-if="inPip && pomodoro.studing"
-          @click="pomodoro.togglePauseStudy()" :style="{ height: `${width / 10}px` }">
-          <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-pause" />
-        </v-btn>
-      </div>
     </div>
-
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -57,7 +56,7 @@ const { width } = useElementSize(el)
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
 const settings = useSettingsStore();
-const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false  });
+const props = withDefaults(defineProps<{ inPip: boolean }>(), { inPip: false });
 
 const pulsing = computed(() =>
   settings.generalSettings.pulsingPause && !pomodoro.freeMode && (pomodoro.timeToBreak || pomodoro.timeToStudy) && !pomodoro.onLongPause
@@ -83,14 +82,12 @@ function getCircleColor() {
   justify-content: center;
   counter-reset: my-count 4;
   animation: countdown 5s linear infinite;
-  
+
   &::after {
     content: counter(my-count);
     font-size: 6em;
   }
 }
-
-
 .pomodoro-circle {
   position: relative;
   border-radius: 50%;
@@ -99,10 +96,6 @@ function getCircleColor() {
     background-color: #000000B0 !important
   }
 
-  .info-pause {
-    top: 0;
-    right: 0;
-  }
   .progress-bar {
     position: absolute;
     width: 100%;
@@ -196,90 +189,125 @@ function getCircleColor() {
 
 
 @keyframes countdown {
+
   // 3 ---
-  0% { // 0%
+  0% {
+    // 0%
     font-size: 2em;
     opacity: 0;
     counter-increment: my-count -1;
   }
-  1% { // 5%
+
+  1% {
+    // 5%
     font-size: 2em;
     opacity: 0;
     counter-increment: my-count -1;
   }
-  10% { // 50%
+
+  10% {
+    // 50%
     opacity: 1;
     counter-increment: my-count -1;
   }
-  15% { // 75%
+
+  15% {
+    // 75%
     opacity: 1;
     counter-increment: my-count -1;
   }
-  18% { // 95%
+
+  18% {
+    // 95%
     font-size: 1em;
     opacity: 0;
     counter-increment: my-count -1;
   }
-  19% { // 100%
+
+  19% {
+    // 100%
     font-size: 2em;
     opacity: 0;
     counter-increment: my-count -1;
   }
+
   // 2 ---
-  20% { // 0%
+  20% {
+    // 0%
     font-size: 2em;
     opacity: 0;
     counter-increment: my-count -2;
   }
-  21% { // 5%
+
+  21% {
+    // 5%
     font-size: 2em;
     opacity: 0;
     counter-increment: my-count -2;
   }
-  30% { // 50%
+
+  30% {
+    // 50%
     opacity: 1;
     counter-increment: my-count -2;
   }
-  35% { // 75%
+
+  35% {
+    // 75%
     opacity: 1;
     counter-increment: my-count -2;
   }
-  38% { // 95%
+
+  38% {
+    // 95%
     font-size: 1em;
     opacity: 0;
     counter-increment: my-count -2;
   }
-  39% { // 100%
+
+  39% {
+    // 100%
     font-size: 2em;
     opacity: 0;
     counter-increment: my-count -2;
   }
-  
+
   // 1 ---
-  40% { // 0%
+  40% {
+    // 0%
     font-size: 2em;
     opacity: 0;
     counter-increment: my-count -3;
   }
-  41% { // 5%
+
+  41% {
+    // 5%
     font-size: 2em;
     opacity: 0;
     counter-increment: my-count -3;
   }
-  50% { // 50%
+
+  50% {
+    // 50%
     opacity: 1;
     counter-increment: my-count -3;
   }
-  55% { // 75%
+
+  55% {
+    // 75%
     opacity: 1;
     counter-increment: my-count -3;
   }
-  58% { // 95%
+
+  58% {
+    // 95%
     font-size: 1em;
     opacity: 0;
     counter-increment: my-count -3;
   }
-  59% { // 100%
+
+  59% {
+    // 100%
     font-size: 2em;
     opacity: 0;
     counter-increment: my-count -3;
@@ -290,6 +318,4 @@ function getCircleColor() {
     opacity: 0;
     counter-increment: my-count -2;
   }
-}
-
-</style>
+}</style>

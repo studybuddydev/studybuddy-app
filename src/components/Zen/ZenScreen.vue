@@ -10,7 +10,8 @@ import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import Settings from '@/components/Settings/Settings.vue';
 import { onMounted, onUnmounted } from 'vue';
-import Info from '@/components/common/Info.vue'
+import Info from '@/components/common/Info.vue';
+import minecraftSentences from '@/assets/minecraft.json';
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -132,6 +133,9 @@ onUnmounted(() => {
   window.removeEventListener('keyup', onKeyUp);
 });
 
+const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() * minecraftSentences.sentences.length)];
+
+
 </script>
 
 <template>
@@ -190,6 +194,7 @@ onUnmounted(() => {
                   <h1 class="text-primary">StudyBuddy</h1>
                 </div>
                 <h6 class="text-version">v{{ appVersion }}</h6>
+                <h3 class="minecraft-sentence font-press">{{minecraftSentence}}</h3>
               </div>
             </div>
             <!-- finish screen -->
@@ -213,6 +218,7 @@ onUnmounted(() => {
                 v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))" :in-pip="false" />
               <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-pip bg-surface"
                 icon="mdi-flip-to-front" @click="pipIt()" />
+              <Info :text="$t('info.pause')" class="info-pause" />
             </div>
             <!-- report table-->
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
@@ -319,6 +325,13 @@ onUnmounted(() => {
     top: 0;
     left: 0;
   }
+
+  
+  .info-pause {
+    top: 0;
+    right: 0;
+  }
+
 
   &:hover .btn-pip {
     display: block;
@@ -464,6 +477,25 @@ onUnmounted(() => {
         .title {
           display: flex;
           flex-direction: column;
+        }
+      }
+
+      .minecraft-sentence {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 1rem;
+        // color: rgba(var(--v-theme-on-primary));
+        transform: translate(-10%, -0em) rotate(-24deg);
+        animation: breath 0.5s linear infinite alternate;
+      }
+
+      @keyframes breath {
+        0% {
+          scale: 0.9;
+        }
+        100% {
+          scale: 1;
         }
       }
 
