@@ -213,9 +213,10 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
               </div>
             </div>
 
-            <div class="pomodoro-circle-component-on-zen-wrapper" v-if="!isPipped">
-              <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen"
-                v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))" :in-pip="false" />
+            <div class="pomodoro-circle-component-on-zen-wrapper" v-if="
+              !isPipped && (pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))
+            ">
+              <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen" :in-pip="false" />
               <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-pip bg-surface"
                 icon="mdi-flip-to-front" @click="pipIt()" />
               <Info :text="$t('info.pause')" class="info-pause" />

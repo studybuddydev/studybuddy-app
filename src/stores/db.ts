@@ -1,16 +1,18 @@
 import Dexie, { type Table } from 'dexie';
-import type { Timer, Theme } from '@/types';
+import type { Timer, Theme, PomodoroDBO } from '@/types';
 import { defineStore } from 'pinia'
 
 export class StudyBuddyDB extends Dexie {
   public timer!: Table<Timer, number>;
   public themes!: Table<Theme, number>;
+  public pomodori!: Table<PomodoroDBO, number>;
 
   public constructor() {
     super("StudyBuddyDB");
-    this.version(2).stores({
+    this.version(3).stores({
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
-      themes: "++id,title,palette,backgroundColor, backgroundImg"
+      themes: "++id,title,palette,backgroundColor, backgroundImg",
+      pomodori: "++id,endedAt,end,breaksDone,freeMode,datetime"
     });
 
     this.on("populate", () => {
@@ -44,6 +46,7 @@ export const useDBStore = defineStore('dbStore', () => {
 
   const themes = studyBuddyDB.themes;
   const timers = studyBuddyDB.timer;
+  const pomodori = studyBuddyDB.pomodori;
 
-  return { themes, timers };
+  return { themes, timers, pomodori };
 });
