@@ -8,7 +8,6 @@ const props = defineProps<{
 const open = ref(false);
 function openClick() {
   open.value = true;
-  console.log('diocane')
   setTimeout(() => open.value = false, 3000);
 }
 </script>

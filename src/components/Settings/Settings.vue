@@ -23,17 +23,17 @@
 
             <!-- POMODORO -->
             <v-window-item value="pomodoro">
-              <SettingsPomodoro />
+              <SettingsPomodoro @hide-done="e => hideDone = e" />
             </v-window-item>
 
             <!-- THEME -->
             <v-window-item value="theme">
-              <SettingsTheme />
+              <SettingsTheme @hide-done="e => hideDone = e" />
             </v-window-item>
 
           </v-window>
         </v-container>
-        <v-card-actions>
+        <v-card-actions v-if="!hideDone">
           <v-spacer />
           <v-btn variant="outlined" color="primary" @click="modelDialog = false">{{ $t('done') }}</v-btn>
         </v-card-actions>
@@ -43,10 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import SettingsPomodoro from './SettingsPomodoro.vue';
 import SettingsGeneral from './SettingsGeneral.vue';
 import SettingsTheme from './SettingsTheme.vue';
+
+const hideDone = ref(false);
 
 const props = defineProps<{ modelValue: string | boolean }>()
 const emit = defineEmits(['update:modelValue', 'update:tab'])

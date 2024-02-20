@@ -142,7 +142,12 @@ const pomodoro = usePomodoroStore();
 const timerStore = useTimerStore();
 
 const step = ref(1);
-
+const emit = defineEmits<{
+  (e: 'hideDone', hide: boolean): void
+}>()
+watch(step, (val) => {
+  emit('hideDone', val === 2);
+});
 
 // creating preset
 const newTimer = ref<Timer | null>(null);

@@ -593,9 +593,12 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
 
   async function updatePomodoroRecords() {
-    pomodoroRecords.value = (await db.pomodori.toArray())
-      .sort((a, b) => b.datetime.getTime() - a.datetime.getTime())
-      .map(p => parsePomodorDbo(p));
+    pomodoroRecords.value = (
+      await db.pomodori.orderBy('datetime')
+        .reverse()
+        .limit(500)
+        .toArray()
+    ).map(p => parsePomodorDbo(p));
   }
 
   async function addPomodoroToRecords() {
