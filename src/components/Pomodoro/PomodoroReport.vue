@@ -37,14 +37,11 @@ const props = defineProps<{
     display: grid;
     grid-template-columns: auto auto;
     gap: 0.2rem 1.2rem;
-    h2 {
-      grid-column: 1 / span 2;
-      text-align: center;
-      margin-bottom: 0.3rem;
-      font-size: 1.5rem;
-    }
     p {
       text-align: left;
+      @media (max-width: 600px) {
+        font-size: 0.7em;
+      }
     }
 
     .report-value {

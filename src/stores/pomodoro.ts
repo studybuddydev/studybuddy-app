@@ -127,8 +127,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       pomo.state = PomodoroState.TERMINATED;
 
       report.value = getPomoReport(pomo);
-      addPomodoroToRecords();
       if (pomo.endedAt > SHORT_POMO_THRESHOLD) {
+        addPomodoroToRecords();
       } else {
         report.value.shortPomo = true;
       }

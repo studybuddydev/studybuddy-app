@@ -570,6 +570,9 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
 
     h3 {
       font-size: 1.5rem;
+      @media (max-width: 600px) {
+        font-size: 0.8rem;
+      }
     }
 
     .pomopause {
