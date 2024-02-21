@@ -478,12 +478,17 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     seconds = Math.max(0, Math.floor(seconds));
 
     let secondsLeft = seconds; // Math.floor(time  / MINUTE_MULTIPLIER * 60);
-    const h = Math.floor(secondsLeft / 3600);
+    let h = Math.floor(secondsLeft / 3600);
     secondsLeft -= h * 3600;
-    const m = options.showSeconds ? Math.floor(secondsLeft / 60) : Math.round(secondsLeft / 60);
+    let m = options.showSeconds ? Math.floor(secondsLeft / 60) : Math.round(secondsLeft / 60);
     secondsLeft -= m * 60;
-    const s = Math.floor(secondsLeft);
+    let s = Math.floor(secondsLeft);
 
+    if (m >= 60) {
+      m = 0;
+      h++;
+    }
+    
     const sStr = `${s.toString().padStart(2, '0')}`;
     const mStr = `${h > 0 ? m.toString().padStart(2, '0') : m.toString()}`;
 
