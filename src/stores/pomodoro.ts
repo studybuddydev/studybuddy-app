@@ -593,7 +593,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       displayBreaks: getDisplayBreaksRecord(p),
       displayStudy: getDisplayStudyRecord(p),
       report: getPomoReport(p),
-      percentage: p.endedAt ? Math.max(100 * p.endedAt / p.end, 100) : 100,
     }
   }
 

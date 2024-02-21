@@ -194,7 +194,7 @@ const endTime = computed({
                 }) }}</p>
                 <div class="pomo-wrapper">
                   <div class="pomo-width" :style="{ width: `${(p.end / g.maxLength) * 100}%` }">
-                    <PomodoroFlex class="pomo-flex" :percentage="p.percentage ?? 100"
+                    <PomodoroFlex class="pomo-flex" :percentage="p.endedAt ? Math.max(100 * p.endedAt / p.end, 100) : 100"
                       :displayBreaks="p.displayBreaks ?? []" :displayStudy="p.displayStudy ?? []" />
                   </div>
                 </div>
