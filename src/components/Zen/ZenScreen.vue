@@ -505,6 +505,10 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
         margin-right: 3em;
         margin-top: -1.8em;
         font-size: 0.9rem;
+        @media (max-width: 600px) {
+          margin-top: -1.2em;
+          margin-right: 2em;
+        }
       }
 
       .info-welcome {
