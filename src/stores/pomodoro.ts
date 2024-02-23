@@ -267,6 +267,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       // check pausa lunga
       if (pomo.onLongBreak || currBreak.end - currBreak.start > LONG_BREAK_THRESHOLD) {
         pomo.onLongBreak = true;
+        pomo.breaksTodo = [];
+        pomo.end = now;
       }
 
     } else if (pomo.state === PomodoroState.STUDY) {                                    // STUDY
