@@ -13,6 +13,7 @@ import { onMounted, onUnmounted } from 'vue';
 import Info from '@/components/common/Info.vue';
 import minecraftSentences from '@/assets/minecraft.json';
 import LongAwayPopup from '@/components/Zen/LongAwayPopup.vue'
+import About from '@/components/Zen/About.vue'
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -24,6 +25,7 @@ const appVersion = APP_VERSION;
 const zenMode = ref(true);
 const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
+const aboutOpen = ref(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
   if (settings.settings.theme?.backgroundImg) {
     if (!pomodoro.onLongPause) {
@@ -143,6 +145,7 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
   <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
     <Settings class="settings" v-model="openSettingsTab" />
     <LongAwayPopup />
+    <v-dialog width="450" v-model="aboutOpen"> <About @close="aboutOpen = false" /> </v-dialog>
 
     <div v-if="pipSupported" class="hide" id="pomocirclepipparent">
       <div id="pomocirclepip"
@@ -159,12 +162,12 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
           <!-- top left  -->
-          <a class="top-left title blur" href="https://studybuddy.it" target="_blank">
+          <div class="top-left title blur" @click="aboutOpen = true">
             <img src="/images/logo.png" alt="logo" class="logo" />
             <h3 class="text-primary" v-if="!pomodoro.created">StudyBuddy
               <span class="bg-primary beta">BETA</span>
             </h3>
-          </a>
+          </div>
 
           <!-- top right -->
           <div class="top-right blur" v-if="!isLoading && !showPomoHistory"
@@ -201,6 +204,7 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
             </div>
             <!-- finish screen -->
             <div v-else-if="pomodoro.terminated && !pomodoro.going" class="blur rounded-box finish-box">
+              <v-icon class="close-icon" icon="mdi-close" @click="pomodoro.createPomodoro()"/>
               <div v-if="pomodoro.report?.shortPomo">
                 <p class="pause font-press text-center">{{ $t("pause.pomoDoneShort") }}</p>
                 <h3 class="text-primary font-press text-center">{{ $t("pause.goodjobShort") }}</h3>
@@ -515,6 +519,15 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
     .finish-box {
       margin: 1rem;
       padding: 1.5rem;
+      position: relative;
+      .close-icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 1em;
+      }
+
+
       @media (max-width: 600px) {
         padding: 1rem;
 
@@ -612,7 +625,7 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
     padding: 0.5rem;
     height: 5rem;
     text-decoration: none;
-
+    cursor: pointer;
     .logo {
       height: 4rem;
     }

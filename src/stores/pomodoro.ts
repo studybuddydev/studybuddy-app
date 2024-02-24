@@ -11,7 +11,7 @@ const SECONDS_MULTIPLIER = 1000;
 const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 
-const SHORT_POMO_THRESHOLD =  5 * MINUTE_MULTIPLIER;
+const SHORT_POMO_THRESHOLD =  0.01 * MINUTE_MULTIPLIER;
 const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
 
 const STOPPOMODORO_TIMEOUT = 60 * MINUTE_MULTIPLIER;
@@ -644,7 +644,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       datetime: new Date(pomo.startedAt ?? Date.now())
     }
 
-    pomodoroRecords.value.unshift(p);
+    pomodoroRecords.value.unshift(parsePomodorDbo(p));
     await db.pomodori.add(p)
     
   }
