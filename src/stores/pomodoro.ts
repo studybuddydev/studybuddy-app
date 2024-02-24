@@ -53,11 +53,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       createPomodoro();
     } else {
       const lastInteractionDelta = Date.now() - lastInteraction.value;
-      console.log('lastInteractionDelta', lastInteractionDelta);
       if (lastInteractionDelta > STOPPOMODORO_TIMEOUT) {
         longAwaitPopup.value = true;
-        console.log(lastInteractionDelta)
-        console.log(lastInteraction.value)
         longAwaitLastInteraction = lastInteraction.value;
       } else {
         resumePomodoro();
