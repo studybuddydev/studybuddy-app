@@ -14,6 +14,8 @@ const POMO_VERSION = 3;
 const SHORT_POMO_THRESHOLD =  5 * MINUTE_MULTIPLIER;
 const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
 
+const STOPPOMODORO_TIMEOUT = 1000 * 60 * 120;
+
 enum ENotification {
   BreakStart = 'pomo.wav',
   BreakDone = 'break.wav',
@@ -27,22 +29,20 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const stateStore = useStateStore();
   const db = useDBStore()
 
+  const lastInteraction = ref(+(localStorage.getItem('lastInteraction') ?? Date.now()));
+
   watch(settings.pomoSettings, () => {
     if (getCurrentPomo()?.state === PomodoroState.CREATED)
       createPomodoro();
   });
 
-
-  // const currentPomodoro = ref(stateStore.getPomodoroStatus());
-  // const pomo = computed(() => stateStore.getPomodoroStatus())
   function getCurrentPomo() {
     return stateStore.getPomodoroStatus();
   }
   let interval: number | undefined;
-  let report = ref<PomoReport | null>(null);
-  let now = ref(Date.now());
+  const report = ref<PomoReport | null>(null);
+  const now = ref(Date.now());
   init();
-
 
   // ---------- INIT ----------
   function init() {
@@ -50,7 +50,13 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     if (!pomo || pomo.version !== POMO_VERSION || pomo.state === PomodoroState.TERMINATED || pomo.state === PomodoroState.CREATED) {
       createPomodoro();
     } else {
-      interval = setInterval(tick, TICK_TIME);
+      const lastInteractionDelta = Date.now() - lastInteraction.value;
+      console.log('lastInteractionDelta', lastInteractionDelta);
+      if (lastInteractionDelta > STOPPOMODORO_TIMEOUT) {
+        createPomodoro();
+      } else {
+        interval = setInterval(tick, TICK_TIME);
+      }
     }
   }
 
@@ -104,15 +110,17 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
 
   // when you press stop you set the end time of the pomodoro and sets the state to terminated
-  function stopPomodoro() {
+  function stopPomodoro(now: number | undefined = undefined) {
     const pomo = getCurrentPomo();
     if (countdownRunning.value) {
       clearTimeout(countDownTimerout);
       countdownRunning.value = false;
       return;
     }
-
+    
     if (pomo) {
+      if (now === undefined)
+        now = getNow(pomo.startedAt);
       pomo.onLongBreak = false;
       pomo.endedAt = getNow(pomo.startedAt);
       if (pomo.state === PomodoroState.BREAK) {
@@ -194,6 +202,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
   
   function tick() {
+    interaction();
     const pomo = getCurrentPomo()
     if (pomo && (pomo.state === PomodoroState.BREAK || pomo.state === PomodoroState.STUDY)) {
       adjustPomo();
@@ -236,19 +245,19 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       }
     }
 
-    if (pomo.state === PomodoroState.BREAK) {                                             // PAUSE
+    if (pomo.state === PomodoroState.BREAK) {                           // PAUSE
       const currBreak = pomo.breaksDone[pomo.breaksDone.length - 1];    // get current break
-      if (currBreak.end) {                                              // if break is done       
-        let toSteal = now - currBreak.end;                              // time to steal from next break    
+      if (currBreak.end) {                                              // if break is done
+        let toSteal = now - currBreak.end;                              // time to steal from next break
         if (toSteal > 0) {                                              // if there is time to stea
           currBreak.end = now;                                          // set current break end to now ( if you are in a new break you are moving the break end every second)
-          if (!currBreak.soundEnd) {                                    // if sound is not played yet   
-            currBreak.soundEnd = true;                                  // set sound played to true     
-            playNotification(ENotification.BreakDone);                                // play sound 
+          if (!currBreak.soundEnd) {                                    // if sound is not played yet
+            currBreak.soundEnd = true;                                  // set sound played to true
+            playNotification(ENotification.BreakDone);                  // play sound 
           }
         }
-        while (toSteal > 0) {                                          // while there is time to steal      
-          const nextPause = pomo.breaksTodo[0];                        // get next break    
+        while (toSteal > 0) {                                          // while there is time to steal
+          const nextPause = pomo.breaksTodo[0];                        // get next break
           if (!nextPause) break;
           nextPause.start += toSteal;
 
@@ -688,6 +697,21 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       }, ms);
     }
   }
+
+  // ---------- STILL WATCHING ----------
+  function interaction() {
+    lastInteraction.value = Date.now();
+    localStorage.setItem('lastInteraction', lastInteraction.value.toString());
+  }
+  // setInterval(() => {
+  //   // const delta = Date.now() - lastInteraction.value;
+  //   // if (delta > STOPPOMODORO_TIMEOUT) {
+  //   //   stopPomodoro();
+  //   // } else if (delta > STILLWATCHING_TIMEOUT) {
+  //   //   stillWatchingPopup.value = true;
+  //   // }
+  //   localStorage.setItem('lastInteraction', lastInteraction.value.toString());
+  // }, 60000);
 
   // ---------- RETURN ----------
   return {
