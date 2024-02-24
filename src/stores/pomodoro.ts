@@ -14,7 +14,7 @@ const POMO_VERSION = 3;
 const SHORT_POMO_THRESHOLD =  5 * MINUTE_MULTIPLIER;
 const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
 
-const STOPPOMODORO_TIMEOUT = 1000 * 60 * 120;
+const STOPPOMODORO_TIMEOUT = 60 * MINUTE_MULTIPLIER;
 
 enum ENotification {
   BreakStart = 'pomo.wav',
@@ -30,7 +30,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const db = useDBStore();
 
   const lastInteraction = ref(+(localStorage.getItem('lastInteraction') ?? Date.now()));
-  const longAwaitPopup = ref(false)
+  const longAwaitPopup = ref(false);
+  let longAwaitLastInteraction = 0;
 
   watch(settings.pomoSettings, () => {
     if (getCurrentPomo()?.state === PomodoroState.CREATED)
@@ -55,6 +56,9 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       console.log('lastInteractionDelta', lastInteractionDelta);
       if (lastInteractionDelta > STOPPOMODORO_TIMEOUT) {
         longAwaitPopup.value = true;
+        console.log(lastInteractionDelta)
+        console.log(lastInteraction.value)
+        longAwaitLastInteraction = lastInteraction.value;
       } else {
         resumePomodoro();
       }
@@ -66,7 +70,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
 
   function stopAtLastInteraction() {
-    stopPomodoro(lastInteraction.value);
+    stopPomodoro(longAwaitLastInteraction);
   }
 
   // ---------- STATE ----------
@@ -119,7 +123,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
 
   // when you press stop you set the end time of the pomodoro and sets the state to terminated
-  function stopPomodoro(now: number | undefined = undefined) {
+  function stopPomodoro(lastInteraction: number | undefined = undefined) {
     const pomo = getCurrentPomo();
     if (countdownRunning.value) {
       clearTimeout(countDownTimerout);
@@ -128,10 +132,9 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     }
     
     if (pomo) {
-      if (now === undefined)
-        now = getNow(pomo.startedAt);
+      const now = lastInteraction === undefined ? getNow(pomo.startedAt) : lastInteraction - (pomo.startedAt ?? 0)
       pomo.onLongBreak = false;
-      pomo.endedAt = getNow(pomo.startedAt);
+      pomo.endedAt = now;
       if (pomo.state === PomodoroState.BREAK) {
         const lastBreak = pomo.breaksDone.pop();
         if (lastBreak) {
@@ -204,7 +207,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const now = getNow(pomo.startedAt);
     pomo.state = PomodoroState.STUDY; // set state to study
 
-    const lastBreak = pomo.breaksDone[pomo.breaksDone.length - 1];        // get last break and set the end 
+    const lastBreak = pomo.breaksDone[pomo.breaksDone.length - 1]; // get last break and set the end 
     lastBreak.end = now;
     
     saveStatus();
@@ -219,7 +222,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       if (interval)
         clearInterval(interval);
     }
-
     now.value = Date.now();
   }
 

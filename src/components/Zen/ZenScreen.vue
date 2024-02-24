@@ -12,6 +12,7 @@ import Settings from '@/components/Settings/Settings.vue';
 import { onMounted, onUnmounted } from 'vue';
 import Info from '@/components/common/Info.vue';
 import minecraftSentences from '@/assets/minecraft.json';
+import LongAwayPopup from '@/components/Zen/LongAwayPopup.vue'
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -141,6 +142,7 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
 <template>
   <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
     <Settings class="settings" v-model="openSettingsTab" />
+    <LongAwayPopup />
 
     <div v-if="pipSupported" class="hide" id="pomocirclepipparent">
       <div id="pomocirclepip"
@@ -416,7 +418,6 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
   font-size: 0.8rem;
   font-weight: bold;
 }
-
 .pomo-box-disabled {
   background-color: rgb(var(--v-theme-secondary-darken-1));
   filter: saturate(0.5);
@@ -425,7 +426,6 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
   /* Disable user interaction */
 
 }
-
 .coffee-cup {
   animation: cupOnButton 2s infinite;
 }
@@ -443,7 +443,6 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
     transform: translateY(0) rotate(0);
   }
 }
-
 .zen-screen {
   position: absolute;
   top: 0;
@@ -480,7 +479,6 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
           flex-direction: column;
         }
       }
-
       .minecraft-sentence {
         position: absolute;
         top: 0;
@@ -490,7 +488,6 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
         transform: translate(-10%, -0em) rotate(-24deg);
         animation: breath 0.5s linear infinite alternate;
       }
-
       @keyframes breath {
         0% {
           scale: 0.9;
@@ -499,7 +496,6 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
           scale: 1;
         }
       }
-
       .text-version {
         text-align: right;
         margin-right: 3em;
@@ -510,20 +506,15 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
           margin-right: 2em;
         }
       }
-
       .info-welcome {
         margin: 1rem;
         top: 0;
         right: 0;
       }
     }
-
     .finish-box {
       margin: 1rem;
       padding: 1.5rem;
-
-
-
       @media (max-width: 600px) {
         padding: 1rem;
 

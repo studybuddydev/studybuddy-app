@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="pomodoro.longAwaitPopup">
+  <v-dialog width="500" v-model="pomodoro.longAwaitPopup">
     <v-card>
       <v-card-title>
         <v-icon>mdi-clock-time-four-outline</v-icon>
@@ -9,8 +9,9 @@
         <p>Do you want to continue it?</p>
       </v-card-text>
       <v-card-actions>
-        <v-btn @click="continuePomodoro()">Continue</v-btn>
-        <v-btn @click="stopPomodoro()">Don't continue</v-btn>
+        <v-spacer />
+        <v-btn @click="continuePomodoro()">Yes</v-btn>
+        <v-btn @click="stopPomodoro()">No</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -30,6 +31,4 @@ function stopPomodoro() {
   pomodoro.stopAtLastInteraction();
   pomodoro.longAwaitPopup = false;
 }
-
-
 </script>
