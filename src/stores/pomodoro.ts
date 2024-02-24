@@ -27,9 +27,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // ---------- PROPERTIES ----------
   const settings = useSettingsStore();
   const stateStore = useStateStore();
-  const db = useDBStore()
+  const db = useDBStore();
 
   const lastInteraction = ref(+(localStorage.getItem('lastInteraction') ?? Date.now()));
+  const longAwaitPopup = ref(false)
 
   watch(settings.pomoSettings, () => {
     if (getCurrentPomo()?.state === PomodoroState.CREATED)
@@ -53,11 +54,19 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       const lastInteractionDelta = Date.now() - lastInteraction.value;
       console.log('lastInteractionDelta', lastInteractionDelta);
       if (lastInteractionDelta > STOPPOMODORO_TIMEOUT) {
-        createPomodoro();
+        longAwaitPopup.value = true;
       } else {
-        interval = setInterval(tick, TICK_TIME);
+        resumePomodoro();
       }
     }
+  }
+
+  function resumePomodoro() {
+    interval = setInterval(tick, TICK_TIME);
+  }
+
+  function stopAtLastInteraction() {
+    stopPomodoro(lastInteraction.value);
   }
 
   // ---------- STATE ----------
@@ -715,13 +724,13 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // ---------- RETURN ----------
   return {
-    createPomodoro, startPomodoro, stopPomodoro, togglePauseStudy, pause, study,
+    createPomodoro, startPomodoro, stopPomodoro, togglePauseStudy, pause, study, resumePomodoro, stopAtLastInteraction,
     getCurrentPomo, getBreaks,
     percentage, displayBreaks, displayStudy, report,
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy, onLongPause,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
     pomodoroRecords, timeFormatted, timeInTitle,
-    startCountdown, countdownRunning,
+    startCountdown, countdownRunning, longAwaitPopup,
     parseTime, parsePoints,
     deletePomodoroRecord
   }
