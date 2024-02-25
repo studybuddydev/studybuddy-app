@@ -3,7 +3,6 @@ import Dexie, { type Table } from 'dexie';
 import type { Timer, Theme, PomodoroDBO } from '@/types';
 import { defineStore } from 'pinia'
 
-
 export class StudyBuddyDB extends Dexie {
   public timer!: Table<Timer, number>;
   public themes!: Table<Theme, number>;
