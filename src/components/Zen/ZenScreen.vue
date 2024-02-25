@@ -225,7 +225,7 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
               <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen" :in-pip="false" />
               <v-btn v-if="pomodoro.going && pipSupported" density="comfortable" size="small" class="btn-pip bg-surface"
                 icon="mdi-flip-to-front" @click="pipIt()" />
-              <Info :text="$t('info.pause')" class="info-pause" />
+              <Info v-if="pomodoro.pauseing" :text="$t('info.pause')" class="info-pause" />
             </div>
             <!-- report table-->
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
