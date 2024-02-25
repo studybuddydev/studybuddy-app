@@ -8,17 +8,19 @@
 
       <div class="themes">
         <div v-for="t in themeStore.themes" :class="`theme-box ${selectedTheme?.title === t.title ? 'selected' : ''}`"
+          @mouseleave="deleteTheme(undefined)" @click="setTheme(t)"
           :style="{
             border: `2px solid ${primaryColorsMapping[t.palette ?? '']}`,
             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${t.previewImg ?? t.backgroundImg})`
-          }" @click="setTheme(t)">
+          }">
           <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
             <polygon points="0,0 30,0 30,30" :style="{
               fill: primaryColorsMapping[t.palette ?? ''],
             }" />
           </svg>
           <div class="theme-title">{{ t.title }}</div>
-          <v-icon size="x-small" icon="mdi-delete" @click.stop="themeStore.deleteTheme(t.id)" class="btn-delete" />
+          <v-icon size="x-small" icon="mdi-delete" @click.stop="deleteTheme(t.id)" class="btn-delete"
+            :color="deleteingTheme === t.id ? 'red' : 'white'" />
         </div>
       </div>
 
@@ -127,6 +129,21 @@ function saveTheme() {
   newThemeTitle.value = undefined;
   step.value = 1;
 }
+
+const deleteingTheme = ref<number | null>(null);
+function deleteTheme(id: number | undefined) {
+  if (id === undefined) {
+    deleteingTheme.value = null;
+    return;
+  }
+
+  if (deleteingTheme.value === id) {
+    deleteingTheme.value = null;
+    themeStore.deleteTheme(id);
+  } else {
+    deleteingTheme.value = id;
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -150,6 +167,10 @@ function saveTheme() {
   place-items: center;
   margin: 1.5rem 0;
   cursor: pointer;
+
+  .theme-title {
+    color: white;
+  }
 }
 
 .theme-box {

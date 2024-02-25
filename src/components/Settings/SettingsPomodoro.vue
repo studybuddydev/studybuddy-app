@@ -21,8 +21,9 @@
           <div class="pomo-presets">
             <div v-for="t in timerStore.timers"
               :class="`preset-box ${(timerSelected === t.id) ? 'bg-primary' : 'bg-background'}`" v-ripple
-              @click="setTimerPreset(t)">
-              <v-icon size="x-small" icon="mdi-delete" @click.stop="timerStore.deleteTimer(t.id)" class="btn-delete" />
+              @mouseleave="deleteTimer(undefined)" @click="setTimerPreset(t)">
+              <v-icon size="x-small" icon="mdi-delete" @click.stop="deleteTimer(t.id)" class="btn-delete"
+              :color="deletingTimer === t.id ? 'red' : undefined" />
 
               <div class="timer-card front">
                 <p class="timer-title">{{ t.title }}</p>
@@ -245,6 +246,20 @@ function setTimer() {
 }
 const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
 
+const deletingTimer = ref<number | null>(null);
+function deleteTimer(id: number | undefined) {
+  if (id === undefined) {
+    deletingTimer.value = null;
+    return;
+  }
+
+  if (deletingTimer.value === id) {
+    deletingTimer.value = null;
+    timerStore.deleteTimer(id);
+  } else {
+    deletingTimer.value = id;
+  }
+}
 </script>
 <style lang="scss" scoped>
 .timer-settings {

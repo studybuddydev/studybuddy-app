@@ -1,4 +1,5 @@
 import '@mdi/font/css/materialdesignicons.css'
+import 'font-awesome/css/font-awesome.min.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -16,6 +17,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import { fa } from 'vuetify/iconsets/fa4'
 import { themes } from '@/assets/themes'
 
 import { setupCalendar } from 'v-calendar';
@@ -23,7 +25,6 @@ import { setupCalendar } from 'v-calendar';
 import Hotjar from '@hotjar/browser';
 
 import { createAuth0 } from '@auth0/auth0-vue';
-
 
 // Hotjar
 Hotjar.init(3579956, 6);
@@ -36,7 +37,7 @@ const vuetify = createVuetify({
   icons: {
     defaultSet: 'mdi',
     aliases,
-    sets: { mdi }
+    sets: { mdi, fa }
   },
   theme: {
     defaultTheme: 'bio',

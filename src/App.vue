@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app id="inspire" class="app">
     <Menu v-if="windowWidth > 600"></Menu>
     <v-main class="main">
       <div class="main-wrapper">
@@ -60,6 +60,12 @@ watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
 </script>
 
 <style lang="scss">
+.app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .v-tooltip > .v-overlay__content {
   background-color: rgba(var(--v-theme-primary), 0.7) !important;
   color: rgb(var(--v-theme-on-primary)) !important;

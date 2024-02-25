@@ -1,3 +1,4 @@
+
 import Dexie, { type Table } from 'dexie';
 import type { Timer, Theme, PomodoroDBO } from '@/types';
 import { defineStore } from 'pinia'

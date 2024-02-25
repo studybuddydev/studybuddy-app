@@ -122,7 +122,7 @@ export interface PomodoroRecord extends Pomodoro {
   datetime: Date;
   displayBreaks?: DisplaySession[];
   displayStudy?: DisplaySession[];
-  percentage?: number;
+  // percentage?: number;
   report?: PomoReport;
 }
 
