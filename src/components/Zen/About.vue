@@ -9,7 +9,8 @@
     <v-card-text>
       <div class="card-body">
         <h3>About</h3>
-        <p>Version: {{ appVersion }}</p>
+        <p><b>Version:</b> {{ appVersion }} ({{env}})</p>
+        <p><b>Release date:</b> {{ releaseDate }}</p>
         <div class="btn-wrapper">
           <v-btn href="https://forms.gle/CtL93R1QLZswFWGK9" target="_blank" color="primary" class="btn">Send feedback
             <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
@@ -45,12 +46,29 @@
 </template>
 
 <script lang="ts" setup>
+import axios from 'axios'
+import { ref } from 'vue';
+
 const appVersion = APP_VERSION;
+const env = import.meta.env.VITE_ENV
+const releaseDate = ref('');
+
+(async () => {
+  try {
+    const res = await axios.get(`https://api.github.com/repos/studybuddydev/studybuddy-app/branches/${env}`);
+    const date = res.data?.commit?.commit?.committer?.date as string;
+    if (date) {
+      releaseDate.value = new Date(date).toLocaleDateString();
+      return;
+    }
+  } catch (error) {
+  }
+  releaseDate.value = 'NA';
+})();
 
 const emits = defineEmits<{
   (e: 'close'): void
 }>()
-console.log(import.meta.env.VITE_ENV)
 </script>
 <style scoped lang="scss">
 .title {
