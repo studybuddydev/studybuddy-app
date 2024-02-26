@@ -9,8 +9,8 @@
     <v-card-text>
       <div class="card-body">
         <h3>About</h3>
-        <p><b>Version:</b> {{ appVersion }} ({{env}})</p>
-        <p><b>Release date:</b> {{ releaseDate }}</p>
+        <p>Version: {{ appVersion }} ({{env}})</p>
+        <p>Release date: {{ releaseDate }}</p>
         <div class="btn-wrapper">
           <v-btn href="https://forms.gle/CtL93R1QLZswFWGK9" target="_blank" color="primary" class="btn">Send feedback
             <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
