@@ -631,7 +631,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   async function addPomodoroToRecords() {
     const pomo = getCurrentPomo();
-    if (!pomo) return;
+    if (!pomo) return -1;
 
     const p: PomodoroDBO = {
       end: pomo.end,
@@ -640,10 +640,9 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       freeMode: pomo.freeMode,
       datetime: new Date(pomo.startedAt ?? Date.now())
     }
-
-    pomodoroRecords.value.unshift(parsePomodorDbo(p));
-    await db.pomodori.add(p)
-    
+    const parsed = parsePomodorDbo(p);
+    parsed.id = await db.pomodori.add(p);
+    pomodoroRecords.value.unshift(parsed);
   }
   async function deletePomodoroRecord(id: number) {
     pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);

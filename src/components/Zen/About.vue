@@ -11,16 +11,16 @@
         <h3>About</h3>
         <p>Version: {{ appVersion }}</p>
         <div class="btn-wrapper">
-          <v-btn href="https://forms.gle/CtL93R1QLZswFWGK9" target="_blank" color="primary" class="btn">Send feedback <v-icon
-              class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
+          <v-btn href="https://forms.gle/CtL93R1QLZswFWGK9" target="_blank" color="primary" class="btn">Send feedback
+            <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
         </div>
         <div class="btn-wrapper">
-          <v-btn href="https://arc.net/e/1B44629B-4AA6-467A-8AC1-CAC7FCC871EA" target="_blank" color="primary" variant="outlined"
-            class="btn">What's New <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
+          <v-btn href="https://arc.net/e/1B44629B-4AA6-467A-8AC1-CAC7FCC871EA" target="_blank" color="primary"
+            variant="outlined" class="btn">What's New <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
         </div>
         <div class="btn-wrapper">
-          <v-btn href="https://studybuddy.it/" target="_blank" color="primary" class="btn" variant="outlined">About StudyBuddy <v-icon
-              class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
+          <v-btn href="https://studybuddy.it/" target="_blank" color="primary" class="btn" variant="outlined">About
+            StudyBuddy <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
         </div>
         <h3>Follow us</h3>
         <div class="social">
@@ -50,6 +50,7 @@ const appVersion = APP_VERSION;
 const emits = defineEmits<{
   (e: 'close'): void
 }>()
+console.log(import.meta.env.VITE_ENV)
 </script>
 <style scoped lang="scss">
 .title {
@@ -73,7 +74,23 @@ const emits = defineEmits<{
   img {
     width: 3em;
     height: 3em;
+  }
 
+  @media screen and (max-width: 450px) {
+    h1 {
+      margin-left: 0.2em;
+      font-size: 1.5rem;
+    }
+    img {
+      width: 2em;
+      height: 2em;
+    }
+    .beta {
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      margin-left: 0.5rem;
+      font-size: 1.5rem;
+    }
   }
 }
 
@@ -107,12 +124,16 @@ p {
   .btn-wrapper {
     width: 100%;
     padding: 0 4em;
-    
+
+    @media screen and (max-width: 450px) {
+      padding: 0;
+    }
+
     .btn {
       margin: 0.4em;
       position: relative;
       width: 100%;
-      
+
       .btn-icon {
         position: absolute;
         right: 1em;
