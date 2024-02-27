@@ -2,7 +2,6 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
-import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
 import minecraftSentences from '@/assets/minecraft.json';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
@@ -10,11 +9,10 @@ import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import Settings from '@/components/Settings/Settings.vue';
 import Info from '@/components/common/Info.vue';
 import LongAwayPopup from '@/components/Zen/LongAwayPopup.vue'
-import About from '@/components/Zen/About.vue'
 import UserBanner from '@/components/Zen/UserBanner.vue'
 import BottomBar from '@/components/Zen/BottomBar.vue'
+import About from '@/components/Zen/About.vue'
 
-const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
 
@@ -23,7 +21,6 @@ const appVersion = APP_VERSION;
 const zenMode = ref(true);
 const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
-const aboutOpen = ref(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
   if (settings.settings.theme?.backgroundImg) {
     if (!pomodoro.onLongPause) {
@@ -119,7 +116,6 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
   <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
     <Settings class="settings" v-model="openSettingsTab" />
     <LongAwayPopup />
-    <v-dialog width="450" v-model="aboutOpen"> <About @close="aboutOpen = false" /> </v-dialog>
 
     <div v-if="pipSupported" class="hide" id="pomocirclepipparent">
       <div id="pomocirclepip"
@@ -135,14 +131,7 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
       <v-scroll-y-reverse-transition>
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
-          <!-- top left  -->
-          <div class="top-left title blur" @click="aboutOpen = true">
-            <img src="/images/logo.png" alt="logo" class="logo" />
-            <h3 class="text-primary" v-if="!pomodoro.created">StudyBuddy
-              <span class="bg-primary beta">BETA</span>
-            </h3>
-          </div>
-
+          <About :show-title="!pomodoro.created" />
           <UserBanner v-if="!showPomoHistory" @open-settings-tab="event => openSettingsTab = event" />
 
           <!-- main content in the center-->
@@ -458,37 +447,12 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
 
   }
 
-  .top-left {
-    display: flex;
-    align-items: center;
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    border-radius: 1rem;
-    padding: 0.5rem;
-    height: 5rem;
-    text-decoration: none;
-    cursor: pointer;
-    .logo {
-      height: 4rem;
-    }
 
-    .beta {
-      border-radius: 0.5rem;
-      padding: 0.4em;
-      margin-right: 1em;
-    }
-
-    &:hover {
-      background-color: #FFF4;
-    }
-  }
   .btn {
     font-size: 0.8rem;
     font-weight: bold;
   }
 
 }
-
 
 </style>

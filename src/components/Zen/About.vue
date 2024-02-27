@@ -1,57 +1,76 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <div class="title">
-        <img src="/images/logo.png" alt="logo" class="logo" />
-        <h1>StudyBuddy<span class="bg-primary beta">BETA</span></h1>
-      </div>
-    </v-card-title>
-    <v-card-text>
-      <div class="card-body">
-        <h3>About</h3>
-        <p>Version: {{ appVersion }} ({{env}})</p>
-        <p>Release date: {{ releaseDate }}</p>
-        <div class="btn-wrapper">
-          <v-btn href="https://forms.gle/CtL93R1QLZswFWGK9" target="_blank" color="primary" class="btn">Send feedback
-            <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
-        </div>
-        <div class="btn-wrapper">
-          <v-btn href="https://arc.net/e/1B44629B-4AA6-467A-8AC1-CAC7FCC871EA" target="_blank" color="primary"
-            variant="outlined" class="btn">What's New <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
-        </div>
-        <div class="btn-wrapper">
-          <v-btn href="https://studybuddy.it/" target="_blank" color="primary" class="btn" variant="outlined">About
-            StudyBuddy <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
-        </div>
-        <h3>Follow us</h3>
-        <div class="social">
-          <v-btn href="https://www.instagram.com/studybuddy.ita/" target="_blank" variant="tonal" color="primary"
-            icon="fa:fa-instagram" />
-          <v-btn href="https://t.me/stubud" target="_blank" variant="tonal" color="primary" icon="fa:fa-telegram" />
-          <v-btn href="https://www.linkedin.com/company/studybuddio/about/" target="_blank" variant="tonal"
-            color="primary" icon="fa:fa-linkedin" />
-          <v-btn href="https://github.com/studybuddydev" target="_blank" variant="tonal" color="primary"
-            icon="fa:fa-github" />
-        </div>
-        <p class="text-medium-emphasis text-foot">Developed with ❤️ by the StudyBuddy Team</p>
+  <div>
+    <v-dialog width="450" v-model="aboutOpen">
+      <template v-slot:activator="{ props: activatorProps }">
 
-      </div>
+        <div class="top-left title blur" v-bind="activatorProps">
+          <img src="/images/logo.png" alt="logo" class="logo" />
+          <h3 class="text-primary" v-if="showTitle">StudyBuddy
+            <span class="bg-primary beta">BETA</span>
+          </h3>
+        </div>
 
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer />
-      <v-btn @click="emits('close')">Close</v-btn>
-    </v-card-actions>
-  </v-card>
+      </template>
+      <v-card>
+        <v-card-title>
+          <div class="title">
+            <img src="/images/logo.png" alt="logo" class="logo-about" />
+            <h1>StudyBuddy<span class="bg-primary beta">BETA</span></h1>
+          </div>
+        </v-card-title>
+        <v-card-text>
+          <div class="card-body">
+            <h3>About</h3>
+            <p>Version: {{ appVersion }} ({{ env }})</p>
+            <p>Release date: {{ releaseDate }}</p>
+            <div class="btn-wrapper">
+              <v-btn href="https://forms.gle/CtL93R1QLZswFWGK9" target="_blank" color="primary" class="btn">Send feedback
+                <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
+            </div>
+            <div class="btn-wrapper">
+              <v-btn href="https://arc.net/e/1B44629B-4AA6-467A-8AC1-CAC7FCC871EA" target="_blank" color="primary"
+                variant="outlined" class="btn">What's New <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
+            </div>
+            <div class="btn-wrapper">
+              <v-btn href="https://studybuddy.it/" target="_blank" color="primary" class="btn" variant="outlined">About
+                StudyBuddy <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
+            </div>
+            <h3>Follow us</h3>
+            <div class="social">
+              <v-btn href="https://www.instagram.com/studybuddy.ita/" target="_blank" variant="tonal" color="primary"
+                icon="fa:fa-instagram" />
+              <v-btn href="https://t.me/stubud" target="_blank" variant="tonal" color="primary" icon="fa:fa-telegram" />
+              <v-btn href="https://www.linkedin.com/company/studybuddio/about/" target="_blank" variant="tonal"
+                color="primary" icon="fa:fa-linkedin" />
+              <v-btn href="https://github.com/studybuddydev" target="_blank" variant="tonal" color="primary"
+                icon="fa:fa-github" />
+            </div>
+            <p class="text-medium-emphasis text-foot">Developed with ❤️ by the StudyBuddy Team</p>
+
+          </div>
+
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn @click="aboutOpen = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import axios from 'axios'
 import { ref } from 'vue';
 
+const aboutOpen = ref(false);
 const appVersion = APP_VERSION;
 const env = import.meta.env.VITE_ENV
 const releaseDate = ref('');
+
+const props = defineProps<{
+  showTitle: boolean;
+}>();
 
 (async () => {
   try {
@@ -66,11 +85,35 @@ const releaseDate = ref('');
   releaseDate.value = 'NA';
 })();
 
-const emits = defineEmits<{
-  (e: 'close'): void
-}>()
 </script>
 <style scoped lang="scss">
+.top-left {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  height: 5rem;
+  text-decoration: none;
+  cursor: pointer;
+
+  .logo {
+    height: 4rem;
+  }
+
+  .beta {
+    border-radius: 0.5rem;
+    padding: 0.4em;
+    margin-right: 1em;
+  }
+
+  &:hover {
+    background-color: #FFF4;
+  }
+}
+
 .title {
   display: flex;
   align-items: center;
@@ -89,7 +132,7 @@ const emits = defineEmits<{
     font-size: 2rem;
   }
 
-  img {
+  .logo-about {
     width: 3em;
     height: 3em;
   }
@@ -99,10 +142,12 @@ const emits = defineEmits<{
       margin-left: 0.2em;
       font-size: 1.5rem;
     }
-    img {
+
+    .logo-about {
       width: 2em;
       height: 2em;
     }
+
     .beta {
       border-radius: 0.5rem;
       padding: 0.5rem;
