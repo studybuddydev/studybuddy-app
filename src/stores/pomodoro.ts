@@ -73,7 +73,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   // ---------- STATE ----------
 
   // set up pomodoro ( a study session using the data from the settings), this method modify the currentPomodoro object
-  function createPomodoro() {
+  function createPomodoro() { // X
     clearStuff();
     const free = !!settings.pomoSettings.freeMode;
     const totalLength   = free ? 0 : settings.pomoSettings.totalLength * MINUTE_MULTIPLIER;
@@ -106,7 +106,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     }
   }
 
-  function _startPomodoro() {
+  function _startPomodoro() { // X
     let pomo = getCurrentPomo();
     if (!pomo || pomo.state === PomodoroState.TERMINATED) {
       createPomodoro();
@@ -210,7 +210,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     saveStatus();
   }
   
-  function tick() {
+  function tick() { // X
     interaction();
     const pomo = getCurrentPomo()
     if (pomo && (pomo.state === PomodoroState.BREAK || pomo.state === PomodoroState.STUDY)) {
@@ -219,7 +219,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       if (interval)
         clearInterval(interval);
     }
-    now.value = Date.now();
+    now.value = Date.now(); // TOMOVE
   }
 
   function adjustPomo() {
