@@ -62,19 +62,26 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 
           <div class="main-content">
             <StartPage v-if="pomodoro.created && !pomodoro.going" />
-            <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going" :short-pomo="!!pomodoro.report?.shortPomo"
-              :points="(pomodoro.report?.points ?? 0)" @create-pomodoro="pomodoro.createPomodoro()" />
+            <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going"
+              :short-pomo="!!pomodoro.report?.shortPomo"
+              :points="(pomodoro.report?.points ?? 0)"
+              @create-pomodoro="pomodoro.createPomodoro()" />
             <PomodoroPip
               v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
-              :zen-style="zenStyle" :hide-time="settings.generalSettings.hideTime" />
+              :zen-style="zenStyle"
+              :hide-time="settings.generalSettings.hideTime" />
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
             <ZenActions @show-history="showPomoHistory = true" />
           </div>
         </div>
       </v-scroll-y-reverse-transition>
     </div>
-    <BottomBar :zen-mode="zenMode" :show-pomo-history="showPomoHistory" @set-zen-mode="zenMode = $event"
-      @set-show-pomo-history="showPomoHistory = $event" @open-settings-tab="openSettingsTab = $event" />
+    <BottomBar
+      :zen-mode="zenMode"
+      :show-pomo-history="showPomoHistory"
+      @set-zen-mode="zenMode = $event"
+      @set-show-pomo-history="showPomoHistory = $event"
+      @open-settings-tab="openSettingsTab = $event" />
   </div>
 </template>
 
