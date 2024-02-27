@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="500" v-model="modelDialog">
+  <v-dialog width="500" v-model="modelDialog" class="settings">
     <v-card>
       <v-toolbar dark color="primary">
         <v-btn icon dark @click="modelDialog = false"> <v-icon>mdi-close</v-icon> </v-btn>
@@ -61,3 +61,9 @@ const modelTab = computed({
   set(value) { return emit('update:modelValue', value) }
 })
 </script>
+
+<style scoped lang="scss">
+.settings {
+  z-index: 2000;
+}
+</style>

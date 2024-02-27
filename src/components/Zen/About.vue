@@ -3,7 +3,7 @@
     <v-dialog width="450" v-model="aboutOpen">
       <template v-slot:activator="{ props: activatorProps }">
 
-        <div class="top-left title blur" v-bind="activatorProps">
+        <div class="sb-title blur" v-bind="activatorProps">
           <img src="/images/logo.png" alt="logo" class="logo" />
           <h3 class="text-primary" v-if="showTitle">StudyBuddy
             <span class="bg-primary beta">BETA</span>
@@ -11,7 +11,7 @@
         </div>
 
       </template>
-      <v-card>
+      <v-card class="about">
         <v-card-title>
           <div class="title">
             <img src="/images/logo.png" alt="logo" class="logo-about" />
@@ -87,12 +87,9 @@ const props = defineProps<{
 
 </script>
 <style scoped lang="scss">
-.top-left {
+.sb-title {
   display: flex;
   align-items: center;
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
   border-radius: 1rem;
   padding: 0.5rem;
   height: 5rem;
@@ -114,100 +111,102 @@ const props = defineProps<{
   }
 }
 
-.title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1em;
-
-  .beta {
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    margin-left: 0.5rem;
-    font-size: 2rem;
-  }
-
-  h1 {
-    margin-left: 0.2em;
-    font-size: 2rem;
-  }
-
-  .logo-about {
-    width: 3em;
-    height: 3em;
-  }
-
-  @media screen and (max-width: 450px) {
-    h1 {
-      margin-left: 0.2em;
-      font-size: 1.5rem;
-    }
-
-    .logo-about {
-      width: 2em;
-      height: 2em;
-    }
+.about {
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1em;
 
     .beta {
       border-radius: 0.5rem;
       padding: 0.5rem;
       margin-left: 0.5rem;
-      font-size: 1.5rem;
+      font-size: 2rem;
     }
-  }
-}
 
-h3 {
-  text-align: center;
-  margin-top: 1.2em;
-  margin-bottom: 0.3em;
-  font-size: 1.4em;
-}
+    h1 {
+      margin-left: 0.2em;
+      font-size: 2rem;
+    }
 
-p {
-  padding: 0.2em 0.4em;
-  text-align: center;
-}
-
-.social {
-  display: flex;
-  justify-content: center;
-
-  >* {
-    margin: 0.4em;
-  }
-}
-
-.card-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-
-  .btn-wrapper {
-    width: 100%;
-    padding: 0 4em;
+    .logo-about {
+      width: 3em;
+      height: 3em;
+    }
 
     @media screen and (max-width: 450px) {
-      padding: 0;
-    }
+      h1 {
+        margin-left: 0.2em;
+        font-size: 1.5rem;
+      }
 
-    .btn {
-      margin: 0.4em;
-      position: relative;
-      width: 100%;
+      .logo-about {
+        width: 2em;
+        height: 2em;
+      }
 
-      .btn-icon {
-        position: absolute;
-        right: 1em;
+      .beta {
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        margin-left: 0.5rem;
+        font-size: 1.5rem;
       }
     }
   }
-}
 
-.text-foot {
-  font-size: 0.8em;
-  margin-top: 2.3em;
-  text-align: center;
+  h3 {
+    text-align: center;
+    margin-top: 1.2em;
+    margin-bottom: 0.3em;
+    font-size: 1.4em;
+  }
+
+  p {
+    padding: 0.2em 0.4em;
+    text-align: center;
+  }
+
+  .social {
+    display: flex;
+    justify-content: center;
+
+    >* {
+      margin: 0.4em;
+    }
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+
+    .btn-wrapper {
+      width: 100%;
+      padding: 0 4em;
+
+      @media screen and (max-width: 450px) {
+        padding: 0;
+      }
+
+      .btn {
+        margin: 0.4em;
+        position: relative;
+        width: 100%;
+
+        .btn-icon {
+          position: absolute;
+          right: 1em;
+        }
+      }
+    }
+  }
+
+  .text-foot {
+    font-size: 0.8em;
+    margin-top: 2.3em;
+    text-align: center;
+  }
 }
 </style>

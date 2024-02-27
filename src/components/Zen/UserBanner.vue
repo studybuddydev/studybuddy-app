@@ -1,5 +1,5 @@
 <template>
-  <div class="top-right blur" v-if="!isLoading"
+  <div class="user-banner blur" v-if="!isLoading"
     @click="!isAuthenticated ? loginWithRedirect() : emit('openSettingsTab', 'general')">
     <p class="logged-user" v-if="offline">
       <v-icon v-ripple size="x-large" class="icon" icon="mdi-wifi-off" color="warning" />
@@ -40,15 +40,12 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
-.top-right {
+.user-banner {
   display: flex;
   align-items: center;
   justify-items: center;
   padding: 0.5em;
   border-radius: 1em;
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
   transition: background-color 0.1s ease-in-out;
   height: 5rem;
   overflow: hidden;
@@ -89,7 +86,7 @@ onUnmounted(() => {
   }
 }
 
-.top-right:after {
+.user-banner:after {
   content: '';
   top: 0;
   transform: translateX(100%);

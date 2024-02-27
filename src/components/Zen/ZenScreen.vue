@@ -1,22 +1,20 @@
-
 <script lang="ts" setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
-import minecraftSentences from '@/assets/minecraft.json';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import PomodoroPip from '@/components/Pomodoro/PomodoroPip.vue';
 import Settings from '@/components/Settings/Settings.vue';
-import Info from '@/components/common/Info.vue';
 import LongAwayPopup from '@/components/Zen/LongAwayPopup.vue'
 import UserBanner from '@/components/Zen/UserBanner.vue'
 import BottomBar from '@/components/Zen/BottomBar.vue'
 import About from '@/components/Zen/About.vue'
+import StartPage from '@/components/Zen/StartPage.vue'
+import FinishPage from '@/components/Zen/FinishPage.vue'
+import ZenActions from '@/components/Zen/ZenActions.vue'
 
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
-
-const appVersion = APP_VERSION;
 
 const zenMode = ref(true);
 const showPomoHistory = ref(false);
@@ -34,107 +32,49 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
   return {};
 });
 
-
 const onKeyUp = (e: KeyboardEvent) => {
-  if (e.code === 'Space') {
-    // if (pomodoro.going)
-    //   pomodoro.togglePauseStudy();
-    // else
-    //   pomodoro.startPomodoro();
-  } else if (e.code === 'Escape') {
+  if (e.code === 'Escape') {
     zenMode.value = !zenMode.value;
     if (!zenMode.value) {
       showPomoHistory.value = false;
     }
-
   }
 };
 
 onMounted(() => { window.addEventListener('keyup', onKeyUp) });
 onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
-
-
-const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() * minecraftSentences.sentences.length)];
-
-
 </script>
 
 <template>
   <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
-    <Settings class="settings" v-model="openSettingsTab" />
+    <Settings v-model="openSettingsTab" />
     <LongAwayPopup />
+
     <div transition="fade-transition">
       <v-scroll-y-reverse-transition>
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
-          <About :show-title="!pomodoro.created" />
-          <UserBanner v-if="!showPomoHistory" @open-settings-tab="event => openSettingsTab = event" />
+          <About class="top-left"
+            :show-title="!pomodoro.created" />
+          <UserBanner class="top-right"
+            v-if="!showPomoHistory"
+            @open-settings-tab="event => openSettingsTab = event" />
 
-          <!-- main content in the center-->
           <div class="main-content">
-
-            <!-- welcome screen -->
-            <div v-if="pomodoro.created && !pomodoro.going" class="created-box">
-              <div class="blur rounded-box pa-7 created-box-wrapper">
-                <Info :text="$t('info.welcome')" class="info-welcome" />
-                <p class="text-primary font-press">{{ $t("pause.welcome") }}</p>
-                <div class="title">
-                  <img src="/images/logo.png" alt="logo" class='logo' />
-                  <h1 class="text-primary">StudyBuddy</h1>
-                </div>
-                <h6 class="text-version">v{{ appVersion }}</h6>
-                <h3 class="minecraft-sentence font-press">{{ minecraftSentence }}</h3>
-              </div>
-            </div>
-            <!-- finish screen -->
-            <div v-else-if="pomodoro.terminated && !pomodoro.going" class="blur rounded-box finish-box">
-              <v-icon class="close-icon" icon="mdi-close" @click="pomodoro.createPomodoro()" />
-              <div v-if="pomodoro.report?.shortPomo">
-                <p class="pause font-press text-center">{{ $t("pause.pomoDoneShort") }}</p>
-                <h3 class="text-primary font-press text-center">{{ $t("pause.goodjobShort") }}</h3>
-              </div>
-              <div v-else-if="(pomodoro.report?.points ?? 0) < 0.5">
-                <p class="pause font-press text-center">{{ $t("pause.pomoDoneBad") }}</p>
-                <h2 class="text-primary font-press text-center">{{ $t("pause.goodjobBad") }}</h2>
-              </div>
-              <div v-else>
-                <p class="pause font-press text-center">{{ $t("pause.pomoDone") }}</p>
-                <h2 class="text-primary font-press text-center">{{ $t("pause.goodjob") }}</h2>
-              </div>
-            </div>
-
-            <PomodoroPip v-if="
-              (pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))
-              " :zen-style="zenStyle"
-              :hide-time="settings.generalSettings.hideTime" />
-
-            <!-- report table-->
+            <StartPage v-if="pomodoro.created && !pomodoro.going" />
+            <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going" :short-pomo="!!pomodoro.report?.shortPomo"
+              :points="(pomodoro.report?.points ?? 0)" @create-pomodoro="pomodoro.createPomodoro()" />
+            <PomodoroPip
+              v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
+              :zen-style="zenStyle" :hide-time="settings.generalSettings.hideTime" />
             <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
-
-            <div class="pomopause">
-              <v-btn class='btn bg-primary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
-                @click="showPomoHistory = true">
-                <v-icon class="icon" icon="mdi-folder-clock-outline" />
-              </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start'
-                v-if="!pomodoro.going && !pomodoro.report?.shortPomo" @click="pomodoro.startPomodoro()">
-                <span>{{ $t("pause.study") }}</span>
-                <v-icon class="icon" icon="mdi-play" />
-              </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start'
-                v-if="!pomodoro.going && pomodoro.report?.shortPomo" @click="pomodoro.createPomodoro()">
-                <span>{{ $t("backHome") }}</span>
-                <v-icon class="icon" icon="mdi-home" />
-              </v-btn>
-            </div>
-
+            <ZenActions @show-history="showPomoHistory = true" />
           </div>
         </div>
       </v-scroll-y-reverse-transition>
     </div>
     <BottomBar :zen-mode="zenMode" :show-pomo-history="showPomoHistory" @set-zen-mode="zenMode = $event"
       @set-show-pomo-history="showPomoHistory = $event" @open-settings-tab="openSettingsTab = $event" />
-
   </div>
 </template>
 
@@ -144,14 +84,6 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
 @font-face {
   font-family: 'casio';
   src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
-}
-
-.rounded-box {
-  border-radius: 1rem;
-}
-
-.settings {
-  z-index: 2000;
 }
 
 .zen-screen {
@@ -166,6 +98,18 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
   background-repeat: no-repeat;
   background-position: center;
 
+  .top-left {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .top-right {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+
   .main-content {
     height: 100vh;
     width: 100vw;
@@ -174,169 +118,10 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
     justify-content: center;
     flex-direction: column;
 
-    // margin-top: -6em;         // check this
     @media (max-width: 600px) {
       justify-content: flex-start;
       margin-top: 20vh;
     }
-
-    .created-box {
-      .created-box-wrapper {
-        position: relative;
-      }
-
-      @media (max-width: 600px) {
-        .title {
-          display: flex;
-          flex-direction: column;
-        }
-      }
-
-      .minecraft-sentence {
-        position: absolute;
-        top: 0;
-        left: 0;
-        font-size: 1rem;
-        // color: rgba(var(--v-theme-on-primary));
-        transform: translate(-10%, -0em) rotate(-24deg);
-        animation: breath 0.5s linear infinite alternate;
-      }
-
-      @keyframes breath {
-        0% {
-          scale: 0.9;
-        }
-
-        100% {
-          scale: 1;
-        }
-      }
-
-      .text-version {
-        text-align: right;
-        margin-right: 3em;
-        margin-top: -1.8em;
-        font-size: 0.9rem;
-
-        @media (max-width: 600px) {
-          margin-top: -1.2em;
-          margin-right: 2em;
-        }
-      }
-
-      .info-welcome {
-        margin: 1rem;
-        top: 0;
-        right: 0;
-      }
-    }
-
-    .finish-box {
-      margin: 1rem;
-      padding: 1.5rem;
-      position: relative;
-
-      .close-icon {
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: 1em;
-      }
-
-
-      @media (max-width: 600px) {
-        padding: 1rem;
-
-        p {
-          font-size: 0.7rem;
-        }
-
-        h2 {
-          font-size: 1rem;
-        }
-      }
-    }
-
-    .btn-main-start {
-      width: auto;
-      margin-left: 1em;
-    }
-
-    .btn-main {
-      height: 3rem;
-      margin: 0.5rem;
-    }
-
-    .btn-study {
-      width: 11rem;
-      font-size: 1em;
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      max-width: 700px;
-    }
-
-    h1 {
-      font-size: 5rem;
-
-      @media (max-width: 600px) {
-        font-size: 3rem;
-      }
-    }
-
-    h2 {
-      font-size: 3rem;
-      font-weight: 900;
-    }
-
-    h3 {
-      font-size: 1.5rem;
-
-      @media (max-width: 600px) {
-        font-size: 0.8rem;
-      }
-    }
-
-    .pomopause {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: row;
-      margin-top: 1em;
-    }
-
-    .title {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: row;
-
-      img {
-        height: 7rem;
-        margin-right: 0.5em;
-
-        @media (max-width: 600px) {
-          display: none;
-        }
-      }
-    }
-
-    p {
-      max-width: 700px;
-      text-align: center;
-      font-size: 1rem;
-    }
-
   }
-
-
-  .btn {
-    font-size: 0.8rem;
-    font-weight: bold;
-  }
-
 }
 </style>
