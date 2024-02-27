@@ -1,19 +1,19 @@
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
+import minecraftSentences from '@/assets/minecraft.json';
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
 import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import Settings from '@/components/Settings/Settings.vue';
-import { onMounted, onUnmounted } from 'vue';
 import Info from '@/components/common/Info.vue';
-import minecraftSentences from '@/assets/minecraft.json';
 import LongAwayPopup from '@/components/Zen/LongAwayPopup.vue'
 import About from '@/components/Zen/About.vue'
+import UserBanner from '@/components/Zen/UserBanner.vue'
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -106,8 +106,6 @@ async function pipIt() {
 
 }
 
-const offline = ref(!navigator.onLine);
-
 const onKeyUp = (e: KeyboardEvent) => {
   if (e.code === 'Space') {
     // if (pomodoro.going)
@@ -122,19 +120,10 @@ const onKeyUp = (e: KeyboardEvent) => {
     
   }
 };
-const setOffline = () => offline.value = !navigator.onLine;
 
-onMounted(() => {
-  window.addEventListener('online', () => setOffline);
-  window.addEventListener('offline', () => setOffline);
-  window.addEventListener('keyup', onKeyUp);
+onMounted(() => { window.addEventListener('keyup', onKeyUp) });
+onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 
-});
-onUnmounted(() => {
-  window.removeEventListener('online', () => setOffline);
-  window.removeEventListener('offline', () => setOffline);
-  window.removeEventListener('keyup', onKeyUp);
-});
 
 const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() * minecraftSentences.sentences.length)];
 
@@ -169,22 +158,7 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
             </h3>
           </div>
 
-          <!-- top right -->
-          <div class="top-right blur" v-if="!isLoading && !showPomoHistory"
-            @click="!isAuthenticated ? loginWithRedirect() : openSettingsTab = 'general'">
-            <p class="logged-user" v-if="offline">
-              <v-icon v-ripple size="x-large" class="icon" icon="mdi-wifi-off" color="warning" />
-              <span class="text">Offline</span>
-            </p>
-            <p v-else-if="isAuthenticated" class="logged-user">
-              <span class="text">{{ user?.given_name ?? user?.nickname }}</span>
-              <span><v-avatar :image="user?.picture" /></span>
-            </p>
-            <p class="login-button" v-else>
-              <v-icon v-ripple size="x-large" class="icon" icon="mdi-account" />
-              <span class="text">Login</span>
-            </p>
-          </div>
+          <UserBanner v-if="!showPomoHistory" @open-settings-tab="event => openSettingsTab = event" />
 
           <!-- main content in the center-->
           <div class="main-content">
@@ -372,6 +346,7 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
 }
 
 
+// TODO Blur
 .blur {
   background-color: rgba(var(--v-theme-background));
   transition: background-color 0.2s ease-in-out;
@@ -640,56 +615,6 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
       background-color: #FFF4;
     }
   }
-
-  .top-right {
-    display: flex;
-    align-items: center;
-    justify-items: center;
-    padding: 0.5em;
-    border-radius: 1em;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    transition: background-color 0.1s ease-in-out;
-    height: 5rem;
-    overflow: hidden;
-    font-family: 'Press Start 2P', Arial, Helvetica, sans-serif;
-
-    .icon {
-      display: none;
-    }
-
-    @media (max-width: 600px) {
-      .text {
-        display: none;
-      }
-
-      .icon {
-        display: block;
-      }
-    }
-
-    &:hover {
-      background-color: #FFF4;
-      cursor: pointer;
-    }
-
-    .login-button {
-      padding: 0 1rem;
-    }
-
-    .logged-user {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: row;
-
-      span {
-        padding: 0 0.5rem;
-      }
-    }
-  }
-
   .btn {
     font-size: 0.8rem;
     font-weight: bold;
