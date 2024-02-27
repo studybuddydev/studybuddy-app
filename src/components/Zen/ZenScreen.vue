@@ -5,20 +5,18 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
 import minecraftSentences from '@/assets/minecraft.json';
-import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
-import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import Settings from '@/components/Settings/Settings.vue';
 import Info from '@/components/common/Info.vue';
 import LongAwayPopup from '@/components/Zen/LongAwayPopup.vue'
 import About from '@/components/Zen/About.vue'
 import UserBanner from '@/components/Zen/UserBanner.vue'
+import BottomBar from '@/components/Zen/BottomBar.vue'
 
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
-const terminatePomoDialog = ref(false);
 
 const appVersion = APP_VERSION;
 
@@ -42,21 +40,8 @@ const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }
 const isPipped = ref(false);
 const pipSupported = computed(() => (window as any).documentPictureInPicture);
 
-function stopPomodoro() {
-  pomodoro.stopPomodoro();
-  zenMode.value = true;
-}
-function pausePomodoro() {
-  pomodoro.togglePauseStudy();
-  zenMode.value = true;
-}
 
-function toggleZenMode() {
-  zenMode.value = !zenMode.value;
-  if (!zenMode.value && pomodoro.pauseing) {
-    pomodoro.togglePauseStudy();
-  }
-}
+
 
 async function pipIt() {
   const player = document.querySelector("#pomocirclepip");
@@ -225,67 +210,15 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
         </div>
       </v-scroll-y-reverse-transition>
 
-      <v-dialog v-model="terminatePomoDialog" width="auto">
-        <v-card :text="$t('zen.confirm')">
-          <v-card-actions>
-            <v-spacer />
-            <v-btn @click="terminatePomoDialog = false">{{ $t("no") }}</v-btn>
-            <v-btn color="primary" @click="stopPomodoro(); terminatePomoDialog = false">{{ $t("yes") }}</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </div>
-    <div class="bottom-bar">
-      <div class="quick-settings" v-if="zenMode">
-        <v-btn density="comfortable" class="btn-edit btn-edit-main bg-background" icon="mdi-cog" size="large"
-          @click="openSettingsTab = pomodoro.going ? 'theme' : 'pomodoro'">
-          <v-icon class="icon" icon="mdi-cog" size="large" />
-          </v-btn>
+    <BottomBar
+      :zen-mode="zenMode"
+      :show-pomo-history="showPomoHistory"
+      @set-zen-mode="zenMode = $event"
+      @set-show-pomo-history="showPomoHistory = $event"
+      @open-settings-tab="openSettingsTab = $event"
+    />
 
-      </div>
-      <div :class="`pull-up-panel blur ${zenMode ? '' : 'pull-up-panel-zenmode'} ${showPomoHistory ? 'no-frost' : ''}`">
-        <div class="handle" v-ripple @click="showPomoHistory = false" v-if="showPomoHistory">
-          <v-icon icon="mdi-close" />
-        </div>
-        <div class="handle handle-zen" v-ripple @click="toggleZenMode()" v-else>
-          <v-icon :icon="zenMode ? 'mdi-chevron-down' : 'mdi-chevron-up'" />
-        </div>
-
-        <div class="pomodoro-bar">
-          <div class="button-wrapper font-press pomo-left" v-if="pomodoro.going">
-            <div>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()"
-                v-if="pomodoro.created || pomodoro.terminated">
-                <v-icon class="icon" icon="mdi-play" />
-              </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => pausePomodoro()"
-                v-else-if="pomodoro.studing">
-                <v-icon class="icon" icon="mdi-pause" />
-              </v-btn>
-              <v-btn class='btn bg-secondary pomo-btn pomo-box pomo-box-disabled' v-else>
-                <v-icon class="icon coffee-cup" icon="mdi-coffee" />
-              </v-btn>
-              <!-- <PomodoroController class="pomo-box pomo-controller bottom-box" v-if="!pomodoro.getReport.reportDone && (!pomodoroGoing || !pomodoro.status.isBreak)"/>
-            <v-btn class="btn bg-error btn-endsession bottom-box" @click="endSession()" v-if="pomodoroGoing && pomodoro.status.isBreak">{{ $t("pause.endSession") }}</v-btn> -->
-            </div>
-          </div>
-          <PomodoroFlex class="pomo-flex" :percentage="pomodoro.created ? 100 : pomodoro.percentage" :displayBreaks="pomodoro.displayBreaks"
-            :displayStudy="pomodoro.displayStudy" :main-pomo="true" />
-          <div class="button-wrapper pomo-right" v-if="pomodoro.going">
-            <div class="time-button-wrapper">
-              <div class="pomo-box pomo-time font-casio">
-                <p v-if="!settings.generalSettings.hideTime" v-html="pomodoro.timeSinceStart"></p>
-              </div>
-              <div :class="(pomodoro.terminated && !pomodoro.countdownRunning) ? 'pomo-box pomo-stop pomo-box-disabled' : 'pomo-box pomo-stop'"
-                @click="(pomodoro.freeMode || !pomodoro.done) ? terminatePomoDialog = true : stopPomodoro()">
-                <v-icon icon="mdi-stop" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <PomodoroHistory :open="showPomoHistory" @start-pomodoro="pomodoro.startPomodoro(); showPomoHistory = false" />
-      </div>
-    </div>
   </div>
 </template>
 
@@ -347,23 +280,7 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
 
 
 // TODO Blur
-.blur {
-  background-color: rgba(var(--v-theme-background));
-  transition: background-color 0.2s ease-in-out;
-}
 
-.img-background {
-  .blur {
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    background-color: rgba(var(--v-theme-background), 0.7);
-
-    &.no-frost {
-      background-color: rgb(var(--v-theme-background));
-
-    }
-  }
-}
 
 .rounded-box {
   border-radius: 1rem;
@@ -373,55 +290,6 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
   z-index: 2000;
 }
 
-.pomo-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  .icon {
-    font-size: 2rem;
-    transition: font-size 0.1s ease-in-out;
-  }
-
-  .text {
-    margin-top: 0.2em;
-  }
-}
-
-.pomo-box {
-  height: 3rem !important;
-  line-height: 3rem;
-  width: 100%;
-  border-radius: 1rem;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-.pomo-box-disabled {
-  background-color: rgb(var(--v-theme-secondary-darken-1));
-  filter: saturate(0.5);
-  opacity: 0.5;
-  pointer-events: none;
-  /* Disable user interaction */
-
-}
-.coffee-cup {
-  animation: cupOnButton 2s infinite;
-}
-
-@keyframes cupOnButton {
-  0% {
-    transform: translateY(0) rotate(0);
-  }
-
-  50% {
-    transform: translateY(-5px) rotate(5deg);
-  }
-
-  100% {
-    transform: translateY(0) rotate(0);
-  }
-}
 .zen-screen {
   position: absolute;
   top: 0;
@@ -622,206 +490,5 @@ const minecraftSentence = minecraftSentences.sentences[Math.floor(Math.random() 
 
 }
 
-.bottom-bar {
-  pointer-events: none;
-  position: fixed;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  z-index: 1500;
-  justify-content: flex-end;
 
-  .quick-settings {
-    pointer-events: auto;
-    align-self: flex-end;
-    margin: 1rem;
-  }
-
-
-  .pull-up-panel {
-    padding-top: 0.8rem;
-    pointer-events: auto;
-    width: 100vw;
-    border-radius: 1em 1em 0 0;
-    display: flex;
-    flex-direction: column;
-
-    .handle {
-      align-self: center;
-      margin: 0 0.8rem 0 0.8rem;
-      cursor: pointer;
-      width: calc(100% - 1rem);
-      height: 1.6rem;
-      border-radius: 0.8rem;
-      display: flex;
-      justify-content: center;
-      background-color: #FFFFFF00;
-      transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
-
-      &:hover {
-        background-color: #FFFFFF10;
-      }
-    }
-
-    @media screen and (max-width: 600px) {
-      .handle-zen {
-        display: none;
-      }
-    }
-
-    .pomodoro-bar {
-      transition: padding 0.1s ease-in-out;
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      padding: 0.5rem 1rem 1.5rem;
-
-      @media (max-width: 600px) {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto auto;
-
-        .pomo-left {
-          grid-column: 1;
-          grid-row: 1;
-          justify-self: start;
-        }
-
-        .pomo-right {
-          grid-column: 2;
-          grid-row: 1;
-          justify-self: end;
-        }
-
-        .pomo-flex {
-          grid-column: 1 / span 2;
-          grid-row: 2;
-        }
-      }
-
-      .pomo-flex {
-        height: 2rem;
-        margin: 0.5rem 0;
-      }
-
-      .pomo-flex,
-      .pomo-box {
-        transition: height 0.1s ease-in-out, margin 0.1s ease-in-out;
-      }
-
-      .button-wrapper {
-        width: 10rem;
-        margin: 0 0.5rem;
-
-        @media (max-width: 600px) {
-          width: 100%;
-          margin: 0;
-          padding: 0.2rem;
-        }
-
-        .time-button-wrapper {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-      }
-
-      .pomo-time {
-        width: 70%;
-        display: flex;
-        background-color: rgb(var(--v-theme-secondary-darken-1));
-        border-radius: 1rem 0 0 1rem;
-
-        p {
-          width: 100%;
-          text-align: center;
-        }
-      }
-
-      .pomo-stop {
-        width: 27%;
-        border-radius: 0 1rem 1rem 0;
-        background-color: rgb(var(--v-theme-error));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: 3%;
-        font-size: 1.2rem;
-        transition: background-color 0.1s ease-in-out;
-        cursor: pointer;
-
-        &:hover {
-          background-color: rgb(var(--v-theme-apple));
-        }
-      }
-    }
-
-    &.pull-up-panel-zenmode {
-      .handle {
-        margin: 0.3rem 0.3rem 0 0.3rem;
-        height: 1.2rem;
-        border-radius: 0.4rem;
-        font-size: 0.8rem;
-      }
-
-      .pomodoro-bar {
-        padding: 0.5rem 1rem 0.5rem;
-      }
-
-      .pomodoro-bar {
-        .pomo-box {
-          height: 2rem !important;
-          line-height: 2rem;
-        }
-
-        .pomo-flex {
-          height: 1.4rem;
-          margin: 0.3rem 0;
-        }
-      }
-    }
-  }
-}
-
-
-.top-right:after {
-  content: '';
-  top: 0;
-  transform: translateX(100%);
-  width: 100%;
-  height: 5rem;
-  position: absolute;
-  z-index: 1;
-  animation: slide 1.2s;
-  /* 
-  CSS Gradient - complete browser support from http://www.colorzilla.com/gradient-editor/ 
-  */
-  background: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
-  /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(50%, rgba(255, 255, 255, 0.8)), color-stop(99%, rgba(128, 186, 232, 0)), color-stop(100%, rgba(125, 185, 232, 0)));
-  /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
-  /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
-  /* Opera 11.10+ */
-  background: -ms-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
-  /* IE10+ */
-  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
-  /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#007db9e8', GradientType=1);
-  /* IE6-9 */
-}
-
-@keyframes slide {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  50% {
-    transform: translateX(100%);
-  }
-
-  100% {
-    transform: translateX(-100%);
-  }
-}</style>
+</style>
