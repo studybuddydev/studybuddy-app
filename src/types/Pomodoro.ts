@@ -223,7 +223,7 @@ export default class Pomodoro {
         this.pomo.end = now;
         if (!this.pomo.soundEnd) {
           this.pomo.soundEnd = true;
-          // playNotification(ENotification.PomodoroDone);
+          this.sendNotification(ENotification.PomodoroDone);
         }
       }
     }
@@ -237,7 +237,7 @@ export default class Pomodoro {
           currBreak.end = now;                                          // set current break end to now ( if you are in a new break you are moving the break end every second)
           if (!currBreak.soundEnd) {                                    // if sound is not played yet
             currBreak.soundEnd = true;                                  // set sound played to true
-            // playNotification(ENotification.BreakDone);                  // play sound 
+            this.sendNotification(ENotification.BreakDone);                  // play sound 
           }
         }
         while (toSteal > 0) {                                          // while there is time to steal
@@ -270,7 +270,7 @@ export default class Pomodoro {
 
       if (nextBreak && curEndProgress > nextBreak.start && !nextBreak.soundStart) {
         nextBreak.soundStart = true;
-        // playNotification(ENotification.BreakStart);
+        this.sendNotification(ENotification.BreakStart);
       }
 
       if (nextBreak && curEndProgress > nextBreak.start) {
