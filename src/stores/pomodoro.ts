@@ -480,7 +480,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       oneSoundLimit = true;
       setTimeout(() => oneSoundLimit = false, 1000);
     }
-
   }
 
   const defaultOptions = {

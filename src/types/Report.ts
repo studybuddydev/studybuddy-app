@@ -1,12 +1,10 @@
 import type { Pomodoro, PomoReport } from '.';
 
 export default class Report {
-  
   private report: PomoReport;
   private WEIGHT_EFFICIENCY = 0.7;
   private WEIGHT_DURATION = 0.3;
   private OPTIMAL_STUDY_RATIO = 5/6;
-
 
   constructor(pomo?: Pomodoro) {
     if (!pomo) {
@@ -40,5 +38,9 @@ export default class Report {
       nrBreaks: pomo.breaksDone.length,
       points: Math.max(Math.min(score, 1), 0)
     };
+  }
+
+  public getReport() {
+    return this.report;
   }
 }
