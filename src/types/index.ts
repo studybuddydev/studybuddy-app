@@ -99,14 +99,14 @@ export type PomoReport = {
   shortPomo?: boolean;
 }
 
-export type Pomodoro = {
+export type PomodoroBase = {
   end: number;
   endedAt?: number;
   breaksDone: Break[];
   freeMode: boolean;
 }
 
-export interface PomodotoStatus extends Pomodoro {
+export interface PomodotoStatus extends PomodoroBase {
   // lastTick: number;
   version: number;
   startedAt?: number;
@@ -117,7 +117,7 @@ export interface PomodotoStatus extends Pomodoro {
   originalEnd?: number;
 }
 
-export interface PomodoroRecord extends Pomodoro {
+export interface PomodoroRecord extends PomodoroBase {
   id?: number;
   datetime: Date;
   displayBreaks?: DisplaySession[];
@@ -173,7 +173,7 @@ export interface Timer {
   freeMode?: boolean;
 }
 
-export interface PomodoroDBO extends Pomodoro {
+export interface PomodoroDBO extends PomodoroBase {
   id?: number;
   datetime: Date;
 }

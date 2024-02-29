@@ -1,4 +1,4 @@
-import type { Pomodoro, PomoReport } from '.';
+import type { PomodoroBase, PomoReport } from '.';
 
 export default class Report {
   private report: PomoReport;
@@ -6,7 +6,7 @@ export default class Report {
   private WEIGHT_DURATION = 0.3;
   private OPTIMAL_STUDY_RATIO = 5/6;
 
-  constructor(pomo?: Pomodoro) {
+  constructor(pomo?: PomodoroBase) {
     if (!pomo) {
       this.report = { timeTotal: 0, timeStudy: 0, timeBreak: 0, nrBreaks: 0, points: 0 };
       return;

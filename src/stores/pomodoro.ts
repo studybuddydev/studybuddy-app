@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplaySession, type PomodoroRecord, type Pomodoro, type PomodoroDBO } from '@/types';
+import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplaySession, type PomodoroRecord, type PomodoroBase, type PomodoroDBO } from '@/types';
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { computed, ref, watch } from 'vue';
@@ -33,7 +33,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const longAwaitPopup = ref(false);
   let longAwaitLastInteraction = 0;
 
-  watch(settings.pomoSettings, () => {
+  watch(settings.pomoSettings, () => { // TODO
     if (getCurrentPomo()?.state === PomodoroState.CREATED)
       createPomodoro();
   });
@@ -350,7 +350,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     ];
   }
 
-  function parseDisplaySession(pomo: Pomodoro, l: { start: number, end?: number, done?: boolean }[], now: number): DisplaySession[] {
+  function parseDisplaySession(pomo: PomodoroBase, l: { start: number, end?: number, done?: boolean }[], now: number): DisplaySession[] {
     const showSeconds = settings.generalSettings.showSeconds;
     return l.filter(b => b.end).map((b, i) => {
       const startPerc = Math.min(100, 100 * b.start / pomo.end);
@@ -379,7 +379,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     return parseDisplaySession(pomo, breaks, 0);
   }
 
-  function getDisplayStudyRecord(pomo: Pomodoro, now: number = -1): DisplaySession[] {
+  function getDisplayStudyRecord(pomo: PomodoroBase, now: number = -1): DisplaySession[] {
     const res: { start: number, end?: number }[] = [{ start: 0 }];
     for (const b of pomo.breaksDone) {
       res.at(-1)!.end = b.start;
@@ -406,7 +406,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const WEIGHT_DURATION = 0.3;
   const OPTIMAL_STUDY_RATIO = 5/6;
 
-  function getPomoReport(pomo: Pomodoro | undefined): PomoReport {
+  function getPomoReport(pomo: PomodoroBase | undefined): PomoReport {
     if (!pomo) return { timeTotal: 0, timeStudy: 0, timeBreak: 0, nrBreaks: 0, points: 0 };
     const timeBreak = pomo.breaksDone.reduce((acc, curr) => acc + ((curr.end ?? curr.start) - curr.start), 0);
     const timeTotal = pomo.endedAt ?? pomo.end;

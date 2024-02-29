@@ -1,3 +1,4 @@
+import { ref } from 'vue';
 import { type PomodotoStatus, type PomodoroSettings, type Break, PomodoroState } from '.';
 
 const TICK_TIME = 100;
@@ -6,7 +7,6 @@ const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 const SHORT_POMO_THRESHOLD = 5 * MINUTE_MULTIPLIER;
 const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
-const STOPPOMODORO_TIMEOUT = 60 * MINUTE_MULTIPLIER;
 
 export enum ENotification {
   BreakStart = 'pomo.wav',
@@ -16,19 +16,40 @@ export enum ENotification {
 
 export default class Pomodoro {
 
+
+  private now = ref(Date.now());
+
   private pomo: PomodotoStatus;
   private settings: PomodoroSettings;
+  private newSettings: PomodoroSettings | null = null;
   private interval: number | null = null;
   private sendNotification = (type: ENotification) => { };
+  private sendInteraction = () => { };
 
-  constructor(pomoSettings: PomodoroSettings) {
+  constructor(pomoSettings: PomodoroSettings, prevPomo?: PomodotoStatus) {
     this.settings = { ...pomoSettings };
+    this.pomo = prevPomo ?? this.getNewPomodoro();
+  }
+
+  public settingsUpdated(newPomoSettings: PomodoroSettings) {
+    this.newSettings = newPomoSettings;
+    if (this.isCreated()) {
+      this.pomo = this.getNewPomodoro();
+    }
+  }
+
+  public reset() {
     this.pomo = this.getNewPomodoro();
+    this.sendInteraction();
   }
 
   public setNotificationSubscriber(subscriber: (type: ENotification) => void) {
     this.sendNotification = subscriber;
   }
+  public setSendInteraction(subscriber: () => void) {
+    this.sendInteraction = subscriber;
+  }
+
 
   public getCurrentStatePercentage() {
     const now = this.getNow();
@@ -44,6 +65,26 @@ export default class Pomodoro {
       nextPoint = currBreak?.end ?? now;
     }
     return Math.min((now - lastPoint) / (nextPoint - lastPoint), 100);
+  }
+
+  public getNowInSeconds() {
+    return this.getNow() / SECONDS_MULTIPLIER;
+  }
+  public getStartLastPauseInSeconds() {
+    const s = this.pomo.breaksDone.at(-1)?.start
+    return s ? s / SECONDS_MULTIPLIER : null;
+  }
+  public getStartLastStudyInSeconds() {
+    return this.pomo.breaksDone.at(-1)?.end ?? 0  / SECONDS_MULTIPLIER;
+  }
+  public static toSeconds(time: number) {
+    return time / SECONDS_MULTIPLIER
+  }
+
+  public isShortPomo() {
+    if (this.isTerminated() && this.pomo.endedAt)
+      return this.pomo.endedAt <= SHORT_POMO_THRESHOLD;
+    return false;
   }
 
   public isCreated() {
@@ -79,8 +120,17 @@ export default class Pomodoro {
   public isDone() {
     return this.pomo.end <= this.getNow();
   }
+  public isFreeMode() {
+    return this.pomo.freeMode ?? false;
+  }
 
   private getNewPomodoro(): PomodotoStatus {
+    this.clear();
+    if (this.newSettings) {
+      this.settings = this.newSettings;
+      this.newSettings = null;
+    }
+
     const free = this.settings.freeMode;
     const totalLength = free ? 0 : this.settings.totalLength * MINUTE_MULTIPLIER;
     const breaksLength = free ? 0 : this.settings.breaksLength * MINUTE_MULTIPLIER;
@@ -110,18 +160,26 @@ export default class Pomodoro {
     ];
   }
 
-  public startPomodoro() {
+  public resume() {
+    this.clear();
+    this.interval = setInterval(() => this.tick(), TICK_TIME);
+    this.sendInteraction();
+  }
+
+  public start() {
     if (this.pomo.state === PomodoroState.TERMINATED) {
       this.pomo = this.getNewPomodoro();
     }
     this.pomo.startedAt = Date.now();
     this.pomo.state = PomodoroState.STUDY;
     this.pomo.originalEnd = this.pomo.end;
-    this.interval = setInterval(() => this.tick(), TICK_TIME);
+    this.resume();
   }
 
-  public stopPomodoro(lastInteraction: number | undefined = undefined) {
-    const now = lastInteraction === undefined ? this.getNow() : this.getNow(lastInteraction);
+  public stop(lastInteraction: number | undefined = undefined) {
+    this.clear()
+
+    const now = lastInteraction === undefined ? this.getNow() : lastInteraction - (this.pomo.startedAt ?? 0);
     this.pomo.onLongBreak = false;
     this.pomo.endedAt = now;
     if (this.pomo.state === PomodoroState.BREAK) {
@@ -134,6 +192,7 @@ export default class Pomodoro {
       }
     }
     this.pomo.state = PomodoroState.TERMINATED;
+    this.sendInteraction();
   }
 
   public togglePauseStudy() {
@@ -144,7 +203,7 @@ export default class Pomodoro {
     }
   }
 
-  private pause() {
+  public pause() {
     this.adjustPomo();
 
     const now = this.getNow();
@@ -158,21 +217,31 @@ export default class Pomodoro {
     } else {
       this.pomo.breaksDone.push({ start: now, end: now, soundStart: true, soundEnd: true });     // create new break
     }
+    this.sendInteraction();
   }
 
-  // start the study ending a pause 
-  private study() {
+  public study() {
+    if (this.pomo.onLongBreak) {
+      this.stop();
+      this.start();
+      return;
+    }
+    
     this.adjustPomo();
 
-    const now = this.getNow(this.pomo.startedAt);
+    const now = this.getNow();
     this.pomo.state = PomodoroState.STUDY; // set state to study
 
     const lastBreak = this.pomo.breaksDone[this.pomo.breaksDone.length - 1]; // get last break and set the end 
     lastBreak.end = now;
+    this.sendInteraction();
   }
 
-  private getNow(now: number = Date.now()) {
-    return now - (this.pomo.startedAt ?? 0);
+  public getNow() {
+    return this.now.value - (this.pomo.startedAt ?? 0);
+  }
+  public getPomo() {
+    return this.pomo;
   }
 
   private tick() {
@@ -181,9 +250,10 @@ export default class Pomodoro {
       this.pomo.state === PomodoroState.STUDY) {
       this.adjustPomo();
     } else {
-      if (this.interval)
-        clearInterval(this.interval);
+      this.clear()
     }
+    
+    this.now.value = Date.now(); // TOMOVE
   }
 
   private generateBreaks(remainingLenght: number, breaksLength: number, nrOfBreaks: number) {
