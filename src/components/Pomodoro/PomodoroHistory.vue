@@ -7,6 +7,7 @@ import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import { ref } from 'vue';
 import { useAuth0 } from "@auth0/auth0-vue";
+import * as reportUtils from '@/utils/report';
 
 const { isAuthenticated, loginWithRedirect } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -183,7 +184,7 @@ const endTime = computed({
             <PomodoroFlex class="pomo-flex pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary"
               :displayStudy="[]" :percentage="100" />
             <p class="lenght-header"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
-            <p :class="getPointsColorClass(g.points)">{{ pomodoro.parsePoints(g.points) }}%</p>
+            <p :class="getPointsColorClass(g.points)">{{ reportUtils.parsePoints(g.points) }}%</p>
           </div>
 
           <div class="pomo-infos" v-if="openDay === key">
@@ -199,7 +200,7 @@ const endTime = computed({
                   </div>
                 </div>
                 <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, timeFormat) }}</p>
-                <p :class="getPointsColorClass(p.report?.points ?? 0)">{{ pomodoro.parsePoints(p.report?.points ?? 0) }}%
+                <p :class="getPointsColorClass(p.report?.points ?? 0)">{{ reportUtils.parsePoints(p.report?.points ?? 0) }}%
                 </p>
               </div>
 

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { PomoReport } from '@/types';
 import { usePomodoroStore } from "@/stores/pomodoro";
+import * as reportUtils from '@/utils/report';
 
 const pomodoro = usePomodoroStore();
 const props = defineProps<{
@@ -20,7 +21,7 @@ const props = defineProps<{
       <p>{{ $t("pause.pauseNumber") }}</p>
       <p class="report-value">{{ report.nrBreaks }}</p>
       <p class="report-total">{{ $t("pause.score") }}</p>
-      <p class="report-value report-total">{{ pomodoro.parsePoints(report.points) }}%</p>
+      <p class="report-value report-total">{{ reportUtils.parsePoints(report.points) }}%</p>
     </div>
   </div>
 </template>
