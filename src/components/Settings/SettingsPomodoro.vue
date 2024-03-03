@@ -174,7 +174,7 @@ function saveTimer() {
 }
 
 const newTimerTitle = computed(() =>
-  newTimer.value?.title ? 'Title' : `${newTimer.value?.studyLength}\\${newTimer.value?.breakLength}`
+  newTimer.value?.title ? 'Title' : `${newTimer.value?.studyLength}/${newTimer.value?.breakLength}`
 );
 
 

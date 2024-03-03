@@ -15,6 +15,7 @@
     </div>
   </div>
 </template>
+
 <script lang="ts" setup>
 const props = defineProps<{
   shortPomo: boolean;
@@ -24,6 +25,7 @@ const emit = defineEmits<{
   (e: 'create-pomodoro'): void
 }>();
 </script>
+
 <style scoped lang="scss">
 .finish-box {
   margin: 1rem;
@@ -38,6 +40,9 @@ const emit = defineEmits<{
     padding: 1em;
   }
 
+  h2 {
+    font-size: 3rem;
+  }
 
   @media (max-width: 600px) {
     padding: 1rem;

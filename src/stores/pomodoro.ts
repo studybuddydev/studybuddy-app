@@ -387,7 +387,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const pomo = getCurrentPomo()
     if (!pomo) return '0:00';
     const start = pomo.startedAt ? Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER) : 0;
-    return timeFormatted(start);
+    return timeUtils.timeFormatted(start);
   }
   function timeInCurrentBreakFormatted(html: boolean = true, showSeconds: boolean = true) {
     const pomo = getCurrentPomo()
@@ -395,7 +395,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     if (!pomo || !startLastPause) return '0:00';
     const startS = Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER)
     const startLastPauseS = Math.floor(startLastPause / SECONDS_MULTIPLIER)
-    return timeFormatted(startS - startLastPauseS, { html, showSeconds });
+    return timeUtils.timeFormatted(startS - startLastPauseS, { html, showSeconds });
   }
   function timeInCurrentStudyFormatted(html: boolean = true, showSeconds: boolean = true) {
     const pomo = getCurrentPomo()
@@ -403,7 +403,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const startLastStudy = pomo?.breaksDone.at(-1)?.end ?? 0;
     const startS = Math.floor(getNow(pomo.startedAt) / SECONDS_MULTIPLIER)
     const startLastStudyS = Math.floor(startLastStudy / SECONDS_MULTIPLIER)
-    return timeFormatted(startS - startLastStudyS, { html, showSeconds });
+    return timeUtils.timeFormatted(startS - startLastStudyS, { html, showSeconds });
   }
   function timeFormatted(seconds: number, options: {
     html?: boolean,
