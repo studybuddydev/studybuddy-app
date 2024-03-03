@@ -5,20 +5,26 @@
         :class="zenStyle.backgroundImage ? 'pomodoro-circle-component-on-pip-wrapper-wrapper img-background' : 'pomodoro-circle-component-on-pip-wrapper-wrapper'"
         :style="zenStyle">
         <div class="pomodoro-circle-component-on-pip-wrapper">
-          <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-pip" :in-pip="true" />
+          <div class="pomodoro-circle-component pomodoro-circle-component-on-pip">
+            <MiniTimer />
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="pomodoro-circle-component-on-zen-wrapper" v-if="!isPipped && (pomodoro.countdownRunning || (pomodoro.going && (!props.hideTime || pomodoro.pauseing)))">
+    <div class="pomodoro-circle-component-on-zen-wrapper"
+      v-if="!isPipped && (pomodoro.countdownRunning || (pomodoro.going && (!props.hideTime || pomodoro.pauseing)))">
       <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen" :in-pip="false" />
-      <v-btn v-if="pipSupported" density="comfortable" size="small" class="btn-pip bg-surface" icon="mdi-flip-to-front" @click="pipIt()" />
+      <v-btn v-if="pipSupported" density="comfortable" size="small" class="btn-pip bg-surface" icon="mdi-flip-to-front"
+        @click="pipIt()" />
       <Info v-if="pomodoro.pauseing" :text="$t('info.pause')" class="info-pause" />
     </div>
   </div>
 </template>
+
 <script lang="ts" setup>
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
+import MiniTimer from '@/components/Pomodoro/MiniTimer.vue';
 import Info from '@/components/common/Info.vue';
 import { ref } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
@@ -112,9 +118,8 @@ async function pipIt() {
   background-position: center;
 
   .pomodoro-circle-component-on-pip-wrapper {
-    width: 100vmin;
-    height: 100vmin;
-    padding: 1rem;
+    width: 100vw;
+    height: 100vh;
 
     .pomodoro-circle-component-on-pip {
       height: 100%;

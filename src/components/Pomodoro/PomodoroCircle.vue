@@ -47,7 +47,6 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
 import { useElementSize } from '@vueuse/core'
 import { ref } from 'vue';
-import Info from '@/components/common/Info.vue'
 import { computed } from 'vue';
 
 const el = ref(null)
