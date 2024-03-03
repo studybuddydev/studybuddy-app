@@ -20,12 +20,22 @@
       <p><span class="text-primary">{{ $t("pause.break") }}</span></p>
       <p> <span v-html="pomodoro.timeInCurrentBreak"></span></p>
     </div>
+    <div class="pomodoro-bar">
+      <PomodoroFlex
+        class="pomo-flex"
+        :percentage="pomodoro.created ? 100 : pomodoro.percentage"
+        :displayBreaks="pomodoro.displayBreaks"
+        :displayStudy="pomodoro.displayStudy"
+        :main-pomo="true"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useTheme } from 'vuetify'
+import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
@@ -47,8 +57,7 @@ function getCircleColor() {
   padding: 1rem;
   display: grid;
   grid-template-columns: 1fr 2fr;
-  grid-template-rows: 1fr;
-  gap: 1rem;
+  grid-template-rows: 1fr 2em;
   width: 100%;
   height: 100%;
   min-width: 50vw;
@@ -56,11 +65,15 @@ function getCircleColor() {
   align-content: center;
 }
 
+.pomodoro-bar {
+  grid-column-start: 1;
+  grid-column-end: span 2;
+}
+
 .clock {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2em;
 }
 
 .progress-bar {
@@ -96,11 +109,29 @@ function getCircleColor() {
     font-size: 7vw;
   }
 }
-@media screen and (max-width: 700px) {
-  .clock {
-    padding: 0;
+
+@mixin small  {
+  .mini {
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 1fr;
+  }
+  
+  .pomodoro-bar {
+    display: none;
   }
 }
+
+
+@media screen and (max-width: 600px) {
+  @include small;
+}
+@media screen and (max-height: 250px) {
+  @include small;
+}
+
+@media screen and (max-height: 500px) {
+}
+
 
 @media screen and (orientation: portrait) and (max-width: 400px) {
   .mini {
@@ -114,7 +145,6 @@ function getCircleColor() {
 
   .info {
     grid-row: 1;
-    padding: 1em;
 
     .study-time {
       font-size: 11vw;
