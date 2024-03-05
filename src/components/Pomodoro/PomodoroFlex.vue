@@ -96,7 +96,6 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
   align-items: center;
   overflow: hidden;
   border-radius: 1rem;
-  margin: 0.5em 0;
   height: 100%;
   background-color: #2222220A;
   // background-color: rgba(var(--v-theme-surface));

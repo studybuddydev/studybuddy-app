@@ -11,7 +11,7 @@
         </div>
       </div>
     </div>
-
+    
     <div class="pomodoro-circle-component-on-zen-wrapper"
       v-if="!isPipped && (pomodoro.countdownRunning || (pomodoro.going && (!props.hideTime || pomodoro.pauseing)))">
       <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen" :in-pip="false" />

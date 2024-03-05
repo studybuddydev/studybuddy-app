@@ -9,7 +9,8 @@
         transparent 360deg)`
       }">
         <v-btn icon="mdi-noicon" class="btn-toggle" @click="pomodoro.togglePauseStudy()">
-          <v-icon class="btn-icon" :icon="pomodoro.studing ? 'mdi-pause' : 'mdi-play'" />
+          <v-icon class="btn-icon" :icon="pomodoro.studing ? 'mdi-play' : 'mdi-pause'" />
+
         </v-btn>
       </div>
     </div>
@@ -21,13 +22,8 @@
       <p> <span v-html="pomodoro.timeInCurrentBreak"></span></p>
     </div>
     <div class="pomodoro-bar">
-      <PomodoroFlex
-        class="pomo-flex"
-        :percentage="pomodoro.created ? 100 : pomodoro.percentage"
-        :displayBreaks="pomodoro.displayBreaks"
-        :displayStudy="pomodoro.displayStudy"
-        :main-pomo="true"
-      />
+      <PomodoroFlex class="pomo-flex" :percentage="pomodoro.created ? 100 : pomodoro.percentage"
+        :displayBreaks="pomodoro.displayBreaks" :displayStudy="pomodoro.displayStudy" :main-pomo="true" />
     </div>
   </div>
 </template>
@@ -52,12 +48,11 @@ function getCircleColor() {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mini {
-  padding: 1rem;
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-template-rows: 1fr 2em;
+  grid-template-columns: auto auto;
+  grid-template-rows: 1fr 4rem;
   width: 100%;
   height: 100%;
   min-width: 50vw;
@@ -68,18 +63,19 @@ function getCircleColor() {
 .pomodoro-bar {
   grid-column-start: 1;
   grid-column-end: span 2;
+  margin: 1rem;
 }
 
 .clock {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 1rem;
+  height: 100%;
 }
 
 .progress-bar {
-  width: 100%;
-  height: auto;
-  max-height: 100%;
+  height: min(100%, 33vw);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   display: grid;
@@ -90,7 +86,7 @@ function getCircleColor() {
     height: 61.8% !important;
 
     .btn-icon {
-      font-size: 13vw;
+      font-size: min(20vw, 15vh);
     }
   }
 }
@@ -102,20 +98,20 @@ function getCircleColor() {
   align-items: center;
 
   .study-time {
-    font-size: 7vw;
+    font-size: min(11vw, 30vh);
   }
 
   &.info-pause p {
-    font-size: 7vw;
+    font-size: min(11vw, 30vh);
   }
 }
 
-@mixin small  {
+@mixin small {
   .mini {
     grid-template-columns: 1fr 2fr;
     grid-template-rows: 1fr;
   }
-  
+
   .pomodoro-bar {
     display: none;
   }
@@ -125,11 +121,9 @@ function getCircleColor() {
 @media screen and (max-width: 600px) {
   @include small;
 }
+
 @media screen and (max-height: 250px) {
   @include small;
-}
-
-@media screen and (max-height: 500px) {
 }
 
 
@@ -139,20 +133,12 @@ function getCircleColor() {
     grid-template-rows: 1fr 2fr;
   }
 
-  .btn-icon {
-    font-size: 30vw;
+  .progress-bar {
+    height: min(calc(100vw - 2rem), 66vh);
   }
 
   .info {
     grid-row: 1;
-
-    .study-time {
-      font-size: 11vw;
-    }
-
-    &.info-pause p {
-      font-size: 11vw;
-    }
   }
 }
 
@@ -161,6 +147,7 @@ function getCircleColor() {
     height: 100px;
     width: 100px;
   }
+
   .btn-icon {
     font-size: 20vw;
   }
