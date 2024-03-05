@@ -15,9 +15,9 @@
       </div>
     </div>
     <div class="info info-study" v-if="pomodoro.studing">
-      <p class="study-time font-press" v-html="pomodoro.timeInCurrentStudy"></p>
+      <p class="study-time font-casio" v-html="pomodoro.timeInCurrentStudy"></p>
     </div>
-    <div class="info font-press info-pause" v-else-if="pomodoro.pauseing">
+    <div class="info font-casio info-pause" v-else-if="pomodoro.pauseing">
       <p><span class="text-primary">{{ $t("pause.break") }}</span></p>
       <p> <span v-html="pomodoro.timeInCurrentBreak"></span></p>
     </div>
