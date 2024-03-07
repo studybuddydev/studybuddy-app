@@ -15,6 +15,13 @@ export class StudyBuddyDB extends Dexie {
       themes: "++id,title,palette,backgroundColor,backgroundImg",
       pomodori: "++id,endedAt,end,freeMode,datetime"
     });
+    // this.version(4).stores({
+    //   timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
+    //   themes: "++id,title,palette,backgroundColor,backgroundImg",
+    //   pomodori: "++id,endedAt,end,freeMode,datetime",
+    // }).upgrade(async trans => {
+    //   // const pippo = await trans.table('themes').update(2, { backgroundImg: '/diocantante.jpg' });
+    // });
 
     this.on("populate", () => {
       // Timers

@@ -9,7 +9,7 @@
         transparent 360deg)`
       }">
         <v-btn icon="mdi-noicon" class="btn-toggle" @click="pomodoro.togglePauseStudy()">
-          <v-icon class="btn-icon" :icon="pomodoro.studing ? 'mdi-play' : 'mdi-pause'" />
+          <v-icon class="btn-icon" :icon="pomodoro.studing ? 'mdi-pause' : 'mdi-play'" />
 
         </v-btn>
       </div>
@@ -17,9 +17,9 @@
     <div class="info info-study" v-if="pomodoro.studing">
       <p class="study-time font-casio" v-html="pomodoro.timeInCurrentStudy"></p>
     </div>
-    <div class="info font-casio info-pause" v-else-if="pomodoro.pauseing">
-      <p><span class="text-primary">{{ $t("pause.break") }}</span></p>
-      <p> <span v-html="pomodoro.timeInCurrentBreak"></span></p>
+    <div class="info info-pause" v-else-if="pomodoro.pauseing">
+      <p class="font-press text-primary">{{ $t("pause.break") }}</p>
+      <p class="font-casio"> <span v-html="pomodoro.timeInCurrentBreak"></span></p>
     </div>
     <div class="pomodoro-bar">
       <PomodoroFlex class="pomo-flex" :percentage="pomodoro.created ? 100 : pomodoro.percentage"
@@ -98,11 +98,11 @@ function getCircleColor() {
   align-items: center;
 
   .study-time {
-    font-size: min(11vw, 30vh);
+    font-size: min(10vw, 28vh);
   }
 
   &.info-pause p {
-    font-size: min(11vw, 30vh);
+    font-size: min(8vw, 23vh);
   }
 }
 

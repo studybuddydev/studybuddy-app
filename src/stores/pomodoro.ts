@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplaySession, type PomodoroRecord, type PomodoroBase, type PomodoroDBO } from '@/types';
+import { type PomoReport, type Break, PomodoroState, type PomodotoStatus, type DisplaySession, type PomodoroRecord, type PomodoroDBO } from '@/types';
 import { useStateStore } from "@/stores/state";
 import { useSettingsStore } from "@/stores/settings";
 import { computed, ref, watch } from 'vue';

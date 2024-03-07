@@ -43,6 +43,10 @@ export const useSettingsStore = defineStore('settings', () => {
   settings.value.theme = { ...defaultSettings.theme, ...settings.value.theme } as ThemeSettings;
   settings.value.pomodoro = { ...defaultSettings.pomodoro, ...settings.value.pomodoro } as PomodoroSettings;
 
+  // if (settings.value.theme.backgroundImg === 'https://images.alphacoders.com/133/1332707.png') {
+  //   settings.value.theme.backgroundImg = 'https://images.pexels.com/photos/3996362/pexels-photo-3996362.jpeg';
+  // }
+
   const generalSettings = computed(() => settings.value.general);
   const pomoSettings = computed(() => settings.value.pomodoro);
   const themeSettings = computed(() => settings.value.theme);
