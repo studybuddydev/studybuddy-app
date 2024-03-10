@@ -15,7 +15,7 @@ export class StudyBuddyDB extends Dexie {
       themes: "++id,title,palette,backgroundColor,backgroundImg",
       pomodori: "++id,endedAt,end,freeMode,datetime"
     });
-    this.version(5).stores({
+    this.version(4).stores({
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,backgroundColor,backgroundImg",
       pomodori: "++id,datetime,tag"
