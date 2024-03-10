@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
 import type { DisplaySession, PomodoroRecord } from '@/types';
+import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import { ref } from 'vue';
@@ -12,6 +13,7 @@ import * as reportUtils from '@/utils/report';
 const { isAuthenticated, loginWithRedirect } = useAuth0();
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
+const pomoDB = usePomodoroDBStore();
 const openDetailsPomoId = ref(-1);
 const openDay = ref('');
 const deletePomoDialog = ref(false);
@@ -40,7 +42,7 @@ const dailyPomodoriGroups = computed(() => {
   const groups: Record<string, DayGroup> = {};
   const monthGroup: Record<string, Record<string, DayGroup>> = {};
 
-  pomodoro.pomodoroRecords.forEach((pomodoroRecord) => {
+  pomoDB.pomodoroRecords.forEach((pomodoroRecord) => {
     const dateKey = new Date(pomodoroRecord.datetime).toLocaleDateString();
     if (!groups[dateKey]) {
       groups[dateKey] = {
@@ -165,7 +167,7 @@ const endTime = computed({
       </v-btn>
     </div>
 
-    <div v-else-if="pomodoro.pomodoroRecords.length === 0" class="no-history">
+    <div v-else-if="pomoDB.pomodoroRecords.length === 0" class="no-history">
       <p class="text-center text-medium-emphasis">{{ $t('history.noHistory') }}</p>
       <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
         @click="$emit('startPomodoro')">
@@ -205,6 +207,10 @@ const endTime = computed({
               </div>
 
               <div class="pomo-details" v-if="p.id === openDetailsPomoId">
+                <div class="tags">
+                  <v-combobox chips label="Tag" hide-details :items="pomoDB.tags" v-model="p.tag"
+                    @update:modelValue="(newTag: string) => { p.id && pomoDB.updateTag(p.id, newTag) }" />
+                </div>
                 <PomodoroReport class="report" :report="p.report" v-if="p.report" />
                 <v-btn color="error" class="pomo-delete-btn"
                   @click="deletingPomoId = p.id; deletePomoDialog = true;"><v-icon icon="mdi-delete" /></v-btn>
@@ -214,7 +220,7 @@ const endTime = computed({
         </div>
       </div>
       <div class="day-settings">
-        <p class="text-center">Adjust your day</p>
+        <p class="text-center">{{ $t('history.sliderTitle') }}</p>
         <v-range-slider v-model="startEndTime" class="align-center slider" color="primary" :max="32" :min="0" :step="1"
           hide-details>
           <template v-slot:prepend>
@@ -233,7 +239,7 @@ const endTime = computed({
           <v-card-actions>
             <v-spacer />
             <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
-            <v-btn color="primary" @click="pomodoro.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
+            <v-btn color="primary" @click="pomoDB.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
               $t("yes") }}</v-btn>
           </v-card-actions>
         </v-card>
@@ -279,6 +285,7 @@ const endTime = computed({
 
   .btn {
     margin: 1em;
+    width: auto;
   }
 }
 
@@ -375,7 +382,14 @@ const endTime = computed({
     .pomo-details {
       display: flex;
       justify-content: center;
+      align-items: center;
       position: relative;
+      flex-direction: column;
+
+      .tags {
+        margin: 1em;
+        min-width: 20rem;
+      }
 
       .report {
         margin: 1em;

@@ -15,14 +15,13 @@ export class StudyBuddyDB extends Dexie {
       themes: "++id,title,palette,backgroundColor,backgroundImg",
       pomodori: "++id,endedAt,end,freeMode,datetime"
     });
-    // this.version(4).stores({
-    //   timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
-    //   themes: "++id,title,palette,backgroundColor,backgroundImg",
-    //   pomodori: "++id,endedAt,end,freeMode,datetime",
-    // }).upgrade(async trans => {
-    //   // const pippo = await trans.table('themes').update(2, { backgroundImg: '/diocantante.jpg' });
-    // });
-
+    this.version(5).stores({
+      timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
+      themes: "++id,title,palette,backgroundColor,backgroundImg",
+      pomodori: "++id,datetime,tag"
+    }).upgrade(async trans => {
+      await trans.table('themes').update(2, { title: 'City', palette: 'nord', previewImg: '/images/themes/City.webp', backgroundImg: 'https://images.pexels.com/photos/936722/pexels-photo-936722.jpeg' });
+    });
     this.on("populate", () => {
       // Timers
       this.timer.bulkAdd([
@@ -33,7 +32,7 @@ export class StudyBuddyDB extends Dexie {
       //Themes
       this.themes.bulkAdd([
         { title: 'Forest',      palette: 'bio',       previewImg: '/images/themes/Forest.webp',      backgroundImg: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' },
-        { title: 'Clouds',      palette: 'nord',      previewImg: '/images/themes/Clouds.webp',      backgroundImg: 'https://images.alphacoders.com/133/1332707.png' },
+        { title: 'City',        palette: 'nord',      previewImg: '/images/themes/City.webp',        backgroundImg: 'https://images.pexels.com/photos/936722/pexels-photo-936722.jpeg' },
         { title: 'Aurora',      palette: 'blallo',    previewImg: '/images/themes/Aurora.webp',      backgroundImg: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg' },
         { title: 'Space',       palette: 'gptnight',  previewImg: '/images/themes/Space.webp',       backgroundImg: 'https://live.staticflickr.com/65535/52259221868_b757d6cdea_k_d.jpg' },
         { title: 'Mountain',    palette: 'nord',      previewImg: '/images/themes/Mountain.webp',    backgroundImg: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' },

@@ -62,9 +62,10 @@ h3 {
     top: 0;
     left: 0;
     font-size: 1rem;
-    // color: rgba(var(--v-theme-on-primary));
+    color: rgba(var(--v-theme-primary));
     transform: translate(-10%, -0em) rotate(-24deg);
     animation: breath 0.5s linear infinite alternate;
+    // text-shadow: -3px 3px rgba(var(--v-theme-primary));
   }
 
   @keyframes breath {

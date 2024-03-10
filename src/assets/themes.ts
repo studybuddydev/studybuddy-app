@@ -52,8 +52,9 @@ export const themes: {[id: string]: {
   bio: {
     dark: false,
     colors: {
-      background: '#f7f2da',
-      surface: '#fefae0',
+      //make surface and background more different
+      background: '#f0e6c8',
+      surface: '#f7f2da',
       primary: '#606c38',
       'primary-darken-1': '#283618',
       secondary: '#dda15e',

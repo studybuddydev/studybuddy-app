@@ -124,6 +124,7 @@ export interface PomodoroRecord extends PomodoroBase {
   displayStudy?: DisplaySession[];
   // percentage?: number;
   report?: PomoReport;
+  tag?: string;
 }
 
 // ---------- SETTINGS ----------
@@ -176,6 +177,7 @@ export interface Timer {
 export interface PomodoroDBO extends PomodoroBase {
   id?: number;
   datetime: Date;
+  tag?: string;
 }
 
 

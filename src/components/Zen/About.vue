@@ -96,6 +96,12 @@ const props = defineProps<{
   text-decoration: none;
   cursor: pointer;
 
+  @media (max-width: 450px) {
+    h3 {
+      display: none;
+    }
+  }
+
   .logo {
     height: 4rem;
   }
@@ -160,6 +166,7 @@ const props = defineProps<{
     margin-top: 1.2em;
     margin-bottom: 0.3em;
     font-size: 1.4em;
+    color: red !important
   }
 
   p {
