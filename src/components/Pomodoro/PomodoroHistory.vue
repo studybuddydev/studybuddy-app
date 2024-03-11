@@ -155,6 +155,10 @@ const endTime = computed({
   }
 })
 
+function getTime(p: PomodoroRecord) {
+  return p.datetime.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: false })
+}
+
 
 </script>
 
@@ -192,30 +196,31 @@ const endTime = computed({
           <div class="pomo-infos" v-if="openDay === key">
             <div v-for="p in g.pomos" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
               <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
-                <p class="time">{{ p.datetime.toLocaleTimeString(undefined, {
-                  hour: 'numeric', minute: '2-digit', hour12: false
-                }) }}</p>
+                <v-chip size="small" :color="p.tag ? pomoDB.tagColors[p.tag] : '#FFFFFF00'" variant="flat" class="time">
+                  <p :class="p.tag ? '': 'text-tag-chip'"> {{ getTime(p) }}</p>
+                </v-chip>
+
                 <div class="pomo-wrapper">
                   <div class="pomo-width" :style="{ width: `${(p.end / g.maxLength) * 100}%` }">
-                    <PomodoroFlex class="pomo-flex" :percentage="p.endedAt ? Math.max(100 * p.endedAt / p.end, 100) : 100"
+                    <PomodoroFlex class="pomo-flex"
+                      :percentage="p.endedAt ? Math.max(100 * p.endedAt / p.end, 100) : 100"
                       :displayBreaks="p.displayBreaks ?? []" :displayStudy="p.displayStudy ?? []" />
                   </div>
                 </div>
-                <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, timeFormat) }}</p>
-                <p :class="getPointsColorClass(p.report?.points ?? 0)">{{ reportUtils.parsePoints(p.report?.points ?? 0) }}%
+                <p class="lenght">{{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, timeFormat) }}</p>
+                <p :class="getPointsColorClass(p.report?.points ?? 0)">{{ reportUtils.parsePoints(p.report?.points ?? 0)
+                  }}%
                 </p>
               </div>
-
               <div class="pomo-details" v-if="p.id === openDetailsPomoId">
                 <div class="tags">
                   <v-combobox label="Tag" hide-details :items="pomoDB.tags" v-model="p.tag"
                     @update:modelValue="(newTag: string) => { p.id && pomoDB.updateTag(p.id, newTag) }">
                     <template v-slot:selection="data">
-                      <v-chip :key="data.item.title" v-bind="data.attrs"
-                        :disabled="data.disabled" :model-value="data.selected"
-                        size="small" @click:close="data.parent.selectItem(data.item)"
-                        :color="pomoDB.tagColors[data.item.value]" variant="flat"
-                      >
+                      <v-chip :key="data.item.title" v-bind="data.attrs" :disabled="data.disabled"
+                        :model-value="data.selected" size="small"
+                        @click:close=" p.id && pomoDB.updateTag(p.id, undefined)"
+                        :color="pomoDB.tagColors[data.item.value]" variant="flat" closable>
                         {{ data.item.title }}
                       </v-chip>
                     </template>
@@ -241,8 +246,8 @@ const endTime = computed({
         <v-range-slider v-model="startEndTime" class="align-center slider" color="primary" :max="32" :min="0" :step="1"
           hide-details>
           <template v-slot:prepend>
-            <v-text-field v-model="startTime" hide-details single-line type="number" variant="outlined" density="compact"
-              class="day-h-input" />
+            <v-text-field v-model="startTime" hide-details single-line type="number" variant="outlined"
+              density="compact" class="day-h-input" />
           </template>
           <template v-slot:append>
             <v-text-field v-model="endTime" hide-details single-line type="number" variant="outlined" density="compact"
@@ -257,7 +262,7 @@ const endTime = computed({
             <v-spacer />
             <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
             <v-btn color="primary" @click="pomoDB.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
-              $t("yes") }}</v-btn>
+    $t("yes") }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -266,6 +271,9 @@ const endTime = computed({
 </template>
 
 <style lang="scss" scoped>
+.text-tag-chip {
+  color: rgb(var(--v-theme-on-background));
+}
 .day-settings {
   position: absolute;
   bottom: 0;
@@ -276,11 +284,13 @@ const endTime = computed({
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   background-color: rgba(var(--v-theme-surface), 0.8);
+
   .day-h-input {
     width: 4.5em;
     text-align: center;
   }
 }
+
 .hide-pomo-history .day-settings {
   display: none;
 }
@@ -325,6 +335,7 @@ const endTime = computed({
   width: 4em;
   text-align: right;
 }
+
 .lenght {
   width: 6em;
   text-align: right;
