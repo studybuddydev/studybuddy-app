@@ -4,7 +4,7 @@ import type { PomodoroDBO, PomodoroRecord, PomodotoStatus } from '@/types';
 import * as timeUtils from '@/utils/time';
 import * as reportUtils from '@/utils/report';
 import { useSettingsStore } from "@/stores/settings";
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { openDB } from 'idb';
 
 export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
@@ -47,7 +47,8 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   }
 
   // --- TAGS ---
-  const tags = ref<string[]>([ ]);
+  const tags = ref<string[]>([]);
+  const tagColors = ref<{ [id: string]: string; }>({});
   async function updateTag(id: number, tag: string) {
     const p = await db.pomodori.get(id);
     if (p) {
@@ -57,7 +58,20 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     await updateTags();
   }
   async function updateTags() {
-    tags.value = (await db.pomodori.orderBy('tag').uniqueKeys()).map(t => t.toString());
+    const colorList = [
+      '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
+      '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
+      '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
+      '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
+      '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC',
+      '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399',
+      '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680'
+    ];
+    tags.value = (await db.pomodori.orderBy('tag').uniqueKeys()).map((t, i) => t.toString())
+    tagColors.value = tags.value.reduce((acc, t, i) => {
+      acc[t] = colorList[i % colorList.length];
+      return acc;
+    }, {} as { [id: string]: string; });
   }
   updateTags();
 
@@ -102,7 +116,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   })();
 
   return {
-    pomodoroRecords, tags,
+    pomodoroRecords, tags, tagColors,
     addPomodoroToRecords,
     deletePomodoroRecord,
     updateTag

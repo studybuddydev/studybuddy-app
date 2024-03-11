@@ -166,7 +166,6 @@ const props = defineProps<{
     margin-top: 1.2em;
     margin-bottom: 0.3em;
     font-size: 1.4em;
-    color: red !important
   }
 
   p {

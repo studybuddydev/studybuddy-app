@@ -208,8 +208,25 @@ const endTime = computed({
 
               <div class="pomo-details" v-if="p.id === openDetailsPomoId">
                 <div class="tags">
-                  <v-combobox chips label="Tag" hide-details :items="pomoDB.tags" v-model="p.tag"
-                    @update:modelValue="(newTag: string) => { p.id && pomoDB.updateTag(p.id, newTag) }" />
+                  <v-combobox label="Tag" hide-details :items="pomoDB.tags" v-model="p.tag"
+                    @update:modelValue="(newTag: string) => { p.id && pomoDB.updateTag(p.id, newTag) }">
+                    <template v-slot:selection="data">
+                      <v-chip :key="data.item.title" v-bind="data.attrs"
+                        :disabled="data.disabled" :model-value="data.selected"
+                        size="small" @click:close="data.parent.selectItem(data.item)"
+                        :color="pomoDB.tagColors[data.item.value]" variant="flat"
+                      >
+                        {{ data.item.title }}
+                      </v-chip>
+                    </template>
+                    <template #item="{ props, item }">
+                      <v-list-item v-bind="props">
+                        <template #prepend>
+                          <v-icon :color="pomoDB.tagColors[item.value]">mdi-circle</v-icon>
+                        </template>
+                      </v-list-item>
+                    </template>
+                  </v-combobox>
                 </div>
                 <PomodoroReport class="report" :report="p.report" v-if="p.report" />
                 <v-btn color="error" class="pomo-delete-btn"
