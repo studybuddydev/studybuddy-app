@@ -16,8 +16,8 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   function parsePomodorDbo(p: PomodoroDBO): PomodoroRecord {
     return {
       ...p,
-      displayBreaks: timeUtils.getDisplayBreaksRecord(p, settings.generalSettings.showSeconds),
-      displayStudy: timeUtils.getDisplayStudyRecord(p, settings.generalSettings.showSeconds),
+      displayBreaks: timeUtils.getDisplayBreaksRecord(p, p.endedAt ?? 0, settings.generalSettings.showSeconds),
+      displayStudy: timeUtils.getDisplayStudyRecord(p, p.endedAt ?? 0, settings.generalSettings.showSeconds),
       report: reportUtils.getPomoReport(p),
     }
   }

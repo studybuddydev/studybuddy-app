@@ -12,7 +12,7 @@ const SECONDS_MULTIPLIER = 1000;
 const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 
-const SHORT_POMO_THRESHOLD = 5 * MINUTE_MULTIPLIER;
+const SHORT_POMO_THRESHOLD = 0.005 * MINUTE_MULTIPLIER;
 const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
 
 const STOPPOMODORO_TIMEOUT = 60 * MINUTE_MULTIPLIER;
@@ -371,13 +371,14 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     if (!pomo) return [];
     const breaks = getBreaks();
     const now = getNow(pomo.startedAt);
-    return timeUtils.parseDisplaySession(pomo, breaks, now, settings.generalSettings.showSeconds);
+    return timeUtils.parseDisplaySession(breaks, now, pomo.end, settings.generalSettings.showSeconds);
   }
   function getDisplayStudyCurrent(): DisplaySession[] {
     const pomo = getCurrentPomo();
     if (!pomo || pomo.state === PomodoroState.CREATED) return [];
     return timeUtils.getDisplayStudyRecord(
       pomo,
+      pomo.end,
       settings.generalSettings.showSeconds,
       getNow(pomo.startedAt)
     );

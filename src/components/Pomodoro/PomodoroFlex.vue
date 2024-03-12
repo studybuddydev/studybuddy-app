@@ -7,17 +7,17 @@
         width: parsePercentage(percentage),
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" v-if="mainPomo" /> </div>
       <div v-for="b in displayBreaks" :key="b.index" class="break"
-        :style="{
-          backgroundColor: getBackgroundColor(),
-          marginLeft: parsePercentage(b.startPerc),
-          width: parsePercentage(b.lengthPerc, true),
-        }"><v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
+      :style="{
+        backgroundColor: getBackgroundColor(),
+        marginLeft: parsePercentage(b.startPerc),
+        width: parsePercentage(b.lengthPerc, true),
+      }"><v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
 
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
-        :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }"><p>{{b.lengthTime}}</p></div>
+        :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }"><p>{{b.lengthTime}} </p></div>
 
       <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index" v-if="!dailyPomo"
-        :style="{ marginLeft: parsePercentage(s.startPerc + (s.lengthPerc / 2)) }"><p>{{s.lengthTime}}</p></div>
+        :style="{ marginLeft: parsePercentage(s.startPerc + (s.lengthPerc / 2)) }"><p>{{s.lengthTime}} </p></div>
 
       <div v-for="t in ticks" :key="t.h" class="hour-idicator" :style="{ marginLeft: parsePercentage(t.position) }" v-if="dailyPomo"></div>
 

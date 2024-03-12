@@ -73,7 +73,7 @@ const dailyPomodoriGroups = computed(() => {
     const group = groups[key];
     group.points = group.pomos.reduce((m, p) => m + (p.report?.points ?? 0), 0) / group.pomos.length;
     group.totalTime = group.pomos.reduce((m, p) => m + (p.endedAt ?? 0), 0);
-    group.maxLength = group.pomos.reduce((m, p) => Math.max(p.end, m), 0);
+    group.maxLength = group.pomos.reduce((m, p) => Math.max(p.endedAt ?? 0, m), 0);
     group.dailySummary = group.pomos.map((p, i) => {
       const startMs = ((p.datetime.getTime() % DAY_IN_MS) - DAY_START) / DAY_LENGTH;
       const endMs = ((p.endedAt ?? 0) % DAY_IN_MS) / DAY_LENGTH;
@@ -201,9 +201,9 @@ function getTime(p: PomodoroRecord) {
                 </v-chip>
 
                 <div class="pomo-wrapper">
-                  <div class="pomo-width" :style="{ width: `${(p.end / g.maxLength) * 100}%` }">
+                  <div class="pomo-width" :style="{ width: `${((p.endedAt ?? g.maxLength)  / g.maxLength) * 100}%` }">
                     <PomodoroFlex class="pomo-flex"
-                      :percentage="p.endedAt ? Math.max(100 * p.endedAt / p.end, 100) : 100"
+                      :percentage="100"
                       :displayBreaks="p.displayBreaks ?? []" :displayStudy="p.displayStudy ?? []" />
                   </div>
                 </div>

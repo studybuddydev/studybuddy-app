@@ -45,18 +45,18 @@ export function parseTime(time: number) {
 }
 
 export function parseDisplaySession(
-    pomo: PomodoroBase,
     l: { start: number, end?: number, done?: boolean }[],
     now: number,
+    end: number,
     showSeconds: boolean
   ): DisplaySession[] {
   return l.filter(b => b.end).map((b, i) => {
-    const startPerc = Math.min(100, 100 * b.start / pomo.end);
-    const end = b.end ?? now;
-    const lengthPerc = Math.min(100 - startPerc, (100 * (end / pomo.end)) - startPerc);
+    const startPerc = Math.min(100, 100 * b.start / end);
+    const bEnd = b.end ?? now;
+    const lengthPerc = Math.min(100 - startPerc, (100 * (bEnd / end)) - startPerc);
     return {
       startPerc, lengthPerc,
-      lengthTime: timeFormatted((end - b.start) / SECONDS_MULTIPLIER, { html: false, showSeconds }),
+      lengthTime: timeFormatted((bEnd - b.start) / SECONDS_MULTIPLIER, { html: false, showSeconds }),
       done: b.done,
       index: i,
       small: lengthPerc < 3
@@ -64,16 +64,16 @@ export function parseDisplaySession(
   })
 }
 
-export function getDisplayBreaksRecord(pomo: PomodoroRecord, showSeconds: boolean): DisplaySession[] {
+export function getDisplayBreaksRecord(pomo: PomodoroRecord, end: number, showSeconds: boolean): DisplaySession[] {
   const breaks = pomo.breaksDone.map(x => ({ ...x, done: true })) ?? [];
-  return parseDisplaySession(pomo, breaks, 0, showSeconds);
+  return parseDisplaySession(breaks, 0, end, showSeconds);
 }
-export function getDisplayStudyRecord(pomo: PomodoroBase, showSeconds: boolean, now: number = -1): DisplaySession[] {
+export function getDisplayStudyRecord(pomo: PomodoroBase, end: number, showSeconds: boolean, now: number = -1): DisplaySession[] {
   const res: { start: number, end?: number }[] = [{ start: 0 }];
   for (const b of pomo.breaksDone) {
     res.at(-1)!.end = b.start;
     if (b.end && (now === -1 || b.end + 5000 < now)) res.push({ start: b.end });
   }
-  if (res.at(-1)!.end === undefined) res.at(-1)!.end = now === -1 ? (pomo.end ?? pomo.endedAt) : now;
-  return parseDisplaySession(pomo, res, now, showSeconds);
+  if (res.at(-1)!.end === undefined) res.at(-1)!.end = now === -1 ? end : now;
+  return parseDisplaySession(res, now, end, showSeconds);
 }
