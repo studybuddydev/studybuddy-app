@@ -225,11 +225,11 @@ function getEndTime(p: PomodoroRecord) {
               <div class="pomo-details" v-if="p.id === openDetailsPomoId">
                 <div class="tags">
                   <v-combobox label="Tag" hide-details :items="pomoDB.tags" v-model="p.tag"
-                    @update:modelValue="(newTag: string) => { p.id && pomoDB.updateTag(p.id, newTag) }">
+                    @update:modelValue="(newTag: string) => { p.id && pomoDB.updateTag(p, newTag) }">
                     <template v-slot:selection="data">
                       <v-chip :key="data.item.title" v-bind="data.attrs" :disabled="data.disabled"
                         :model-value="data.selected" size="small"
-                        @click:close=" p.id && pomoDB.updateTag(p.id, undefined)"
+                        @click:close=" p.id && pomoDB.updateTag(p, undefined)"
                         :color="pomoDB.tagColors[data.item.value]" variant="flat" closable>
                         {{ data.item.title }}
                       </v-chip>

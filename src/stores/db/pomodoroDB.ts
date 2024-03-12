@@ -49,16 +49,14 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   // --- TAGS ---
   const tags = ref<string[]>([]);
   const tagColors = ref<{ [id: string]: string; }>({});
-  async function updateTag(id: number, tag?: string) {
-    console.log(tag)
-    const p = await db.pomodori.get(id);
-    console.log(p)
+  async function updateTag(pRec: PomodoroRecord, tag?: string) {
+    if (!pRec.id) return;
+    const p = await db.pomodori.get(pRec.id);
     if (p) {
       p.tag = tag;
-      console.log(p.tag)
-      await db.pomodori.put(p, id);
+      pRec.tag = tag;
+      await db.pomodori.put(p, pRec.id);
     }
-
     await updateTags();
   }
   async function updateTags() {
