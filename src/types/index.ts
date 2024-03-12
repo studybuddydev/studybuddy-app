@@ -125,6 +125,7 @@ export interface PomodoroRecord extends PomodoroBase {
   // percentage?: number;
   report?: PomoReport;
   tag?: string;
+  rating?: number;
 }
 
 // ---------- SETTINGS ----------
@@ -178,6 +179,7 @@ export interface PomodoroDBO extends PomodoroBase {
   id?: number;
   datetime: Date;
   tag?: string;
+  rating?: number;
 }
 
 

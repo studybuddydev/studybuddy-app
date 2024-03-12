@@ -223,13 +223,16 @@ function getEndTime(p: PomodoroRecord) {
                 </p>
               </div>
               <div class="pomo-details" v-if="p.id === openDetailsPomoId">
-                <div class="tags">
-                  <v-combobox label="Tag" hide-details :items="pomoDB.tags" v-model="p.tag"
-                    @update:modelValue="(newTag: string) => { p.id && pomoDB.updateTag(p, newTag) }">
+                <div class="details">
+                  <p class="text-h6">Rate your study</p>
+                  <v-rating v-model="p.rating" length="3" size="x-large" color="warning" clearable 
+                  @update:modelValue="(newRating: number) => { p.id && pomoDB.updateRating(p.id, newRating) }"/>
+                  <v-combobox class="tags" label="Tag" hide-details :items="pomoDB.tags" v-model="p.tag"
+                    @update:modelValue="(newTag: string) => { pomoDB.updateTag(p, newTag) }">
                     <template v-slot:selection="data">
                       <v-chip :key="data.item.title" v-bind="data.attrs" :disabled="data.disabled"
                         :model-value="data.selected" size="small"
-                        @click:close=" p.id && pomoDB.updateTag(p, undefined)"
+                        @click:close="pomoDB.updateTag(p, undefined)"
                         :color="pomoDB.tagColors[data.item.value]" variant="flat" closable>
                         {{ data.item.title }}
                       </v-chip>
@@ -438,9 +441,22 @@ function getEndTime(p: PomodoroRecord) {
       position: relative;
       flex-direction: column;
 
-      .tags {
+      @media (min-width: 1000px) {
+        flex-direction: row;
+      }
+
+      .details {
         margin: 1em;
         min-width: 20rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-items: center;
+
+        .tags {
+          margin-top: 0.3rem;
+          width: 100%;
+        }
       }
 
       .report {

@@ -77,6 +77,14 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   }
   updateTags();
 
+  async function updateRating(id: number, rating: number) {
+    const p = await db.pomodori.get(id);
+    if (p) {
+      p.rating = rating;
+      await db.pomodori.put(p, id);
+    }
+  }
+
 
   // migrate to new db -- remove after a while
   (async () => {
@@ -121,6 +129,6 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     pomodoroRecords, tags, tagColors,
     addPomodoroToRecords,
     deletePomodoroRecord,
-    updateTag
+    updateTag, updateRating
   };
 });
