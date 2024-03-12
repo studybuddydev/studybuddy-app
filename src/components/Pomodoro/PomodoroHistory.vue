@@ -212,7 +212,7 @@ function getEndTime(p: PomodoroRecord) {
 
                 <div class="pomo-wrapper">
                   <div class="pomo-width" :style="{ width: `${((p.endedAt ?? g.maxLength)  / g.maxLength) * 100}%` }">
-                    <PomodoroFlex class="pomo-flex"
+                    <PomodoroFlex :class="p.deepWork ? 'pomo-flex' : 'pomo-flex pomo-flex-shallow'"
                       :percentage="100"
                       :displayBreaks="p.displayBreaks ?? []" :displayStudy="p.displayStudy ?? []" />
                   </div>
@@ -227,6 +227,8 @@ function getEndTime(p: PomodoroRecord) {
                   <p class="text-h6">Rate your study</p>
                   <v-rating v-model="p.rating" length="3" size="x-large" color="warning" clearable 
                   @update:modelValue="(newRating: number) => { p.id && pomoDB.updateRating(p.id, newRating) }"/>
+                  <v-switch label="Deep work" color="primary" inset hide-details v-model="p.deepWork"
+                    @update:modelValue="(deep: boolean) => { p.id && pomoDB.updateDeepWork(p.id, deep) }"/>
                   <v-combobox class="tags" label="Tag" hide-details :items="pomoDB.tags" v-model="p.tag"
                     @update:modelValue="(newTag: string) => { pomoDB.updateTag(p, newTag) }">
                     <template v-slot:selection="data">
@@ -315,6 +317,9 @@ function getEndTime(p: PomodoroRecord) {
 
   &.pomo-flex-day {
     height: 1.5rem;
+  }
+  &.pomo-flex-shallow {
+    opacity: 0.5;
   }
 }
 

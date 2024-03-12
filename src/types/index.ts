@@ -126,6 +126,7 @@ export interface PomodoroRecord extends PomodoroBase {
   report?: PomoReport;
   tag?: string;
   rating?: number;
+  deepWork: boolean;
 }
 
 // ---------- SETTINGS ----------
@@ -180,6 +181,7 @@ export interface PomodoroDBO extends PomodoroBase {
   datetime: Date;
   tag?: string;
   rating?: number;
+  deepWork: boolean;
 }
 
 

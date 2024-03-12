@@ -14,6 +14,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   const pomodoroRecords = ref<PomodoroRecord[]>([]);
 
   function parsePomodorDbo(p: PomodoroDBO): PomodoroRecord {
+    if (p.deepWork === undefined) p.deepWork = true;
     return {
       ...p,
       displayBreaks: timeUtils.getDisplayBreaksRecord(p, p.endedAt ?? 0, settings.generalSettings.showSeconds),
@@ -35,7 +36,8 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
       endedAt: pomo.endedAt,
       breaksDone: pomo.breaksDone.map(b => ({ start: b.start, end: b.end ?? b.start })),
       freeMode: pomo.freeMode,
-      datetime: new Date(pomo.startedAt ?? Date.now())
+      datetime: new Date(pomo.startedAt ?? Date.now()),
+      deepWork: true
     }
     const parsed = parsePomodorDbo(p);
     parsed.id = await db.pomodori.add(p);
@@ -84,6 +86,13 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
       await db.pomodori.put(p, id);
     }
   }
+  async function updateDeepWork(id: number, deepWork: boolean) {
+    const p = await db.pomodori.get(id);
+    if (p) {
+      p.deepWork = deepWork;
+      await db.pomodori.put(p, id);
+    }
+  }
 
 
   // migrate to new db -- remove after a while
@@ -110,7 +119,8 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
           endedAt: p.endedAt,
           breaksDone: p.breaksDone.map((b: any) => ({ start: b.start, end: b.end })),
           freeMode: p.freeMode,
-          datetime: p.datetime
+          datetime: p.datetime,
+          deepWork: true
         }
         await db.pomodori.add(newP);
       });
@@ -129,6 +139,6 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     pomodoroRecords, tags, tagColors,
     addPomodoroToRecords,
     deletePomodoroRecord,
-    updateTag, updateRating
+    updateTag, updateRating, updateDeepWork
   };
 });
