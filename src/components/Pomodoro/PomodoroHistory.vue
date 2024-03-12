@@ -155,8 +155,15 @@ const endTime = computed({
   }
 })
 
-function getTime(p: PomodoroRecord) {
-  return p.datetime.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: false })
+function getTime(d: Date) {
+  return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: false })
+}
+function getStartTime(p: PomodoroRecord) {
+  return getTime(p.datetime);
+}
+function getEndTime(p: PomodoroRecord) {
+  if (!p.endedAt) return '';
+  return getTime(new Date(p.datetime.getTime() + p.endedAt));
 }
 
 
@@ -197,7 +204,10 @@ function getTime(p: PomodoroRecord) {
             <div v-for="p in g.pomos" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
               <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
                 <v-chip size="small" :color="p.tag ? pomoDB.tagColors[p.tag] : '#FFFFFF00'" variant="flat" class="time">
-                  <p :class="p.tag ? '': 'text-tag-chip'"> {{ getTime(p) }}</p>
+                  <div :class="p.tag ? '': 'text-tag-chip'">
+                    <p> {{ getStartTime(p) }}</p>
+                    <p v-if="p.id === openDetailsPomoId"> {{ getEndTime(p) }}</p>
+                  </div>
                 </v-chip>
 
                 <div class="pomo-wrapper">
@@ -298,9 +308,16 @@ function getTime(p: PomodoroRecord) {
 .pomo-flex {
   height: 1rem;
   margin: 0.5rem;
+  transition: height 0.1s ease-in-out;
 
   &.pomo-flex-day {
     height: 1.5rem;
+  }
+}
+
+.pomo-info-open {
+  .pomo-flex {
+    height: 2rem;
   }
 }
 
@@ -344,6 +361,13 @@ function getTime(p: PomodoroRecord) {
 .time {
   width: 5em;
   text-align: right;
+  transition: height 0.1s ease-in-out;
+}
+.pomo-info-open {
+  .time {
+    height: 2.5rem;
+    border-radius: 0.7rem;
+  }
 }
 
 .day {
