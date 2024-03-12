@@ -26,7 +26,7 @@ export class StudyBuddyDB extends Dexie {
       //Themes
       this.themes.bulkAdd([
         { title: 'Forest',      palette: 'bio',       previewImg: '/images/themes/Forest.webp',      backgroundImg: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' },
-        { title: 'Clouds',      palette: 'nord',      previewImg: '/images/themes/Clouds.webp',      backgroundImg: 'https://images.alphacoders.com/133/1332707.png' },
+        { title: 'Clouds',      palette: 'nord',      previewImg: '/images/themes/Clouds.webp',      backgroundImg: 'https://images.pexels.com/photos/3996362/pexels-photo-3996362.jpeg' },
         { title: 'Aurora',      palette: 'blallo',    previewImg: '/images/themes/Aurora.webp',      backgroundImg: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg' },
         { title: 'Space',       palette: 'gptnight',  previewImg: '/images/themes/Space.webp',       backgroundImg: 'https://live.staticflickr.com/65535/52259221868_b757d6cdea_k_d.jpg' },
         { title: 'Mountain',    palette: 'nord',      previewImg: '/images/themes/Mountain.webp',    backgroundImg: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' },

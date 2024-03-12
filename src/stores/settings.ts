@@ -30,7 +30,7 @@ const defaultSettings: Settings = {
     icon: DEFAULT_ICONS,
     palette: DEFAULT_PALETTE,
     backgroundColor: undefined,
-    backgroundImg: 'https://images.alphacoders.com/133/1332707.png',
+    backgroundImg: 'https://images.pexels.com/photos/3996362/pexels-photo-3996362.jpeg',
   }
 };
 
