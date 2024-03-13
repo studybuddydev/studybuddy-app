@@ -237,6 +237,10 @@ const endTime = computed({
     width: auto;
   }
 }
+
+.day {
+  width: 3.5em;
+}
 ::v-deep(.points) {
   width: 4em;
   text-align: center;

@@ -12,15 +12,16 @@
         <div class="pomo-width" :style="{ width: `${((pomo.endedAt ?? maxLength) / maxLength) * 100}%` }">
           <PomodoroFlex :class="pomo.deepWork ? 'pomo-flex' : 'pomo-flex pomo-flex-shallow'" :percentage="100"
             :displayBreaks="pomo.displayBreaks ?? []" :displayStudy="pomo.displayStudy ?? []"
-            :always-show-time="openDetails"/>
+            :always-show-time="openDetails" />
         </div>
       </div>
       <p class="lenght">{{ pomodoro.timeFormatted((pomo.endedAt ?? 0) / 1000, timeFormat) }}</p>
-      <p :class="reportUtils.getPointsColorClass(pomo.report?.points ?? 0)">{{ reportUtils.parsePoints(pomo.report?.points ?? 0)
-        }}%
+      <p :class="reportUtils.getPointsColorClass(pomo.report?.points ?? 0)">{{
+    reportUtils.parsePoints(pomo.report?.points ?? 0)
+  }}%
       </p>
     </div>
-    <div class="pomo-details" v-if="openDetails" >
+    <div class="pomo-details" v-if="openDetails">
       <div class="details">
         <p class="text-h6">Rate your study</p>
         <v-rating v-model="pomo.rating" length="3" size="x-large" color="warning" clearable
@@ -54,7 +55,7 @@
             <v-spacer />
             <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
             <v-btn color="primary" @click="pomoDB.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
-      $t("yes") }}</v-btn>
+    $t("yes") }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -67,7 +68,7 @@ import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
 import type { PomodoroRecord } from '@/types';
-import { ref,computed } from 'vue';
+import { ref, computed } from 'vue';
 import * as reportUtils from '@/utils/report';
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 
@@ -104,43 +105,41 @@ function getEndTime(p: PomodoroRecord) {
     height: 2rem;
   }
 }
+
 .pomo-wrapper {
   width: 100%;
+
   .pomo-width {
     display: flex;
   }
 }
 
 .pomo-info {
-    margin: 0.5rem;
-    border-radius: 1em;
+  margin: 0.5rem;
+  border-radius: 1em;
 
 
-    &.pomo-info-open {
-      background-color: #FFFFFF10;
-
-      .pomo-line {
-        background-color: #FFFFFF10;
-      }
-    }
+  &.pomo-info-open {
+    background-color: #FFFFFF10;
 
     .pomo-line {
-      padding: 0.2rem 0.8rem;
-      border-radius: 1em;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      cursor: pointer;
-      transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
-
-      &:hover {
-        background-color: #FFFFFF10;
-      }
+      background-color: #FFFFFF10;
     }
   }
 
-.day {
-  width: 3.5em;
+  .pomo-line {
+    padding: 0.2rem 0.8rem;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
+
+    &:hover {
+      background-color: #FFFFFF10;
+    }
+  }
 }
 
 .pomo-details {
