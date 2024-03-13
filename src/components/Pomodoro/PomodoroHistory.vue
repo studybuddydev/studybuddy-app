@@ -137,6 +137,15 @@ const endTime = computed({
     settings.settings!.general!.dayStartEndHours[1] = endDayH.value + (endDayAfter ? 24 : 0);
   }
 })
+
+// -- hours
+const hoursList = computed(() => {
+  const hours = [];
+  const start = settings.generalSettings.dayStartEndHours[0] + 1;
+  const end = settings.generalSettings.dayStartEndHours[1];
+  for (let i = start; i < end; i++) hours.push(i % 24);
+  return hours;
+})
 </script>
 
 <template>
@@ -160,23 +169,33 @@ const endTime = computed({
     <div class="scrollable-history" v-else>
       <div v-for="(m, mKey) in dailyPomodoriGroups">
         <p class="text-center text-h5">{{ mKey }}</p>
+
+        <div class="day-line day-line-hours">
+          <h3 class="day"><v-icon icon="mdi-clock-outline" /></h3>
+          <div class="hour-list pomo-flex-day">
+            <div v-for="h in hoursList" class="hour">
+              <p>{{ h }}</p>
+            </div>
+          </div>
+          <p class="lenght-header"></p>
+          <p class="points"></p>
+        </div>
+
         <div v-for="(g, key) in m" :class="`day-info  ${openDay === key ? 'day-info-open' : ''}`">
 
-          <div class="day-line" @click="toggleOpenDay(key)">
+
+
+          <div class="day-line day-line-pomo" @click="toggleOpenDay(key)">
             <h3 class="day">{{ g.date }}</h3>
-            <PomodoroFlex class="pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary"
-              :displayStudy="[]" :percentage="100" />
+            <PomodoroFlex class="pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]"
+              :percentage="100" />
             <p class="lenght-header"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
             <p :class="reportUtils.getPointsColorClass(g.points)">{{ reportUtils.parsePoints(g.points) }}%</p>
           </div>
 
           <div class="pomo-infos" v-if="openDay === key">
             <div v-for="p in g.pomos">
-              <PomodoroDetails
-                v-model="openDetailsPomoId"
-                :pomo="p"
-                :max-length="g.maxLength"
-              />
+              <PomodoroDetails v-model="openDetailsPomoId" :pomo="p" :max-length="g.maxLength" />
             </div>
           </div>
         </div>
@@ -200,6 +219,25 @@ const endTime = computed({
 </template>
 
 <style lang="scss" scoped>
+.hour-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-grow: 1;
+  margin: 0.5rem;
+
+  .hour {
+    width: 0;
+
+    p {
+      width: 2em;
+      margin-left: -1em;
+      text-align: center;
+    }
+  }
+}
+
+
 .day-settings {
   position: absolute;
   bottom: 0;
@@ -226,6 +264,7 @@ const endTime = computed({
   transition: height 0.1s ease-in-out;
   height: 1.5rem;
 }
+
 .no-history {
   display: flex;
   flex-direction: column;
@@ -241,6 +280,7 @@ const endTime = computed({
 .day {
   width: 3.5em;
 }
+
 ::v-deep(.points) {
   width: 4em;
   text-align: center;
@@ -280,21 +320,30 @@ const endTime = computed({
         background-color: #FFFFFF10;
       }
     }
+  }
 
-    .day-line {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 1rem;
-      cursor: pointer;
+  .day-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+    padding: 0.2rem 1rem;
+
+    &.day-line-hours {
+      .day {
+        text-align: right;
+      }
+    }
+
+    &.day-line-pomo {
       transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
-      padding: 0.2rem 1rem;
+      cursor: pointer;
 
       &:hover {
         background-color: #FFFFFF10;
       }
-
     }
+
   }
 
   .pomo-infos {
