@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
 import type { DisplaySession, PomodoroRecord } from '@/types';
 import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
-import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
-import { ref } from 'vue';
+import PomodoroDetails from '@/components/Pomodoro/PomodoroDetails.vue';
 import { useAuth0 } from "@auth0/auth0-vue";
 import * as reportUtils from '@/utils/report';
 
@@ -16,8 +15,6 @@ const settings = useSettingsStore();
 const pomoDB = usePomodoroDBStore();
 const openDetailsPomoId = ref(-1);
 const openDay = ref('');
-const deletePomoDialog = ref(false);
-const deletingPomoId = ref(-1);
 
 const timeFormat = { html: false, showSeconds: false, format: 'hms' as 'hms' }
 defineEmits(['startPomodoro']);
@@ -25,9 +22,9 @@ defineEmits(['startPomodoro']);
 const hStart = computed(() => settings.settings.general.dayStartEndHours[0]);
 const hEnd = computed(() => settings.settings.general.dayStartEndHours[1]);
 
-const props = defineProps({
-  open: Boolean
-})
+const props = defineProps<{
+  open: boolean,
+}>();
 
 type DayGroup = {
   date: string,
@@ -88,22 +85,8 @@ const dailyPomodoriGroups = computed(() => {
   return monthGroup;
 });
 
-function toggleReport(id: number | undefined) {
-  if (id !== undefined)
-    openDetailsPomoId.value = openDetailsPomoId.value === id ? -1 : id;
-}
 function toggleOpenDay(day: string) {
   openDay.value = openDay.value === day ? '' : day;
-}
-
-function getPointsColorClass(points: number) {
-  if (points < 0.6) {
-    return 'points bg-error';
-  }
-  if (points < 0.85) {
-    return 'points bg-warning';
-  }
-  return 'points bg-success';
 }
 
 // ---- ADJUST DAY -------
@@ -154,19 +137,6 @@ const endTime = computed({
     settings.settings!.general!.dayStartEndHours[1] = endDayH.value + (endDayAfter ? 24 : 0);
   }
 })
-
-function getTime(d: Date) {
-  return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: false })
-}
-function getStartTime(p: PomodoroRecord) {
-  return getTime(p.datetime);
-}
-function getEndTime(p: PomodoroRecord) {
-  if (!p.endedAt) return '';
-  return getTime(new Date(p.datetime.getTime() + p.endedAt));
-}
-
-
 </script>
 
 <template>
@@ -187,71 +157,26 @@ function getEndTime(p: PomodoroRecord) {
       </v-btn>
     </div>
 
-    <div v-else>
+    <div class="scrollable-history" v-else>
       <div v-for="(m, mKey) in dailyPomodoriGroups">
         <p class="text-center text-h5">{{ mKey }}</p>
         <div v-for="(g, key) in m" :class="`day-info  ${openDay === key ? 'day-info-open' : ''}`">
 
           <div class="day-line" @click="toggleOpenDay(key)">
             <h3 class="day">{{ g.date }}</h3>
-            <PomodoroFlex class="pomo-flex pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary"
+            <PomodoroFlex class="pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary"
               :displayStudy="[]" :percentage="100" />
             <p class="lenght-header"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
-            <p :class="getPointsColorClass(g.points)">{{ reportUtils.parsePoints(g.points) }}%</p>
+            <p :class="reportUtils.getPointsColorClass(g.points)">{{ reportUtils.parsePoints(g.points) }}%</p>
           </div>
 
           <div class="pomo-infos" v-if="openDay === key">
-            <div v-for="p in g.pomos" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
-              <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
-                <v-chip size="small" :color="p.tag ? pomoDB.tagColors[p.tag] : '#FFFFFF00'" variant="flat" class="time">
-                  <div :class="p.tag ? '': 'text-tag-chip'">
-                    <p> {{ getStartTime(p) }}</p>
-                    <p v-if="p.id === openDetailsPomoId"> {{ getEndTime(p) }}</p>
-                  </div>
-                </v-chip>
-
-                <div class="pomo-wrapper">
-                  <div class="pomo-width" :style="{ width: `${((p.endedAt ?? g.maxLength)  / g.maxLength) * 100}%` }">
-                    <PomodoroFlex :class="p.deepWork ? 'pomo-flex' : 'pomo-flex pomo-flex-shallow'"
-                      :percentage="100"
-                      :displayBreaks="p.displayBreaks ?? []" :displayStudy="p.displayStudy ?? []" />
-                  </div>
-                </div>
-                <p class="lenght">{{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, timeFormat) }}</p>
-                <p :class="getPointsColorClass(p.report?.points ?? 0)">{{ reportUtils.parsePoints(p.report?.points ?? 0)
-                  }}%
-                </p>
-              </div>
-              <div class="pomo-details" v-if="p.id === openDetailsPomoId">
-                <div class="details">
-                  <p class="text-h6">Rate your study</p>
-                  <v-rating v-model="p.rating" length="3" size="x-large" color="warning" clearable 
-                  @update:modelValue="(newRating: number) => { p.id && pomoDB.updateRating(p.id, newRating) }"/>
-                  <v-switch label="Deep work" color="primary" inset hide-details v-model="p.deepWork"
-                    @update:modelValue="(deep: boolean) => { p.id && pomoDB.updateDeepWork(p.id, deep) }"/>
-                  <v-combobox class="tags" label="Tag" hide-details :items="pomoDB.tags" v-model="p.tag"
-                    @update:modelValue="(newTag: string) => { pomoDB.updateTag(p, newTag) }">
-                    <template v-slot:selection="data">
-                      <v-chip :key="data.item.title" v-bind="data.attrs" :disabled="data.disabled"
-                        :model-value="data.selected" size="small"
-                        @click:close="pomoDB.updateTag(p, undefined)"
-                        :color="pomoDB.tagColors[data.item.value]" variant="flat" closable>
-                        {{ data.item.title }}
-                      </v-chip>
-                    </template>
-                    <template #item="{ props, item }">
-                      <v-list-item v-bind="props">
-                        <template #prepend>
-                          <v-icon :color="pomoDB.tagColors[item.value]">mdi-circle</v-icon>
-                        </template>
-                      </v-list-item>
-                    </template>
-                  </v-combobox>
-                </div>
-                <PomodoroReport class="report" :report="p.report" v-if="p.report" />
-                <v-btn color="error" class="pomo-delete-btn"
-                  @click="deletingPomoId = p.id; deletePomoDialog = true;"><v-icon icon="mdi-delete" /></v-btn>
-              </div>
+            <div v-for="p in g.pomos">
+              <PomodoroDetails
+                v-model="openDetailsPomoId"
+                :pomo="p"
+                :max-length="g.maxLength"
+              />
             </div>
           </div>
         </div>
@@ -270,25 +195,11 @@ function getEndTime(p: PomodoroRecord) {
           </template>
         </v-range-slider>
       </div>
-
-      <v-dialog v-model="deletePomoDialog" width="auto">
-        <v-card :text="$t('zen.confirm')">
-          <v-card-actions>
-            <v-spacer />
-            <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
-            <v-btn color="primary" @click="pomoDB.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
-    $t("yes") }}</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.text-tag-chip {
-  color: rgb(var(--v-theme-on-background));
-}
 .day-settings {
   position: absolute;
   bottom: 0;
@@ -310,25 +221,11 @@ function getEndTime(p: PomodoroRecord) {
   display: none;
 }
 
-.pomo-flex {
-  height: 1rem;
+.pomo-flex-day {
   margin: 0.5rem;
   transition: height 0.1s ease-in-out;
-
-  &.pomo-flex-day {
-    height: 1.5rem;
-  }
-  &.pomo-flex-shallow {
-    opacity: 0.5;
-  }
+  height: 1.5rem;
 }
-
-.pomo-info-open {
-  .pomo-flex {
-    height: 2rem;
-  }
-}
-
 .no-history {
   display: flex;
   flex-direction: column;
@@ -340,16 +237,7 @@ function getEndTime(p: PomodoroRecord) {
     width: auto;
   }
 }
-
-.pomo-wrapper {
-  width: 100%;
-
-  .pomo-width {
-    display: flex;
-  }
-}
-
-.points {
+::v-deep(.points) {
   width: 4em;
   text-align: center;
   border-radius: 0.5em;
@@ -361,32 +249,15 @@ function getEndTime(p: PomodoroRecord) {
   text-align: right;
 }
 
-.lenght {
-  width: 6em;
-  text-align: right;
-}
-
-.time {
-  width: 5em;
-  text-align: right;
-  transition: height 0.1s ease-in-out;
-}
-.pomo-info-open {
-  .time {
-    height: 2.5rem;
-    border-radius: 0.7rem;
-  }
-}
-
-.day {
-  width: 3.5em;
-}
-
 .pomo-history {
   height: 73vh;
   margin: 1em;
   transition: height 0.1s ease-in-out;
   overflow-y: auto;
+
+  .scrollable-history {
+    margin-bottom: 8rem;
+  }
 
   &.hide-pomo-history {
     height: 0;
@@ -426,68 +297,5 @@ function getEndTime(p: PomodoroRecord) {
     padding: 0 1rem;
   }
 
-  .pomo-info {
-    margin: 0.5rem;
-    border-radius: 1em;
-
-
-    &.pomo-info-open {
-      background-color: #FFFFFF10;
-
-      .pomo-line {
-        background-color: #FFFFFF10;
-      }
-    }
-
-    .pomo-details {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      flex-direction: column;
-
-      @media (min-width: 1000px) {
-        flex-direction: row;
-      }
-
-      .details {
-        margin: 1em;
-        min-width: 20rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-items: center;
-
-        .tags {
-          margin-top: 0.3rem;
-          width: 100%;
-        }
-      }
-
-      .report {
-        margin: 1em;
-      }
-
-      .pomo-delete-btn {
-        position: absolute;
-        bottom: 1em;
-        right: 1em;
-      }
-    }
-
-    .pomo-line {
-      padding: 0.2rem 0.8rem;
-      border-radius: 1em;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      cursor: pointer;
-      transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
-
-      &:hover {
-        background-color: #FFFFFF10;
-      }
-    }
-  }
 }
 </style>

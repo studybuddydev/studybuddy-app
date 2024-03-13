@@ -1,6 +1,6 @@
 <template>
   <div :class="`pomodoro ${mainPomo ? 'pomodoro-main' : ''}`">
-    <div class="progress-bar">
+    <div :class="`progress-bar ${alwaysShowTime ? 'always-show-time' : ''}`">
       <div :class="`progress ${pomodoro.countdownRunning ? 'timer-animation' : ''}`" v-if="!dailyPomo" :style="{
         backgroundColor: theme.current.value.colors.snake,
         color: theme.current.value.colors.surface,
@@ -41,6 +41,7 @@ const props = withDefaults(defineProps<{
   displayStudy: DisplaySession[],
   dailyPomo?: boolean
   mainPomo?: boolean
+  alwaysShowTime?: boolean
 }>(), {
   percentage: 0,
   displayBreaks: () => [],
@@ -129,7 +130,7 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
       }
     }
 
-    &:hover {
+    &:hover, &.always-show-time {
       .icon-apple {
         display: none;
       }

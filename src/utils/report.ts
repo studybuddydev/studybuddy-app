@@ -37,3 +37,13 @@ export function getPomoReport(pomo: PomodoroBase | undefined): PomoReport {
 export function parsePoints(points: number) {
   return (points * 100).toFixed(1);
 }
+
+export function getPointsColorClass(points: number) {
+  if (points < 0.6) {
+    return 'points bg-error';
+  }
+  if (points < 0.85) {
+    return 'points bg-warning';
+  }
+  return 'points bg-success';
+}
