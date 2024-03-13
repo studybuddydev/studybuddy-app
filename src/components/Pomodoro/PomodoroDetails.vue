@@ -1,6 +1,6 @@
 <template>
   <div :class="`pomo-info ${openDetails ? 'pomo-info-open' : ''}`">
-    <div class="pomo-line" v-ripple @click="model = pomo.id ?? 0">
+    <div class="pomo-line" v-ripple @click="model = (pomo.id === model ? 0 : (pomo.id ?? 0))">
       <v-chip size="small" :color="pomo.tag ? pomoDB.tagColors[pomo.tag] : '#FFFFFF00'" variant="flat" class="time">
         <div :class="pomo.tag ? '' : 'text-tag-chip'">
           <p> {{ getStartTime(pomo) }}</p>
