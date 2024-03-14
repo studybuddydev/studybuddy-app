@@ -115,8 +115,6 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
       return;
     }
 
-    console.log(days)
-
     let newStreak = 1;
     let i = 1
     while (i < days.length) {
