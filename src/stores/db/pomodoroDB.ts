@@ -118,9 +118,15 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     console.log(days)
 
     let newStreak = 1;
-    while (newStreak < days.length) {
-      if (days[newStreak - 1] - 1 === days[newStreak]) {
+    let i = 1
+    while (i < days.length) {
+      const d1 = days[i - 1];
+      const d2 = days[i]; 
+      if (d1 - 1 === d2) {
         newStreak++;
+        i++;
+      } else if (d1 === d2) {
+        i++;
       } else {
         break;
       }
