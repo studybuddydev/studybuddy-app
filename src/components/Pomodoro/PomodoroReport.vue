@@ -28,11 +28,7 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .report {
-  background: rgb(var(--v-theme-background));
-  border: 1px solid rgb(var(--v-theme-primary));
   padding: 0.8rem 1.5rem 1rem;
-  margin-top: 0 ;
-  border-radius: 1rem;
 
   .grid-container {
     display: grid;

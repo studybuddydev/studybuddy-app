@@ -5,7 +5,7 @@ import { useSettingsStore } from "@/stores/settings";
 import type { DisplaySession, PomodoroRecord } from '@/types';
 import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
-import PomodoroDetails from '@/components/Pomodoro/PomodoroDetails.vue';
+import PomodoroHistoryLine from '@/components/Pomodoro/PomodoroHistoryLine.vue';
 import { useAuth0 } from "@auth0/auth0-vue";
 import * as reportUtils from '@/utils/report';
 
@@ -195,7 +195,7 @@ const hoursList = computed(() => {
 
           <div class="pomo-infos" v-if="openDay === key">
             <div v-for="p in g.pomos">
-              <PomodoroDetails v-model="openDetailsPomoId" :pomo="p" :max-length="g.maxLength" />
+              <PomodoroHistoryLine v-model="openDetailsPomoId" :pomo="p" :max-length="g.maxLength" />
             </div>
           </div>
         </div>

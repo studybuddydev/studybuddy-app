@@ -5,14 +5,13 @@ import { useSettingsStore } from "@/stores/settings";
 import { computed, ref, watch } from 'vue';
 import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
 import * as timeUtils from '@/utils/time';
-import * as reportUtils from '@/utils/report';
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
 const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 
-const SHORT_POMO_THRESHOLD = 5 * MINUTE_MULTIPLIER;
+const SHORT_POMO_THRESHOLD = 0.16 * MINUTE_MULTIPLIER;
 const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
 
 const STOPPOMODORO_TIMEOUT = 60 * MINUTE_MULTIPLIER;
@@ -44,7 +43,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // ---------- Init ----------
   let interval: number | undefined;
-  const report = ref<PomoReport | null>(null);
+  const finishedPomoRecord = ref<{ pomo?: PomodoroRecord, shortPomo: boolean } | null>(null);
   const now = ref(Date.now());
   init();
   function init() {
@@ -143,11 +142,16 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       }
       pomo.state = PomodoroState.TERMINATED;
 
-      report.value = reportUtils.getPomoReport(pomo);
+      // finishedPomoRecord.value = reportUtils.getPomoReport(pomo);
       if (pomo.endedAt > SHORT_POMO_THRESHOLD) {
-        pomoDB.addPomodoroToRecords(pomo);
+        finishedPomoRecord.value = { shortPomo: false };
+        pomoDB.addPomodoroToRecords(pomo).then((pomo) => {
+          if (!finishedPomoRecord.value)
+            finishedPomoRecord.value = { shortPomo: false };
+          finishedPomoRecord.value.pomo = pomo;
+        });
       } else {
-        report.value.shortPomo = true;
+        finishedPomoRecord.value = { shortPomo: true };
       }
       saveStatus();
     }
@@ -312,7 +316,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     if (interval) {
       clearInterval(interval);
     }
-    report.value = null;
+    finishedPomoRecord.value = null;
   }
   function getNowInPercentage() {
     const pomo = getCurrentPomo();
@@ -513,7 +517,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   return {
     createPomodoro, startPomodoro, stopPomodoro, togglePauseStudy, pause, study, resumePomodoro, stopAtLastInteraction,
     getCurrentPomo, getBreaks,
-    percentage, displayBreaks, displayStudy, report,
+    percentage, displayBreaks, displayStudy, finishedPomoRecord,
     created, going, studing, pauseing, terminated, done, freeMode, timeToBreak, timeToStudy, onLongPause,
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
     timeFormatted, timeInTitle,

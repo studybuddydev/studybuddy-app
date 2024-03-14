@@ -2,7 +2,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
-import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import PomodoroPip from '@/components/Pomodoro/PomodoroPip.vue';
 import Settings from '@/components/Settings/Settings.vue';
 import LongAwayPopup from '@/components/Zen/LongAwayPopup.vue'
@@ -12,6 +11,7 @@ import About from '@/components/Zen/About.vue'
 import StartPage from '@/components/Zen/StartPage.vue'
 import FinishPage from '@/components/Zen/FinishPage.vue'
 import ZenActions from '@/components/Zen/ZenActions.vue'
+import PomodoroDetails from '../Pomodoro/PomodoroDetails.vue';
 
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
@@ -63,15 +63,15 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
           <div class="main-content">
             <StartPage v-if="pomodoro.created && !pomodoro.going" />
             <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going"
-              :short-pomo="!!pomodoro.report?.shortPomo"
-              :points="(pomodoro.report?.points ?? 0)"
+              :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
+              :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)"
               @create-pomodoro="pomodoro.createPomodoro()" />
             <PomodoroPip
               v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
               :zen-style="zenStyle"
               :hide-time="settings.generalSettings.hideTime" />
-            <PomodoroReport v-if="pomodoro.report" :report="pomodoro.report" />
             <ZenActions @show-history="showPomoHistory = true" />
+            <PomodoroDetails v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo" />
           </div>
         </div>
       </v-scroll-y-reverse-transition>
@@ -118,6 +118,7 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
   }
 
   .main-content {
+    gap: 1rem;
     height: 100vh;
     width: 100vw;
     display: flex;

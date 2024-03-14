@@ -30,7 +30,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
         .toArray()
     ).map(p => parsePomodorDbo(p));
   }
-  async function addPomodoroToRecords(pomo: PomodotoStatus) {
+  async function addPomodoroToRecords(pomo: PomodotoStatus): Promise<PomodoroRecord> {
     const p: PomodoroDBO = {
       end: pomo.end,
       endedAt: pomo.endedAt,
@@ -42,6 +42,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     const parsed = parsePomodorDbo(p);
     parsed.id = await db.pomodori.add(p);
     pomodoroRecords.value.unshift(parsed);
+    return parsed;
   }
   async function deletePomodoroRecord(id: number) {
     pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);
