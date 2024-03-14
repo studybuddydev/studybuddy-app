@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="about-wrapper">
     <v-dialog width="450" v-model="aboutOpen">
       <template v-slot:activator="{ props: activatorProps }">
 
@@ -24,7 +24,8 @@
             <p>Version: {{ appVersion }} ({{ env }})</p>
             <p>Release date: {{ releaseDate }}</p>
             <div class="btn-wrapper">
-              <v-btn href="https://forms.gle/CtL93R1QLZswFWGK9" target="_blank" color="primary" class="btn">Send feedback
+              <v-btn href="https://forms.gle/CtL93R1QLZswFWGK9" target="_blank" color="primary" class="btn">Send
+                feedback
                 <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
             </div>
             <div class="btn-wrapper">
@@ -56,6 +57,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <div class="btn-install blur" v-ripple @click="installApp()" v-if="!runningAsPWA">
+      <v-icon icon="mdi-cloud-arrow-down-outline" />
+    </div>
   </div>
 </template>
 
@@ -68,25 +72,67 @@ const appVersion = APP_VERSION;
 const env = import.meta.env.VITE_ENV
 const releaseDate = ref('');
 
-const props = defineProps<{
+defineProps<{
   showTitle: boolean;
 }>();
 
-(async () => {
-  try {
-    const res = await axios.get(`https://api.github.com/repos/studybuddydev/studybuddy-app/branches/${env}`);
-    const date = res.data?.commit?.commit?.committer?.date as string;
-    if (date) {
-      releaseDate.value = new Date(date).toLocaleDateString();
-      return;
+const runningAsPWA = window.matchMedia('(display-mode: standalone)').matches;
+
+let deferredPrompt: Event | null = null;
+window.addEventListener('beforeinstallprompt', (e) => { deferredPrompt = e; });
+async function installApp() {
+  if (deferredPrompt !== null) {
+    // @ts-ignore
+    deferredPrompt.prompt();
+    // @ts-ignore
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(outcome)
+    if (outcome === 'accepted') {
+      deferredPrompt = null;
     }
-  } catch (error) {
   }
-  releaseDate.value = 'NA';
-})();
+}
+
+
+if (env !== 'local') {
+  (async () => {
+    try {
+      const res = await axios.get(`https://api.github.com/repos/studybuddydev/studybuddy-app/branches/${env}`);
+      const date = res.data?.commit?.commit?.committer?.date as string;
+      if (date) {
+        releaseDate.value = new Date(date).toLocaleDateString();
+        return;
+      }
+    } catch (error) {
+    }
+    releaseDate.value = 'NA';
+  })();
+}
 
 </script>
 <style scoped lang="scss">
+.about-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  .btn-install {
+    height: 3rem;
+    width: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    background-color: rgba(var(--v-theme-background), 0.7);
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(var(--v-theme-background), 0.4);
+    }
+  }
+}
+
 .sb-title {
   display: flex;
   align-items: center;
@@ -101,6 +147,7 @@ const props = defineProps<{
       display: none;
     }
   }
+
   h3 {
     margin: 0 0.2em;
   }
@@ -115,7 +162,7 @@ const props = defineProps<{
   }
 
   &:hover {
-    background-color: #FFF4;
+    background-color: rgba(var(--v-theme-background), 0.4);
   }
 }
 

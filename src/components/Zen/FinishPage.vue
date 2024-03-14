@@ -31,6 +31,7 @@ const emit = defineEmits<{
   padding: 1.5rem;
   position: relative;
   border-radius: 1rem;
+  max-width: 900px;
 
   .close-icon {
     position: absolute;

@@ -10,7 +10,8 @@ import { openDB } from 'idb';
 export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   const db = useDBStore();
   const settings = useSettingsStore();
-
+  
+  const streak = ref(0);
   const pomodoroRecords = ref<PomodoroRecord[]>([]);
 
   function parsePomodorDbo(p: PomodoroDBO): PomodoroRecord {
@@ -29,6 +30,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
         .limit(500)
         .toArray()
     ).map(p => parsePomodorDbo(p));
+    updateStreak();
   }
   async function addPomodoroToRecords(pomo: PomodotoStatus): Promise<PomodoroRecord> {
     const p: PomodoroDBO = {
@@ -42,10 +44,12 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     const parsed = parsePomodorDbo(p);
     parsed.id = await db.pomodori.add(p);
     pomodoroRecords.value.unshift(parsed);
+    updateStreak();
     return parsed;
   }
-  async function deletePomodoroRecord(id: number) {
+  async function deletePomodoroRecord(id: number) { 
     pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);
+    updateStreak();
     await db.pomodori.delete(id);
   }
 
@@ -95,9 +99,36 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     }
   }
 
+  function getDay(d: Date) {
+    return Math.floor((
+      d.getTime() - d.getTimezoneOffset() * 60 * 1000
+    ) / (24 * 60 * 60 * 1000));
 
-  // migrate to new db -- remove after a while
+  }
+
+  function updateStreak() {
+    const days = pomodoroRecords.value.map(p => getDay(p.datetime));
+    const today = getDay(new Date());
+
+    if (days.length === 0 || (today !== days[0] && today - 1 !== days[0])) {
+      streak.value = 0;
+      return;
+    }
+
+    let newStreak = 1;
+    while (newStreak < days.length) {
+      if (days[newStreak - 1] - 1 === days[newStreak]) {
+        newStreak++;
+      } else {
+        break;
+      }
+    }
+    streak.value = newStreak;
+  }
+
   (async () => {
+
+    // migrate to new db -- remove after a while
     if ((await window.indexedDB.databases()).map(db => db.name).includes('sb-db')) {
       console.log('migrating db');
 
@@ -133,11 +164,15 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
       }
       console.log('migration done');
     }
+
+
     await updatePomodoroRecords();
   })();
 
+
+
   return {
-    pomodoroRecords, tags, tagColors,
+    pomodoroRecords, tags, tagColors, streak,
     addPomodoroToRecords,
     deletePomodoroRecord,
     updateTag, updateRating, updateDeepWork

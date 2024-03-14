@@ -58,7 +58,8 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
             :show-title="!pomodoro.created" />
           <UserBanner class="top-right"
             v-if="!showPomoHistory"
-            @open-settings-tab="event => openSettingsTab = event" />
+            @open-settings-tab="event => openSettingsTab = event"
+            @open-history="showPomoHistory = true" />
 
           <div class="main-content">
             <StartPage v-if="pomodoro.created && !pomodoro.going" />
