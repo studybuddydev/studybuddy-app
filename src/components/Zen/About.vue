@@ -92,7 +92,7 @@ const props = defineProps<{
   align-items: center;
   border-radius: 1rem;
   padding: 0.5rem;
-  height: 5rem;
+  height: 3rem;
   text-decoration: none;
   cursor: pointer;
 
@@ -101,15 +101,17 @@ const props = defineProps<{
       display: none;
     }
   }
+  h3 {
+    margin: 0 0.2em;
+  }
 
   .logo {
-    height: 4rem;
+    height: 2.5rem;
   }
 
   .beta {
     border-radius: 0.5rem;
-    padding: 0.4em;
-    margin-right: 1em;
+    padding: 0.2em;
   }
 
   &:hover {

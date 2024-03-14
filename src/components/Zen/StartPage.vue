@@ -65,7 +65,7 @@ h3 {
     color: rgba(var(--v-theme-primary));
     transform: translate(-10%, -0em) rotate(-24deg);
     animation: breath 0.5s linear infinite alternate;
-    // text-shadow: -3px 3px rgba(var(--v-theme-primary));
+    text-shadow: -2px 2px black;
   }
 
   @keyframes breath {

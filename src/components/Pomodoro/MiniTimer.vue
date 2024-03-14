@@ -9,8 +9,7 @@
         transparent 360deg)`
       }">
         <v-btn icon="mdi-noicon" class="btn-toggle" @click="pomodoro.togglePauseStudy()">
-          <v-icon class="btn-icon" :icon="pomodoro.studing ? 'mdi-pause' : 'mdi-play'" />
-
+          <svg-icon type="mdi" class="btn-icon" :path="pomodoro.studing ? mdiPause : mdiPause"></svg-icon>
         </v-btn>
       </div>
     </div>
@@ -32,6 +31,8 @@
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useTheme } from 'vuetify'
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiPause, mdiPlay } from '@mdi/js'
 
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
@@ -51,12 +52,10 @@ function getCircleColor() {
 <style lang="scss" scoped>
 .mini {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 1fr 50vw;
   grid-template-rows: 1fr 4rem;
   width: 100%;
   height: 100%;
-  min-width: 50vw;
-  min-height: 30vh;
   align-content: center;
 }
 
@@ -72,6 +71,10 @@ function getCircleColor() {
   align-items: center;
   padding: 1rem;
   height: 100%;
+
+  @media screen and (max-height: 150px) {
+    padding: 0.1rem;
+  }
 }
 
 .progress-bar {
@@ -85,8 +88,14 @@ function getCircleColor() {
     width: 61.8% !important;
     height: 61.8% !important;
 
+    ::v-deep(.v-btn__content) {
+      width: 100%;
+      height: 100%;
+    }
+
     .btn-icon {
-      font-size: min(20vw, 15vh);
+      width: 66%;
+      height: 100%;
     }
   }
 }
@@ -108,7 +117,7 @@ function getCircleColor() {
 
 @mixin small {
   .mini {
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 50vw;
     grid-template-rows: 1fr;
   }
 
