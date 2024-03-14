@@ -79,7 +79,8 @@ const dailyPomodoriGroups = computed(() => {
         lengthPerc: endMs * 100,
         lengthTime: pomodoro.timeFormatted(p.endedAt ?? 0, { html: false }),
         index: i,
-        color: p.tag ? pomoDB.tagColors[p.tag] : undefined
+        color: p.tag ? pomoDB.tagColors[p.tag] : undefined,
+        deepWork: p.deepWork
       } as DisplaySession
     })
   }

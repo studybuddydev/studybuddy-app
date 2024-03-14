@@ -89,6 +89,7 @@ export type DisplaySession = {
   index: number;
   small?: boolean;
   color?: string;
+  deepWork?: boolean;
 }
 
 export type PomoReport = {
