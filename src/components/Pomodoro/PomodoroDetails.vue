@@ -44,8 +44,6 @@ const pomoDB = usePomodoroDBStore();
   align-items: center;
   flex-direction: column;
 
-  background: rgb(var(--v-theme-background));
-  border: 1px solid rgb(var(--v-theme-primary));
   border-radius: 1rem;
   padding: 1rem;
 

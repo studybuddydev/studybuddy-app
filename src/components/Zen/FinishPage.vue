@@ -28,7 +28,6 @@ const emit = defineEmits<{
 
 <style scoped lang="scss">
 .finish-box {
-  margin: 1rem;
   padding: 1.5rem;
   position: relative;
   border-radius: 1rem;

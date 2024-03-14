@@ -71,7 +71,7 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
               :zen-style="zenStyle"
               :hide-time="settings.generalSettings.hideTime" />
             <ZenActions @show-history="showPomoHistory = true" />
-            <PomodoroDetails v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo" />
+            <PomodoroDetails class="pomo-details" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo" />
           </div>
         </div>
       </v-scroll-y-reverse-transition>
@@ -125,6 +125,11 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
+    .pomo-details {
+      background: rgb(var(--v-theme-background));
+      border: 1px solid rgb(var(--v-theme-primary));
+    }
 
     @media (max-width: 600px) {
       justify-content: flex-start;
