@@ -8,10 +8,10 @@
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" v-if="mainPomo" /> </div>
       <div v-for="b in displayBreaks" :key="b.index" class="break"
       :style="{
-        backgroundColor: getBackgroundColor(),
+        backgroundColor: b.color ?? getBackgroundColor(),
         marginLeft: parsePercentage(b.startPerc),
         width: parsePercentage(b.lengthPerc, true),
-      }"><v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
+      }">{{ b }}<v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
 
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
         :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }"><p>{{b.lengthTime}} </p></div>
