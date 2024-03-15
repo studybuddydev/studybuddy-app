@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useDBStore } from "@/stores/db";
-import type { PomodoroDBO, PomodoroRecord, PomodotoStatus } from '@/types';
+import type { PomodoroDBO, PomodoroRecord, PomodoroTask, PomodotoStatus } from '@/types';
 import * as timeUtils from '@/utils/time';
 import * as reportUtils from '@/utils/report';
 import { useSettingsStore } from "@/stores/settings";
@@ -99,6 +99,17 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     }
   }
 
+  // --- TASKS ---
+  async function updateTasks(id: number, tasks?: PomodoroTask[]) {
+    const p = await db.pomodori.get(id);
+    if (p) {
+      p.tasks = tasks?.map(t => ({ task: t.task, done: t.done }));
+      await db.pomodori.put(p, id);
+    }
+
+  }
+
+  // --- STREAK ---
   function getDay(d: Date) {
     return Math.floor((
       d.getTime() - d.getTimezoneOffset() * 60 * 1000
@@ -181,6 +192,6 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     pomodoroRecords, tags, tagColors, streak,
     addPomodoroToRecords,
     deletePomodoroRecord,
-    updateTag, updateRating, updateDeepWork
+    updateTag, updateRating, updateTasks, updateDeepWork
   };
 });

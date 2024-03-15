@@ -52,7 +52,7 @@ function getCircleColor() {
 <style lang="scss" scoped>
 .mini {
   display: grid;
-  grid-template-columns: 1fr 50vw;
+  grid-template-columns: 1fr 66vw;
   grid-template-rows: 1fr 4rem;
   width: 100%;
   height: 100%;
@@ -117,7 +117,7 @@ function getCircleColor() {
 
 @mixin small {
   .mini {
-    grid-template-columns: 1fr 50vw;
+    grid-template-columns: 1fr 66vw;
     grid-template-rows: 1fr;
   }
 

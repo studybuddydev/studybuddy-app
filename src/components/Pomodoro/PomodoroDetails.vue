@@ -1,5 +1,8 @@
 <template>
   <div class="pomo-details">
+    <div>
+      <PomodoroTasks :pomo="pomo" />
+    </div>
     <div class="details">
 
       <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="pomoDB.updateTag(pomo, undefined)"
@@ -31,6 +34,7 @@
 
 <script lang="ts" setup>
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
+import PomodoroTasks from '@/components/Pomodoro/PomodoroTasks.vue';
 import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
 import type { PomodoroRecord } from '@/types';
 defineProps<{ pomo: PomodoroRecord }>();
@@ -41,7 +45,7 @@ const pomoDB = usePomodoroDBStore();
 .pomo-details {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: column;
 
   border-radius: 1rem;

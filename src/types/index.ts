@@ -119,6 +119,11 @@ export interface PomodotoStatus extends PomodoroBase {
   originalEnd?: number;
 }
 
+export interface PomodoroTask {
+  task: string;
+  done?: boolean;
+}
+
 export interface PomodoroRecord extends PomodoroBase {
   id?: number;
   datetime: Date;
@@ -129,6 +134,7 @@ export interface PomodoroRecord extends PomodoroBase {
   tag?: string;
   rating?: number;
   deepWork: boolean;
+  tasks?: PomodoroTask[];
 }
 
 // ---------- SETTINGS ----------
@@ -184,6 +190,7 @@ export interface PomodoroDBO extends PomodoroBase {
   tag?: string;
   rating?: number;
   deepWork: boolean;
+  tasks?: PomodoroTask[];
 }
 
 
