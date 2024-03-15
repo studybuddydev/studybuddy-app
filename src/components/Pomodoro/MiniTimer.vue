@@ -9,7 +9,7 @@
         transparent 360deg)`
       }">
         <v-btn icon="mdi-noicon" class="btn-toggle" @click="pomodoro.togglePauseStudy()">
-          <svg-icon type="mdi" class="btn-icon" :path="pomodoro.studing ? mdiPause : mdiPause"></svg-icon>
+          <svg-icon type="mdi" class="btn-icon" :path="pomodoro.studing ? mdiPause : mdiPlay"></svg-icon>
         </v-btn>
       </div>
     </div>
