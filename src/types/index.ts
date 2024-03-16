@@ -117,6 +117,7 @@ export interface PomodotoStatus extends PomodoroBase {
   soundEnd?: boolean;
   onLongBreak?: boolean;
   originalEnd?: number;
+  timestamp?: number;
 }
 
 export interface PomodoroTask {

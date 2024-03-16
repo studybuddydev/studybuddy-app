@@ -86,7 +86,6 @@ async function installApp() {
     deferredPrompt.prompt();
     // @ts-ignore
     const { outcome } = await deferredPrompt.userChoice;
-    console.log(outcome)
     if (outcome === 'accepted') {
       deferredPrompt = null;
     }
