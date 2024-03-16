@@ -10,7 +10,7 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
   const { user,  } = useAuth0();
   const pomodoro = usePomodoroStore();
 
-  const API_ENDPOINT = 'http://157.230.104.1'
+  const API_ENDPOINT = 'https://api.studybuddy.it'
   const LOCALSTORAGE_KEY = 'timer-status'
 
   const pomodoroStatus = ref<PomodotoStatus | null>(
