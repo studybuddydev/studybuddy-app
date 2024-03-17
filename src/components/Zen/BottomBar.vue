@@ -1,7 +1,7 @@
 <template>
   <div class="bottom-bar">
     <div class="quick-settings" v-if="zenMode">
-      <v-btn density="comfortable" class="btn-edit btn-edit-main bg-background" icon="mdi-cog" size="large"
+      <v-btn density="comfortable" class="btn-edit btn-edit-main bg-surface" icon="mdi-cog" size="large"
         @click="emit('openSettingsTab', pomodoro.going ? 'theme' : 'pomodoro')">
         <v-icon class="icon" icon="mdi-cog" size="large" />
       </v-btn>
@@ -18,14 +18,14 @@
       <div class="pomodoro-bar">
         <div class="button-wrapper font-press pomo-left" v-if="pomodoro.going">
           <div>
-            <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="pomodoro.startPomodoro()"
+            <v-btn class='btn bg-accent pomo-btn pomo-box' @click="pomodoro.startPomodoro()"
               v-if="pomodoro.created || pomodoro.terminated">
               <v-icon class="icon" icon="mdi-play" />
             </v-btn>
-            <v-btn class='btn bg-secondary pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.studing">
+            <v-btn class='btn bg-accent pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.studing">
               <v-icon class="icon" icon="mdi-pause" />
             </v-btn>
-            <v-btn class='btn bg-secondary pomo-btn pomo-box pomo-box-disabled' v-else>
+            <v-btn class='btn bg-accent pomo-btn pomo-box pomo-box-disabled' v-else>
               <v-icon class="icon coffee-cup" icon="mdi-coffee" />
             </v-btn>
             <!-- <PomodoroController class="pomo-box pomo-controller bottom-box" v-if="!pomodoro.getReport.reportDone && (!pomodoroGoing || !pomodoro.status.isBreak)"/>
@@ -226,7 +226,7 @@ function toggleZenMode() {
       .pomo-time {
         width: 70%;
         display: flex;
-        background-color: rgb(var(--v-theme-secondary-darken-1));
+        background-color: rgb(var(--v-theme-secondary));
         border-radius: 1rem 0 0 1rem;
 
         p {

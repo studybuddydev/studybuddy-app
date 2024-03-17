@@ -101,7 +101,7 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
   width: 100vw;
   height: 100vh;
   z-index: 1500;
-  background-color: rgb(var(--v-theme-surface));
+  background-color: rgb(var(--v-theme-background));
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

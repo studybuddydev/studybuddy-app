@@ -6,13 +6,13 @@
       <v-icon class="icon" icon="mdi-folder-clock-outline" />
     </v-btn>
 
-    <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start'
+    <v-btn class='btn bg-accent pomo-btn pomo-box font-press btn-main-start'
       v-if="!pomodoro.going && !pomodoro.finishedPomoRecord?.shortPomo" @click="pomodoro.startPomodoro()">
       <span>{{ $t("pause.study") }}</span>
       <v-icon class="icon" icon="mdi-play" />
     </v-btn>
 
-    <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start'
+    <v-btn class='btn bg-accent pomo-btn pomo-box font-press btn-main-start'
       v-if="!pomodoro.going && pomodoro.finishedPomoRecord?.shortPomo" @click="pomodoro.createPomodoro()">
       <span>{{ $t("backHome") }}</span>
       <v-icon class="icon" icon="mdi-home" />

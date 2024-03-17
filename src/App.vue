@@ -83,17 +83,17 @@ watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
 }
 
 .blur {
-  background-color: rgba(var(--v-theme-background));
+  background-color: rgba(var(--v-theme-surface));
   transition: background-color 0.2s ease-in-out;
 }
 .img-background {
   .blur {
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    background-color: rgba(var(--v-theme-background), 0.7);
+    background-color: rgba(var(--v-theme-surface), 0.7);
 
     &.no-frost {
-      background-color: rgb(var(--v-theme-background));
+      background-color: rgb(var(--v-theme-surface));
     }
   }
 }
@@ -107,7 +107,7 @@ watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
   font-weight: bold;
 }
 .pomo-box-disabled {
-  background-color: rgb(var(--v-theme-secondary-darken-1));
+  background-color: rgba(var(--v-theme-secondary), 0.8);
   filter: saturate(0.5);
   opacity: 0.5;
   pointer-events: none;

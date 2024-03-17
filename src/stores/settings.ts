@@ -30,7 +30,7 @@ const defaultSettings: Settings = {
     icon: DEFAULT_ICONS,
     palette: DEFAULT_PALETTE,
     backgroundColor: undefined,
-    backgroundImg: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg',
+    backgroundImg: 'https://api.studybuddy.it/images/Forest',
   }
 };
 
@@ -44,7 +44,7 @@ export const useSettingsStore = defineStore('settings', () => {
   settings.value.pomodoro = { ...defaultSettings.pomodoro, ...settings.value.pomodoro } as PomodoroSettings;
 
   if (settings.value.theme.backgroundImg === 'https://images.alphacoders.com/133/1332707.png') {
-    settings.value.theme.backgroundImg = 'https://images.pexels.com/photos/936722/pexels-photo-936722.jpeg';
+    settings.value.theme.backgroundImg = 'https://api.studybuddy.it/images/Forest';
   }
 
   const generalSettings = computed(() => settings.value.general);

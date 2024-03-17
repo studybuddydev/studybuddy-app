@@ -2,7 +2,7 @@
   <div :class="`pomodoro ${mainPomo ? 'pomodoro-main' : ''}`">
     <div :class="`progress-bar ${alwaysShowTime ? 'always-show-time' : ''}`">
       <div :class="`progress ${pomodoro.countdownRunning ? 'timer-animation' : ''}`" v-if="!dailyPomo" :style="{
-        backgroundColor: theme.current.value.colors.snake,
+        backgroundColor: theme.current.value.colors.snake ?? theme.current.value.colors.primary,
         color: theme.current.value.colors.surface,
         width: parsePercentage(percentage),
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" v-if="mainPomo" /> </div>
@@ -66,8 +66,8 @@ const ticks = computed(() => {
 
 
 function getBackgroundColor() {
-  if (props.dailyPomo) return theme.current.value.colors.snake;
-  return theme.current.value.colors.apple ?? theme.current.value.colors.error;
+  if (props.dailyPomo) return theme.current.value.colors.primary;
+  return theme.current.value.colors.secondary;
 }
 
 // const snakeHeadPercent = 3;
