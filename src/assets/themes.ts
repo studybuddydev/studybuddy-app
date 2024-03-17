@@ -17,17 +17,6 @@ export const themes: {
   }
 } = {
 
-  purple: {
-    dark: true,
-    colors: {
-      background: '#0F051A',
-      surface: '#170c25',
-      primary: '#B888EA',
-      secondary: '#85186A',
-      accent: '#DD4092',
-    }
-  },
-
   gptnight: {
     dark: true,
     colors: {
@@ -58,21 +47,6 @@ export const themes: {
     }
   },
 
-  bio: {
-    dark: false,
-    colors: {
-      background: '#f7f2da',
-      surface: '#ecead2',
-      primary: '#2E4C3D',
-      secondary: '#e9c46a',
-      accent: '#FB8C00',
-      // error: '#B00020',
-      // info: '#2196F3',
-      // success: '#4CAF50',
-      // warning: '#FB8C00',
-    }
-  },
-
   nord: {
     dark: true,
     colors: {
@@ -88,19 +62,35 @@ export const themes: {
     }
   },
 
-  blallo: {
+  bio: {
+    dark: false,
+    colors: {
+      background: '#f7f2da',
+      surface: '#ecead2',
+      primary: '#2E4C3D',
+      secondary: '#e9c46a',
+      accent: '#FB8C00',
+      // error: '#B00020',
+      // info: '#2196F3',
+      // success: '#4CAF50',
+      // warning: '#FB8C00',
+    }
+  },
+
+  dark: {
     dark: true,
     colors: {
-      background: '#3d58a7',
-      surface: '#223c88',
-      primary: '#fdd93d',
-      secondary: '#e50000',
-      accent: '#71e943',
-      // error: '#ff3333',
-      // info: '#6dcff6',
-      // success: '#82ca9c',
-      // warning: '#bd8cbf',
-      snake: '#71e943'
+      background: '#212121',
+      surface: '#252525',
+      primary: '#bb86fc',
+      secondary: '#991717',
+      accent: '#03dac5',
+      snake: '#03dac5',
+      // error: '#FF3333',
+      // info: '#00BFFF',
+      // success: '#00CC66',
+      // warning: '#FFD700',
+      // apple: '#FF3333',
     }
   },
 
@@ -121,36 +111,33 @@ export const themes: {
     }
   },
 
-  vaporwave: {
+  purple: {
     dark: true,
     colors: {
-      background: '#375971',      // Pastel pink
-      surface: '#0a0c37',         // Light lavender
-      primary: '#ff61c6',         // Neon green
-      secondary: '#9600ff',       // Pastel magenta
-      accent: '#5cecff',       // Pastel magenta
-      snake: '#5cecff',           // Neon green (same as primary)
-      // error: '#ff6666',           // Neon red
-      // info: '#66ccff',            // Pastel blue
-      // success: '#99ff99',         // Light green
-      // warning: '#ff9900',         // Pastel yellow
+      background: '#0F051A',
+      surface: '#170c25',
+      primary: '#B888EA',
+      secondary: '#85186A',
+      accent: '#DD4092',
     }
   },
 
-  dark: {
+
+
+
+  blallo: {
     dark: true,
     colors: {
-      background: '#212121',
-      surface: '#252525',
-      primary: '#bb86fc',
-      secondary: '#991717',
-      accent: '#03dac5',
-      snake: '#03dac5',
-      // error: '#FF3333',
-      // info: '#00BFFF',
-      // success: '#00CC66',
-      // warning: '#FFD700',
-      // apple: '#FF3333',
+      background: '#3d58a7',
+      surface: '#223c88',
+      primary: '#fdd93d',
+      secondary: '#e50000',
+      accent: '#71e943',
+      // error: '#ff3333',
+      // info: '#6dcff6',
+      // success: '#82ca9c',
+      // warning: '#bd8cbf',
+      snake: '#71e943'
     }
   },
 
@@ -181,6 +168,23 @@ export const themes: {
       accent: '#cc7025',
     }
   },
+
+  vaporwave: {
+    dark: true,
+    colors: {
+      background: '#375971',      // Pastel pink
+      surface: '#0a0c37',         // Light lavender
+      primary: '#ff61c6',         // Neon green
+      secondary: '#9600ff',       // Pastel magenta
+      accent: '#5cecff',       // Pastel magenta
+      snake: '#5cecff',           // Neon green (same as primary)
+      // error: '#ff6666',           // Neon red
+      // info: '#66ccff',            // Pastel blue
+      // success: '#99ff99',         // Light green
+      // warning: '#ff9900',         // Pastel yellow
+    }
+  },
+
 }
 
 const paletteTitles: { [id: string]: string } = {
@@ -192,9 +196,10 @@ const paletteTitles: { [id: string]: string } = {
   "bio": 'Biologico',
   "nord": 'Nordico',
   "blallo": 'Blallo',
-  "gptday": 'GPT Day',
-  "gptnight": 'GPT Night',
-  "vaporwave": 'Vaporwave'
+  "gptday": 'Day',
+  "gptnight": 'Night',
+  "vaporwave": 'Vaporwave',
+  "desert": 'Desert'
 }
 
 
