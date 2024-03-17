@@ -61,18 +61,20 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
             @open-settings-tab="event => openSettingsTab = event"
             @open-history="showPomoHistory = true" />
 
-          <div class="main-content">
-            <StartPage v-if="pomodoro.created && !pomodoro.going" />
-            <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going"
-              :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
-              :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)"
-              @create-pomodoro="pomodoro.createPomodoro()" />
-            <PomodoroPip
-              v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
-              :zen-style="zenStyle"
-              :hide-time="settings.generalSettings.hideTime" />
-            <ZenActions @show-history="showPomoHistory = true" />
-            <PomodoroDetails class="pomo-details" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo" />
+          <div class="main-content-wrapper">
+            <div class="main-content">
+              <StartPage v-if="pomodoro.created && !pomodoro.going" />
+              <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going"
+                :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
+                :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)"
+                @create-pomodoro="pomodoro.createPomodoro()" />
+              <PomodoroPip
+                v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
+                :zen-style="zenStyle"
+                :hide-time="settings.generalSettings.hideTime" />
+              <ZenActions @show-history="showPomoHistory = true" />
+              <PomodoroDetails class="pomo-details" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo" />
+            </div>
           </div>
         </div>
       </v-scroll-y-reverse-transition>
@@ -118,14 +120,32 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
     right: 1rem;
   }
 
+  .main-content-wrapper-wrapper {
+    // display: flex;
+    // height: 70vh;
+    // width: 100vw;
+    // margin: 15vh 0;
+    // align-items: center;
+    // justify-content: center;
+  }
+
+  .main-content-wrapper {
+    display: flex;
+    height: 85vh;
+    align-items: baseline;
+    margin-top: 15vh;
+    justify-content: center;
+    overflow: auto;
+  }
+
   .main-content {
     gap: 1rem;
-    height: 100vh;
-    width: 100vw;
     display: flex;
     align-items: center;
-    justify-content: center;
     flex-direction: column;
+    min-height: 70vh;
+    justify-content: center;
+    margin-bottom: 15vh;
 
     .pomo-details {
       background: rgb(var(--v-theme-background));

@@ -123,11 +123,10 @@ if (env !== 'local') {
     align-items: center;
     justify-content: center;
     border-radius: 1rem;
-    background-color: rgba(var(--v-theme-background), 0.7);
     cursor: pointer;
 
     &:hover {
-      background-color: rgba(var(--v-theme-background), 0.4);
+      background-color: rgba(var(--v-theme-surface), 0.4);
     }
   }
 }
