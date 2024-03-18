@@ -46,7 +46,7 @@ export const useSettingsStore = defineStore('settings', () => {
   settings.value.pomodoro = { ...defaultSettings.pomodoro, ...settings.value.pomodoro } as PomodoroSettings;
 
   if (settings.value.theme.backgroundImg === 'https://images.alphacoders.com/133/1332707.png') {
-    settings.value.theme.backgroundImg = 'https://api.studybuddy.it/images/Forest';
+    settings.value.theme.backgroundImg = DEFAULT_IMG;
   }
 
   const generalSettings = computed(() => settings.value.general);
