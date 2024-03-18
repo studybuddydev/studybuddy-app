@@ -1,8 +1,8 @@
 <template>
   <div class="pomo-details">
-    <div>
+    <!-- <div>
       <PomodoroTasks :pomo="pomo" />
-    </div>
+    </div> -->
     <div class="details">
 
       <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="pomoDB.updateTag(pomo, undefined)"
@@ -20,7 +20,7 @@
         </template>
       </v-combobox>
 
-      <v-rating v-model="pomo.rating" length="3" size="x-large" color="warning" clearable
+      <v-rating v-model="pomo.rating" length="3" size="x-large" color="accent" clearable
         @update:modelValue="(newRating: any) => { pomo.id && newRating && pomoDB.updateRating(pomo.id, newRating) }" />
       <v-switch label="Deep work" color="primary" inset hide-details v-model="pomo.deepWork"
         @update:modelValue="(deep: any) => { pomo.id && deep && pomoDB.updateDeepWork(pomo.id, deep) }" />

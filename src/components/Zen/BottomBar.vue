@@ -156,7 +156,7 @@ function toggleZenMode() {
       transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
 
       &:hover {
-        background-color: #FFFFFF10;
+        background-color: rgba(var(--v-theme-on-surface), 0.05);
       }
     }
 
@@ -248,7 +248,7 @@ function toggleZenMode() {
         cursor: pointer;
 
         &:hover {
-          background-color: rgb(var(--v-theme-apple));
+          background-color: rgba(var(--v-theme-error), 0.8);
         }
       }
     }

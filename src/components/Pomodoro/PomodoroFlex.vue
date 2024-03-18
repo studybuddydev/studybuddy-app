@@ -121,7 +121,6 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
       bottom: 0;
       transform: translateX(-50%);
       overflow: hidden;
-      color: rgba(var(--v-theme-on-success));
       font-style: italic;
       p {
         padding: 2px;

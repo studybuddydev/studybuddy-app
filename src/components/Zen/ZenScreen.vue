@@ -120,15 +120,6 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
     right: 1rem;
   }
 
-  .main-content-wrapper-wrapper {
-    // display: flex;
-    // height: 70vh;
-    // width: 100vw;
-    // margin: 15vh 0;
-    // align-items: center;
-    // justify-content: center;
-  }
-
   .main-content-wrapper {
     display: flex;
     height: 85vh;

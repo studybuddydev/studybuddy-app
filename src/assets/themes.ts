@@ -12,7 +12,6 @@ export const themes: {
       success?: string,
       warning?: string,
       snake?: string,
-      apple?: string,
     }
   }
 } = {
@@ -25,10 +24,10 @@ export const themes: {
       primary: '#0077C2',
       secondary: '#FF7600',
       accent: '#FFA500 ',
-      // error: '#FF3333',
+      error: '#FF3333',
+      warning: '#FFD700'
       // info: '#00BFFF',
       // success: '#00CC66',
-      // warning: '#FFD700'
     }
   },
 
@@ -40,10 +39,10 @@ export const themes: {
       primary: '#0077C2',
       secondary: '#FFA500',
       accent: '#FF7600',
-      // error: '#FF3333',
+      error: '#FF3333',
+      warning: '#FF7600',
       // info: '#00BFFF',
       // success: '#00CC66',
-      // warning: '#FFD700',
     }
   },
 
@@ -55,10 +54,10 @@ export const themes: {
       primary: '#88C0D0',
       secondary: '#5E81AC',
       accent: '#FB8C00',
-      // error: '#BF616A',
+      error: '#BF616A',
+      warning: '#EBCB8B',
       // info: '#B48EAD',
       // success: '#A3BE8C',
-      // warning: '#EBCB8B',
     }
   },
 
@@ -70,10 +69,10 @@ export const themes: {
       primary: '#2E4C3D',
       secondary: '#e9c46a',
       accent: '#FB8C00',
-      // error: '#B00020',
+      error: '#B00020',
+      warning: '#FB8C00',
       // info: '#2196F3',
       // success: '#4CAF50',
-      // warning: '#FB8C00',
     }
   },
 
@@ -86,11 +85,10 @@ export const themes: {
       secondary: '#991717',
       accent: '#03dac5',
       snake: '#03dac5',
-      // error: '#FF3333',
+      error: '#991717',
+      warning: '#FFD700',
       // info: '#00BFFF',
       // success: '#00CC66',
-      // warning: '#FFD700',
-      // apple: '#FF3333',
     }
   },
 
@@ -102,12 +100,10 @@ export const themes: {
       primary: '#caa0ff',
       secondary: '#db5856',
       accent: '#9bf6ff',
-      // error: '#ff6b6b',
+      error: '#db5856',
+      warning: '#ffd6a5',
       // info: '#9bf6ff',
       // success: '#caffbf',
-      // warning: '#ffd6a5',
-      // snake: '#96f97b',
-      // apple: '#db5856',
     }
   },
 
@@ -119,6 +115,7 @@ export const themes: {
       primary: '#B888EA',
       secondary: '#85186A',
       accent: '#DD4092',
+      error: '#FF3333',
     }
   },
 
@@ -133,11 +130,11 @@ export const themes: {
       primary: '#fdd93d',
       secondary: '#e50000',
       accent: '#71e943',
-      // error: '#ff3333',
+      snake: '#71e943',
+      error: '#e50000',
+      warning: '#fdd93d',
       // info: '#6dcff6',
       // success: '#82ca9c',
-      // warning: '#bd8cbf',
-      snake: '#71e943'
     }
   },
 
@@ -149,12 +146,10 @@ export const themes: {
       primary: '#FF8749',
       secondary: '#BE0119',
       accent: '#FFB400',
-      // error: '#B00020',
+      error: '#BE0119',
+      warning: '#FFB400',
       // info: '#2196F3',
       // success: '#4CAF50',
-      // warning: '#FB8C00',
-      // snake: '#96f97b',
-      // apple: '#BE0119',
     }
   },
 
@@ -166,6 +161,8 @@ export const themes: {
       primary: '#537479',
       secondary: '#273736',
       accent: '#cc7025',
+      warning: '#cc7025',
+      error: '#e50000',
     }
   },
 

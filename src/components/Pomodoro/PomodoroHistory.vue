@@ -319,7 +319,7 @@ const hoursList = computed(() => {
       border: 1px solid rgb(var(--v-theme-primary));
 
       .day-line {
-        background-color: #FFFFFF10;
+        background-color: rgba(var(--v-theme-on-surface), 0.05);
       }
     }
   }
@@ -342,7 +342,7 @@ const hoursList = computed(() => {
       cursor: pointer;
 
       &:hover {
-        background-color: #FFFFFF10;
+        background-color: rgba(var(--v-theme-on-surface), 0.05);
       }
     }
 

@@ -1,9 +1,9 @@
 <template>
-  <div class="user-banner-wrapper">
+  <div class="user-banner-wrapper" v-if="!isLoading">
     <div class="streak blur" @click="emit('openHistory')">
-      <p class="streak-nr font-casio">{{ pomoDB.streak }}</p><v-icon icon="mdi-fire" :color="pomoDB.streak > 0 ? 'primary' : '#AAA'" size="large" />
+      <p class="streak-nr font-casio">{{ pomoDB.streak }}</p><v-icon icon="mdi-fire" :color="pomoDB.streak > 0 ? 'accent' : '#AAA'" size="large" />
     </div>
-    <div class="user-banner blur" v-if="!isLoading"
+    <div class="user-banner blur"
       @click="!isAuthenticated ? loginWithRedirect() : emit('openSettingsTab', 'general')">
       <p class="logged-user" v-if="offline">
         <v-icon v-ripple size="x-large" class="icon" icon="mdi-wifi-off" color="warning" />

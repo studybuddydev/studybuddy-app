@@ -96,10 +96,10 @@ function getEndTime(p: PomodoroRecord) {
   position: relative;
 
   &.pomo-info-open {
-    background-color: #FFFFFF10;
+    background-color: rgba(var(--v-theme-on-surface), 0.05);
 
     .pomo-line {
-      background-color: #FFFFFF10;
+      background-color: rgba(var(--v-theme-on-surface), 0.05);
     }
   }
 
@@ -113,7 +113,7 @@ function getEndTime(p: PomodoroRecord) {
     transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
 
     &:hover {
-      background-color: #FFFFFF10;
+      background-color: rgba(var(--v-theme-on-surface), 0.05);
     }
   }
 }
