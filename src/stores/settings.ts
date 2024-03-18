@@ -5,8 +5,10 @@ import { useTheme } from 'vuetify'
 
 const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
-const DEFAULT_PALETTE = 'bio';
+const DEFAULT_PALETTE = 'gptday';
 const DEFAULT_ICONS = 'mdi-icon';
+const DEFAULT_IMG = 'https://api.studybuddy.it/images/Rocks';
+
 
 const defaultSettings: Settings = {
   general: {
@@ -30,7 +32,7 @@ const defaultSettings: Settings = {
     icon: DEFAULT_ICONS,
     palette: DEFAULT_PALETTE,
     backgroundColor: undefined,
-    backgroundImg: 'https://api.studybuddy.it/images/Forest',
+    backgroundImg: DEFAULT_IMG,
   }
 };
 

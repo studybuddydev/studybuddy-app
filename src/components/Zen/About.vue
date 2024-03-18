@@ -29,7 +29,7 @@
                 <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
             </div>
             <div class="btn-wrapper">
-              <v-btn href="https://arc.net/e/1B44629B-4AA6-467A-8AC1-CAC7FCC871EA" target="_blank" color="primary"
+              <v-btn href="https://arc.net/e/83A3630F-344E-4F17-ADDF-66E2C9DB20AF" target="_blank" color="primary"
                 variant="outlined" class="btn">What's New <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
             </div>
             <div class="btn-wrapper">
