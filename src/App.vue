@@ -66,6 +66,54 @@ watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
   overflow: hidden;
 }
 
+.pomo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .icon {
+    font-size: 2rem;
+    transition: font-size 0.1s ease-in-out;
+  }
+
+  .text {
+    margin-top: 0.2em;
+  }
+}
+
+.blur {
+  background-color: rgba(var(--v-theme-surface));
+  transition: background-color 0.2s ease-in-out;
+}
+.img-background {
+  .blur {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    background-color: rgba(var(--v-theme-surface), 0.7);
+
+    &.no-frost {
+      background-color: rgb(var(--v-theme-surface));
+    }
+  }
+}
+
+.pomo-box {
+  height: 3rem !important;
+  line-height: 3rem;
+  width: 100%;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.pomo-box-disabled {
+  background-color: rgba(var(--v-theme-secondary), 0.8);
+  filter: saturate(0.5);
+  opacity: 0.5;
+  pointer-events: none;
+  /* Disable user interaction */
+}
+
 .v-tooltip > .v-overlay__content {
   background-color: rgba(var(--v-theme-primary), 0.7) !important;
   color: rgb(var(--v-theme-on-primary)) !important;

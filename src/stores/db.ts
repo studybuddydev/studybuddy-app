@@ -1,7 +1,44 @@
 
 import Dexie, { type Table } from 'dexie';
 import type { Timer, Theme, PomodoroDBO } from '@/types';
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
+
+function getThemes() {
+  return [
+    { title: 'Forest', palette: 'bio' },
+    { title: 'Mountain', palette: 'nord' },
+    { title: 'Rocks', palette: 'gptday' },
+
+    { title: 'Space', palette: 'gptnight' },
+    { title: 'Night', palette: 'dark' },
+    { title: 'Aurora', palette: 'blallo' },
+
+    { title: 'Ghibli', palette: 'verdone' },
+    { title: 'LOFI', palette: 'gptnight' },
+    { title: 'Wave', palette: 'nord' },
+
+    { title: 'Purple', palette: 'purple' },
+    { title: 'Beach', palette: 'pastel' },
+    { title: 'Vaporwave', palette: 'vaporwave' },
+
+    { title: 'Barbie', palette: 'pastel' },
+    { title: 'Oppenheimer', palette: 'gptnight' },
+    { title: 'Dune', palette: 'desert' },
+
+    { title: 'City', palette: 'nord' },
+    { title: 'Fog', palette: 'gptday' },
+    { title: 'Gandalf', palette: 'blallo' }
+
+  ].map((t) => ({ ...t, previewImg: `/images/themes/${t.title}.webp`, backgroundImg: `https://api.studybuddy.it/images/${t.title}`, og: true }));
+}
+
+function getTimers() {
+  return [
+    { title: 'Free', studyLength: 0, breakLength: 0, repetitions: 1, freeMode: true },
+    { title: '25/5', studyLength: 25, breakLength: 5, repetitions: 4, freeMode: false },
+    { title: '50/10', studyLength: 50, breakLength: 10, repetitions: 3, freeMode: false },
+  ];
+}
 
 export class StudyBuddyDB extends Dexie {
   public timer!: Table<Timer, number>;
@@ -9,38 +46,54 @@ export class StudyBuddyDB extends Dexie {
   public pomodori!: Table<PomodoroDBO, number>;
 
   public constructor() {
+
     super("StudyBuddyDB");
     this.version(3).stores({
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,backgroundColor,backgroundImg",
       pomodori: "++id,endedAt,end,freeMode,datetime"
     });
-
+    this.version(5).stores({
+      timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
+      themes: "++id,title,palette,backgroundColor,backgroundImg",
+      pomodori: "++id,datetime,tag"
+    }).upgrade(async trans => {
+      trans.table('themes').clear();
+      trans.table('themes').bulkAdd(getThemes());
+    });
     this.on("populate", () => {
-      // Timers
-      this.timer.bulkAdd([
-        { title: 'Free', studyLength: 0, breakLength: 0, repetitions: 1, freeMode: true },
-        { title: '25/5', studyLength: 25, breakLength: 5, repetitions: 4, freeMode: false },
-        { title: '50/10', studyLength: 50, breakLength: 10, repetitions: 3, freeMode: false },
-      ]);
-      //Themes
-      this.themes.bulkAdd([
-        { title: 'Forest',      palette: 'bio',       previewImg: '/images/themes/Forest.webp',      backgroundImg: 'https://images.pexels.com/photos/1423600/pexels-photo-1423600.jpeg' },
-        { title: 'Clouds',      palette: 'nord',      previewImg: '/images/themes/Clouds.webp',      backgroundImg: 'https://images.pexels.com/photos/3996362/pexels-photo-3996362.jpeg' },
-        { title: 'Aurora',      palette: 'blallo',    previewImg: '/images/themes/Aurora.webp',      backgroundImg: 'https://images.pexels.com/photos/3573603/pexels-photo-3573603.jpeg' },
-        { title: 'Space',       palette: 'gptnight',  previewImg: '/images/themes/Space.webp',       backgroundImg: 'https://live.staticflickr.com/65535/52259221868_b757d6cdea_k_d.jpg' },
-        { title: 'Mountain',    palette: 'nord',      previewImg: '/images/themes/Mountain.webp',    backgroundImg: 'https://images.pexels.com/photos/1772973/pexels-photo-1772973.png' },
-        { title: 'Beach',       palette: 'pastel',    previewImg: '/images/themes/Beach.webp',       backgroundImg: 'https://images.pexels.com/photos/65322/pexels-photo-65322.jpeg' },
-        { title: 'Vaporwave',   palette: 'vaporwave', previewImg: '/images/themes/Vaporwave.webp',   backgroundImg: 'https://images.alphacoders.com/124/1249674.jpg' },
-        { title: 'LOFI',        palette: 'gptnight',  previewImg: '/images/themes/LOFI.webp',        backgroundImg: 'https://i.redd.it/injl33v9myl51.jpg' },
-        { title: 'Barbie',      palette: 'pastel',    previewImg: '/images/themes/Barbie.webp',      backgroundImg: 'https://wallpapercg.com/download/margot-robbie-4096x2304-16479.jpeg' },
-        { title: 'Oppenheimer', palette: 'gptnight',  previewImg: '/images/themes/Oppenheimer.webp', backgroundImg: 'https://venezianews.b-cdn.net/wp-content/uploads/elementor/thumbs/Oppenheimer-qcqe56sjf98g5iharhgvboxysohac64vt3kbim5lio.jpg' },
-        { title: 'Wave',        palette: 'nord',      previewImg: '/images/themes/Wave.webp',        backgroundImg: 'https://r4.wallpaperflare.com/wallpaper/283/881/127/the-great-wave-off-kanagawa-painting-japanese-waves-wallpaper-0e19ea97218f10d82b15fbcaa3f2b7ee.jpg' },
-        { title: 'Gandalf',     palette: 'blallo',    previewImg: '/images/themes/Gandalf.webp',     backgroundImg: 'https://media4.giphy.com/media/TcdpZwYDPlWXC/giphy.gif' }
-      ]);
+      this.timer.bulkAdd(getTimers());
+      this.themes.bulkAdd(getThemes());
     })
   }
+
 }
+
+// async function addPomodoriTest(pomodori: Table<PomodoroDBO, number>) {
+//   function getRandom(n: number = 7200000) {
+//     return Math.floor(Math.random() * n);
+//   }
+//   await pomodori.clear()
+//   for (let m = 0; m < 12; m++) {
+//     for (let d = 1; d < 28; d++) {
+//       for (let i = 0; i < 50; i++) {
+//         const breaks = []
+//         let tIndex = 0;
+//         for (let b = 0; b < Math.floor(Math.random() * 5); b++) {
+//           const start = Math.floor(Math.random() * 720000) + tIndex;
+//           const end = Math.floor(Math.random() * 720000) + start;
+//           const b = { start, end }
+//           tIndex += b.end
+//           breaks.push(b)
+//         }
+//         await pomodori.add({ end: 7200000, endedAt: getRandom(),
+//           breaksDone: breaks, freeMode: false, deepWork: true,
+//           datetime: new Date(2023, m, d, getRandom(24), getRandom(60), getRandom(60), 0) })
+//       }
+//     }
+//   console.log(`Added pomodoro ${m}`)
+//   }
+// }
 
 export const useDBStore = defineStore('dbStore', () => {
   const studyBuddyDB = new StudyBuddyDB();

@@ -21,9 +21,7 @@
 </template>
 
 <script lang="ts" setup generic="T extends {}">
-import { watch } from 'vue';
-import { computed, toRaw } from 'vue';
-import { ref } from 'vue';
+import { ref, watch, computed, toRaw } from 'vue';
 
 type Props<G> = {
   modelValue: boolean,

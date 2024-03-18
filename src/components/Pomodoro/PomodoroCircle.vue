@@ -28,11 +28,11 @@
         </div>
 
         <div v-else class="buttons">
-          <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5' v-if="!pomodoro.studing"
+          <v-btn class='btn bg-accent pomo-btn pomo-box font-press btn-main-start mt-5' v-if="!pomodoro.studing"
             @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro()" :style="{ height: `${width / 10}px` }">
             <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-play" />
           </v-btn>
-          <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start mt-5'
+          <v-btn class='btn bg-accent pomo-btn pomo-box font-press btn-main-start mt-5'
             v-if="inPip && pomodoro.studing" @click="pomodoro.togglePauseStudy()" :style="{ height: `${width / 10}px` }">
             <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-pause" />
           </v-btn>
@@ -47,7 +47,6 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
 import { useElementSize } from '@vueuse/core'
 import { ref } from 'vue';
-import Info from '@/components/common/Info.vue'
 import { computed } from 'vue';
 
 const el = ref(null)

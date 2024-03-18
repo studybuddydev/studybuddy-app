@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
 import type { DisplaySession, PomodoroRecord } from '@/types';
+import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
-import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
-import { ref } from 'vue';
+import PomodoroHistoryLine from '@/components/Pomodoro/PomodoroHistoryLine.vue';
 import { useAuth0 } from "@auth0/auth0-vue";
+import * as reportUtils from '@/utils/report';
 
 const { isAuthenticated, loginWithRedirect } = useAuth0();
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
+const pomoDB = usePomodoroDBStore();
 const openDetailsPomoId = ref(-1);
 const openDay = ref('');
-const deletePomoDialog = ref(false);
-const deletingPomoId = ref(-1);
 
 const timeFormat = { html: false, showSeconds: false, format: 'hms' as 'hms' }
 defineEmits(['startPomodoro']);
@@ -22,9 +22,9 @@ defineEmits(['startPomodoro']);
 const hStart = computed(() => settings.settings.general.dayStartEndHours[0]);
 const hEnd = computed(() => settings.settings.general.dayStartEndHours[1]);
 
-const props = defineProps({
-  open: Boolean
-})
+const props = defineProps<{
+  open: boolean,
+}>();
 
 type DayGroup = {
   date: string,
@@ -39,7 +39,7 @@ const dailyPomodoriGroups = computed(() => {
   const groups: Record<string, DayGroup> = {};
   const monthGroup: Record<string, Record<string, DayGroup>> = {};
 
-  pomodoro.pomodoroRecords.forEach((pomodoroRecord) => {
+  pomoDB.pomodoroRecords.forEach((pomodoroRecord) => {
     const dateKey = new Date(pomodoroRecord.datetime).toLocaleDateString();
     if (!groups[dateKey]) {
       groups[dateKey] = {
@@ -70,7 +70,7 @@ const dailyPomodoriGroups = computed(() => {
     const group = groups[key];
     group.points = group.pomos.reduce((m, p) => m + (p.report?.points ?? 0), 0) / group.pomos.length;
     group.totalTime = group.pomos.reduce((m, p) => m + (p.endedAt ?? 0), 0);
-    group.maxLength = group.pomos.reduce((m, p) => Math.max(p.end, m), 0);
+    group.maxLength = group.pomos.reduce((m, p) => Math.max(p.endedAt ?? 0, m), 0);
     group.dailySummary = group.pomos.map((p, i) => {
       const startMs = ((p.datetime.getTime() % DAY_IN_MS) - DAY_START) / DAY_LENGTH;
       const endMs = ((p.endedAt ?? 0) % DAY_IN_MS) / DAY_LENGTH;
@@ -78,29 +78,17 @@ const dailyPomodoriGroups = computed(() => {
         startPerc: startMs * 100,
         lengthPerc: endMs * 100,
         lengthTime: pomodoro.timeFormatted(p.endedAt ?? 0, { html: false }),
-        index: i
+        index: i,
+        color: p.tag ? pomoDB.tagColors[p.tag] : undefined,
+        deepWork: p.deepWork
       } as DisplaySession
     })
   }
   return monthGroup;
 });
 
-function toggleReport(id: number | undefined) {
-  if (id !== undefined)
-    openDetailsPomoId.value = openDetailsPomoId.value === id ? -1 : id;
-}
 function toggleOpenDay(day: string) {
   openDay.value = openDay.value === day ? '' : day;
-}
-
-function getPointsColorClass(points: number) {
-  if (points < 0.6) {
-    return 'points bg-error';
-  }
-  if (points < 0.85) {
-    return 'points bg-warning';
-  }
-  return 'points bg-success';
 }
 
 // ---- ADJUST DAY -------
@@ -152,7 +140,14 @@ const endTime = computed({
   }
 })
 
-
+// -- hours
+const hoursList = computed(() => {
+  const hours = [];
+  const start = settings.generalSettings.dayStartEndHours[0] + 1;
+  const end = settings.generalSettings.dayStartEndHours[1];
+  for (let i = start; i < end; i++) hours.push(i % 24);
+  return hours;
+})
 </script>
 
 <template>
@@ -164,7 +159,7 @@ const endTime = computed({
       </v-btn>
     </div>
 
-    <div v-else-if="pomodoro.pomodoroRecords.length === 0" class="no-history">
+    <div v-else-if="pomoDB.pomodoroRecords.length === 0" class="no-history">
       <p class="text-center text-medium-emphasis">{{ $t('history.noHistory') }}</p>
       <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
         @click="$emit('startPomodoro')">
@@ -173,52 +168,47 @@ const endTime = computed({
       </v-btn>
     </div>
 
-    <div v-else>
+    <div class="scrollable-history" v-else>
       <div v-for="(m, mKey) in dailyPomodoriGroups">
         <p class="text-center text-h5">{{ mKey }}</p>
+
+        <div class="day-line day-line-hours">
+          <h3 class="day"><v-icon icon="mdi-clock-outline" /></h3>
+          <div class="hour-list pomo-flex-day">
+            <div v-for="h in hoursList" class="hour">
+              <p>{{ h }}</p>
+            </div>
+          </div>
+          <p class="lenght-header"></p>
+          <p class="points"></p>
+        </div>
+
         <div v-for="(g, key) in m" :class="`day-info  ${openDay === key ? 'day-info-open' : ''}`">
 
-          <div class="day-line" @click="toggleOpenDay(key)">
+
+
+          <div class="day-line day-line-pomo" @click="toggleOpenDay(key)">
             <h3 class="day">{{ g.date }}</h3>
-            <PomodoroFlex class="pomo-flex pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary"
-              :displayStudy="[]" :percentage="100" />
+            <PomodoroFlex class="pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]"
+              :percentage="100" />
             <p class="lenght-header"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
-            <p :class="getPointsColorClass(g.points)">{{ pomodoro.parsePoints(g.points) }}%</p>
+            <p :class="reportUtils.getPointsColorClass(g.points)">{{ reportUtils.parsePoints(g.points) }}%</p>
           </div>
 
           <div class="pomo-infos" v-if="openDay === key">
-            <div v-for="p in g.pomos" :class="`pomo-info ${p.id === openDetailsPomoId ? 'pomo-info-open' : ''}`">
-              <div class="pomo-line" v-ripple @click="toggleReport(p.id)">
-                <p class="time">{{ p.datetime.toLocaleTimeString(undefined, {
-                  hour: 'numeric', minute: '2-digit', hour12: false
-                }) }}</p>
-                <div class="pomo-wrapper">
-                  <div class="pomo-width" :style="{ width: `${(p.end / g.maxLength) * 100}%` }">
-                    <PomodoroFlex class="pomo-flex" :percentage="p.endedAt ? Math.max(100 * p.endedAt / p.end, 100) : 100"
-                      :displayBreaks="p.displayBreaks ?? []" :displayStudy="p.displayStudy ?? []" />
-                  </div>
-                </div>
-                <p class="lenght"> {{ pomodoro.timeFormatted((p.endedAt ?? 0) / 1000, timeFormat) }}</p>
-                <p :class="getPointsColorClass(p.report?.points ?? 0)">{{ pomodoro.parsePoints(p.report?.points ?? 0) }}%
-                </p>
-              </div>
-
-              <div class="pomo-details" v-if="p.id === openDetailsPomoId">
-                <PomodoroReport class="report" :report="p.report" v-if="p.report" />
-                <v-btn color="error" class="pomo-delete-btn"
-                  @click="deletingPomoId = p.id; deletePomoDialog = true;"><v-icon icon="mdi-delete" /></v-btn>
-              </div>
+            <div v-for="p in g.pomos">
+              <PomodoroHistoryLine v-model="openDetailsPomoId" :pomo="p" :max-length="g.maxLength" />
             </div>
           </div>
         </div>
       </div>
       <div class="day-settings">
-        <p class="text-center">Adjust your day</p>
+        <p class="text-center">{{ $t('history.sliderTitle') }}</p>
         <v-range-slider v-model="startEndTime" class="align-center slider" color="primary" :max="32" :min="0" :step="1"
           hide-details>
           <template v-slot:prepend>
-            <v-text-field v-model="startTime" hide-details single-line type="number" variant="outlined" density="compact"
-              class="day-h-input" />
+            <v-text-field v-model="startTime" hide-details single-line type="number" variant="outlined"
+              density="compact" class="day-h-input" />
           </template>
           <template v-slot:append>
             <v-text-field v-model="endTime" hide-details single-line type="number" variant="outlined" density="compact"
@@ -226,22 +216,30 @@ const endTime = computed({
           </template>
         </v-range-slider>
       </div>
-
-      <v-dialog v-model="deletePomoDialog" width="auto">
-        <v-card :text="$t('zen.confirm')">
-          <v-card-actions>
-            <v-spacer />
-            <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
-            <v-btn color="primary" @click="pomodoro.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
-              $t("yes") }}</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.hour-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-grow: 1;
+  margin: 0.5rem;
+
+  .hour {
+    width: 0;
+
+    p {
+      width: 2em;
+      margin-left: -1em;
+      text-align: center;
+    }
+  }
+}
+
+
 .day-settings {
   position: absolute;
   bottom: 0;
@@ -252,22 +250,21 @@ const endTime = computed({
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   background-color: rgba(var(--v-theme-surface), 0.8);
+
   .day-h-input {
     width: 4.5em;
     text-align: center;
   }
 }
+
 .hide-pomo-history .day-settings {
   display: none;
 }
 
-.pomo-flex {
-  height: 1rem;
+.pomo-flex-day {
   margin: 0.5rem;
-
-  &.pomo-flex-day {
-    height: 1.5rem;
-  }
+  transition: height 0.1s ease-in-out;
+  height: 1.5rem;
 }
 
 .no-history {
@@ -278,18 +275,15 @@ const endTime = computed({
 
   .btn {
     margin: 1em;
+    width: auto;
   }
 }
 
-.pomo-wrapper {
-  width: 100%;
-
-  .pomo-width {
-    display: flex;
-  }
+.day {
+  width: 3.5em;
 }
 
-.points {
+::v-deep(.points) {
   width: 4em;
   text-align: center;
   border-radius: 0.5em;
@@ -300,25 +294,16 @@ const endTime = computed({
   width: 4em;
   text-align: right;
 }
-.lenght {
-  width: 6em;
-  text-align: right;
-}
-
-.time {
-  width: 5em;
-  text-align: right;
-}
-
-.day {
-  width: 3.5em;
-}
 
 .pomo-history {
   height: 73vh;
   margin: 1em;
   transition: height 0.1s ease-in-out;
   overflow-y: auto;
+
+  .scrollable-history {
+    margin-bottom: 8rem;
+  }
 
   &.hide-pomo-history {
     height: 0;
@@ -334,72 +319,38 @@ const endTime = computed({
       border: 1px solid rgb(var(--v-theme-primary));
 
       .day-line {
-        background-color: #FFFFFF10;
+        background-color: rgba(var(--v-theme-on-surface), 0.05);
+      }
+    }
+  }
+
+  .day-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+    padding: 0.2rem 1rem;
+
+    &.day-line-hours {
+      .day {
+        text-align: right;
       }
     }
 
-    .day-line {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 1rem;
-      cursor: pointer;
+    &.day-line-pomo {
       transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
-      padding: 0.2rem 1rem;
+      cursor: pointer;
 
       &:hover {
-        background-color: #FFFFFF10;
+        background-color: rgba(var(--v-theme-on-surface), 0.05);
       }
-
     }
+
   }
 
   .pomo-infos {
     padding: 0 1rem;
   }
 
-  .pomo-info {
-    margin: 0.5rem;
-    border-radius: 1em;
-
-
-    &.pomo-info-open {
-      background-color: #FFFFFF10;
-
-      .pomo-line {
-        background-color: #FFFFFF10;
-      }
-    }
-
-    .pomo-details {
-      display: flex;
-      justify-content: center;
-      position: relative;
-
-      .report {
-        margin: 1em;
-      }
-
-      .pomo-delete-btn {
-        position: absolute;
-        bottom: 1em;
-        right: 1em;
-      }
-    }
-
-    .pomo-line {
-      padding: 0.2rem 0.8rem;
-      border-radius: 1em;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      cursor: pointer;
-      transition: background-color 0.1s ease-in-out, height 0.1s ease-in-out;
-
-      &:hover {
-        background-color: #FFFFFF10;
-      }
-    }
-  }
 }
 </style>

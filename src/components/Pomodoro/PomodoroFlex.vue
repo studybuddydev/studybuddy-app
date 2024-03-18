@@ -1,25 +1,29 @@
 <template>
   <div :class="`pomodoro ${mainPomo ? 'pomodoro-main' : ''}`">
-    <div class="progress-bar">
+    <div :class="`progress-bar ${alwaysShowTime ? 'always-show-time' : ''}`">
       <div :class="`progress ${pomodoro.countdownRunning ? 'timer-animation' : ''}`" v-if="!dailyPomo" :style="{
-        backgroundColor: theme.current.value.colors.snake,
+        backgroundColor: theme.current.value.colors.snake ?? theme.current.value.colors.primary,
         color: theme.current.value.colors.surface,
         width: parsePercentage(percentage),
       }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" v-if="mainPomo" /> </div>
       <div v-for="b in displayBreaks" :key="b.index" class="break"
-        :style="{
-          backgroundColor: getBackgroundColor(),
-          marginLeft: parsePercentage(b.startPerc),
-          width: parsePercentage(b.lengthPerc, true),
-        }"><v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
+      :style="{
+        backgroundColor: b.color ?? getBackgroundColor(),
+        marginLeft: parsePercentage(b.startPerc),
+        width: parsePercentage(b.lengthPerc, true),
+        opacity: b.deepWork === false ? 0.5 : 1
+      }"><v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
 
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
-        :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }"><p>{{b.lengthTime}}</p></div>
+        :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }"><p>{{b.lengthTime}} </p></div>
 
       <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index" v-if="!dailyPomo"
-        :style="{ marginLeft: parsePercentage(s.startPerc + (s.lengthPerc / 2)) }"><p>{{s.lengthTime}}</p></div>
+        :style="{ marginLeft: parsePercentage(s.startPerc + (s.lengthPerc / 2)) }"><p>{{s.lengthTime}} </p></div>
 
-      <div v-for="t in ticks" :key="t.h" class="hour-idicator" :style="{ marginLeft: parsePercentage(t.position) }" v-if="dailyPomo"></div>
+      <!-- <div v-for="t in ticks" :key="t.h" class="hour-idicator" :style="{ marginLeft: parsePercentage(t.position) }" v-if="dailyPomo"></div> -->
+      <div class="hour-idicator-wrapper">
+        <div v-for="t in ticks" :key="t" class="hour-idicator" v-if="dailyPomo"></div>
+      </div>
 
     </div>
   </div>
@@ -41,6 +45,7 @@ const props = withDefaults(defineProps<{
   displayStudy: DisplaySession[],
   dailyPomo?: boolean
   mainPomo?: boolean
+  alwaysShowTime?: boolean
 }>(), {
   percentage: 0,
   displayBreaks: () => [],
@@ -49,26 +54,20 @@ const props = withDefaults(defineProps<{
   mainPomo: false
 });
 
-const ticks = computed(() => {
-  const ticks: { position: number, h: number }[] = [];
 
+const ticks = computed(() => {
+  const hours = [];
+  const start = settings.generalSettings.dayStartEndHours[0] + 1;
   const end = settings.generalSettings.dayStartEndHours[1];
-  const start = settings.generalSettings.dayStartEndHours[0];
-  const delta = end - start;
-  for (let i = 1; i < (delta); i++) {
-    ticks.push({
-      position: (i / delta) * 100,
-      h: start + i
-    });
-  }
-  return ticks;
-});
+  for (let i = start; i < end; i++) hours.push(i % 24);
+  return hours;
+})
 
 
 
 function getBackgroundColor() {
-  if (props.dailyPomo) return theme.current.value.colors.snake;
-  return theme.current.value.colors.apple ?? theme.current.value.colors.error;
+  if (props.dailyPomo) return theme.current.value.colors.primary;
+  return theme.current.value.colors.secondary;
 }
 
 // const snakeHeadPercent = 3;
@@ -96,7 +95,6 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
   align-items: center;
   overflow: hidden;
   border-radius: 1rem;
-  margin: 0.5em 0;
   height: 100%;
   background-color: #2222220A;
   // background-color: rgba(var(--v-theme-surface));
@@ -123,14 +121,13 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
       bottom: 0;
       transform: translateX(-50%);
       overflow: hidden;
-      color: rgba(var(--v-theme-on-success));
       font-style: italic;
       p {
         padding: 2px;
       }
     }
 
-    &:hover {
+    &:hover, &.always-show-time {
       .icon-apple {
         display: none;
       }
@@ -138,15 +135,18 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
         display: flex;
       }
     }
-
-    .hour-idicator {
+    
+    .hour-idicator-wrapper {
       position: absolute;
       bottom: 0;
-      transform: translateX(-50%);
+      left: 0;
+      right: 0;
+      top: 0;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
+      flex-direction: row;
+      justify-content: space-evenly;
+    }
+    .hour-idicator {
       width: 1px;
       background-color: rgba(var(--v-theme-primary), 0.3);
     }

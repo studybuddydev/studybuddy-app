@@ -154,7 +154,7 @@
   },
   "history":{
     "loginMsg" : "Inicia sesión para ver el historial de tus pomodoros",
-    "sliderTitle" : "rango de horas",
+    "sliderTitle" : "Rango de horas",
     "noHistory": "Aún no has completado un pomodoro de al menos 5 minutos",
     "startNow": "Comienza ahora"
   }

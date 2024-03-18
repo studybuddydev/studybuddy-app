@@ -10,7 +10,7 @@
   "welcomeToSB": "Welcome to StudyBuddy",
   "loginMsg": "Hello, you are in the test version of Studybuddy, would you like to help us by becoming a tester?",
   "doLogin": "Log in now!",
-  "backHome": "Homepage",
+  "backHome": "Home",
   "pause": {
     "welcome": "Welcome to",
     "study": "Study",
@@ -143,7 +143,7 @@
       "mm": "mm",
       "yyyy": "yyyy"
     },
-    "introMessage": "Hey there, ypu just discovered the planning mode! It's still a work in progress but you can already add your exams and chapters. Click on the first exam on the left column to discover more. Click on the little arrow below to go back to the timer."
+    "introMessage": "Hey there, you just discovered the planning mode! It's still a work in progress but you can already add your exams and chapters. Click on the first exam on the left column to discover more. Click on the little arrow below to go back to the timer."
   },
   "info": {
     "welcome": "Hi! You can open the settings to set the time you want to study, or you can press play to start a default session of 2 hours with 3 breaks of 5 minutes each. After you press play, the only thing you have to do is mantain focus until it's time for the first break. Happy studying!",
@@ -154,7 +154,7 @@
 },
   "history":{
     "loginMsg" : "Log in to view your pomodoro history",
-    "sliderTitle" : "set hour range",
+    "sliderTitle" : "Set hour range",
     "noHistory": "You have not yet completed a pomodoro of at least 5 minutes",
     "startNow": "Start now"
   }

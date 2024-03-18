@@ -88,6 +88,8 @@ export type DisplaySession = {
   done?: boolean;
   index: number;
   small?: boolean;
+  color?: string;
+  deepWork?: boolean;
 }
 
 export type PomoReport = {
@@ -99,14 +101,14 @@ export type PomoReport = {
   shortPomo?: boolean;
 }
 
-export type Pomodoro = {
+export type PomodoroBase = {
   end: number;
   endedAt?: number;
   breaksDone: Break[];
   freeMode: boolean;
 }
 
-export interface PomodotoStatus extends Pomodoro {
+export interface PomodotoStatus extends PomodoroBase {
   // lastTick: number;
   version: number;
   startedAt?: number;
@@ -115,15 +117,25 @@ export interface PomodotoStatus extends Pomodoro {
   soundEnd?: boolean;
   onLongBreak?: boolean;
   originalEnd?: number;
+  timestamp?: number;
 }
 
-export interface PomodoroRecord extends Pomodoro {
+export interface PomodoroTask {
+  task: string;
+  done?: boolean;
+}
+
+export interface PomodoroRecord extends PomodoroBase {
   id?: number;
   datetime: Date;
   displayBreaks?: DisplaySession[];
   displayStudy?: DisplaySession[];
   // percentage?: number;
   report?: PomoReport;
+  tag?: string;
+  rating?: number;
+  deepWork: boolean;
+  tasks?: PomodoroTask[];
 }
 
 // ---------- SETTINGS ----------
@@ -173,9 +185,13 @@ export interface Timer {
   freeMode?: boolean;
 }
 
-export interface PomodoroDBO extends Pomodoro {
+export interface PomodoroDBO extends PomodoroBase {
   id?: number;
   datetime: Date;
+  tag?: string;
+  rating?: number;
+  deepWork: boolean;
+  tasks?: PomodoroTask[];
 }
 
 

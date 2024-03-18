@@ -153,7 +153,7 @@
   },
   "history":{
     "loginMsg" : "Connectez-vous pour voir l'historique de vos pomodoro",
-    "sliderTitle" : "plage horaire",
+    "sliderTitle" : "Plage horaire",
     "noHistory": "Vous n'avez pas encore effectué un pomodoro de   5 minutes ou plus",
     "startNow": "Commencez maintenant"
   }

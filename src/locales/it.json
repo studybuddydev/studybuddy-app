@@ -154,7 +154,7 @@
        },
        "history":{
               "loginMsg" : "Effettua il login per visualizzare la cronologia dei tuoi pomodori",
-              "sliderTitle" : "intervallo orario",
+              "sliderTitle" : "Intervallo orario",
               "noHistory": "Non hai ancora fatto un pomodoro di almeno 5 minuti",
               "startNow": "Inizia ora"
        }

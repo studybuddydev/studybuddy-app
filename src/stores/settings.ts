@@ -5,8 +5,10 @@ import { useTheme } from 'vuetify'
 
 const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
-const DEFAULT_PALETTE = 'nord';
+const DEFAULT_PALETTE = 'gptday';
 const DEFAULT_ICONS = 'mdi-icon';
+const DEFAULT_IMG = 'https://api.studybuddy.it/images/Rocks';
+
 
 const defaultSettings: Settings = {
   general: {
@@ -30,7 +32,7 @@ const defaultSettings: Settings = {
     icon: DEFAULT_ICONS,
     palette: DEFAULT_PALETTE,
     backgroundColor: undefined,
-    backgroundImg: 'https://images.pexels.com/photos/3996362/pexels-photo-3996362.jpeg',
+    backgroundImg: DEFAULT_IMG,
   }
 };
 
@@ -42,6 +44,10 @@ export const useSettingsStore = defineStore('settings', () => {
   settings.value.general = { ...defaultSettings.general, ...settings.value.general } as GeneralSettings;
   settings.value.theme = { ...defaultSettings.theme, ...settings.value.theme } as ThemeSettings;
   settings.value.pomodoro = { ...defaultSettings.pomodoro, ...settings.value.pomodoro } as PomodoroSettings;
+
+  if (settings.value.theme.backgroundImg === 'https://images.alphacoders.com/133/1332707.png') {
+    settings.value.theme.backgroundImg = DEFAULT_IMG;
+  }
 
   const generalSettings = computed(() => settings.value.general);
   const pomoSettings = computed(() => settings.value.pomodoro);
