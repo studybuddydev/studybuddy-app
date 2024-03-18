@@ -52,7 +52,7 @@ function getCircleColor() {
 <style lang="scss" scoped>
 .mini {
   display: grid;
-  grid-template-columns: 1fr 66vw;
+  grid-template-columns: auto 1fr;
   grid-template-rows: 1fr 4rem;
   width: 100%;
   height: 100%;
@@ -71,6 +71,8 @@ function getCircleColor() {
   align-items: center;
   padding: 1rem;
   height: 100%;
+  flex-shrink: 0;
+  min-width: 33vw;
 
   @media screen and (max-height: 150px) {
     padding: 0.1rem;
@@ -107,7 +109,7 @@ function getCircleColor() {
   align-items: center;
 
   .study-time {
-    font-size: min(10vw, 28vh);
+    font-size: min(8vw, 24vh);
   }
 
   &.info-pause p {
@@ -152,13 +154,10 @@ function getCircleColor() {
 }
 
 @media screen and (orientation: portrait) and (max-width: 400px) and (max-height: 350px) {
-  .progress-bar {
-    height: 100px;
-    width: 100px;
-  }
+  // .progress-bar {
+  //   height: 100px;
+  //   width: 100px;
+  // }
 
-  .btn-icon {
-    font-size: 20vw;
-  }
 }
 </style>

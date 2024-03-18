@@ -48,7 +48,7 @@ async function pipIt() {
     return;
   }
 
-  const pipWindow = await (window as any).documentPictureInPicture.requestWindow();
+  const pipWindow = await (window as any).documentPictureInPicture.requestWindow({ width: 800, height: 360 });
 
   [...(document.styleSheets as any)].forEach((styleSheet) => {
     try {
