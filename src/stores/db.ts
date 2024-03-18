@@ -29,7 +29,7 @@ function getThemes() {
     { title: 'Fog', palette: 'gptday' },
     { title: 'Gandalf', palette: 'blallo' }
 
-  ].map((t) => ({ ...t, previewImg: `/images/themes/${t.title}.webp`, backgroundImg: `https://api.studybuddy.it/images/${t.title}` }));
+  ].map((t) => ({ ...t, previewImg: `/images/themes/${t.title}.webp`, backgroundImg: `https://api.studybuddy.it/images/${t.title}`, og: true }));
 }
 
 function getTimers() {
