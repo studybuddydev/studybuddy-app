@@ -11,7 +11,7 @@
         backgroundColor: b.color ?? getBackgroundColor(),
         marginLeft: parsePercentage(b.startPerc),
         width: parsePercentage(b.lengthPerc, true),
-        opacity: b.deepWork === false ? 0.5 : 1
+        opacity: mainPomo ? 0.7 : (b.deepWork === false ? 0.5 : 1)
       }"><v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
 
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
@@ -168,7 +168,6 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
 
     .break {
       position: absolute;
-      opacity: 0.7;
       text-align: center;
       display: flex;
       align-items: center;
