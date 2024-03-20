@@ -8,7 +8,7 @@
               transparent ${(pomodoro.percInCurrentState * 360) + 0.2}deg,
         transparent 360deg)`
       }">
-        <v-btn icon="mdi-noicon" class="btn-toggle" @click="pomodoro.togglePauseStudy()">
+        <v-btn icon="mdi-noicon" class="btn-toggle" @click="togglePomodoro()">
           <svg-icon type="mdi" class="btn-icon" :path="pomodoro.studing ? mdiPause : mdiPlay"></svg-icon>
         </v-btn>
       </div>
@@ -36,6 +36,10 @@ import { mdiPause, mdiPlay } from '@mdi/js'
 
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
+
+function togglePomodoro() {
+  pomodoro.togglePauseStudy(true);
+}
 
 function getCircleColor() {
   if (pomodoro.studing) {
