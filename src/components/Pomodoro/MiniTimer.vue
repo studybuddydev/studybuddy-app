@@ -1,5 +1,5 @@
 <template>
-  <div class="blur mini">
+  <div :class="`blur mini ${pomodoro.onLongPause ? 'long-pause' : ''}`">
     <div class="clock">
       <div class="progress-bar" v-if="!pomodoro.countdownRunning" :style="{
         background: `conic-gradient(
@@ -18,7 +18,7 @@
     </div>
     <div class="info info-pause" v-else-if="pomodoro.pauseing">
       <p class="font-press text-primary">{{ $t("pause.break") }}</p>
-      <p class="font-casio"> <span v-html="pomodoro.timeInCurrentBreak"></span></p>
+      <p class="font-casio pause-p"> <span v-html="pomodoro.timeInCurrentBreak"></span></p>
     </div>
     <div class="pomodoro-bar">
       <PomodoroFlex class="pomo-flex" :percentage="pomodoro.created ? 100 : pomodoro.percentage"
@@ -67,6 +67,13 @@ function getCircleColor() {
   grid-column-start: 1;
   grid-column-end: span 2;
   margin: 1rem;
+}
+
+.long-pause {
+  background-color: #000000B0 !important;
+  .pause-p {
+    color: #ffffff !important;
+  }
 }
 
 .clock {

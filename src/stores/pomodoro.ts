@@ -95,14 +95,18 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     timerStatus.createStatus(pomo);
     saveStatus();
   }
-  function startPomodoro() {
+  function startPomodoro(noCountdown: boolean = false) {
     clearStuff();
     if (countdownRunning.value) {
       clearTimeout(countDownTimerout);
       countdownRunning.value = false;
       _startPomodoro()
     } else {
-      startCountdown(() => _startPomodoro());
+      if (noCountdown) {
+        _startPomodoro();
+      } else {
+        startCountdown(() => _startPomodoro());
+      }
     }
   }
   function _startPomodoro() { 
@@ -154,13 +158,13 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       saveStatus();
     }
   }
-  function togglePauseStudy() {
+  function togglePauseStudy(noCountdown: boolean = false) {
     const pomo = timerStatus.pomodoroStatus;
     if (!pomo) return;
     if (pomo.state === PomodoroState.STUDY) {
       pause();
     } else if (pomo.state === PomodoroState.BREAK) {
-      study();
+      study(noCountdown);
     }
     saveStatus();
   }
@@ -185,7 +189,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     }
     saveStatus();
   }
-  function study() {
+  function study(noCountdown: boolean = false) {
     const pomo = timerStatus.pomodoroStatus;
     if (!pomo) {
       stopPomodoro();
@@ -193,7 +197,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     }
     if (pomo.onLongBreak) {
       stopPomodoro();
-      startPomodoro();
+      startPomodoro(noCountdown);
       return;
     }
     adjustPomo();
