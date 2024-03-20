@@ -144,8 +144,8 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
     }
 
     @media (max-width: 600px) {
-      justify-content: flex-start;
-      margin-top: 20vh;
+      // justify-content: flex-start;
+      // margin-top: 20vh;
     }
   }
 }
