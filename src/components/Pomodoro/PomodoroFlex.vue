@@ -13,7 +13,6 @@
         width: parsePercentage(b.lengthPerc, true),
         opacity: mainPomo? (b.startPerc < percentage ? 0.7 : 1) : (b.deepWork === false ? 0.5 : 1)
       }"><v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
-
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
         :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }"><p>{{b.lengthTime}} </p></div>
 

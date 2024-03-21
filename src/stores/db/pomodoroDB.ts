@@ -53,6 +53,13 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     await db.pomodori.delete(id);
   }
 
+  async function updatePomodoro(id: number, updatePomo: (p: PomodoroDBO) => PomodoroDBO) {
+    const pomo = await db.pomodori.get(id);
+    if (pomo) {
+      await db.pomodori.put(updatePomo(pomo), id);
+    }
+  }
+
   // --- TAGS ---
   const tags = ref<string[]>([]);
   const tagColors = ref<{ [id: string]: string; }>({});
@@ -85,28 +92,15 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   updateTags();
 
   async function updateRating(id: number, rating: number) {
-    const p = await db.pomodori.get(id);
-    if (p) {
-      p.rating = rating;
-      await db.pomodori.put(p, id);
-    }
+    await updatePomodoro(id, p => { p.rating = rating; return p; });
   }
   async function updateDeepWork(id: number, deepWork: boolean) {
-    const p = await db.pomodori.get(id);
-    if (p) {
-      p.deepWork = deepWork;
-      await db.pomodori.put(p, id);
-    }
+    await updatePomodoro(id, p => { p.deepWork = deepWork; return p; });
   }
 
   // --- TASKS ---
   async function updateTasks(id: number, tasks?: PomodoroTask[]) {
-    const p = await db.pomodori.get(id);
-    if (p) {
-      p.tasks = tasks?.map(t => ({ task: t.task, done: t.done }));
-      await db.pomodori.put(p, id);
-    }
-
+    await updatePomodoro(id, p => { p.tasks = tasks?.map(t => ({ task: t.task, done: t.done })); return p; });
   }
 
   // --- STREAK ---
@@ -189,7 +183,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
 
 
   return {
-    pomodoroRecords, tags, tagColors, streak,
+    pomodoroRecords, tags, tagColors, streak, updatePomodoro, parsePomodorDbo,
     addPomodoroToRecords,
     deletePomodoroRecord,
     updateTag, updateRating, updateTasks, updateDeepWork

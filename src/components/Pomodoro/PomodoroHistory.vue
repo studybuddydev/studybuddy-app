@@ -185,8 +185,6 @@ const hoursList = computed(() => {
 
         <div v-for="(g, key) in m" :class="`day-info  ${openDay === key ? 'day-info-open' : ''}`">
 
-
-
           <div class="day-line day-line-pomo" @click="toggleOpenDay(key)">
             <h3 class="day">{{ g.date }}</h3>
             <PomodoroFlex class="pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]"
