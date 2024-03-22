@@ -33,18 +33,23 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     updateStreak();
   }
   async function addPomodoroToRecords(pomo: PomodotoStatus): Promise<PomodoroRecord> {
+    const dt = new Date(pomo.startedAt ?? Date.now());
     const p: PomodoroDBO = {
       end: pomo.end,
       endedAt: pomo.endedAt,
       breaksDone: pomo.breaksDone.map(b => ({ start: b.start, end: b.end ?? b.start })),
       freeMode: pomo.freeMode,
-      datetime: new Date(pomo.startedAt ?? Date.now()),
+      datetime: dt,
       deepWork: true
     }
+
     const parsed = parsePomodorDbo(p);
-    parsed.id = await db.pomodori.add(p);
-    pomodoroRecords.value.unshift(parsed);
-    updateStreak();
+    const first = await db.pomodori.where('datetime').equals(dt).first();
+    if (!(first)) {
+      parsed.id = await db.pomodori.add(p);
+      pomodoroRecords.value.unshift(parsed);
+      updateStreak();
+    }
     return parsed;
   }
   async function deletePomodoroRecord(id: number) { 

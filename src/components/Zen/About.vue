@@ -57,7 +57,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <div class="btn-install blur" v-ripple @click="installApp()" v-if="!runningAsPWA">
+    <div class="btn-install blur" v-ripple @click="installApp()" v-if="showInstallButton && !runningAsPWA">
       <v-icon icon="mdi-cloud-arrow-down-outline" />
     </div>
   </div>
@@ -77,16 +77,32 @@ defineProps<{
 }>();
 
 const runningAsPWA = window.matchMedia('(display-mode: standalone)').matches;
+console.log(navigator.userAgent)
+// @ts-ignore
+console.log(navigator.userAgentData)
 
+const showInstallButton = ref(false);
 let deferredPrompt: Event | null = null;
-window.addEventListener('beforeinstallprompt', (e) => { deferredPrompt = e; });
+console.log()
+if (
+  (navigator as any).userAgentData &&
+  (navigator as any).userAgentData?.brands?.find((b: any) => b.brand === 'Microsoft Edge' || b.brand === "Google Chrome")
+) {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    deferredPrompt = e;
+    showInstallButton.value = true;
+  });
+}
+
+
 async function installApp() {
   if (deferredPrompt !== null) {
     // @ts-ignore
     deferredPrompt.prompt();
     // @ts-ignore
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
+    const res = await deferredPrompt.userChoice;
+    if (res.outcome === 'accepted') {
+      showInstallButton.value = false;
       deferredPrompt = null;
     }
   }
