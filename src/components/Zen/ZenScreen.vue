@@ -76,7 +76,7 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
                 :zen-style="zenStyle"
                 :hide-time="settings.generalSettings.hideTime" />
               <ZenActions @show-history="showPomoHistory = true" />
-              <PomodoroDetails class="pomo-details" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo" />
+              <PomodoroDetails class="pomo-details blur blur-strong" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo" />
             </div>
           </div>
         </div>
@@ -142,8 +142,8 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
     margin-bottom: 15vh;
 
     .pomo-details {
-      background: rgb(var(--v-theme-background));
-      border: 1px solid rgb(var(--v-theme-primary));
+      border-radius: 1rem;
+      padding: 1rem;
     }
   }
 }

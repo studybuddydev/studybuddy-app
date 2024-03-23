@@ -23,9 +23,7 @@
 
       </div>
 
-      <div class="tasks">
-        <PomodoroTasks :pomo="pomo" />
-      </div>
+      <PomodoroTasks class="tasks" :pomo="pomo" />
 
       <div class="details">
 
@@ -38,9 +36,7 @@
       </div>
 
     </div>
-    <div class="report-wrapper">
-      <PomodoroReport :report="pomo.report" v-if="pomo.report" />
-    </div>
+    <PomodoroReport class="report" :report="pomo.report" v-if="pomo.report" />
   </div>
 </template>
 
@@ -75,7 +71,7 @@ function addTag(tag: string) {
   @media (min-width: 1000px) {
     flex-direction: row;
   }
-  .report-wrapper {
+  .report {
     border: 1px solid rgb(var(--v-theme-primary));
     border-radius: 1rem;
   }

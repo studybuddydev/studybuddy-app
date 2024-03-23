@@ -1,5 +1,5 @@
 <template>
-  <div class="blur setup">
+  <div class="blur blur-strong setup">
     <v-icon class="close-icon" icon="mdi-close" @click="emits('exit-setup')" />
     <h3 class="title text-primary">Setup Pomodoro</h3>
     <PomodoroDetails v-if="timerStatus.pomodoroStatus" :pomo="timerStatus.pomodoroStatus" />
