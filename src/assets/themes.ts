@@ -23,7 +23,7 @@ export const themes: {
       surface: '#252525',
       primary: '#0077C2',
       secondary: '#FF7600',
-      accent: '#FFA500 ',
+      accent: '#FFA500',
       error: '#FF3333',
       warning: '#FFD700'
       // info: '#00BFFF',

@@ -53,17 +53,14 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
   }
 
   async function getStatusAPI() {
-    console.log('Getting from API')
     const status = await axios.get(`${API_ENDPOINT}/status/${user.value?.email}`);
     if (status.data.timestamp > (pomodoroStatus.value?.timestamp ?? 0)) {
-      console.log('Updating from API')
       pomodoroStatus.value = status.data;
       pomodoro.init();
     }
   }
 
   async function setStatusAPI(status: PomodotoStatus) {
-    console.log('Updarting API')
     status.timestamp = Date.now();
     await axios.post(`${API_ENDPOINT}/status/${user.value?.email}`, status);
   }

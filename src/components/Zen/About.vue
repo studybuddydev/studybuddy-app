@@ -77,13 +77,9 @@ defineProps<{
 }>();
 
 const runningAsPWA = window.matchMedia('(display-mode: standalone)').matches;
-console.log(navigator.userAgent)
-// @ts-ignore
-console.log(navigator.userAgentData)
 
 const showInstallButton = ref(false);
 let deferredPrompt: Event | null = null;
-console.log()
 if (
   (navigator as any).userAgentData &&
   (navigator as any).userAgentData?.brands?.find((b: any) => b.brand === 'Microsoft Edge' || b.brand === "Google Chrome")
