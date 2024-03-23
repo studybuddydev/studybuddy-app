@@ -50,12 +50,7 @@ async function updateTask() {
   // align-items: center;
   // justify-content: center;
   padding: 1rem;
-  max-height: 15rem;
-  overflow-y: auto;
-  overflow-x: hidden;
   width: 15rem;
-
-
 
   .input-add-task {
     min-width: 10rem;
@@ -64,11 +59,13 @@ async function updateTask() {
     left: 0;
   }
 
-
   .task-list {
     display: flex;
     flex-direction: column;
     padding: 1rem;
+    max-height: 13rem;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     .task {
       width: 100%;

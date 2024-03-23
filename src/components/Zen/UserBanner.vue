@@ -79,8 +79,6 @@ onUnmounted(() => {
       display: none;
     }
 
-
-
     @media (max-width: 600px) {
       .text {
         display: none;

@@ -1,27 +1,41 @@
 <template>
   <div class="pomo-details">
-    <div>
-      <PomodoroTasks :pomo="pomo" />
-    </div>
-    <div class="details">
-      <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="deleteTag()"
-        :color="pomo.tag ? pomoDB.tagColors[pomo.tag] : undefined">{{ pomo.tag }}</v-chip>
-      <v-combobox v-else class="tags" label="Tag" hide-details :items="pomoDB.tags" v-model="pomo.tag"
-        @update:modelValue="(newTag: any) => {  newTag && addTag(newTag) }">
-        <template v-slot:selection="data"><v-chip :key="data.item.title">{{ data.item.title }}</v-chip></template>
-        <template #item="{ props, item }">
-          <v-list-item v-bind="props">
-            <template #prepend>
-              <v-icon :color="pomoDB.tagColors[item.value]">mdi-circle</v-icon>
-            </template>
-          </v-list-item>
-        </template>
-      </v-combobox>
 
-      <v-rating v-if="pomo.id" v-model="pomo.rating" length="3" size="x-large" color="accent" clearable
-        @update:modelValue="(newRating: any) => { pomo.id && newRating && pomoDB.updateRating(pomo.id, newRating) }" />
-      <v-switch label="Deep work" color="primary" inset hide-details v-model="pomo.deepWork"
-        @update:modelValue="(deep: any) => { pomo.id && deep && pomoDB.updateDeepWork(pomo.id, deep) }" />
+    <div class="pomo-details-props">
+      <div class="title">
+
+        <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="deleteTag()"
+          :color="pomo.tag ? pomoDB.tagColors[pomo.tag] : undefined">{{ pomo.tag }}</v-chip>
+        <v-combobox v-else class="text-box text-boxt-tag" label="Tag" hide-details :items="pomoDB.tags" v-model="pomo.tag"
+          @update:modelValue="(newTag: any) => { newTag && addTag(newTag) }">
+          <template v-slot:selection="data"><v-chip :key="data.item.title">{{ data.item.title }}</v-chip></template>
+          <template #item="{ props, item }">
+            <v-list-item v-bind="props">
+              <template #prepend>
+                <v-icon :color="pomoDB.tagColors[item.value]">mdi-circle</v-icon>
+              </template>
+            </v-list-item>
+          </template>
+        </v-combobox>
+
+        <v-text-field v-model="pomo.name" label="Nome" hide-details dense class="text-box text-boxt-title"
+          @update:modelValue="(newName: any) => { pomo.id && pomoDB.updateName(pomo.id, newName) }" />
+
+      </div>
+
+      <div class="tasks">
+        <PomodoroTasks :pomo="pomo" />
+      </div>
+
+      <div class="details">
+
+        <v-rating v-if="pomo.id" v-model="pomo.rating" length="3" size="x-large" color="accent" clearable
+          @update:modelValue="(newRating: any) => { pomo.id && newRating && pomoDB.updateRating(pomo.id, newRating) }" />
+
+        <v-switch label="Deep work" color="primary" inset hide-details v-model="pomo.deepWork"
+          @update:modelValue="(deep: any) => { pomo.id && deep && pomoDB.updateDeepWork(pomo.id, deep) }" />
+
+      </div>
 
     </div>
     <div class="report-wrapper">
@@ -54,37 +68,47 @@ function addTag(tag: string) {
 .pomo-details {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   flex-direction: column;
-  border-radius: 1rem;
-  padding: 1rem;
-
-  .report-wrapper {
-    border-top: 1px solid rgb(var(--v-theme-primary));
-  }
-
+  margin-top: 1rem;
 
   @media (min-width: 1000px) {
     flex-direction: row;
+  }
+  .report-wrapper {
+    border: 1px solid rgb(var(--v-theme-primary));
+    border-radius: 1rem;
+  }
 
-    .report-wrapper {
-      border-top: none;
-      border-left: 1px solid rgb(var(--v-theme-primary));
-    }
+  .pomo-details-props {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .title {
+    grid-column: 1 / span 2;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    margin: 1rem;
+    align-items: center;
+    
+  }
+
+  .tasks {
+    margin: 1rem;
   }
 
   .details {
-    margin: 1em;
-    min-width: 20rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-items: center;
-
-    .tags {
-      margin-top: 0.3rem;
-      width: 15rem;
-    }
+    margin: 1rem;
   }
+
+
 }
+
 </style>

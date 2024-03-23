@@ -145,11 +145,6 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
       background: rgb(var(--v-theme-background));
       border: 1px solid rgb(var(--v-theme-primary));
     }
-
-    @media (max-width: 600px) {
-      // justify-content: flex-start;
-      // margin-top: 20vh;
-    }
   }
 }
 </style>

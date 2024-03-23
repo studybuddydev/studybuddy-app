@@ -96,6 +96,9 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   async function updateDeepWork(id: number, deepWork: boolean) {
     await updatePomodoro(id, p => { p.deepWork = deepWork; return p; });
   }
+  async function updateName(id: number, name: string) {
+    await updatePomodoro(id, p => { p.name = name; return p; });
+  }
 
   // --- TASKS ---
   async function updateTasks(id: number, tasks?: PomodoroTask[]) {
@@ -185,6 +188,6 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     pomodoroRecords, tags, tagColors, streak, updatePomodoro, parsePomodorDbo,
     addPomodoroToRecords,
     deletePomodoroRecord,
-    updateTag, updateRating, updateTasks, updateDeepWork
+    updateTag, updateRating, updateTasks, updateDeepWork, updateName
   };
 });
