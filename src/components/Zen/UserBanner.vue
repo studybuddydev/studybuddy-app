@@ -1,7 +1,7 @@
 <template>
   <div class="user-banner-wrapper" v-if="!isLoading">
-    <div class="streak blur" @click="emit('openHistory')">
-      <p class="streak-nr font-casio">{{ pomoDB.streak }}</p><v-icon icon="mdi-fire" :color="pomoDB.streak > 0 ? 'accent' : '#AAA'" size="large" />
+    <div class="streak-wrapper blur" @click="emit('openHistory')">
+      <PomodoroStreak />
     </div>
     <div class="user-banner blur"
       @click="!isAuthenticated ? loginWithRedirect() : emit('openSettingsTab', 'general')">
@@ -24,10 +24,7 @@
 <script lang="ts" setup>
 import { useAuth0 } from "@auth0/auth0-vue";
 import { onMounted, onUnmounted, ref } from 'vue';
-import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
-
-const pomoDB = usePomodoroDBStore();
-
+import PomodoroStreak from '../Pomodoro/PomodoroStreak.vue'
 const emit = defineEmits<{
   (e: 'openSettingsTab', value: string): void
   (e: 'openHistory'): void
@@ -53,23 +50,16 @@ onUnmounted(() => {
   display: flex;
   gap: 0.5rem;
 
-  .streak {
+  .streak-wrapper {
+    padding: 0 0.5rem 0 1rem;
+    border-radius: 1em;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: row;
-    padding: 0 0.5rem 0 1rem;
-    border-radius: 1em;
-    font-weight: bold;
-    cursor: pointer;
 
     &:hover {
       background-color: rgba(var(--v-theme-background), 0.4);
-    }
-
-    .streak-nr {
-      font-size: 0.8em;
-      text-shadow: -2px 1px rgb(var(--v-theme-primary));
     }
   }
 

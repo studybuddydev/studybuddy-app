@@ -8,6 +8,7 @@ import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroHistoryLine from '@/components/Pomodoro/PomodoroHistoryLine.vue';
 import { useAuth0 } from "@auth0/auth0-vue";
 import * as reportUtils from '@/utils/report';
+import PomodoroStreak from '../Pomodoro/PomodoroStreak.vue'
 
 const { isAuthenticated, loginWithRedirect } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -152,6 +153,8 @@ const hoursList = computed(() => {
 
 <template>
   <div :class="`pomo-history ${open ? '' : 'hide-pomo-history'}`">
+    <PomodoroStreak v-if="isAuthenticated" class="streak" />
+
     <div v-if="!isAuthenticated" class="no-history">
       <p class="text-center text-medium-emphasis"> {{ $t('history.loginMsg') }}</p>
       <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' @click="loginWithRedirect()">
@@ -298,6 +301,14 @@ const hoursList = computed(() => {
   margin: 1em;
   transition: height 0.1s ease-in-out;
   overflow-y: auto;
+  position: relative;
+
+  .streak {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1rem;
+  }
 
   .scrollable-history {
     margin-bottom: 8rem;
