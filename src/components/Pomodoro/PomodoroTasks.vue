@@ -2,7 +2,7 @@
   <div class="pomodoro-tasks">
     <v-text-field v-on:keyup.enter="() => addTask()" append-inner-icon="mdi-send" density="compact" label="Add Task"
       class="input-add-task" variant="solo" hide-details single-line v-model="task"
-      @click:append-inner="() => addTask()"></v-text-field>
+      @click:append-inner="() => addTask()" />
     <div class="task-list">
       <div class="task" v-for="t in (pomo.tasks ?? [])" @click="t.done = !t.done; updateTask()" v-ripple>
         <v-checkbox class="task-checkbox" clearable v-model="t.done" hide-details density="compact" />
@@ -16,10 +16,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
-import type { PomodoroRecord, PomodoroTask } from '@/types';
+import type { PomodoroBase, PomodoroTask } from '@/types';
 const pomoDB = usePomodoroDBStore();
 
-const props = defineProps<{ pomo: PomodoroRecord }>();
+const props = defineProps<{ pomo: PomodoroBase }>();
 
 const task = ref('');
 

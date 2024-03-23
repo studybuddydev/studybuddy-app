@@ -7,7 +7,7 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 
 export const useTimerStatusStore = defineStore('timer-status', () => {
 
-  const { user,  } = useAuth0();
+  const { user } = useAuth0();
   const pomodoro = usePomodoroStore();
 
   const API_ENDPOINT = 'https://api.studybuddy.it'

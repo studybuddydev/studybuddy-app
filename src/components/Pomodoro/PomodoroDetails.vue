@@ -1,15 +1,13 @@
 <template>
   <div class="pomo-details">
-    <!-- <div>
+    <div>
       <PomodoroTasks :pomo="pomo" />
-    </div> -->
+    </div>
     <div class="details">
-
-      <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="pomoDB.updateTag(pomo, undefined)"
-        :color="pomo.tag ? pomoDB.tagColors[pomo.tag] : null">{{ pomo.tag }}</v-chip>
-
+      <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="deleteTag()"
+        :color="pomo.tag ? pomoDB.tagColors[pomo.tag] : undefined">{{ pomo.tag }}</v-chip>
       <v-combobox v-else class="tags" label="Tag" hide-details :items="pomoDB.tags" v-model="pomo.tag"
-        @update:modelValue="(newTag: any) => { newTag && pomoDB.updateTag(pomo, newTag) }">
+        @update:modelValue="(newTag: any) => {  newTag && addTag(newTag) }">
         <template v-slot:selection="data"><v-chip :key="data.item.title">{{ data.item.title }}</v-chip></template>
         <template #item="{ props, item }">
           <v-list-item v-bind="props">
@@ -20,7 +18,7 @@
         </template>
       </v-combobox>
 
-      <v-rating v-model="pomo.rating" length="3" size="x-large" color="accent" clearable
+      <v-rating v-if="pomo.id" v-model="pomo.rating" length="3" size="x-large" color="accent" clearable
         @update:modelValue="(newRating: any) => { pomo.id && newRating && pomoDB.updateRating(pomo.id, newRating) }" />
       <v-switch label="Deep work" color="primary" inset hide-details v-model="pomo.deepWork"
         @update:modelValue="(deep: any) => { pomo.id && deep && pomoDB.updateDeepWork(pomo.id, deep) }" />
@@ -36,9 +34,20 @@
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
 import PomodoroTasks from '@/components/Pomodoro/PomodoroTasks.vue';
 import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
-import type { PomodoroRecord } from '@/types';
-defineProps<{ pomo: PomodoroRecord }>();
+import type { PomodoroBase } from '@/types';
+const props = defineProps<{ pomo: PomodoroBase }>();
 const pomoDB = usePomodoroDBStore();
+
+async function deleteTag() {
+  props.pomo.tag = undefined
+  if (props.pomo.id) pomoDB.updateTag(props.pomo.id, undefined)
+}
+
+function addTag(tag: string) {
+  props.pomo.tag = tag
+  if (props.pomo.id) pomoDB.updateTag(props.pomo.id, tag)
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -47,7 +56,6 @@ const pomoDB = usePomodoroDBStore();
   justify-content: center;
   align-items: flex-start;
   flex-direction: column;
-
   border-radius: 1rem;
   padding: 1rem;
 

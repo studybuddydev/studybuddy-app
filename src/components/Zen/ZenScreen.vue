@@ -12,6 +12,7 @@ import StartPage from '@/components/Zen/StartPage.vue'
 import FinishPage from '@/components/Zen/FinishPage.vue'
 import ZenActions from '@/components/Zen/ZenActions.vue'
 import PomodoroDetails from '../Pomodoro/PomodoroDetails.vue';
+import PomodoroSetup from '../Pomodoro/PomodoroSetup.vue';
 
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
@@ -19,6 +20,7 @@ const settings = useSettingsStore();
 const zenMode = ref(true);
 const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
+const settingUp = ref(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
   if (settings.settings.theme?.backgroundImg) {
     if (!pomodoro.onLongPause) {
@@ -63,13 +65,14 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 
           <div class="main-content-wrapper">
             <div class="main-content">
-              <StartPage v-if="pomodoro.created && !pomodoro.going" />
-              <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going"
+              <StartPage          v-if="pomodoro.created    && !pomodoro.going && !pomodoro.settingUp"/>
+              <PomodoroSetup v-else-if="pomodoro.created    && !pomodoro.going && pomodoro.settingUp" @exit-setup="pomodoro.exitSetup()" />
+              <FinishPage    v-else-if="pomodoro.terminated && !pomodoro.going"
                 :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
                 :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)"
                 @create-pomodoro="pomodoro.createPomodoro()" />
-              <PomodoroPip
-                v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
+
+              <PomodoroPip v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
                 :zen-style="zenStyle"
                 :hide-time="settings.generalSettings.hideTime" />
               <ZenActions @show-history="showPomoHistory = true" />

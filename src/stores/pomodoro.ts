@@ -11,7 +11,7 @@ const SECONDS_MULTIPLIER = 1000;
 const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
 const POMO_VERSION = 3;
 
-const SHORT_POMO_THRESHOLD = 0.00005 * MINUTE_MULTIPLIER;
+const SHORT_POMO_THRESHOLD = 5 * MINUTE_MULTIPLIER;
 const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
 
 const STOPPOMODORO_TIMEOUT = 60 * MINUTE_MULTIPLIER;
@@ -84,6 +84,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     // currentPomodoro.value = {
     const pomo: PomodotoStatus = {
+      deepWork: true,
       version: POMO_VERSION,
       end: totalLength,
       breaksDone: [],
@@ -97,6 +98,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   }
   function startPomodoro(noCountdown: boolean = false) {
     clearStuff();
+    settingUp.value = false;
     if (countdownRunning.value) {
       clearTimeout(countDownTimerout);
       countdownRunning.value = false;
@@ -109,7 +111,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       }
     }
   }
-  function _startPomodoro() { 
+  function _startPomodoro() {
     let pomo = timerStatus.pomodoroStatus;
     if (!pomo || pomo.state === PomodoroState.TERMINATED) {
       createPomodoro();
@@ -119,6 +121,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     pomo!.state = PomodoroState.STUDY;
     pomo!.originalEnd = pomo!.end;
     interval = setInterval(tick, TICK_TIME);
+    settingUp.value = false;
     saveStatus();
   }
   function stopPomodoro(lastInteraction: number | undefined = undefined) {
@@ -144,7 +147,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       }
       pomo.state = PomodoroState.TERMINATED;
 
-      // finishedPomoRecord.value = reportUtils.getPomoReport(pomo);
       if (pomo.endedAt > SHORT_POMO_THRESHOLD) {
         finishedPomoRecord.value = { shortPomo: false };
         pomoDB.addPomodoroToRecords(pomo).then((pomo) => {
@@ -476,6 +478,16 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     localStorage.setItem('lastInteraction', lastInteraction.value.toString());
   }
 
+  // ---------- SETUP ----------
+  const settingUp = ref(false);
+  function setup() {
+    settingUp.value = true;
+  }
+  function exitSetup() {
+    settingUp.value = false;
+  }
+
+
   // ---------- COMPUTED ----------
   const created = computed(() => timerStatus.pomodoroStatus?.state === PomodoroState.CREATED);
   const studing = computed(() => timerStatus.pomodoroStatus?.state === PomodoroState.STUDY);
@@ -524,7 +536,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
     timeFormatted, timeInTitle,
     startCountdown, countdownRunning, longAwaitPopup,
-    parseTime
+    parseTime,
+    setup, settingUp, exitSetup
   }
 
 })

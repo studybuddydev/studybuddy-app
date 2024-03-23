@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useDBStore } from "@/stores/db";
-import type { PomodoroDBO, PomodoroRecord, PomodoroTask, PomodotoStatus } from '@/types';
+import type { PomodoroBase, PomodoroDBO, PomodoroRecord, PomodoroTask, PomodotoStatus } from '@/types';
 import * as timeUtils from '@/utils/time';
 import * as reportUtils from '@/utils/report';
 import { useSettingsStore } from "@/stores/settings";
@@ -68,16 +68,6 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   // --- TAGS ---
   const tags = ref<string[]>([]);
   const tagColors = ref<{ [id: string]: string; }>({});
-  async function updateTag(pRec: PomodoroRecord, tag?: string) {
-    if (!pRec.id) return;
-    const p = await db.pomodori.get(pRec.id);
-    if (p) {
-      p.tag = tag;
-      pRec.tag = tag;
-      await db.pomodori.put(p, pRec.id);
-    }
-    await updateTags();
-  }
   async function updateTags() {
     const colorList = [
       '#33FFCC', '#FF1A66', '#FFFF99', '#809900', '#CC80CC',
@@ -93,6 +83,10 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
       acc[t] = colorList[i % colorList.length];
       return acc;
     }, {} as { [id: string]: string; });
+  }
+  async function updateTag(id: number, tag: string | undefined) {
+    await updatePomodoro(id, p => { p.tag = tag; return p; });
+    await updateTags();
   }
   updateTags();
 
