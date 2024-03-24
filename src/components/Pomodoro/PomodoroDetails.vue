@@ -23,8 +23,6 @@
 
       </div>
 
-      <PomodoroTasks class="tasks" :pomo="pomo" />
-
       <div class="details">
 
         <v-rating v-if="pomo.id" v-model="pomo.rating" length="3" size="x-large" color="accent" clearable
@@ -33,8 +31,9 @@
         <v-switch label="Deep work" color="primary" inset hide-details v-model="pomo.deepWork"
           @update:modelValue="(deep: any) => { pomo.id && deep && pomoDB.updateDeepWork(pomo.id, deep) }" />
 
-      </div>
+        </div>
 
+      <PomodoroTasks class="tasks" :pomo="pomo" />
     </div>
     <PomodoroReport class="report" :report="pomo.report" v-if="pomo.report" />
   </div>
@@ -102,6 +101,17 @@ function addTag(tag: string) {
     align-items: center;
     justify-items: center;
     margin: 1rem;
+  }
+
+  @media (max-width: 850px) {
+    .pomo-details-props {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      .title {
+        grid-column: 1;
+        grid-template-columns: auto;
+      }
+    }
   }
 
 
