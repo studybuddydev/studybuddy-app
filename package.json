@@ -36,7 +36,6 @@
     "vue": "^3.4.21",
     "vue-country-flag-next": "^2.3.2",
     "vue-i18n": "^9.10.2",
-    "vue-icon": "link:@types/@jamescoyle/vue-icon",
     "vue-router": "^4.3.0",
     "vuedraggable": "^4.1.0",
     "vuetify": "^3.5.11"

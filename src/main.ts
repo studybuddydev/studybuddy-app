@@ -18,7 +18,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import { fa } from 'vuetify/iconsets/fa4'
-import { themes } from '@/assets/themes'
+import { themes } from '@/config/themes'
 
 import { setupCalendar } from 'v-calendar';
 
