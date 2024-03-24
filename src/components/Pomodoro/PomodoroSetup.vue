@@ -1,6 +1,9 @@
 <template>
   <div class="blur blur-strong setup">
-    <v-icon class="close-icon" icon="mdi-close" @click="emits('exit-setup')" />
+    <div class="top-icon back-icon"  @click="emits('exit-setup')"><v-icon icon="mdi-arrow-left" /></div>
+    <Info class="top-icon info-icon" :text="$t('info.setup')" />
+
+    <!-- <v-icon class="top-icon info" icon="mdi-arrow-left" @click="emits('exit-setup')" /> -->
     <h3 class="title text-primary">Setup Pomodoro</h3>
     <PomodoroDetails v-if="timerStatus.pomodoroStatus" :pomo="timerStatus.pomodoroStatus" />
   </div>
@@ -9,6 +12,8 @@
 <script setup lang="ts">
 import PomodoroDetails from '../Pomodoro/PomodoroDetails.vue';
 import { useTimerStatusStore } from "@/stores/api/timerStatus";
+import Info from '@/components/common/Info.vue';
+
 const timerStatus = useTimerStatusStore();
 const emits = defineEmits<{ (e: 'exit-setup'): void }>();
 </script>
@@ -19,11 +24,18 @@ const emits = defineEmits<{ (e: 'exit-setup'): void }>();
   padding: 1rem;
   position: relative;
 
-  .close-icon {
+  .top-icon {
     position: absolute;
     top: 0;
-    right: 0;
     padding: 1em;
+  }
+  .back-icon {
+    left: 0;
+    padding: 1em;
+    cursor: pointer;
+  }
+  .info-icon {
+    right: 0;
   }
 
   .title {
