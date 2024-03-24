@@ -66,7 +66,6 @@
 <script lang="ts" setup>
 import axios from 'axios'
 import { ref } from 'vue';
-
 const aboutOpen = ref(false);
 const appVersion = APP_VERSION;
 const env = import.meta.env.VITE_ENV

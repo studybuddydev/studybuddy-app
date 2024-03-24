@@ -31,6 +31,7 @@
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useTheme } from 'vuetify'
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
+// @ts-ignore
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiPause, mdiPlay } from '@mdi/js'
 

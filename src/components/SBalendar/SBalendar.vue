@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import 'v-calendar/style.css';
+// import 'v-calendar/dist/style.css';
 import { Calendar } from 'v-calendar';
 import { onMounted, ref } from 'vue';
 import DayViewWeekly from './DayViewWeekly.vue';
@@ -86,3 +86,6 @@ function changePage(e: any) {
 }
 
 </script>
+<style  scoped>
+/* @import 'v-calendar/style.css'; */
+</style>
