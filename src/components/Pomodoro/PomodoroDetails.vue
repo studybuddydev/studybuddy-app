@@ -6,8 +6,8 @@
 
         <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="deleteTag()"
           :color="pomo.tag ? pomoDB.tagColors[pomo.tag] : undefined">{{ pomo.tag }}</v-chip>
-        <v-combobox v-else class="text-box text-boxt-tag" label="Tag" hide-details :items="pomoDB.tags" v-model="pomo.tag"
-          @update:modelValue="(newTag: any) => { newTag && addTag(newTag) }">
+        <v-combobox v-else class="text-box text-boxt-tag" label="Tag" hide-details :items="pomoDB.tags"
+          v-model="pomo.tag" @update:modelValue="(newTag: any) => { newTag && addTag(newTag) }">
           <template v-slot:selection="data"><v-chip :key="data.item.title">{{ data.item.title }}</v-chip></template>
           <template #item="{ props, item }">
             <v-list-item v-bind="props">
@@ -19,33 +19,62 @@
         </v-combobox>
 
         <v-text-field v-model="pomo.name" label="Nome" hide-details dense class="text-box text-boxt-title"
-          @update:modelValue="(newName: any) => { pomo.id && pomoDB.updateName(pomo.id, newName) }" />
+          @update:modelValue="(newName: any) => { updateName(pomo.id, newName) }" />
 
       </div>
 
       <div class="details">
 
         <v-rating v-if="pomo.id" v-model="pomo.rating" length="3" size="x-large" color="accent" clearable
-          @update:modelValue="(newRating: any) => { pomo.id && newRating && pomoDB.updateRating(pomo.id, newRating) }" />
+          @update:modelValue="(newRating: any) => { updateRating(pomo.id, newRating) }" />
 
         <v-switch label="Deep work" color="primary" inset hide-details v-model="pomo.deepWork"
-          @update:modelValue="(deep: any) => { pomo.id && deep && pomoDB.updateDeepWork(pomo.id, deep) }" />
+          @update:modelValue="(deep: any) => updateDeepWork(pomo.id, deep)" />
 
+      </div>
+
+      <div class="tasks">
+        <v-text-field v-on:keyup.enter="() => addTask()" append-inner-icon="mdi-send" density="compact" label="Add Task"
+          class="input-add-task" variant="solo" hide-details single-line v-model="task"
+          @click:append-inner="() => addTask()" />
+        <div class="task-list">
+          <div class="task" v-for="t in (pomo.tasks ?? [])" @click="t.done = !t.done; updateTask()" v-ripple>
+            <v-checkbox class="task-checkbox" clearable v-model="t.done" hide-details density="compact" />
+            <p>{{ t.task }}</p>
+            <v-icon class="btn-remove" size="x-small" @click.stop="removeTask(t)">mdi-delete</v-icon>
+          </div>
         </div>
-
-      <PomodoroTasks class="tasks" :pomo="pomo" />
+      </div>
     </div>
     <PomodoroReport class="report" :report="pomo.report" v-if="pomo.report" />
   </div>
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import PomodoroReport from '@/components/Pomodoro/PomodoroReport.vue';
-import PomodoroTasks from '@/components/Pomodoro/PomodoroTasks.vue';
 import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
-import type { PomodoroBase } from '@/types';
+import type { PomodoroBase, PomodoroTask } from '@/types';
+import { useTimerStatusStore } from "@/stores/api/timerStatus";
+
 const props = defineProps<{ pomo: PomodoroBase }>();
 const pomoDB = usePomodoroDBStore();
+const timerStatus = useTimerStatusStore();
+
+async function updateDeepWork(pomoId: number | undefined, deep: boolean) {
+  if (pomoId) await pomoDB.updateDeepWork(pomoId, deep);
+  else        timerStatus.saveStatus()
+}
+
+async function updateName(pomoId: number | undefined, name: string) {
+  if (pomoId) await pomoDB.updateName(pomoId, name);
+  else        timerStatus.saveStatus()
+}
+
+async function updateRating(pomoId: number | undefined, rating: number) {
+  if (pomoId) await pomoDB.updateRating(pomoId, rating);
+  else        timerStatus.saveStatus()
+}
 
 async function deleteTag() {
   props.pomo.tag = undefined
@@ -57,6 +86,25 @@ function addTag(tag: string) {
   if (props.pomo.id) pomoDB.updateTag(props.pomo.id, tag)
 }
 
+const task = ref('');
+
+async function addTask() {
+  if (task.value) {
+    if (!props.pomo.tasks) props.pomo.tasks = [];
+    props.pomo.tasks.push({ task: task.value });
+  }
+  task.value = '';
+  await updateTask();
+}
+
+async function removeTask(task: PomodoroTask) {
+  props.pomo.tasks?.splice(props.pomo.tasks?.indexOf(task), 1);
+  await updateTask();
+}
+
+async function updateTask() {
+  if (props.pomo.id) await pomoDB.updateTasks(props.pomo.id, props.pomo.tasks);
+}
 </script>
 
 <style scoped lang="scss">
@@ -70,6 +118,7 @@ function addTag(tag: string) {
   @media (min-width: 1000px) {
     flex-direction: row;
   }
+
   .report {
     border: 1px solid rgb(var(--v-theme-primary));
     border-radius: 1rem;
@@ -88,11 +137,56 @@ function addTag(tag: string) {
     gap: 1rem;
     margin: 1rem;
     align-items: center;
-    
+
   }
 
   .tasks {
     margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    width: 15rem;
+
+    .input-add-task {
+      min-width: 10rem;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      max-height: 13rem;
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      .task {
+        width: 100%;
+        cursor: pointer;
+        border-radius: 0.1rem;
+        flex-direction: row;
+        display: flex;
+        align-items: center;
+
+        .task-checkbox {
+          flex-shrink: 0;
+        }
+
+        p {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          flex-grow: 1;
+          padding: 0 0.5rem;
+          white-space: nowrap;
+        }
+
+        .btn-remove {
+          padding: 0 1rem;
+        }
+      }
+    }
   }
 
   .details {
@@ -107,14 +201,12 @@ function addTag(tag: string) {
     .pomo-details-props {
       grid-template-columns: 1fr;
       grid-template-rows: auto auto auto;
+
       .title {
         grid-column: 1;
         grid-template-columns: auto;
       }
     }
   }
-
-
 }
-
 </style>

@@ -60,9 +60,13 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
     }
   }
 
+  let debounceTimeout: number | undefined = undefined;
   async function setStatusAPI(status: PomodotoStatus) {
-    status.timestamp = Date.now();
-    await axios.post(`${API_ENDPOINT}/status/${user.value?.email}`, status);
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(async () => {
+      status.timestamp = Date.now();
+      await axios.post(`${API_ENDPOINT}/status/${user.value?.email}`, status);
+    }, 500)
   }
 
   async function deleteStatusAPI() {

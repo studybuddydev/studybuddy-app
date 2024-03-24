@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useDBStore } from "@/stores/db";
-import type { PomodoroBase, PomodoroDBO, PomodoroRecord, PomodoroTask, PomodotoStatus } from '@/types';
+import type { PomodoroDBO, PomodoroRecord, PomodoroTask, PomodotoStatus } from '@/types';
 import * as timeUtils from '@/utils/time';
 import * as reportUtils from '@/utils/report';
 import { useSettingsStore } from "@/stores/settings";
@@ -34,13 +34,19 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   }
   async function addPomodoroToRecords(pomo: PomodotoStatus): Promise<PomodoroRecord> {
     const dt = new Date(pomo.startedAt ?? Date.now());
+    console.log(pomo)
+    console.log(pomo.tasks)
     const p: PomodoroDBO = {
       end: pomo.end,
       endedAt: pomo.endedAt,
       breaksDone: pomo.breaksDone.map(b => ({ start: b.start, end: b.end ?? b.start })),
       freeMode: pomo.freeMode,
       datetime: dt,
-      deepWork: true
+      deepWork: pomo.deepWork,
+      name: pomo.name,
+      tasks: pomo.tasks?.map(t => ({ task: t.task, done: t.done })),
+      rating: pomo.rating,
+      tag: pomo.tag
     }
 
     const parsed = parsePomodorDbo(p);
