@@ -63,17 +63,17 @@ const timerStatus = useTimerStatusStore();
 
 async function updateDeepWork(pomoId: number | undefined, deep: boolean) {
   if (pomoId) await pomoDB.updateDeepWork(pomoId, deep);
-  else        timerStatus.saveStatus()
+  else timerStatus.saveStatus()
 }
 
 async function updateName(pomoId: number | undefined, name: string) {
   if (pomoId) await pomoDB.updateName(pomoId, name);
-  else        timerStatus.saveStatus()
+  else timerStatus.saveStatus()
 }
 
 async function updateRating(pomoId: number | undefined, rating: number) {
   if (pomoId) await pomoDB.updateRating(pomoId, rating);
-  else        timerStatus.saveStatus()
+  else timerStatus.saveStatus()
 }
 
 async function deleteTag() {
@@ -113,7 +113,6 @@ async function updateTask() {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-top: 1rem;
 
   @media (min-width: 1000px) {
     flex-direction: row;

@@ -11,7 +11,7 @@ import About from '@/components/Zen/About.vue'
 import StartPage from '@/components/Zen/StartPage.vue'
 import FinishPage from '@/components/Zen/FinishPage.vue'
 import ZenActions from '@/components/Zen/ZenActions.vue'
-import PomodoroDetails from '../Pomodoro/PomodoroDetails.vue';
+import PomodoroDetailsEnd from './PomodoroDetailsEnd.vue';
 import PomodoroSetup from '../Pomodoro/PomodoroSetup.vue';
 
 const pomodoro = usePomodoroStore();
@@ -20,7 +20,6 @@ const settings = useSettingsStore();
 const zenMode = ref(true);
 const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
-const settingUp = ref(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
   if (settings.settings.theme?.backgroundImg) {
     if (!pomodoro.onLongPause) {
@@ -70,13 +69,15 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
               <FinishPage    v-else-if="pomodoro.terminated && !pomodoro.going"
                 :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
                 :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)"
-                @create-pomodoro="pomodoro.createPomodoro()" />
+                
+                />
 
               <PomodoroPip v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
                 :zen-style="zenStyle"
                 :hide-time="settings.generalSettings.hideTime" />
               <ZenActions @show-history="showPomoHistory = true" />
-              <PomodoroDetails class="pomo-details blur blur-strong" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo" />
+              <PomodoroDetailsEnd class="pomo-details" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo"
+                @done="pomodoro.createPomodoro()" />
             </div>
           </div>
         </div>
@@ -142,7 +143,6 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
     margin-bottom: 15vh;
 
     .pomo-details {
-      border-radius: 1rem;
       padding: 1rem;
     }
   }

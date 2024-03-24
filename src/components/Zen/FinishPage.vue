@@ -1,6 +1,5 @@
 <template>
   <div class="blur finish-box">
-    <v-icon class="close-icon" icon="mdi-close" @click="emit('create-pomodoro')" />
     <div v-if="shortPomo">
       <p class="pause font-press text-center">{{ $t("pause.pomoDoneShort") }}</p>
       <h3 class="text-primary font-press text-center">{{ $t("pause.goodjobShort") }}</h3>
@@ -21,9 +20,6 @@ const props = defineProps<{
   shortPomo: boolean;
   points: number;
 }>();
-const emit = defineEmits<{
-  (e: 'create-pomodoro'): void
-}>();
 </script>
 
 <style scoped lang="scss">
@@ -32,13 +28,6 @@ const emit = defineEmits<{
   position: relative;
   border-radius: 1rem;
   max-width: 900px;
-
-  .close-icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 1em;
-  }
 
   h2 {
     font-size: 3rem;

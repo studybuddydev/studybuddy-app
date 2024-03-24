@@ -34,8 +34,6 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   }
   async function addPomodoroToRecords(pomo: PomodotoStatus): Promise<PomodoroRecord> {
     const dt = new Date(pomo.startedAt ?? Date.now());
-    console.log(pomo)
-    console.log(pomo.tasks)
     const p: PomodoroDBO = {
       end: pomo.end,
       endedAt: pomo.endedAt,
