@@ -1,8 +1,6 @@
 <template>
   <div class="pomo-details-end blur blur-strong">
-    <PomodoroDetails
-      :pomo="pomo"
-    />
+    <PomodoroDetails :pomo="pomo" />
     <div class="pomo-details-actions">
       <v-btn
         color="primary"
