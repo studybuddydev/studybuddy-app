@@ -168,7 +168,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     } else if (pomo.state === PomodoroState.BREAK) {
       study(noCountdown);
     }
-    saveStatus();
   }
   function pause() {
     const pomo = timerStatus.pomodoroStatus;

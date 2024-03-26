@@ -72,7 +72,8 @@ const auth0 = createAuth0({
   domain: "studybuddyit.eu.auth0.com",
   clientId: "ZyUtaogYVjzqmWoglOEV5vT7XeHRzDtz",
   authorizationParams: {
-    redirect_uri: window.location.origin
+    redirect_uri: window.location.origin,
+    audience: "https://api.studybuddy.it",
   }
 })
 

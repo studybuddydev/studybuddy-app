@@ -7,11 +7,17 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 
 export const useTimerStatusStore = defineStore('timer-status', () => {
 
-  const { user } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const pomodoro = usePomodoroStore();
 
-  const API_ENDPOINT = 'https://api.studybuddy.it'
+  const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT
   const LOCALSTORAGE_KEY = 'timer-status'
+
+  async function getOptions() {
+    return {
+      headers: { Authorization: `Bearer ${await getAccessTokenSilently()}` }
+    }
+  }
 
   const pomodoroStatus = ref<PomodotoStatus | null>(
     getStatusLocalStorage()
@@ -53,7 +59,7 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
   }
 
   async function getStatusAPI() {
-    const status = await axios.get(`${API_ENDPOINT}/status/${user.value?.email}`);
+    const status = await axios.get(`${API_ENDPOINT}/status`, await getOptions());
     if (status.data.timestamp > (pomodoroStatus.value?.timestamp ?? 0)) {
       pomodoroStatus.value = status.data;
       pomodoro.init();
@@ -65,12 +71,12 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(async () => {
       status.timestamp = Date.now();
-      await axios.post(`${API_ENDPOINT}/status/${user.value?.email}`, status);
+      await axios.post(`${API_ENDPOINT}/status`, status, await getOptions());
     }, 500)
   }
 
   async function deleteStatusAPI() {
-    await axios.delete(`${API_ENDPOINT}/status/${user.value?.email}`);
+    await axios.delete(`${API_ENDPOINT}/status`, await getOptions());
   }
 
 
