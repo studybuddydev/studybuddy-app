@@ -1,9 +1,8 @@
 <template>
   <div class="pomopause">
 
-    <v-badge v-if="sink.itemsCount > 0" :content="sink.itemsCount" color="secondary">
+    <v-badge v-if="!pomodoro.going && sink.itemsCount > 0" :content="sink.itemsCount" color="secondary">
       <v-btn class='btn bg-primary pomo-btn pomo-box btn-main-start'
-        v-if="!pomodoro.going"
         @click="sink.toggleSink()">
         <v-icon class="icon" icon="mdi-faucet" />
       </v-btn>
