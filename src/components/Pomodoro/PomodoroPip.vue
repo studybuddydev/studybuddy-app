@@ -92,6 +92,7 @@ async function pipIt() {
   }
 
   .info-pause {
+    position: absolute;
     top: 0;
     right: 0;
   }

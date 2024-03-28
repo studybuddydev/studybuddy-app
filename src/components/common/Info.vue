@@ -28,9 +28,6 @@ function openClick() {
 
 
 <style lang="scss" scoped>
-.info-tip {
-  position: absolute;
-}
 .info-box {
   max-width: 300px;
   padding: 0.3rem;

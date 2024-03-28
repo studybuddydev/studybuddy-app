@@ -35,6 +35,7 @@ const emits = defineEmits<{ (e: 'exit-setup'): void }>();
     cursor: pointer;
   }
   .info-icon {
+    position: absolute;
     right: 0;
   }
 

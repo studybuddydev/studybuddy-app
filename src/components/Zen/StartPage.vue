@@ -91,6 +91,7 @@ h3 {
   }
 
   .info-welcome {
+    position: absolute;
     margin: 1rem;
     top: 0;
     right: 0;

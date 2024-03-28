@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Info :text="$t('info.timer')" class="info-settings" />
     <div v-if="pomodoro.going">
       <v-alert variant="tonal" class="mb-5" type="warning">
         <div class="pomo-running-alert">
@@ -14,7 +13,10 @@
       <v-window v-model="step">
         <v-window-item :value="1" class="timer-settings">
           <div class="header">
-            <div class="text-h6">{{ $t('pause.timer.chooseTimer') }}</div>
+            <div class="header-title">
+              <p class="text-h6">{{ $t('pause.timer.chooseTimer') }}</p>
+              <Info :text="$t('info.timer')" class="info-settings" />
+            </div>
             <v-btn @click="setupNewTimer()" color="primary" variant="text" prepend-icon="mdi-plus">{{ $t('pause.timer.createNew') }}</v-btn>
           </div>
 
@@ -45,12 +47,12 @@
               <v-expansion-panel-text>
                 <v-row>
                   <v-col cols="9">
-                    <div class="text-h6 text-bottom">
+                    <p class="advance-settings-label">
                       {{ $t("pause.timer.sessionOf") }}
                       {{ Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} {{ $t("pause.timer.hours") }}
                       {{
                         settingsStore.settings!.pomodoro!.totalLength % 60 }} {{ $t("pause.timer.minutes") }}
-                    </div>
+                    </p>
                   </v-col>
                   <v-col cols="3">
                     <v-text-field v-model="endsAt" type="time" variant="underlined" dense
@@ -66,15 +68,15 @@
                   </template>
                 </v-slider>
 
-                <div class="text-h6">{{ settingsStore.settings!.pomodoro!.breaksLength }} {{
+                <p class="advance-settings-label">{{ settingsStore.settings!.pomodoro!.breaksLength }} {{
                   $t("pause.timer.breaksLength")
                 }}
-                </div>
+                </p>
                 <v-slider v-model="settingsStore.settings!.pomodoro!.breaksLength" :min="1" :max="60" :step="1"
                   thumb-label :disabled="freeMode" class="pr-4 primary-thumb" prepend-icon="mdi-coffee" color="primary"  />
 
-                <div class="text-h6">{{ settingsStore.settings!.pomodoro!.numberOfBreak }}
-                  {{ $t("pause.timer.breaksNumber") }}</div>
+                <p class="advance-settings-label">{{ settingsStore.settings!.pomodoro!.numberOfBreak }}
+                  {{ $t("pause.timer.breaksNumber") }}</p>
                 <v-slider v-model="settingsStore.settings!.pomodoro!.numberOfBreak" :min="0" :max="10" :step="1"
                   thumb-label :disabled="freeMode" show-ticks="always" class="pr-4 primary-thumb" prepend-icon="mdi-tally-mark-5" color="primary" /> 
               </v-expansion-panel-text>
@@ -268,6 +270,11 @@ function deleteTimer(id: number | undefined) {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 0.4em
+    }
   }
 }
 
@@ -362,17 +369,15 @@ function deleteTimer(id: number | undefined) {
   }
 }
 
-.info-settings {
-  top: 64px;
-  right: 0;
-  margin: 1rem;
-  position: fixed !important;
-}
-
-.text-bottom {
-  display: flex;
-  align-items: center;
-  height: 100%;
+.advance-settings-label {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0.5rem 0;
+  line-height: 2rem;
+  @media (max-width: 600px) {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
 }
 
 .pomo-running-alert {
