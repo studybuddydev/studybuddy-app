@@ -24,10 +24,14 @@
     <div v-if="openDetails">
       <PomodoroDetails :pomo="pomo" />
       <div class="pomo-actions">
-        <div class="pomo-edit-btn" v-if="editingEnd">
-          <v-text-field label="End Time" v-model="endTimeForEdit" type="time" class="pa-0" variant="underlined" dense v-on:click.stop hide-details />
+        <div class="pomo-edit-inputs" v-if="editingStartEnd">
+          <v-text-field label="Start Time" v-model="startTimeForEdit" type="time" class="pa-0" variant="underlined"
+            dense v-on:click.stop hide-details />
+          <v-text-field label="End Time" v-model="endTimeForEdit" type="time" class="pa-0" variant="underlined" dense
+            v-on:click.stop hide-details />
         </div>
-        <v-btn color="primary" class="pomo-edit-btn" @click="updateEndTime()" ><v-icon :icon="editingEnd ? 'mdi-floppy' : 'mdi-pencil'" /></v-btn>
+        <v-btn color="primary" class="pomo-edit-btn" @click="updateTime()"><v-icon
+            :icon="editingStartEnd ? 'mdi-floppy' : 'mdi-pencil'" /></v-btn>
         <v-btn color="error" class="pomo-delete-btn"
           @click="deletingPomoId = pomo.id ?? -1; deletePomoDialog = true;"><v-icon icon="mdi-delete" /></v-btn>
       </div>
@@ -37,7 +41,7 @@
             <v-spacer />
             <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
             <v-btn color="primary" @click="pomoDB.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
-              $t("yes") }}</v-btn>
+    $t("yes") }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -72,11 +76,17 @@ const emits = defineEmits<{
   (e: 'pomoLenghUpdated'): void
 }>();
 
-const editingEnd = ref(false);
+const editingStartEnd = ref(false);
+
 const endTimeForEdit = ref(
   new Date(props.pomo.datetime.getTime() + (props.pomo.endedAt ?? 0))
     .toLocaleTimeString('en-gb', { hour: '2-digit', minute: '2-digit', hour12: false, hourCycle: "h23" })
 );
+const startTimeForEdit = ref(
+  props.pomo.datetime.toLocaleTimeString('en-gb', { hour: '2-digit', minute: '2-digit', hour12: false, hourCycle: "h23" })
+);
+let originalEndTime = endTimeForEdit.value;
+let originalStartTime = startTimeForEdit.value;
 
 const timeFormat = { html: false, showSeconds: false, format: 'hms' as 'hms' }
 function getTime(d: Date) {
@@ -90,23 +100,46 @@ function getEndTime(p: PomodoroRecord) {
   return getTime(new Date(p.datetime.getTime() + p.endedAt));
 }
 
-async function updateEndTime() {
-  if (!editingEnd.value) {
-    editingEnd.value = true;
+async function updateTime() {
+  if (!editingStartEnd.value) {
+    editingStartEnd.value = true;
     return;
   }
-
-  editingEnd.value = false;
-  
+  editingStartEnd.value = false;
   if (!props.pomo.id) return;
-  const [hEnd, mEnd] = endTimeForEdit.value.split(':').map(x => +x);
-  const end = (hEnd * 60) + mEnd;
-  const start = props.pomo.datetime.getMinutes() + props.pomo.datetime.getHours() * 60;
-  const diff = end < start ? end + (24 * 60) - start : end - start;
-  props.pomo.endedAt = diff * 60 * 1000;
 
+  if (endTimeForEdit.value === originalEndTime && startTimeForEdit.value === originalStartTime) return;
+
+  if (startTimeForEdit.value !== originalStartTime) {
+    const orStart = props.pomo.datetime.getTime();
+    const [hStart, mStart] = startTimeForEdit.value.split(':').map(x => +x);
+    props.pomo.datetime.setHours(+hStart);
+    props.pomo.datetime.setMinutes(+mStart);
+    const startDiff = orStart - props.pomo.datetime.getTime();
+
+    if (props.pomo.endedAt) props.pomo.endedAt += startDiff;
+    props.pomo.end += startDiff;
+    props.pomo.breaksDone.forEach(b => {
+      b.start += startDiff;
+      if (b.end) b.end += startDiff;
+    });
+  }
+
+  if (endTimeForEdit.value !== originalEndTime) {
+    const [hEnd, mEnd] = endTimeForEdit.value.split(':').map(x => +x);
+    const end = (hEnd * 60) + mEnd;
+    const start = props.pomo.datetime.getMinutes() + props.pomo.datetime.getHours() * 60;
+    const diff = end < start ? end + (24 * 60) - start : end - start;
+    props.pomo.endedAt = diff * 60 * 1000;
+  }
+
+  originalStartTime = startTimeForEdit.value;
+  originalEndTime = endTimeForEdit.value;
   await pomoDB.updatePomodoro(props.pomo.id, (p) => {
     p.endedAt = props.pomo.endedAt;
+    p.end = props.pomo.end;
+    p.datetime = props.pomo.datetime;
+    p.breaksDone = [ ...props.pomo.breaksDone.map(b => ({ ...b })) ];
     const newPomo = pomoDB.parsePomodorDbo(p);
     Object.assign(props.pomo, newPomo);
     return p;
@@ -222,6 +255,12 @@ async function updateEndTime() {
   padding: 0 1.5rem 0.5rem 1.5rem;
   gap: 1rem;
   height: 4rem;
+
+  .pomo-edit-inputs {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
 
 }
 </style>
