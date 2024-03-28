@@ -23,21 +23,11 @@
 
       </div>
 
-      <div class="details">
-
-        <v-rating v-if="pomo.id" v-model="pomo.rating" length="3" size="x-large" color="accent" clearable
-          @update:modelValue="(newRating: any) => { updateRating(pomo.id, newRating) }" />
-
-        <v-switch label="Deep work" color="primary" inset hide-details v-model="pomo.deepWork"
-          @update:modelValue="(deep: any) => updateDeepWork(pomo.id, deep)" />
-
-      </div>
-
       <div class="tasks">
         <v-text-field v-on:keyup.enter="() => addTask()" append-inner-icon="mdi-send" density="compact" label="Add Task"
           class="input-add-task" variant="solo" hide-details single-line v-model="task"
           @click:append-inner="() => addTask()" />
-        <div class="task-list">
+        <div class="task-list" v-if="pomo.tasks?.length ?? 0 > 0">
           <div class="task" v-for="t in (pomo.tasks ?? [])" @click="t.done = !t.done; updateTask()" v-ripple>
             <v-checkbox class="task-checkbox" clearable v-model="t.done" hide-details density="compact" />
             <p>{{ t.task }}</p>
@@ -45,6 +35,20 @@
           </div>
         </div>
       </div>
+
+      <div class="details">
+        <v-rating v-if="pomo.id" v-model="pomo.rating" length="3" size="x-large" color="accent" clearable
+          @update:modelValue="(newRating: any) => { updateRating(pomo.id, newRating) }" />
+
+        <div>
+          <v-tooltip activator="parent" location="top">{{ pomo.deepWork ? 'Deep Work' : 'Shallow Work' }}</v-tooltip>
+          <v-switch color="primary" inset hide-details v-model="pomo.deepWork"
+            @update:modelValue="(deep: any) => updateDeepWork(pomo.id, deep)" true-icon="mdi-brain"
+            false-icon="mdi-duck">
+          </v-switch>
+        </div>
+      </div>
+
     </div>
     <PomodoroReport class="report" :report="pomo.report" v-if="pomo.report" />
   </div>
@@ -125,7 +129,7 @@ async function updateTask() {
 
   .pomo-details-props {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
     grid-template-rows: auto auto;
   }
 
@@ -137,14 +141,19 @@ async function updateTask() {
     margin: 1rem;
     align-items: center;
 
+    .text-boxt-tag {
+      min-width: 8rem;
+    }
+
   }
 
   .tasks {
-    margin: 1rem;
     display: flex;
     flex-direction: column;
     padding: 1rem;
-    width: 15rem;
+    width: 100%;
+    align-self: center;
+    min-width: 20rem;
 
     .input-add-task {
       min-width: 10rem;
@@ -197,9 +206,15 @@ async function updateTask() {
   }
 
   @media (max-width: 850px) {
+
     .pomo-details-props {
       grid-template-columns: 1fr;
       grid-template-rows: auto auto auto;
+      width: calc(100vw - 4rem);
+
+      .tasks {
+        min-width: unset;
+      }
 
       .title {
         grid-column: 1;
