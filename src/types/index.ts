@@ -151,6 +151,7 @@ export type GeneralSettings = {
   lang: string;
   hideTime: boolean;
   disableCountdown: boolean;
+  hideSetup: boolean;
   soundVolume: number;
   pulsingPause: boolean;
   showSeconds: boolean;
