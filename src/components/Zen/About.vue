@@ -136,6 +136,10 @@ if (env !== 'local') {
     border-radius: 1rem;
     cursor: pointer;
 
+    @media screen and (max-width: 300px) {
+      display: none;
+    }
+
     &:hover {
       background-color: rgba(var(--v-theme-surface), 0.4);
     }

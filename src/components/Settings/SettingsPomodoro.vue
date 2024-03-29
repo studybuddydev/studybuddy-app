@@ -23,7 +23,8 @@
           <PomodoroPresets :deletable="true" />
           
           <v-expansion-panels>
-            <v-expansion-panel :title="$t('advanced')">
+            <v-expansion-panel>
+              <v-expansion-panel-title class="bg-background advance-panel-closed">{{ $t('advanced') }}</v-expansion-panel-title>
               <v-expansion-panel-text>
                 <v-row>
                   <v-col cols="9">
@@ -197,6 +198,10 @@ const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
       gap: 0.4em
     }
   }
+}
+
+.advance-panel-closed {
+  border-bottom: 1px solid rgba(var(--v-theme-primary), 0.6);
 }
 
 .advance-settings-label {

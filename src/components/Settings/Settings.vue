@@ -11,7 +11,7 @@
         </v-tabs>
       </v-toolbar>
 
-      <v-container>
+      <v-container class="pt-6 px-6 pb-0">
         <v-window v-model="modelTab" :touch="false">
 
           <!-- PROFILE -->
@@ -31,7 +31,7 @@
 
         </v-window>
       </v-container>
-      <v-card-actions v-if="!hideDone">
+      <v-card-actions v-if="!hideDone" class="pb-6 px-6 pt-3">
         <v-spacer />
         <v-btn variant="outlined" color="primary" @click="modelDialog = false">{{ $t('done') }}</v-btn>
       </v-card-actions>
