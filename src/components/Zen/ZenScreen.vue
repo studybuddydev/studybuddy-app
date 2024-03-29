@@ -67,11 +67,12 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
           <div class="main-content-wrapper">
             <div class="main-content">
               <StartPage          v-if="pomodoro.created    && !pomodoro.going && !pomodoro.settingUp"/>
-              <PomodoroSetup v-else-if="pomodoro.created    && !pomodoro.going && pomodoro.settingUp" @exit-setup="pomodoro.exitSetup()" />
+              <PomodoroSetup v-else-if="pomodoro.created    && !pomodoro.going && pomodoro.settingUp"
+                @exit-setup="pomodoro.exitSetup()"
+                @open-settings-tab="event => openSettingsTab = event" />
               <FinishPage    v-else-if="pomodoro.terminated && !pomodoro.going"
                 :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
                 :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)"
-                
                 />
 
               <PomodoroPip v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"

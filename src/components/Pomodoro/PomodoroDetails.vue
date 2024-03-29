@@ -131,6 +131,7 @@ async function updateTask() {
     display: grid;
     grid-template-columns: 2fr 1fr;
     grid-template-rows: auto auto;
+    width: 100%;
   }
 
   .title {
@@ -153,7 +154,6 @@ async function updateTask() {
     padding: 1rem;
     width: 100%;
     align-self: center;
-    min-width: 20rem;
 
     .input-add-task {
       min-width: 10rem;
@@ -202,7 +202,6 @@ async function updateTask() {
     flex-direction: column;
     align-items: center;
     justify-items: center;
-    margin: 1rem;
   }
 
   @media (max-width: 850px) {

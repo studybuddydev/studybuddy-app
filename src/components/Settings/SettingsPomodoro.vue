@@ -20,28 +20,8 @@
             <v-btn @click="setupNewTimer()" color="primary" variant="text" prepend-icon="mdi-plus">{{ $t('pause.timer.createNew') }}</v-btn>
           </div>
 
-          <div class="pomo-presets">
-            <div v-for="t in timerStore.timers"
-              :class="`preset-box ${(timerSelected === t.id) ? 'bg-primary' : 'bg-background'}`" v-ripple
-              @mouseleave="deleteTimer(undefined)" @click="setTimerPreset(t)">
-              <v-icon size="x-small" icon="mdi-delete" @click.stop="deleteTimer(t.id)" class="btn-delete"
-              :color="deletingTimer === t.id ? 'red' : undefined" />
-
-              <div class="timer-card front">
-                <p class="timer-title">{{ t.title }}</p>
-              </div>
-              <div class="timer-card back" v-if="!t.freeMode">
-                <p class="timer-info">{{ t.studyLength }} {{ $t('pause.timer.studyMinShort') }}</p>
-                <p class="timer-info">{{ t.breakLength }} {{ $t('pause.timer.breakMinShort') }}</p>
-                <p class="timer-info">{{ t.repetitions }} {{ $t('pause.timer.repetitions') }}</p>
-              </div>
-              <div class="timer-card back" v-else>
-                <p class="timer-info">{{ $t('pause.timer.freeMode') }}</p>
-              </div>
-
-            </div>
-          </div>
-
+          <PomodoroPresets :deletable="true" />
+          
           <v-expansion-panels>
             <v-expansion-panel :title="$t('advanced')">
               <v-expansion-panel-text>
@@ -140,6 +120,8 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
 import { useTimerStore } from "@/stores/settings/timer";
 import type { Timer } from '@/types';
+import PomodoroPresets from '@/components/Pomodoro/PomodoroPresets.vue';
+
 const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
 const timerStore = useTimerStore();
@@ -179,22 +161,6 @@ const newTimerTitle = computed(() =>
   newTimer.value?.title ? 'Title' : `${newTimer.value?.studyLength}/${newTimer.value?.breakLength}`
 );
 
-
-
-const timerSelected = computed(() => selectedTimerId.value ??
-  timerStore.timers.find(timer => {
-    const numberOfBreak = timer.repetitions - 1;
-    const breaksLength = timer.breakLength * numberOfBreak;
-    const totalLength = (timer.studyLength * timer.repetitions) + breaksLength;
-
-    return (
-      settingsStore.settings!.pomodoro!.totalLength === totalLength
-      && settingsStore.settings!.pomodoro!.breaksLength === breaksLength
-      && settingsStore.settings!.pomodoro!.numberOfBreak === numberOfBreak
-    );
-  })?.id
-);
-
 // ----- ENDS AT
 const time = ref(new Date().getTime());
 setInterval(() => time.value = new Date().getTime(), 1000 * 60);
@@ -215,57 +181,12 @@ const endsAt = computed({
 });
 
 
-// selection
-const selectedTimerId = ref<number | null>(null);
-const selectedTimer = ref<Timer>({
-  title: '',
-  studyLength: settingsStore.settings!.pomodoro!.totalLength - settingsStore.settings!.pomodoro!.breaksLength,
-  breakLength: settingsStore.settings!.pomodoro!.breaksLength / settingsStore.settings!.pomodoro!.numberOfBreak,
-  repetitions: settingsStore.settings!.pomodoro!.numberOfBreak + 1,
-  freeMode: settingsStore.settings!.pomodoro!.freeMode
-});
-function setTimerPreset(timer: Timer) {
-  selectedTimer.value.breakLength = timer.breakLength;
-  selectedTimer.value.studyLength = timer.studyLength;
-  selectedTimer.value.repetitions = timer.repetitions;
-  selectedTimer.value.freeMode = timer.freeMode;
-  selectedTimerId.value = timer.id ?? null;
-  setTimer();
-}
-// watch(selectedTimer, () => {
-//   setTimer();
-// }, { deep: true });
 
-function setTimer() {
-  const numberOfBreak = selectedTimer.value.repetitions - 1;
-  const breaksLength = selectedTimer.value.breakLength * numberOfBreak;
-  const totalLength = (selectedTimer.value.studyLength * selectedTimer.value.repetitions) + breaksLength;
-
-  settingsStore.settings!.pomodoro!.totalLength = totalLength;
-  settingsStore.settings!.pomodoro!.breaksLength = breaksLength;
-  settingsStore.settings!.pomodoro!.numberOfBreak = numberOfBreak;
-  settingsStore.settings!.pomodoro!.freeMode = selectedTimer.value.freeMode;
-}
 const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
 
-const deletingTimer = ref<number | null>(null);
-function deleteTimer(id: number | undefined) {
-  if (id === undefined) {
-    deletingTimer.value = null;
-    return;
-  }
-
-  if (deletingTimer.value === id) {
-    deletingTimer.value = null;
-    timerStore.deleteTimer(id);
-  } else {
-    deletingTimer.value = id;
-  }
-}
 </script>
 <style lang="scss" scoped>
 .timer-settings {
-
   .header {
     display: flex;
     justify-content: space-between;
@@ -274,97 +195,6 @@ function deleteTimer(id: number | undefined) {
       display: flex;
       align-items: center;
       gap: 0.4em
-    }
-  }
-}
-
-.pomo-presets {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  place-items: center;
-  margin: 1.5rem 0;
-  cursor: pointer;
-
-  .preset-box {
-    border-radius: 1rem;
-    width: 100%;
-    height: 5rem;
-    position: relative !important;
-
-    .btn-delete {
-      display: none;
-      position: absolute;
-      bottom: 5px;
-      right: 5px;
-      opacity: 0.7;
-    }
-
-    .timer-card {
-      display: flex;
-      flex-direction: column;
-      padding: 1rem;
-      width: 100%;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-    }
-
-    .front {
-      display: flex;
-    }
-
-    .back {
-      display: none;
-    }
-
-    @media (hover: hover) {
-      &:hover {
-        border: 2px solid rgb(var(--v-theme-primary));
-
-        .front {
-          display: none;
-        }
-
-        .back {
-          display: flex;
-        }
-
-        .btn-delete {
-          display: block;
-
-          &:hover {
-            opacity: 1;
-          }
-        }
-      }
-    }
-
-    p {
-      text-align: center;
-      width: 100%;
-
-      &.timer-title {
-        font-size: 1.1rem;
-        line-height: 1.1rem;
-        font-weight: 500;
-      }
-
-      &.timer-info {
-        font-size: 0.8rem;
-      }
-    }
-  }
-
-  .add-box {
-    grid-column-start: 1;
-    grid-column-end: 4;
-    padding: 0;
-
-    .add-btn {
-      width: 100%;
-      height: 3rem;
-      border-radius: 1rem;
     }
   }
 }

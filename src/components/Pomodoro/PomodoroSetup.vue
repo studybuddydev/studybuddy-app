@@ -5,7 +5,10 @@
 
     <!-- <v-icon class="top-icon info" icon="mdi-arrow-left" @click="emits('exit-setup')" /> -->
     <h3 class="title text-primary">Setup Pomodoro</h3>
-    <PomodoroDetails v-if="timerStatus.pomodoroStatus" :pomo="timerStatus.pomodoroStatus" />
+    <PomodoroPresets :top3="true" class="presets"
+     @open-settings-tab="emits('open-settings-tab', $event)"
+    />
+    <PomodoroDetails class="details" v-if="timerStatus.pomodoroStatus" :pomo="timerStatus.pomodoroStatus" />
   </div>
 </template>
 
@@ -13,9 +16,13 @@
 import PomodoroDetails from '../Pomodoro/PomodoroDetails.vue';
 import { useTimerStatusStore } from "@/stores/api/timerStatus";
 import Info from '@/components/common/Info.vue';
+import PomodoroPresets from '@/components/Pomodoro/PomodoroPresets.vue';
 
 const timerStatus = useTimerStatusStore();
-const emits = defineEmits<{ (e: 'exit-setup'): void }>();
+const emits = defineEmits<{
+  (e: 'exit-setup'): void,
+  (e: 'open-settings-tab', value: string): void
+}>();
 </script>
 
 <style scoped lang="scss">
@@ -23,6 +30,18 @@ const emits = defineEmits<{ (e: 'exit-setup'): void }>();
   border-radius: 1rem;
   padding: 1rem;
   position: relative;
+  width: 500px;
+
+  @media (max-width: 850px) {
+    width: 100%;
+  }
+
+  .details {
+    width: 100%;
+  }
+  .presets {
+    margin: 2rem 1rem 1rem;
+  }
 
   .top-icon {
     position: absolute;
