@@ -10,7 +10,6 @@ const props = defineProps<{
 }>()
 const open = ref(false);
 function openClick() {
-  console.log('ciao')
   open.value = true;
   setTimeout(() => open.value = false, 15000);
 }

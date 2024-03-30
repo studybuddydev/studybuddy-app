@@ -22,7 +22,7 @@
       </p>
     </div>
     <div v-if="openDetails">
-      <PomodoroDetails :pomo="pomo" />
+      <PomodoroDone :pomo="pomo" :hide-sink="true" />
       <div class="pomo-actions">
         <div class="pomo-edit-inputs" v-if="editingStartEnd">
           <v-text-field label="Start Time" v-model="startTimeForEdit" type="time" class="pa-0" variant="underlined"
@@ -56,7 +56,7 @@ import type { PomodoroRecord } from '@/types';
 import { ref, computed } from 'vue';
 import * as reportUtils from '@/utils/report';
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
-import PomodoroDetails from '@/components/Pomodoro/PomodoroDetails.vue';
+import PomodoroDone from '@/components/Pomodoro/PomodoroDone/PomodoroDone.vue';
 
 
 const model = defineModel<number>()

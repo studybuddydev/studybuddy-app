@@ -1,6 +1,6 @@
 <template>
-  <div class="pomo-details-end blur blur-strong">
-    <PomodoroDetails :pomo="pomo" />
+  <v-card class="pomo-details-end blur blur-strong">
+    <PomodoroDone :pomo="pomo" />
     <div class="pomo-details-actions">
       <v-btn
         color="primary"
@@ -8,11 +8,11 @@
         variant="outlined"
         @click="emits('done')">Done</v-btn>
     </div>
-  </div>
+  </v-card>
 </template>
 <script lang="ts" setup>
 import { type PomodoroRecord } from '@/types';
-import PomodoroDetails from '../Pomodoro/PomodoroDetails.vue';
+import PomodoroDone from '../Pomodoro/PomodoroDone/PomodoroDone.vue';
 const props = defineProps<{ pomo: PomodoroRecord }>();
 const emits = defineEmits<
   (e: 'done') => void
@@ -28,7 +28,7 @@ const emits = defineEmits<
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  margin: 1rem 1rem 0 0;
+  margin: 0.5rem 1rem;
 }
 </style>
 

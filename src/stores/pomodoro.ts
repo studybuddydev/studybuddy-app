@@ -6,7 +6,6 @@ import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
 import { useTimerStatusStore } from "@/stores/api/timerStatus";
 import * as timeUtils from '@/utils/time';
 import config from '@/config/config';
-console.log(config);
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;

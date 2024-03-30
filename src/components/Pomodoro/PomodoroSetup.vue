@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import PomodoroDetails from '../Pomodoro/PomodoroDetails.vue';
+import PomodoroDetails from '../Pomodoro/PomodoroDone/PomodoroDetails.vue';
 import { useTimerStatusStore } from "@/stores/api/timerStatus";
 import Info from '@/components/common/Info.vue';
 import PomodoroPresets from '@/components/Pomodoro/PomodoroPresets.vue';
@@ -42,6 +42,7 @@ const emits = defineEmits<{
 
   .details {
     width: 100%;
+    margin: 1.5rem 0;
   }
 
   .presets {

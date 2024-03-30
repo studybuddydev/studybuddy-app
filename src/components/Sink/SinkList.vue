@@ -1,11 +1,9 @@
 <template>
-  <div v-if="sink.showSink" class="blur sink-list">
-    <div>
-      <p v-for="s in sink.items" :key="s">
-        <v-icon icon="mdi-delete" @click="sink.remove(s)" />
-        {{ s }}
-      </p>
-    </div>
+  <div>
+    <p v-for="s in sink.items" :key="s">
+      <v-icon icon="mdi-delete" @click="sink.remove(s)" />
+      {{ s }}
+    </p>
   </div>
 
 </template>

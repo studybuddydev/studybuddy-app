@@ -14,7 +14,6 @@ import ZenActions from '@/components/Zen/ZenActions.vue'
 import PomodoroDetailsEnd from '@/components/Zen/PomodoroDetailsEnd.vue';
 import PomodoroSetup from '@/components/Pomodoro/PomodoroSetup.vue';
 import Sink from '@/components/Sink/Sink.vue';
-import SinkList from '@/components/Sink/SinkList.vue';
 
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
@@ -82,9 +81,7 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
               <PomodoroDetailsEnd class="pomo-details" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo"
                 @done="pomodoro.createPomodoro()" />
 
-              <SinkList class="sink-list" />
-
-              <Sink class="sink" />
+                <Sink class="sink" />
             </div>
           </div>
         </div>
@@ -155,9 +152,6 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
     justify-content: center;
     margin-bottom: 15vh;
 
-    .pomo-details {
-      padding: 1rem;
-    }
   }
 }
 </style>
