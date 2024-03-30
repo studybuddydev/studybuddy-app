@@ -3,7 +3,7 @@
     <div class="title">
       <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="deleteTag()"
         :color="pomo.tag ? pomoDB.tagColors[pomo.tag] : undefined">{{ pomo.tag }}</v-chip>
-      <v-combobox v-else class="text-box text-boxt-tag" label="Tag" hide-details :items="pomoDB.tags" v-model="pomo.tag"
+      <v-combobox v-else class="text-box text-boxt-tag" label="Esame" hide-details :items="pomoDB.tags" v-model="pomo.tag"
         @update:modelValue="(newTag: any) => { newTag && addTag(newTag) }">
         <template v-slot:selection="data"><v-chip :key="data.item.title">{{ data.item.title }}</v-chip></template>
         <template #item="{ props, item }">
