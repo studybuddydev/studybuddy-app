@@ -3,17 +3,19 @@
     <v-tabs v-model="tab" align-tabs="center">
       <v-tab :value="1" v-if="pomo.report" >Report</v-tab>
       <v-tab :value="2">Details</v-tab>
-      <v-tab :value="3" v-if="showSink">Sink<v-badge :content="sink.itemsCount" inline color="secondary"/></v-tab>
+      <v-tab :value="3" v-if="showSink">Sink
+        <v-badge v-if="sink.itemsCount > 0" :content="sink.itemsCount" inline color="error"/>
+      </v-tab>
     </v-tabs>
     <v-window class="pomo-details" v-model="tab">
-      <v-window-item :value="1" v-if="pomo.report">
-        <PomodoroReport class="report" :report="pomo.report" />
+      <v-window-item :value="1" v-if="pomo.report" class="page-content report">
+        <PomodoroReport :report="pomo.report" />
       </v-window-item>
       <v-window-item :value="2">
-        <PomodoroDetails class="details" :pomo="pomo" />
+        <PomodoroDetails class="page-content details" :pomo="pomo" />
       </v-window-item>
       <v-window-item :value="3" v-if="showSink">
-        <SinkList class="sink-list" />
+        <SinkList class="page-content sink-list" />
       </v-window-item>
     </v-window>
   </div>
@@ -37,16 +39,22 @@ const showSink = computed(() => !props.hideSink && (sink.itemsCount > 0 || tab.v
 </script>
 
 <style scoped lang="scss">
+.page-content {
+  margin: auto;
+  height: 14rem;
+  display: grid;
+  align-content: center;
+}
 .report {
   max-width: 35rem;
-  margin: auto;
 }
 .details {
   max-width: 50rem;
-  margin: auto;
 }
 .sink-list {
-  max-width: 50rem;
-  margin: auto;
+  max-width: 40rem;
+  display: block;
+  align-content: unset;
+  overflow-y: auto
 }
 </style>
