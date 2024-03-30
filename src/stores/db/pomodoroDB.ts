@@ -27,7 +27,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     pomodoroRecords.value = (
       await db.pomodori.orderBy('datetime')
         .reverse()
-        .limit(20)
+        .limit(500)
         .toArray()
     ).map(p => parsePomodorDbo(p));
     updateStreak();
