@@ -5,16 +5,17 @@ import { computed, ref, watch } from 'vue';
 import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
 import { useTimerStatusStore } from "@/stores/api/timerStatus";
 import * as timeUtils from '@/utils/time';
+import config from '@/config/config';
+console.log(config);
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER * config.timer.speedMultiplier;
 const POMO_VERSION = 3;
 
-const SHORT_POMO_THRESHOLD = 0.005 * MINUTE_MULTIPLIER;
-const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
-
-const STOPPOMODORO_TIMEOUT = 60 * MINUTE_MULTIPLIER;
+const SHORT_POMO_THRESHOLD = MINUTE_MULTIPLIER * config.timer.shortPomoMinutes;
+const LONG_BREAK_THRESHOLD = MINUTE_MULTIPLIER * config.timer.longBreakMinutes;
+const STOPPOMODORO_TIMEOUT = MINUTE_MULTIPLIER * config.timer.stopPomoMinutes;
 
 enum ENotification {
   BreakStart = 'pomo.wav',
