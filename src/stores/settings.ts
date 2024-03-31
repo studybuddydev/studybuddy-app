@@ -18,6 +18,7 @@ const defaultSettings: Settings = {
     pulsingPause: true,
     showSeconds: false,
     disableCountdown: false,
+    hideSetup: false,
     dayStartEndHours: [8, 18],
   },
 

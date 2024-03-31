@@ -8,6 +8,7 @@ import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroHistoryLine from '@/components/Pomodoro/PomodoroHistoryLine.vue';
 import { useAuth0 } from "@auth0/auth0-vue";
 import * as reportUtils from '@/utils/report';
+import PomodoroStreak from '../Pomodoro/PomodoroStreak.vue'
 
 const { isAuthenticated, loginWithRedirect } = useAuth0();
 const pomodoro = usePomodoroStore();
@@ -68,7 +69,7 @@ const dailyPomodoriGroups = computed(() => {
 
   for (const key in groups) {
     const group = groups[key];
-    group.points = group.pomos.reduce((m, p) => m + (p.report?.points ?? 0), 0) / group.pomos.length;
+    group.points = group.pomos.filter(p => p.deepWork).reduce((m, p) => m + (p.report?.points ?? 0), 0) / group.pomos.length;
     group.totalTime = group.pomos.reduce((m, p) => m + (p.endedAt ?? 0), 0);
     group.maxLength = group.pomos.reduce((m, p) => Math.max(p.endedAt ?? 0, m), 0);
     group.dailySummary = group.pomos.map((p, i) => {
@@ -152,6 +153,8 @@ const hoursList = computed(() => {
 
 <template>
   <div :class="`pomo-history ${open ? '' : 'hide-pomo-history'}`">
+    <PomodoroStreak v-if="isAuthenticated" class="streak" />
+
     <div v-if="!isAuthenticated" class="no-history">
       <p class="text-center text-medium-emphasis"> {{ $t('history.loginMsg') }}</p>
       <v-btn class='btn bg-secondary pomo-btn pomo-box font-press btn-main-start' @click="loginWithRedirect()">
@@ -184,8 +187,6 @@ const hoursList = computed(() => {
         </div>
 
         <div v-for="(g, key) in m" :class="`day-info  ${openDay === key ? 'day-info-open' : ''}`">
-
-
 
           <div class="day-line day-line-pomo" @click="toggleOpenDay(key)">
             <h3 class="day">{{ g.date }}</h3>
@@ -241,7 +242,7 @@ const hoursList = computed(() => {
 
 
 .day-settings {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
@@ -300,6 +301,14 @@ const hoursList = computed(() => {
   margin: 1em;
   transition: height 0.1s ease-in-out;
   overflow-y: auto;
+  position: relative;
+
+  .streak {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1rem;
+  }
 
   .scrollable-history {
     margin-bottom: 8rem;

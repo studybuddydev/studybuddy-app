@@ -18,7 +18,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import { fa } from 'vuetify/iconsets/fa4'
-import { themes } from '@/assets/themes'
+import { themes } from '@/config/themes'
 
 import { setupCalendar } from 'v-calendar';
 
@@ -72,7 +72,8 @@ const auth0 = createAuth0({
   domain: "studybuddyit.eu.auth0.com",
   clientId: "ZyUtaogYVjzqmWoglOEV5vT7XeHRzDtz",
   authorizationParams: {
-    redirect_uri: window.location.origin
+    redirect_uri: window.location.origin,
+    audience: "https://api.studybuddy.it",
   }
 })
 

@@ -95,6 +95,9 @@ watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
     &.no-frost {
       background-color: rgb(var(--v-theme-surface));
     }
+    &.blur-strong {
+      background-color: rgba(var(--v-theme-surface), 0.95);
+    }
   }
 }
 

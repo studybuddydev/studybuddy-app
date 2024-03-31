@@ -5,16 +5,16 @@ import { computed, ref, watch } from 'vue';
 import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
 import { useTimerStatusStore } from "@/stores/api/timerStatus";
 import * as timeUtils from '@/utils/time';
+import config from '@/config/config';
 
 const TICK_TIME = 100;
 const SECONDS_MULTIPLIER = 1000;
-const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER;
+const MINUTE_MULTIPLIER = 60 * SECONDS_MULTIPLIER * config.timer.speedMultiplier;
 const POMO_VERSION = 3;
 
-const SHORT_POMO_THRESHOLD = 5 * MINUTE_MULTIPLIER;
-const LONG_BREAK_THRESHOLD = 15 * MINUTE_MULTIPLIER;
-
-const STOPPOMODORO_TIMEOUT = 60 * MINUTE_MULTIPLIER;
+const SHORT_POMO_THRESHOLD = MINUTE_MULTIPLIER * config.timer.shortPomoMinutes;
+const LONG_BREAK_THRESHOLD = MINUTE_MULTIPLIER * config.timer.longBreakMinutes;
+const STOPPOMODORO_TIMEOUT = MINUTE_MULTIPLIER * config.timer.stopPomoMinutes;
 
 enum ENotification {
   BreakStart = 'pomo.wav',
@@ -84,6 +84,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     // currentPomodoro.value = {
     const pomo: PomodotoStatus = {
+      deepWork: true,
       version: POMO_VERSION,
       end: totalLength,
       breaksDone: [],
@@ -95,17 +96,22 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     timerStatus.createStatus(pomo);
     saveStatus();
   }
-  function startPomodoro() {
+  function startPomodoro(noCountdown: boolean = false) {
     clearStuff();
+    settingUp.value = false;
     if (countdownRunning.value) {
       clearTimeout(countDownTimerout);
       countdownRunning.value = false;
       _startPomodoro()
     } else {
-      startCountdown(() => _startPomodoro());
+      if (noCountdown) {
+        _startPomodoro();
+      } else {
+        startCountdown(() => _startPomodoro());
+      }
     }
   }
-  function _startPomodoro() { 
+  function _startPomodoro() {
     let pomo = timerStatus.pomodoroStatus;
     if (!pomo || pomo.state === PomodoroState.TERMINATED) {
       createPomodoro();
@@ -115,6 +121,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     pomo!.state = PomodoroState.STUDY;
     pomo!.originalEnd = pomo!.end;
     interval = setInterval(tick, TICK_TIME);
+    settingUp.value = false;
     saveStatus();
   }
   function stopPomodoro(lastInteraction: number | undefined = undefined) {
@@ -140,7 +147,6 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       }
       pomo.state = PomodoroState.TERMINATED;
 
-      // finishedPomoRecord.value = reportUtils.getPomoReport(pomo);
       if (pomo.endedAt > SHORT_POMO_THRESHOLD) {
         finishedPomoRecord.value = { shortPomo: false };
         pomoDB.addPomodoroToRecords(pomo).then((pomo) => {
@@ -154,15 +160,14 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
       saveStatus();
     }
   }
-  function togglePauseStudy() {
+  function togglePauseStudy(noCountdown: boolean = false) {
     const pomo = timerStatus.pomodoroStatus;
     if (!pomo) return;
     if (pomo.state === PomodoroState.STUDY) {
       pause();
     } else if (pomo.state === PomodoroState.BREAK) {
-      study();
+      study(noCountdown);
     }
-    saveStatus();
   }
   function pause() {
     const pomo = timerStatus.pomodoroStatus;
@@ -185,7 +190,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     }
     saveStatus();
   }
-  function study() {
+  function study(noCountdown: boolean = false) {
     const pomo = timerStatus.pomodoroStatus;
     if (!pomo) {
       stopPomodoro();
@@ -193,7 +198,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     }
     if (pomo.onLongBreak) {
       stopPomodoro();
-      startPomodoro();
+      startPomodoro(noCountdown);
       return;
     }
     adjustPomo();
@@ -472,6 +477,16 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     localStorage.setItem('lastInteraction', lastInteraction.value.toString());
   }
 
+  // ---------- SETUP ----------
+  const settingUp = ref(false);
+  function setup() {
+    settingUp.value = true;
+  }
+  function exitSetup() {
+    settingUp.value = false;
+  }
+
+
   // ---------- COMPUTED ----------
   const created = computed(() => timerStatus.pomodoroStatus?.state === PomodoroState.CREATED);
   const studing = computed(() => timerStatus.pomodoroStatus?.state === PomodoroState.STUDY);
@@ -520,7 +535,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     timeSinceStart, timeInCurrentBreak, timeInCurrentStudy, percInCurrentState,
     timeFormatted, timeInTitle,
     startCountdown, countdownRunning, longAwaitPopup,
-    parseTime
+    parseTime,
+    setup, settingUp, exitSetup
   }
 
 })

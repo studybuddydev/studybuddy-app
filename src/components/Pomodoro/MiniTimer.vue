@@ -1,5 +1,5 @@
 <template>
-  <div class="blur mini">
+  <div :class="`blur mini ${pomodoro.onLongPause ? 'long-pause' : ''}`">
     <div class="clock">
       <div class="progress-bar" v-if="!pomodoro.countdownRunning" :style="{
         background: `conic-gradient(
@@ -8,7 +8,7 @@
               transparent ${(pomodoro.percInCurrentState * 360) + 0.2}deg,
         transparent 360deg)`
       }">
-        <v-btn icon="mdi-noicon" class="btn-toggle" @click="pomodoro.togglePauseStudy()">
+        <v-btn icon="mdi-noicon" class="btn-toggle" @click="togglePomodoro()">
           <svg-icon type="mdi" class="btn-icon" :path="pomodoro.studing ? mdiPause : mdiPlay"></svg-icon>
         </v-btn>
       </div>
@@ -18,7 +18,7 @@
     </div>
     <div class="info info-pause" v-else-if="pomodoro.pauseing">
       <p class="font-press text-primary">{{ $t("pause.break") }}</p>
-      <p class="font-casio"> <span v-html="pomodoro.timeInCurrentBreak"></span></p>
+      <p class="font-casio pause-p"> <span v-html="pomodoro.timeInCurrentBreak"></span></p>
     </div>
     <div class="pomodoro-bar">
       <PomodoroFlex class="pomo-flex" :percentage="pomodoro.created ? 100 : pomodoro.percentage"
@@ -31,11 +31,16 @@
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useTheme } from 'vuetify'
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
+// @ts-ignore
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiPause, mdiPlay } from '@mdi/js'
 
 const pomodoro = usePomodoroStore();
 const theme = useTheme();
+
+function togglePomodoro() {
+  pomodoro.togglePauseStudy(true);
+}
 
 function getCircleColor() {
   if (pomodoro.studing) {
@@ -63,6 +68,13 @@ function getCircleColor() {
   grid-column-start: 1;
   grid-column-end: span 2;
   margin: 1rem;
+}
+
+.long-pause {
+  background-color: #000000B0 !important;
+  .pause-p {
+    color: #ffffff !important;
+  }
 }
 
 .clock {

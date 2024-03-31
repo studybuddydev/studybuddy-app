@@ -21,14 +21,14 @@ export default {
   display_override: ["window-controls-overlay", "fullscreen", "minimal-ui"],
   screenshots:  [
     {
-      src: "/images/screenshots/screen01.png",
+      src: "/images/screenshots/screen01.webp",
       sizes: "2400x1080",
       type: "image/png",
       form_factor: "narrow",
       label: "Timer pomodoro"
     },
     {
-      src: "/images/screenshots/screen02.png",
+      src: "/images/screenshots/screen02.webp",
       sizes: "2400x1080",
       type: "image/png",
       form_factor: "narrow",

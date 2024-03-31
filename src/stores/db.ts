@@ -91,7 +91,7 @@ export class StudyBuddyDB extends Dexie {
 //           datetime: new Date(2023, m, d, getRandom(24), getRandom(60), getRandom(60), 0) })
 //       }
 //     }
-//   console.log(`Added pomodoro ${m}`)
+//     console.log('Month', m);
 //   }
 // }
 

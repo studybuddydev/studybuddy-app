@@ -21,16 +21,27 @@
   }}%
       </p>
     </div>
-    <div v-if="openDetails" >
-      <PomodoroDetails :pomo="pomo" />
-      <v-btn color="error" class="pomo-delete-btn"
-        @click="deletingPomoId = pomo.id ?? -1; deletePomoDialog = true;"><v-icon icon="mdi-delete" /></v-btn>
+    <div v-if="openDetails">
+      <PomodoroDone :pomo="pomo" :hide-sink="true" />
+      <div class="pomo-actions">
+        <div class="pomo-edit-inputs" v-if="editingStartEnd">
+          <v-text-field label="Start Time" v-model="startTimeForEdit" type="time" class="pa-0" variant="underlined"
+            dense v-on:click.stop hide-details />
+          <v-text-field label="End Time" v-model="endTimeForEdit" type="time" class="pa-0" variant="underlined" dense
+            v-on:click.stop hide-details />
+        </div>
+        <v-btn color="primary" class="pomo-edit-btn" @click="updateTime()"><v-icon
+            :icon="editingStartEnd ? 'mdi-floppy' : 'mdi-pencil'" /></v-btn>
+        <v-btn color="error" class="pomo-delete-btn"
+          @click="deletingPomoId = pomo.id ?? -1; deletePomoDialog = true;"><v-icon icon="mdi-delete" /></v-btn>
+      </div>
       <v-dialog v-model="deletePomoDialog" width="auto">
         <v-card :text="$t('zen.confirm')">
           <v-card-actions>
             <v-spacer />
             <v-btn @click="deletePomoDialog = false; deletingPomoId = -1">{{ $t("no") }}</v-btn>
-            <v-btn color="primary" @click="pomoDB.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{ $t("yes") }}</v-btn>
+            <v-btn color="primary" @click="pomoDB.deletePomodoroRecord(deletingPomoId); deletePomoDialog = false">{{
+    $t("yes") }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -45,7 +56,8 @@ import type { PomodoroRecord } from '@/types';
 import { ref, computed } from 'vue';
 import * as reportUtils from '@/utils/report';
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
-import PomodoroDetails from '@/components/Pomodoro/PomodoroDetails.vue';
+import PomodoroDone from '@/components/Pomodoro/PomodoroDone/PomodoroDone.vue';
+
 
 const model = defineModel<number>()
 const openDetails = computed(() => model.value === props.pomo.id)
@@ -60,11 +72,25 @@ const props = defineProps<{
   pomo: PomodoroRecord,
   maxLength: number
 }>();
+const emits = defineEmits<{
+  (e: 'pomoLenghUpdated'): void
+}>();
+
+const editingStartEnd = ref(false);
+
+const endTimeForEdit = ref(
+  new Date(props.pomo.datetime.getTime() + (props.pomo.endedAt ?? 0))
+    .toLocaleTimeString('en-gb', { hour: '2-digit', minute: '2-digit', hour12: false, hourCycle: "h23" })
+);
+const startTimeForEdit = ref(
+  props.pomo.datetime.toLocaleTimeString('en-gb', { hour: '2-digit', minute: '2-digit', hour12: false, hourCycle: "h23" })
+);
+let originalEndTime = endTimeForEdit.value;
+let originalStartTime = startTimeForEdit.value;
 
 const timeFormat = { html: false, showSeconds: false, format: 'hms' as 'hms' }
-
 function getTime(d: Date) {
-  return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: false })
+  return d.toLocaleTimeString('en-gb', { hour: 'numeric', minute: '2-digit', hour12: false, hourCycle: "h23" })
 }
 function getStartTime(p: PomodoroRecord) {
   return getTime(p.datetime);
@@ -73,6 +99,53 @@ function getEndTime(p: PomodoroRecord) {
   if (!p.endedAt) return '';
   return getTime(new Date(p.datetime.getTime() + p.endedAt));
 }
+
+async function updateTime() {
+  if (!editingStartEnd.value) {
+    editingStartEnd.value = true;
+    return;
+  }
+  editingStartEnd.value = false;
+  if (!props.pomo.id) return;
+
+  if (endTimeForEdit.value === originalEndTime && startTimeForEdit.value === originalStartTime) return;
+
+  if (startTimeForEdit.value !== originalStartTime) {
+    const orStart = props.pomo.datetime.getTime();
+    const [hStart, mStart] = startTimeForEdit.value.split(':').map(x => +x);
+    props.pomo.datetime.setHours(+hStart);
+    props.pomo.datetime.setMinutes(+mStart);
+    const startDiff = orStart - props.pomo.datetime.getTime();
+
+    if (props.pomo.endedAt) props.pomo.endedAt += startDiff;
+    props.pomo.end += startDiff;
+    props.pomo.breaksDone.forEach(b => {
+      b.start += startDiff;
+      if (b.end) b.end += startDiff;
+    });
+  }
+
+  if (endTimeForEdit.value !== originalEndTime) {
+    const [hEnd, mEnd] = endTimeForEdit.value.split(':').map(x => +x);
+    const end = (hEnd * 60) + mEnd;
+    const start = props.pomo.datetime.getMinutes() + props.pomo.datetime.getHours() * 60;
+    const diff = end < start ? end + (24 * 60) - start : end - start;
+    props.pomo.endedAt = diff * 60 * 1000;
+  }
+
+  originalStartTime = startTimeForEdit.value;
+  originalEndTime = endTimeForEdit.value;
+  await pomoDB.updatePomodoro(props.pomo.id, (p) => {
+    p.endedAt = props.pomo.endedAt;
+    p.end = props.pomo.end;
+    p.datetime = props.pomo.datetime;
+    p.breaksDone = [ ...props.pomo.breaksDone.map(b => ({ ...b })) ];
+    const newPomo = pomoDB.parsePomodorDbo(p);
+    Object.assign(props.pomo, newPomo);
+    return p;
+  });
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -84,6 +157,30 @@ function getEndTime(p: PomodoroRecord) {
 
 .pomo-wrapper {
   width: 100%;
+  position: relative;
+
+  .pomo-cutter {
+    .pomo-cut-handle {
+      background-color: #F00;
+      border-radius: 0.15rem;
+      position: absolute;
+      top: 0.5rem;
+      bottom: 0.5rem;
+      left: 50%;
+      width: 3rem;
+      translate: -50%;
+    }
+
+    .pomo-cut {
+      position: absolute;
+      left: 50%;
+      top: 0.5rem;
+      right: 0.5rem;
+      bottom: 0.5rem;
+      border-radius: 0 1em 1em 0;
+      background-color: #000C;
+    }
+  }
 
   .pomo-width {
     display: flex;
@@ -150,9 +247,20 @@ function getEndTime(p: PomodoroRecord) {
   }
 }
 
-.pomo-delete-btn {
-  position: absolute;
-  bottom: 1em;
-  right: 1em;
+.pomo-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  align-items: center;
+  padding: 0 1.5rem 0.5rem 1.5rem;
+  gap: 1rem;
+  height: 4rem;
+
+  .pomo-edit-inputs {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
 }
 </style>

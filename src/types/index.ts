@@ -106,6 +106,13 @@ export type PomodoroBase = {
   endedAt?: number;
   breaksDone: Break[];
   freeMode: boolean;
+  tasks?: PomodoroTask[];
+  deepWork: boolean;
+  tag?: string;
+  rating?: number;
+  report?: PomoReport;
+  id?: number;
+  name?: string;
 }
 
 export interface PomodotoStatus extends PomodoroBase {
@@ -120,22 +127,17 @@ export interface PomodotoStatus extends PomodoroBase {
   timestamp?: number;
 }
 
-export interface PomodoroTask {
-  task: string;
-  done?: boolean;
-}
-
 export interface PomodoroRecord extends PomodoroBase {
-  id?: number;
   datetime: Date;
   displayBreaks?: DisplaySession[];
   displayStudy?: DisplaySession[];
   // percentage?: number;
-  report?: PomoReport;
-  tag?: string;
-  rating?: number;
-  deepWork: boolean;
-  tasks?: PomodoroTask[];
+}
+
+
+export interface PomodoroTask {
+  task: string;
+  done?: boolean;
 }
 
 // ---------- SETTINGS ----------
@@ -149,6 +151,7 @@ export type GeneralSettings = {
   lang: string;
   hideTime: boolean;
   disableCountdown: boolean;
+  hideSetup: boolean;
   soundVolume: number;
   pulsingPause: boolean;
   showSeconds: boolean;

@@ -59,13 +59,12 @@
   </v-window>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useThemeStore } from "@/stores/settings/theme";
 import { useSettingsStore } from "@/stores/settings";
-import { paletteList } from '@/assets/themes'
+import { paletteList } from '@/config/themes'
 import type { Theme } from '@/types';
 import { useI18n } from 'vue-i18n';
-import { watch } from 'vue';
 
 const { t } = useI18n();
 const themeStore = useThemeStore();

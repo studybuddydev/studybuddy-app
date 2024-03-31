@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Info :text="$t('info.timer')" class="info-settings" />
     <div v-if="pomodoro.going">
       <v-alert variant="tonal" class="mb-5" type="warning">
         <div class="pomo-running-alert">
@@ -14,43 +13,27 @@
       <v-window v-model="step">
         <v-window-item :value="1" class="timer-settings">
           <div class="header">
-            <div class="text-h6">{{ $t('pause.timer.chooseTimer') }}</div>
+            <div class="header-title">
+              <p class="text-h6">{{ $t('pause.timer.chooseTimer') }}</p>
+              <Info :text="$t('info.timer')" class="info-settings" />
+            </div>
             <v-btn @click="setupNewTimer()" color="primary" variant="text" prepend-icon="mdi-plus">{{ $t('pause.timer.createNew') }}</v-btn>
           </div>
 
-          <div class="pomo-presets">
-            <div v-for="t in timerStore.timers"
-              :class="`preset-box ${(timerSelected === t.id) ? 'bg-primary' : 'bg-background'}`" v-ripple
-              @mouseleave="deleteTimer(undefined)" @click="setTimerPreset(t)">
-              <v-icon size="x-small" icon="mdi-delete" @click.stop="deleteTimer(t.id)" class="btn-delete"
-              :color="deletingTimer === t.id ? 'red' : undefined" />
-
-              <div class="timer-card front">
-                <p class="timer-title">{{ t.title }}</p>
-              </div>
-              <div class="timer-card back" v-if="!t.freeMode">
-                <p class="timer-info">{{ t.studyLength }} {{ $t('pause.timer.studyMinShort') }}</p>
-                <p class="timer-info">{{ t.breakLength }} {{ $t('pause.timer.breakMinShort') }}</p>
-                <p class="timer-info">{{ t.repetitions }} {{ $t('pause.timer.repetitions') }}</p>
-              </div>
-              <div class="timer-card back" v-else>
-                <p class="timer-info">{{ $t('pause.timer.freeMode') }}</p>
-              </div>
-
-            </div>
-          </div>
-
+          <PomodoroPresets :deletable="true" />
+          
           <v-expansion-panels>
-            <v-expansion-panel :title="$t('advanced')">
+            <v-expansion-panel>
+              <v-expansion-panel-title class="bg-background advance-panel-closed">{{ $t('advanced') }}</v-expansion-panel-title>
               <v-expansion-panel-text>
                 <v-row>
                   <v-col cols="9">
-                    <div class="text-h6 text-bottom">
+                    <p class="advance-settings-label">
                       {{ $t("pause.timer.sessionOf") }}
                       {{ Math.floor(settingsStore.settings!.pomodoro!.totalLength / 60) }} {{ $t("pause.timer.hours") }}
                       {{
                         settingsStore.settings!.pomodoro!.totalLength % 60 }} {{ $t("pause.timer.minutes") }}
-                    </div>
+                    </p>
                   </v-col>
                   <v-col cols="3">
                     <v-text-field v-model="endsAt" type="time" variant="underlined" dense
@@ -66,15 +49,15 @@
                   </template>
                 </v-slider>
 
-                <div class="text-h6">{{ settingsStore.settings!.pomodoro!.breaksLength }} {{
+                <p class="advance-settings-label">{{ settingsStore.settings!.pomodoro!.breaksLength }} {{
                   $t("pause.timer.breaksLength")
                 }}
-                </div>
+                </p>
                 <v-slider v-model="settingsStore.settings!.pomodoro!.breaksLength" :min="1" :max="60" :step="1"
                   thumb-label :disabled="freeMode" class="pr-4 primary-thumb" prepend-icon="mdi-coffee" color="primary"  />
 
-                <div class="text-h6">{{ settingsStore.settings!.pomodoro!.numberOfBreak }}
-                  {{ $t("pause.timer.breaksNumber") }}</div>
+                <p class="advance-settings-label">{{ settingsStore.settings!.pomodoro!.numberOfBreak }}
+                  {{ $t("pause.timer.breaksNumber") }}</p>
                 <v-slider v-model="settingsStore.settings!.pomodoro!.numberOfBreak" :min="0" :max="10" :step="1"
                   thumb-label :disabled="freeMode" show-ticks="always" class="pr-4 primary-thumb" prepend-icon="mdi-tally-mark-5" color="primary" /> 
               </v-expansion-panel-text>
@@ -138,6 +121,8 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
 import { useTimerStore } from "@/stores/settings/timer";
 import type { Timer } from '@/types';
+import PomodoroPresets from '@/components/Pomodoro/PomodoroPresets.vue';
+
 const settingsStore = useSettingsStore();
 const pomodoro = usePomodoroStore();
 const timerStore = useTimerStore();
@@ -177,22 +162,6 @@ const newTimerTitle = computed(() =>
   newTimer.value?.title ? 'Title' : `${newTimer.value?.studyLength}/${newTimer.value?.breakLength}`
 );
 
-
-
-const timerSelected = computed(() => selectedTimerId.value ??
-  timerStore.timers.find(timer => {
-    const numberOfBreak = timer.repetitions - 1;
-    const breaksLength = timer.breakLength * numberOfBreak;
-    const totalLength = (timer.studyLength * timer.repetitions) + breaksLength;
-
-    return (
-      settingsStore.settings!.pomodoro!.totalLength === totalLength
-      && settingsStore.settings!.pomodoro!.breaksLength === breaksLength
-      && settingsStore.settings!.pomodoro!.numberOfBreak === numberOfBreak
-    );
-  })?.id
-);
-
 // ----- ENDS AT
 const time = ref(new Date().getTime());
 setInterval(() => time.value = new Date().getTime(), 1000 * 60);
@@ -213,166 +182,37 @@ const endsAt = computed({
 });
 
 
-// selection
-const selectedTimerId = ref<number | null>(null);
-const selectedTimer = ref<Timer>({
-  title: '',
-  studyLength: settingsStore.settings!.pomodoro!.totalLength - settingsStore.settings!.pomodoro!.breaksLength,
-  breakLength: settingsStore.settings!.pomodoro!.breaksLength / settingsStore.settings!.pomodoro!.numberOfBreak,
-  repetitions: settingsStore.settings!.pomodoro!.numberOfBreak + 1,
-  freeMode: settingsStore.settings!.pomodoro!.freeMode
-});
-function setTimerPreset(timer: Timer) {
-  selectedTimer.value.breakLength = timer.breakLength;
-  selectedTimer.value.studyLength = timer.studyLength;
-  selectedTimer.value.repetitions = timer.repetitions;
-  selectedTimer.value.freeMode = timer.freeMode;
-  selectedTimerId.value = timer.id ?? null;
-  setTimer();
-}
-// watch(selectedTimer, () => {
-//   setTimer();
-// }, { deep: true });
 
-function setTimer() {
-  const numberOfBreak = selectedTimer.value.repetitions - 1;
-  const breaksLength = selectedTimer.value.breakLength * numberOfBreak;
-  const totalLength = (selectedTimer.value.studyLength * selectedTimer.value.repetitions) + breaksLength;
-
-  settingsStore.settings!.pomodoro!.totalLength = totalLength;
-  settingsStore.settings!.pomodoro!.breaksLength = breaksLength;
-  settingsStore.settings!.pomodoro!.numberOfBreak = numberOfBreak;
-  settingsStore.settings!.pomodoro!.freeMode = selectedTimer.value.freeMode;
-}
 const freeMode = computed(() => settingsStore.settings!.pomodoro!.freeMode);
 
-const deletingTimer = ref<number | null>(null);
-function deleteTimer(id: number | undefined) {
-  if (id === undefined) {
-    deletingTimer.value = null;
-    return;
-  }
-
-  if (deletingTimer.value === id) {
-    deletingTimer.value = null;
-    timerStore.deleteTimer(id);
-  } else {
-    deletingTimer.value = id;
-  }
-}
 </script>
 <style lang="scss" scoped>
 .timer-settings {
-
   .header {
     display: flex;
     justify-content: space-between;
     width: 100%;
-  }
-}
-
-.pomo-presets {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  place-items: center;
-  margin: 1.5rem 0;
-  cursor: pointer;
-
-  .preset-box {
-    border-radius: 1rem;
-    width: 100%;
-    height: 5rem;
-    position: relative !important;
-
-    .btn-delete {
-      display: none;
-      position: absolute;
-      bottom: 5px;
-      right: 5px;
-      opacity: 0.7;
-    }
-
-    .timer-card {
+    .header-title {
       display: flex;
-      flex-direction: column;
-      padding: 1rem;
-      width: 100%;
-      justify-content: center;
       align-items: center;
-      height: 100%;
-    }
-
-    .front {
-      display: flex;
-    }
-
-    .back {
-      display: none;
-    }
-
-    @media (hover: hover) {
-      &:hover {
-        border: 2px solid rgb(var(--v-theme-primary));
-
-        .front {
-          display: none;
-        }
-
-        .back {
-          display: flex;
-        }
-
-        .btn-delete {
-          display: block;
-
-          &:hover {
-            opacity: 1;
-          }
-        }
-      }
-    }
-
-    p {
-      text-align: center;
-      width: 100%;
-
-      &.timer-title {
-        font-size: 1.1rem;
-        line-height: 1.1rem;
-        font-weight: 500;
-      }
-
-      &.timer-info {
-        font-size: 0.8rem;
-      }
-    }
-  }
-
-  .add-box {
-    grid-column-start: 1;
-    grid-column-end: 4;
-    padding: 0;
-
-    .add-btn {
-      width: 100%;
-      height: 3rem;
-      border-radius: 1rem;
+      gap: 0.4em
     }
   }
 }
 
-.info-settings {
-  top: 64px;
-  right: 0;
-  margin: 1rem;
-  position: fixed !important;
+.advance-panel-closed {
+  border-bottom: 1px solid rgba(var(--v-theme-primary), 0.6);
 }
 
-.text-bottom {
-  display: flex;
-  align-items: center;
-  height: 100%;
+.advance-settings-label {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0.5rem 0;
+  line-height: 2rem;
+  @media (max-width: 600px) {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
 }
 
 .pomo-running-alert {

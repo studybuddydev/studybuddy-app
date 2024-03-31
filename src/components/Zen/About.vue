@@ -29,7 +29,7 @@
                 <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
             </div>
             <div class="btn-wrapper">
-              <v-btn href="https://arc.net/e/83A3630F-344E-4F17-ADDF-66E2C9DB20AF" target="_blank" color="primary"
+              <v-btn href="https://arc.net/e/85301D4F-EA45-42A6-B192-F0D123D0E712" target="_blank" color="primary"
                 variant="outlined" class="btn">What's New <v-icon class="btn-icon" icon="mdi-arrow-top-right" /></v-btn>
             </div>
             <div class="btn-wrapper">
@@ -57,7 +57,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <div class="btn-install blur" v-ripple @click="installApp()" v-if="!runningAsPWA">
+    <div class="btn-install blur" v-ripple @click="installApp()" v-if="showInstallButton && !runningAsPWA">
       <v-icon icon="mdi-cloud-arrow-down-outline" />
     </div>
   </div>
@@ -66,7 +66,6 @@
 <script lang="ts" setup>
 import axios from 'axios'
 import { ref } from 'vue';
-
 const aboutOpen = ref(false);
 const appVersion = APP_VERSION;
 const env = import.meta.env.VITE_ENV
@@ -78,15 +77,27 @@ defineProps<{
 
 const runningAsPWA = window.matchMedia('(display-mode: standalone)').matches;
 
+const showInstallButton = ref(false);
 let deferredPrompt: Event | null = null;
-window.addEventListener('beforeinstallprompt', (e) => { deferredPrompt = e; });
+if (
+  (navigator as any).userAgentData &&
+  (navigator as any).userAgentData?.brands?.find((b: any) => b.brand === 'Microsoft Edge' || b.brand === "Google Chrome")
+) {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    deferredPrompt = e;
+    showInstallButton.value = true;
+  });
+}
+
+
 async function installApp() {
   if (deferredPrompt !== null) {
     // @ts-ignore
     deferredPrompt.prompt();
     // @ts-ignore
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
+    const res = await deferredPrompt.userChoice;
+    if (res.outcome === 'accepted') {
+      showInstallButton.value = false;
       deferredPrompt = null;
     }
   }
@@ -124,6 +135,10 @@ if (env !== 'local') {
     justify-content: center;
     border-radius: 1rem;
     cursor: pointer;
+
+    @media screen and (max-width: 300px) {
+      display: none;
+    }
 
     &:hover {
       background-color: rgba(var(--v-theme-surface), 0.4);

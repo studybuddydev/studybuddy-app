@@ -1,13 +1,22 @@
 <template>
   <div class="pomopause">
 
-    <v-btn class='btn bg-primary pomo-btn pomo-box font-press btn-main-start' v-if="!pomodoro.going"
+    <v-btn class='btn bg-primary pomo-btn pomo-box font-press btn-main-start'
+      v-if="!pomodoro.going && !pomodoro.settingUp"
       @click="emit('show-history')">
       <v-icon class="icon" icon="mdi-folder-clock-outline" />
     </v-btn>
 
     <v-btn class='btn bg-accent pomo-btn pomo-box font-press btn-main-start'
-      v-if="!pomodoro.going && !pomodoro.finishedPomoRecord?.shortPomo" @click="pomodoro.startPomodoro()">
+      v-if="!pomodoro.going && !pomodoro.finishedPomoRecord?.shortPomo && !pomodoro.settingUp" @click="
+        pomodoro.createPomodoro(); settingsStore.generalSettings.hideSetup ? pomodoro.startPomodoro() : pomodoro.setup()
+      ">
+      <span>{{ $t("pause.study") }}</span>
+      <v-icon class="icon" icon="mdi-play" />
+    </v-btn>
+
+    <v-btn class='btn bg-accent pomo-btn pomo-box font-press btn-main-start'
+      v-if="pomodoro.settingUp" @click="pomodoro.startPomodoro()">
       <span>{{ $t("pause.study") }}</span>
       <v-icon class="icon" icon="mdi-play" />
     </v-btn>
@@ -22,8 +31,9 @@
 </template>
 <script lang="ts" setup>
 import { usePomodoroStore } from "@/stores/pomodoro";
+import { useSettingsStore } from "@/stores/settings";
 const pomodoro = usePomodoroStore();
-
+const settingsStore = useSettingsStore();
 const emit = defineEmits<{
   (e: 'show-history'): void
 }>();

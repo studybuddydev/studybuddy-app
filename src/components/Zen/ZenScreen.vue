@@ -11,7 +11,9 @@ import About from '@/components/Zen/About.vue'
 import StartPage from '@/components/Zen/StartPage.vue'
 import FinishPage from '@/components/Zen/FinishPage.vue'
 import ZenActions from '@/components/Zen/ZenActions.vue'
-import PomodoroDetails from '../Pomodoro/PomodoroDetails.vue';
+import PomodoroDetailsEnd from '@/components/Zen/PomodoroDetailsEnd.vue';
+import PomodoroSetup from '@/components/Pomodoro/PomodoroSetup.vue';
+import Sink from '@/components/Sink/Sink.vue';
 
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
@@ -63,17 +65,23 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 
           <div class="main-content-wrapper">
             <div class="main-content">
-              <StartPage v-if="pomodoro.created && !pomodoro.going" />
-              <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going"
+              <StartPage          v-if="pomodoro.created    && !pomodoro.going && !pomodoro.settingUp"/>
+              <PomodoroSetup v-else-if="pomodoro.created    && !pomodoro.going && pomodoro.settingUp"
+                @exit-setup="pomodoro.exitSetup()"
+                @open-settings-tab="event => openSettingsTab = event" />
+              <FinishPage    v-else-if="pomodoro.terminated && !pomodoro.going"
                 :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
                 :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)"
-                @create-pomodoro="pomodoro.createPomodoro()" />
-              <PomodoroPip
-                v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
+                />
+
+              <PomodoroPip v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
                 :zen-style="zenStyle"
                 :hide-time="settings.generalSettings.hideTime" />
               <ZenActions @show-history="showPomoHistory = true" />
-              <PomodoroDetails class="pomo-details" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo" />
+              <PomodoroDetailsEnd class="pomo-details" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo"
+                @done="pomodoro.createPomodoro()" />
+
+                <Sink class="sink" />
             </div>
           </div>
         </div>
@@ -108,6 +116,12 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
   background-repeat: no-repeat;
   background-position: center;
 
+  .sink {
+    position: absolute;
+    top: 23vh;
+    right: 0;
+  }
+
   .top-left {
     position: absolute;
     top: 1rem;
@@ -122,9 +136,9 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 
   .main-content-wrapper {
     display: flex;
-    height: 85vh;
+    height: 90vh;
     align-items: baseline;
-    margin-top: 15vh;
+    margin-top: 10vh;
     justify-content: center;
     overflow: auto;
   }
@@ -138,15 +152,6 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
     justify-content: center;
     margin-bottom: 15vh;
 
-    .pomo-details {
-      background: rgb(var(--v-theme-background));
-      border: 1px solid rgb(var(--v-theme-primary));
-    }
-
-    @media (max-width: 600px) {
-      justify-content: flex-start;
-      margin-top: 20vh;
-    }
   }
 }
 </style>

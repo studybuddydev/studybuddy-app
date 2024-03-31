@@ -23,16 +23,14 @@
           </div>
         </div>
 
-        <div v-if="pomodoro.countdownRunning" class="font-casio text-primary">
-          <div :class="pomodoro.countdownRunning ? 'countdown text-primary' : ''"></div>
-        </div>
-
+        <Countdown v-if="pomodoro.countdownRunning" />
+        
         <div v-else class="buttons">
-          <v-btn class='btn bg-accent pomo-btn pomo-box font-press btn-main-start mt-5' v-if="!pomodoro.studing"
+          <v-btn class='btn bg-accent pomo-btn font-press btn-main-start mt-5' v-if="!pomodoro.studing"
             @click="pomodoro.going ? pomodoro.study() : pomodoro.startPomodoro()" :style="{ height: `${width / 10}px` }">
             <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-play" />
           </v-btn>
-          <v-btn class='btn bg-accent pomo-btn pomo-box font-press btn-main-start mt-5'
+          <v-btn class='btn bg-accent pomo-btn font-press btn-main-start mt-5'
             v-if="inPip && pomodoro.studing" @click="pomodoro.togglePauseStudy()" :style="{ height: `${width / 10}px` }">
             <v-icon class="icon" :style="{ fontSize: `${width / 10}px` }" icon="mdi-pause" />
           </v-btn>
@@ -48,7 +46,7 @@ import { useSettingsStore } from "@/stores/settings";
 import { useElementSize } from '@vueuse/core'
 import { ref } from 'vue';
 import { computed } from 'vue';
-
+import Countdown from './Countdown.vue'
 const el = ref(null)
 const { width } = useElementSize(el)
 
@@ -75,24 +73,16 @@ function getCircleColor() {
 
 
 <style lang="scss" scoped>
-.countdown {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  counter-reset: my-count 4;
-  animation: countdown 5s linear infinite;
 
-  &::after {
-    content: counter(my-count);
-    font-size: 6em;
-  }
-}
 .pomodoro-circle {
   position: relative;
   border-radius: 50%;
 
   &.long-pause {
-    background-color: #000000B0 !important
+    background-color: #000000B0 !important;
+    .pause-p {
+      color: #ffffff !important;
+    }
   }
 
   .progress-bar {
@@ -186,135 +176,4 @@ function getCircleColor() {
   }
 }
 
-
-@keyframes countdown {
-
-  // 3 ---
-  0% {
-    // 0%
-    font-size: 2em;
-    opacity: 0;
-    counter-increment: my-count -1;
-  }
-
-  1% {
-    // 5%
-    font-size: 2em;
-    opacity: 0;
-    counter-increment: my-count -1;
-  }
-
-  10% {
-    // 50%
-    opacity: 1;
-    counter-increment: my-count -1;
-  }
-
-  15% {
-    // 75%
-    opacity: 1;
-    counter-increment: my-count -1;
-  }
-
-  18% {
-    // 95%
-    font-size: 1em;
-    opacity: 0;
-    counter-increment: my-count -1;
-  }
-
-  19% {
-    // 100%
-    font-size: 2em;
-    opacity: 0;
-    counter-increment: my-count -1;
-  }
-
-  // 2 ---
-  20% {
-    // 0%
-    font-size: 2em;
-    opacity: 0;
-    counter-increment: my-count -2;
-  }
-
-  21% {
-    // 5%
-    font-size: 2em;
-    opacity: 0;
-    counter-increment: my-count -2;
-  }
-
-  30% {
-    // 50%
-    opacity: 1;
-    counter-increment: my-count -2;
-  }
-
-  35% {
-    // 75%
-    opacity: 1;
-    counter-increment: my-count -2;
-  }
-
-  38% {
-    // 95%
-    font-size: 1em;
-    opacity: 0;
-    counter-increment: my-count -2;
-  }
-
-  39% {
-    // 100%
-    font-size: 2em;
-    opacity: 0;
-    counter-increment: my-count -2;
-  }
-
-  // 1 ---
-  40% {
-    // 0%
-    font-size: 2em;
-    opacity: 0;
-    counter-increment: my-count -3;
-  }
-
-  41% {
-    // 5%
-    font-size: 2em;
-    opacity: 0;
-    counter-increment: my-count -3;
-  }
-
-  50% {
-    // 50%
-    opacity: 1;
-    counter-increment: my-count -3;
-  }
-
-  55% {
-    // 75%
-    opacity: 1;
-    counter-increment: my-count -3;
-  }
-
-  58% {
-    // 95%
-    font-size: 1em;
-    opacity: 0;
-    counter-increment: my-count -3;
-  }
-
-  59% {
-    // 100%
-    font-size: 2em;
-    opacity: 0;
-    counter-increment: my-count -3;
-  }
-
-  100% {
-    font-size: 2em;
-    opacity: 0;
-    counter-increment: my-count -2;
-  }
-}</style>
+</style>

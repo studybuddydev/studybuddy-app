@@ -1,31 +1,54 @@
 <template>
   <div :class="`pomodoro ${mainPomo ? 'pomodoro-main' : ''}`">
-    <div :class="`progress-bar ${alwaysShowTime ? 'always-show-time' : ''}`">
+    <div :class="`progress-bar ${alwaysShowTime ? 'always-show-time' : ''}`" @click="showInfoStudy = true">
+
       <div :class="`progress ${pomodoro.countdownRunning ? 'timer-animation' : ''}`" v-if="!dailyPomo" :style="{
         backgroundColor: theme.current.value.colors.snake ?? theme.current.value.colors.primary,
         color: theme.current.value.colors.surface,
         width: parsePercentage(percentage),
-      }"> <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" v-if="mainPomo" /> </div>
-      <div v-for="b in displayBreaks" :key="b.index" class="break"
-      :style="{
+      }">
+        <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" v-if="mainPomo" />
+      </div>
+
+      <div v-for="b in displayBreaks" :key="b.index" class="break" :style="{
         backgroundColor: b.color ?? getBackgroundColor(),
         marginLeft: parsePercentage(b.startPerc),
         width: parsePercentage(b.lengthPerc, true),
-        opacity: b.deepWork === false ? 0.5 : 1
-      }"><v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" /></div>
+        opacity: mainPomo ? (b.startPerc < percentage ? 0.6 : 1) : (b.deepWork === false ? 0.5 : 1)
+      }" @click.stop="showInfoPause = true">
+        <v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-egg-easter" class="icon-apple" />
+      </div>
 
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
-        :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }"><p>{{b.lengthTime}} </p></div>
+        @click.stop="showInfoPause = true"
+        :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }">
+        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ b.lengthTime }} minutes</v-tooltip>
+        <p>{{ b.lengthTime }} </p>
+      </div>
 
       <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index" v-if="!dailyPomo"
-        :style="{ marginLeft: parsePercentage(s.startPerc + (s.lengthPerc / 2)) }"><p>{{s.lengthTime}} </p></div>
+        :style="{ marginLeft: parsePercentage(s.startPerc + (s.lengthPerc / 2)) }">
+        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ s.lengthTime }} minutes</v-tooltip>
+        <p>{{ s.lengthTime }} </p>
+      </div>
 
       <!-- <div v-for="t in ticks" :key="t.h" class="hour-idicator" :style="{ marginLeft: parsePercentage(t.position) }" v-if="dailyPomo"></div> -->
-      <div class="hour-idicator-wrapper">
-        <div v-for="t in ticks" :key="t" class="hour-idicator" v-if="dailyPomo"></div>
+      <div class="hour-idicator-wrapper" v-if="dailyPomo">
+        <div v-for="t in ticks" :key="t" class="hour-idicator" ></div>
       </div>
 
     </div>
+    <v-dialog :width="500"v-model="showInfo" v-if="mainPomo">
+      <v-card>
+        <v-card-text>
+          {{ showInfoStudy ?  $t('info.snake'): $t('info.snakePause') }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="flat" color="primary" @click="showInfo = false">Ok</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -34,9 +57,17 @@ import { useTheme } from 'vuetify'
 import type { DisplaySession } from '@/types';
 import { usePomodoroStore } from '@/stores/pomodoro';
 import { useSettingsStore } from '@/stores/settings';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
+
+const showInfoPause = ref(false);
+const showInfoStudy = ref(false);
+const showInfo = computed({
+  get() { return showInfoPause.value || showInfoStudy.value },
+  set(v) { showInfoPause.value = v; showInfoStudy.value = v}
+})
+
 
 const theme = useTheme();
 const props = withDefaults(defineProps<{
@@ -87,8 +118,6 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
 
 
 <style lang="scss" scoped>
-
-
 .pomodoro {
   display: flex;
   flex-direction: column;
@@ -104,6 +133,7 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
   &.pomodoro-main {
     background-color: #222222;
   }
+
   .progress-bar {
     display: flex;
     align-items: center;
@@ -122,20 +152,23 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
       transform: translateX(-50%);
       overflow: hidden;
       font-style: italic;
+
       p {
         padding: 2px;
       }
     }
 
-    &:hover, &.always-show-time {
+    &:hover,
+    &.always-show-time {
       .icon-apple {
         display: none;
       }
+
       .time-indicator {
         display: flex;
       }
     }
-    
+
     .hour-idicator-wrapper {
       position: absolute;
       bottom: 0;
@@ -146,6 +179,7 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
       flex-direction: row;
       justify-content: space-evenly;
     }
+
     .hour-idicator {
       width: 1px;
       background-color: rgba(var(--v-theme-primary), 0.3);
@@ -168,7 +202,6 @@ function parsePercentage(percentage: number, skipHead: boolean = false) {
 
     .break {
       position: absolute;
-      opacity: 0.7;
       text-align: center;
       display: flex;
       align-items: center;

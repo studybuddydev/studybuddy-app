@@ -50,7 +50,8 @@
                      "resetted": "Il tutorial è stato ripristinato",
                      "interface": "Interfaccia",
                      "pulsingPause": "Pausa rimbalzante",
-                     "showSeconds": "Mostra secondi"
+                     "showSeconds": "Mostra secondi",
+                     "hideSetup": "Nascondi setup"
               },
               "timer": {
                      "timer": "Timer",
@@ -68,7 +69,7 @@
                      "classic": "Classico",
                      "free": "Libero",
                      "chooseTimer": "Scegli timer",
-                     "createNew": "Crea nuovo",
+                     "createNew": "Nuovo",
                      "studyMinShort": "min studio",
                      "breakMinShort": "min pausa",
                      "repetitions": "ripetizioni",
@@ -87,7 +88,18 @@
               }
        },
        "zen":{
-              "confirm": "Vuoi davvero terminare il pomodoro?"
+              "confirm": "Vuoi davvero terminare il pomodoro?",
+              "sink": "Promemoria",
+              "sinkSaved": "Salvato per dopo",
+              "sinkDone": "Il lavandino è vuoto!"
+       },
+       "setup":{
+              "report": "Report",
+              "details": "Dettagli",
+              "exam":"Esame",
+              "name": "Nome",
+              "addTask": "Aggiungi Task",
+              "dontShow": "Non mostrare più questo messaggio"
        },
        "study": {
               "showTodo": "Mostra ToDo",
@@ -150,12 +162,15 @@
               "pause": "Quando sei in pausa all'interno di una sessione, cerca di non usare il telefono ed evita soprattutto i social. Usa questa manciata di minuti per riposare gli occhi, sgranchirti, andare in bagno e bere acqua. Rilassati e permetti al tuo cervello di rielaborare quello che hai fatto fino a quel momento.",
               "timer": "Ci sono due modalità diverse per tracciare il tuo tempo: Libero: decidi tu quando è il momento della pausa secondo il tuo ritmo. Classico: decidi a priori quanto tempo dedicare allo studio e quanto alle pause. Se sfori non è un problema. Puoi usare gli intervalli classici del Pomodoro o crearne di nuovi.",
               "theme": "Qui puoi decidere il tema che preferisci tra quelli presenti. Se vuoi, puoi creare il tuo tema aggiungendo una foto dal web.",
-              "feedback": "Se hai suggerimenti o vuoi segnalare un bug, puoi farlo qui. Grazie!"
+              "feedback": "Se hai suggerimenti o vuoi segnalare un bug, puoi farlo qui. Grazie!",
+              "setup": "Scegli il tipo di timer che vuoi usare, puoi crearne di nuovi nelle impostazioni. Se vuoi, aggiungi l'esame che stai per studiare, inserisci un titolo e degli obiettivi o task per questa sessione di studio. Seleziona se sarà un momento di deep work (concentrazione) o shallow work (lavoro leggero). Quando sei pronto/a, premi play e inizia a studiare!",
+              "snake": "Questa barra indica l'avanzamento della sessione di studio. Studia finchè non raggiungi la prossima pausa o finchè te la senti.",
+              "snakePause": "La mela rappresenta una pausa. Quando la raggiungi, puoi decidere se fare una pausa o continuare a studiare. Puoi fare pausa in qualsiasi momento premendo il tasto pausa. Puoi regolare il numero e la durata delle pause dalle impostazioni."
        },
        "history":{
               "loginMsg" : "Effettua il login per visualizzare la cronologia dei tuoi pomodori",
               "sliderTitle" : "Intervallo orario",
               "noHistory": "Non hai ancora fatto un pomodoro di almeno 5 minuti",
-              "startNow": "Inizia ora"
+              "startNow": "Inizia ora!"
        }
 }

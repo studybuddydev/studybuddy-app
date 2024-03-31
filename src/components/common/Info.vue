@@ -1,6 +1,9 @@
 
 <script lang="ts" setup generic="T extends {}">
 import { ref } from 'vue';
+import { useDisplay } from 'vuetify'
+const { xs } = useDisplay()
+
 
 const props = defineProps<{
   text: string,
@@ -8,15 +11,15 @@ const props = defineProps<{
 const open = ref(false);
 function openClick() {
   open.value = true;
-  setTimeout(() => open.value = false, 3000);
+  setTimeout(() => open.value = false, 15000);
 }
 </script>
 
 <template>
   <div class="info-tip">
-    <v-tooltip location="top center" origin="auto" no-click-animation v-model="open">
+    <v-tooltip location="top center" origin="auto" no-click-animation v-model="open" >
       <template v-slot:activator="{ props }">
-        <v-icon v-bind="props" icon="mdi-information-outline" @click="openClick()" />
+        <v-icon v-bind="props" icon="mdi-information-outline" @click="openClick()"  />
       </template>
       
       <div class="info-box">
@@ -28,9 +31,6 @@ function openClick() {
 
 
 <style lang="scss" scoped>
-.info-tip {
-  position: absolute;
-}
 .info-box {
   max-width: 300px;
   padding: 0.3rem;
