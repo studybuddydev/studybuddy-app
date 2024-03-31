@@ -40,7 +40,7 @@
     <v-dialog v-model="showInfo" width="auto">
       <v-card>
         <v-card-text>
-          {{ showInfoStudy ? 'Lo studio funziona cosi' : 'La pausa funziona colà' }}
+          {{ showInfoStudy ?  $t('info.snake'): $t('info.snakePause') }}
         </v-card-text>
         <v-card-actions>
           <v-spacer />

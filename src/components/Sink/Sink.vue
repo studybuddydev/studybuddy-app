@@ -1,8 +1,8 @@
 <template>
   <div class="sink blur">
-    <v-text-field v-on:keyup.enter="addItem()" prepend-inner-icon="mdi-faucet" density="compact" label="Remind me"
+    <v-text-field v-on:keyup.enter="addItem()" prepend-inner-icon="mdi-faucet" density="compact" :label= "$t('zen.sink')"
           class="input-add-sink" variant="plain" hide-details single-line v-model="currentItem" />
-    <v-snackbar v-model="snackbar" :timeout="2000" location="top" rounded="pill" color="primary" variant="tonal">Saved for later</v-snackbar>
+    <v-snackbar v-model="snackbar" :timeout="2000" location="top" rounded="pill" color="primary" variant="tonal">{{ $t('zen.sinkSaved') }}</v-snackbar>
   </div>
 </template>
 

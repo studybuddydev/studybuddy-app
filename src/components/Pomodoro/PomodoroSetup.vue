@@ -8,7 +8,7 @@
     <PomodoroPresets :top3="true" class="presets" @open-settings-tab="emits('open-settings-tab', $event)" />
     <PomodoroDetails class="details" v-if="timerStatus.pomodoroStatus" :pomo="timerStatus.pomodoroStatus" />
     <div class="dont-show-again">
-      <v-checkbox class="shrink dont-show-check" label="Don't show this setup again" hide-details
+      <v-checkbox class="shrink dont-show-check" :label="$t('setup.dontShow')" hide-details
         v-model="settingsStore.settings!.general!.hideSetup" />
     </div>
   </div>

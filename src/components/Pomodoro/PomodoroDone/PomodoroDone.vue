@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-tabs v-model="tab" align-tabs="center">
-      <v-tab :value="1" v-if="pomo.report" >Report</v-tab>
-      <v-tab :value="2">Details</v-tab>
+      <v-tab :value="1" v-if="pomo.report" >{{ $t('setup.report') }}</v-tab>
+      <v-tab :value="2">{{ $t('setup.details') }}</v-tab>
       <v-tab :value="3" v-if="showSink">Sink
         <v-badge v-if="sink.itemsCount > 0" :content="sink.itemsCount" inline color="error"/>
       </v-tab>
