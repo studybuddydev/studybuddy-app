@@ -20,7 +20,7 @@
         <p class="timer-info">{{ t.repetitions }} {{ $t('pause.timer.repetitions') }}</p>
       </div>
       <div class="timer-card back" v-else>
-        <p class="timer-info">{{ $t('pause.timer.freeMode') }}</p>
+        <p class="timer-info timer-info-freemode">{{ $t('pause.timer.freeMode') }}</p>
       </div>
 
     </div>
@@ -108,6 +108,8 @@ function deleteTimer(id: number | undefined) {
   place-items: center;
   margin: 1.5rem 0;
   cursor: pointer;
+  overflow-x: auto;
+  overflow-y: hidden;
 
   .preset-box {
     border-radius: 1rem;
@@ -139,6 +141,7 @@ function deleteTimer(id: number | undefined) {
 
     .back {
       display: none;
+
     }
 
     @media (hover: hover) {
@@ -175,6 +178,10 @@ function deleteTimer(id: number | undefined) {
 
       &.timer-info {
         font-size: 0.8rem;
+        text-wrap: nowrap;
+        &.timer-info-freemode {
+          text-wrap: wrap;
+        }
       }
     }
   }

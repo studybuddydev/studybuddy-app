@@ -1,12 +1,12 @@
 <template>
   <div :class="`pomodoro ${mainPomo ? 'pomodoro-main' : ''}`">
-    <div :class="`progress-bar ${alwaysShowTime ? 'always-show-time' : ''}`">
+    <div :class="`progress-bar ${alwaysShowTime ? 'always-show-time' : ''}`" @click="showInfoStudy = true">
 
       <div :class="`progress ${pomodoro.countdownRunning ? 'timer-animation' : ''}`" v-if="!dailyPomo" :style="{
         backgroundColor: theme.current.value.colors.snake ?? theme.current.value.colors.primary,
         color: theme.current.value.colors.surface,
         width: parsePercentage(percentage),
-      }" @click="showInfoStudy = true">
+      }">
         <v-icon class="mx-1" size="x-small" icon="mdi-circle-double" v-if="mainPomo" />
       </div>
 
@@ -15,19 +15,20 @@
         marginLeft: parsePercentage(b.startPerc),
         width: parsePercentage(b.lengthPerc, true),
         opacity: mainPomo ? (b.startPerc < percentage ? 0.6 : 1) : (b.deepWork === false ? 0.5 : 1)
-      }" @click="showInfoPause = true">
-        <v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" />
+      }" @click.stop="showInfoPause = true">
+        <v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-egg-easter" class="icon-apple" />
       </div>
 
-      <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo" @click="showInfoPause = true"
+      <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
+        @click.stop="showInfoPause = true"
         :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }">
-        <v-tooltip activator="parent" location="top">{{ b.lengthTime }} minutes</v-tooltip>
+        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ b.lengthTime }} minutes</v-tooltip>
         <p>{{ b.lengthTime }} </p>
       </div>
 
-      <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index" v-if="!dailyPomo" @click="showInfoPause = true"
+      <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index" v-if="!dailyPomo"
         :style="{ marginLeft: parsePercentage(s.startPerc + (s.lengthPerc / 2)) }">
-        <v-tooltip activator="parent" location="top">{{ s.lengthTime }} minutes</v-tooltip>
+        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ s.lengthTime }} minutes</v-tooltip>
         <p>{{ s.lengthTime }} </p>
       </div>
 
@@ -37,7 +38,7 @@
       </div>
 
     </div>
-    <v-dialog v-model="showInfo" width="auto">
+    <v-dialog :width="500"v-model="showInfo" v-if="mainPomo">
       <v-card>
         <v-card-text>
           {{ showInfoStudy ?  $t('info.snake'): $t('info.snakePause') }}
@@ -63,7 +64,7 @@ const settings = useSettingsStore();
 const showInfoPause = ref(false);
 const showInfoStudy = ref(false);
 const showInfo = computed({
-  get() { return showInfoPause.value || showInfoPause.value },
+  get() { return showInfoPause.value || showInfoStudy.value },
   set(v) { showInfoPause.value = v; showInfoStudy.value = v}
 })
 

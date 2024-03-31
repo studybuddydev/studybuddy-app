@@ -136,9 +136,9 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 
   .main-content-wrapper {
     display: flex;
-    height: 85vh;
+    height: 90vh;
     align-items: baseline;
-    margin-top: 15vh;
+    margin-top: 10vh;
     justify-content: center;
     overflow: auto;
   }

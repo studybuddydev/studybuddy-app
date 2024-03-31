@@ -69,7 +69,7 @@ const dailyPomodoriGroups = computed(() => {
 
   for (const key in groups) {
     const group = groups[key];
-    group.points = group.pomos.reduce((m, p) => m + (p.report?.points ?? 0), 0) / group.pomos.length;
+    group.points = group.pomos.filter(p => p.deepWork).reduce((m, p) => m + (p.report?.points ?? 0), 0) / group.pomos.length;
     group.totalTime = group.pomos.reduce((m, p) => m + (p.endedAt ?? 0), 0);
     group.maxLength = group.pomos.reduce((m, p) => Math.max(p.endedAt ?? 0, m), 0);
     group.dailySummary = group.pomos.map((p, i) => {

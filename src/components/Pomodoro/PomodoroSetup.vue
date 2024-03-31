@@ -36,8 +36,8 @@ const emits = defineEmits<{
   position: relative;
   width: 500px;
 
-  @media (max-width: 850px) {
-    width: 100%;
+  @media (max-width: 550px) {
+    width: calc(100vw - 1rem)
   }
 
   .details {
