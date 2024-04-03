@@ -40,7 +40,7 @@
     </div>
     <v-dialog :width="500" v-model="showInfoSnake" v-if="mainPomo">
       <v-card>
-        <v-card-text> study{{ infoTextStudy }}
+        <v-card-text>
           {{ infoTextStudy ? $t('info.snake'): $t('info.snakePause') }}
         </v-card-text>
         <v-card-actions>
