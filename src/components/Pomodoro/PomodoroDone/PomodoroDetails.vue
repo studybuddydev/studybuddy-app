@@ -3,7 +3,7 @@
     <div class="title">
       <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="deleteTag()"
         :color="pomo.tag ? pomoDB.tagColors[pomo.tag] : undefined">{{ pomo.tag }}</v-chip>
-      <v-combobox v-else class="text-box text-boxt-tag" label="Esame" hide-details :items="pomoDB.tags" v-model="pomo.tag"
+      <v-combobox v-else class="text-box text-boxt-tag" :label="$t('setup.exam')" hide-details :items="pomoDB.tags" v-model="pomo.tag"
         @update:modelValue="(newTag: any) => { newTag && addTag(newTag) }">
         <template v-slot:selection="data"><v-chip :key="data.item.title">{{ data.item.title }}</v-chip></template>
         <template #item="{ props, item }">
@@ -15,13 +15,13 @@
         </template>
       </v-combobox>
 
-      <v-text-field v-model="pomo.name" label="Nome" hide-details dense class="text-box text-boxt-title"
+      <v-text-field v-model="pomo.name" :label="$t('setup.name')" hide-details dense class="text-box text-boxt-title"
         @update:modelValue="(newName: any) => { updateName(pomo.id, newName) }" />
 
     </div>
 
     <div class="tasks">
-      <v-text-field v-on:keyup.enter="() => addTask()" append-inner-icon="mdi-send" density="compact" label="Add Task"
+      <v-text-field v-on:keyup.enter="() => addTask()" append-inner-icon="mdi-send" density="compact" :label="$t('setup.addTask')"
         class="input-add-task" variant="solo" hide-details single-line v-model="task"
         @click:append-inner="() => addTask()" />
       <div class="task-list" v-if="pomo.tasks?.length ?? 0 > 0">

@@ -29,6 +29,7 @@
     "goodjob": "Excellent travail!",
     "goodjobShort": "Ok, vous l'avez essayé. Retournez à la page d'accueil pour vraiment commencer à étudier.",
     "goodjobBad": "Bon travail, mais vous pouvez faire mieux!",
+    "youdid": "Tu as fait",
     "studyMin": "minutes d'étude",
     "pauseMin": "minutes de pause au total",
     "studyTime": "Temps d'étude :",
@@ -49,7 +50,8 @@
       "resetted": "Le tutoriel a été réinitialisé",
       "interface": "Interface",
       "pulsingPause": "Pause palpitante",
-      "showSeconds": "Afficher les secondes"
+      "showSeconds": "Afficher les secondes",
+      "hideSetup": "Masquer les paramètres"
     },
     "timer": {
       "timer": "Minuteur",
@@ -86,7 +88,19 @@
     }
   },
   "zen": {
-    "confirm": "Veux-tu vraiment terminer le Pomodoro?"
+    "confirm": "Veux-tu vraiment terminer le Pomodoro?",
+    "sink": "Mémorandum",
+    "sinkSaved": "enregistré pour plus tard",
+    "sinkDone": "L'évier est vide!"
+  },
+  "setup":{
+    "title": "Paramètres de Pomodoro",
+    "report": "Rapport",
+    "details": "Détails",
+    "exam":"Examen",
+    "name": "Nom",
+    "addTask": "Ajouter une tâche",
+    "dontShow": "Ne plus afficher ce message"
   },
   "study": {
     "showTodo": "Afficher ToDo",
@@ -118,6 +132,7 @@
     "newEvent": "Nouvel événement",
     "hour": "Heures",
     "minute": "Minutes",
+    "minutes": "minutes",
     "duration": "Durée [m]",
     "monthly": "Mois",
     "weekly": "Semaine",
@@ -149,7 +164,10 @@
     "pause": "Lorsque vous êtes en pause dans une session, essayez de ne pas utiliser votre téléphone et surtout évitez les réseaux sociaux. Profitez de ces quelques minutes pour reposer vos yeux, vous étirer, aller aux toilettes et boire de l'eau. Détendez-vous et laissez votre cerveau traiter ce que vous avez fait jusqu'à présent.",
     "timer": "Il existe deux manières différentes de suivre votre temps: Libre: vous décidez quand il est temps de faire une pause à votre rythme. Classique: décidez à l'avance combien de temps consacrer aux études et combien de pauses. Si vous dépassez, ce n'est pas un problème. Vous pouvez utiliser les intervalles Pomodoro classiques ou en créer de nouveaux.",
     "theme": "Ici, vous pouvez décider du thème que vous préférez parmi les personnes présentes. Si vous le souhaitez, vous pouvez créer votre propre thème en ajoutant une photo du Web.",
-    "feedback": "Si vous avez des suggestions ou souhaitez signaler un bug, vous pouvez le faire ici. Merci!"
+    "feedback": "Si vous avez des suggestions ou souhaitez signaler un bug, vous pouvez le faire ici. Merci!",
+    "setup": "Choisissez le type de minuteur que vous souhaitez utiliser, vous pouvez en créer de nouveaux dans les paramètres. Si vous le souhaitez, ajoutez l'examen que vous vous apprêtez à étudier, saisissez un titre et des objectifs ou des tâches pour cette session d'étude. Sélectionnez qu'il s'agisse d'un moment de travail profond (concentration) ou de travail superficiel (travail léger). Lorsque vous êtes prêt, appuyez sur play et commencez à étudier!",
+    "snake": "Cette barre indique la progression de votre session d'étude. Étudiez jusqu'à ce que vous atteigniez la prochaine pause ou jusqu'à ce que vous en ayez envie.",
+    "snakePause": "La pomme représente une pause. Lorsque vous l'atteignez, vous pouvez décider de faire une pause ou de continuer à étudier. Vous pouvez faire une pause à tout moment en appuyant sur le bouton pause. Vous pouvez régler le nombre et la durée des pauses de les paramètres."
   },
   "history":{
     "loginMsg" : "Connectez-vous pour voir l'historique de vos pomodoro",

@@ -50,7 +50,8 @@
       "resetted": "El tutorial ha sido restablecido",
       "interface": "Interfaz",
       "pulsingPause": "Pausa palpitante",
-      "showSeconds": "Muestra segundos"
+      "showSeconds": "Muestra segundos",
+      "hideSetup": "Ocultar configuración"
     },
     "timer": {
       "timer": "Temporizador",
@@ -87,7 +88,19 @@
     }
   },
   "zen": {
-    "confirm": "¿Realmente quieres terminar el Pomodoro?"
+    "confirm": "¿Realmente quieres terminar el Pomodoro?",
+    "sink": "Pozo",
+    "sinkSaved": "Pozo guardado",
+    "sinkDone": "¡El pozo esta vacio!"
+  },
+  "setup":{
+    "title": "Configuración de Pomo",
+    "report": "Informes",
+    "details": "Detalles",
+    "exam": "Examen",
+    "name": "Nombre",
+    "addTask": "Nueva Tarea",
+    "dontShow": "No mostrar esta configuración nuevamente"
   },
   "study": {
     "showTodo": "Mostrar ToDo",
@@ -119,6 +132,7 @@
     "newEvent": "Nuevo evento",
     "hour": "Horas",
     "minute": "Minutos",
+    "minutes": "minutos",
     "duration": "Duración [m]",
     "monthly": "Mes",
     "weekly": "Semana",
@@ -150,7 +164,10 @@
     "pause": "Cuando esté en pausa en una sesión, trate de no usar su teléfono y, especialmente, evite las redes sociales. Aprovecha estos minutos para descansar la vista, estirarte, ir al baño y beber agua. Relájate y deja que tu cerebro procese lo que has hecho hasta ahora.",
     "timer": "Hay dos formas diferentes de realizar un seguimiento de tu tiempo: Libre: tú decides cuándo es el momento de un descanso a tu propio ritmo. Clásico: decide de antemano cuánto tiempo dedicar al estudio y cuánto a los descansos. Si pasas no hay problema. Puedes utilizar los intervalos clásicos de Pomodoro o crear otros nuevos.",
     "theme": "Aquí podrás decidir el tema que prefieras entre los presentes. Si quieres, puedes crear tu propio tema añadiendo una foto de la web.",
-    "feedback": "Si tiene sugerencias o desea informar un error, puede hacerlo aquí. ¡Gracias!"
+    "feedback": "Si tiene sugerencias o desea informar un error, puede hacerlo aquí. ¡Gracias!",
+    "setup": "Elige el tipo de cronómetro que deseas utilizar, puedes crear nuevos en la configuración. Si deseas agrega el examen que estás por estudiar, ingresa un título y objetivos o tareas para esta sesión de estudio. Selecciona ya sea un momento de trabajo profundo (concentración) o trabajo superficial (trabajo ligero). ¡Cuando estés listo, dale play y comienza a estudiar!",
+    "snake": "Esta barra indica el progreso de tu sesión de estudio. Estudia hasta llegar al siguiente descanso o hasta que te apetezca.",
+    "snakePause": "La manzana representa una pausa. Cuando lo alcances podrás decidir si tomar un descanso o seguir estudiando. Puede pausar en cualquier momento presionando el botón de pausa. Puede ajustar el número y la duración de las pausas desde la configuración."
   },
   "history":{
     "loginMsg" : "Inicia sesión para ver el historial de tus pomodoros",

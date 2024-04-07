@@ -12,7 +12,7 @@
         @click.stop="emit('open-settings-tab', 'pomodoro')" class="btn-card"/>
 
       <div class="timer-card front">
-        <p class="timer-title">{{ t.title }}</p>
+        <p class="timer-title">{{ t.title }} </p>
       </div>
       <div class="timer-card back" v-if="!t.freeMode">
         <p class="timer-info">{{ t.studyLength }} {{ $t('pause.timer.studyMinShort') }}</p>
