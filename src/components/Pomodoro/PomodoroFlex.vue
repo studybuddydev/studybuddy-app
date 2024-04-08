@@ -22,13 +22,13 @@
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
         @click.stop="infoTextStudy = false"
         :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }">
-        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ b.lengthTime }} {{ $t('study.minutes') }}</v-tooltip>
+        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ b.minutes }} {{ $t('study.minutes') }}</v-tooltip>
         <p>{{ b.lengthTime }} </p>
       </div>
 
       <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index" v-if="!dailyPomo"
         :style="{ marginLeft: parsePercentage(s.startPerc + (s.lengthPerc / 2)) }">
-        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ s.lengthTime }} {{ $t('study.minutes') }}</v-tooltip>
+        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ s.minutes }} {{ $t('study.minutes') }}</v-tooltip>
         <p>{{ s.lengthTime }} </p>
       </div>
 

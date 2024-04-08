@@ -57,6 +57,7 @@ export function parseDisplaySession(
     return {
       startPerc, lengthPerc,
       lengthTime: timeFormatted((bEnd - b.start) / SECONDS_MULTIPLIER, { html: false, showSeconds }),
+      minutes: Math.round((bEnd - b.start) / (SECONDS_MULTIPLIER * 60)),
       done: b.done,
       index: i,
       small: lengthPerc < 3
