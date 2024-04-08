@@ -12,7 +12,7 @@
         @click.stop="emit('open-settings-tab', 'pomodoro')" class="btn-card"/>
 
       <div class="timer-card front">
-        <p class="timer-title">{{ t.title }}</p>
+        <p class="timer-title">{{ t.title }} </p>
       </div>
       <div class="timer-card back" v-if="!t.freeMode">
         <p class="timer-info">{{ t.studyLength }} {{ $t('pause.timer.studyMinShort') }}</p>
@@ -22,7 +22,6 @@
       <div class="timer-card back" v-else>
         <p class="timer-info timer-info-freemode">{{ $t('pause.timer.freeMode') }}</p>
       </div>
-
     </div>
   </div>
 </template>
@@ -44,7 +43,7 @@ const props = defineProps<{
 
 const timers = computed(() => props.top3 ? timerStore.timers.slice(0, 3) : timerStore.timers);
 
-const timerSelected = computed(() => selectedTimerId.value ??
+const timerSelected = computed(() => timerStore.selectedTimerId ??
   timerStore.timers.find(timer => {
     const numberOfBreak = timer.repetitions - 1;
     const breaksLength = timer.breakLength * numberOfBreak;
@@ -58,7 +57,6 @@ const timerSelected = computed(() => selectedTimerId.value ??
   })?.id
 );
 
-const selectedTimerId = ref<number | null>(null);
 const selectedTimer = ref<Timer>({
   title: '',
   studyLength: settingsStore.settings!.pomodoro!.totalLength - settingsStore.settings!.pomodoro!.breaksLength,
@@ -71,7 +69,7 @@ function setTimerPreset(timer: Timer) {
   selectedTimer.value.studyLength = timer.studyLength;
   selectedTimer.value.repetitions = timer.repetitions;
   selectedTimer.value.freeMode = timer.freeMode;
-  selectedTimerId.value = timer.id ?? null;
+  timerStore.selectedTimerId = timer.id ?? null;
   setTimer();
 }
 function setTimer() {

@@ -7,6 +7,7 @@ export const useTimerStore = defineStore('timerStore', () => {
 
   const db = useDBStore()
   const timers = ref<Timer[] >([]);
+  const selectedTimerId = ref<number | null>(null);
 
   async function getAllTimers() {
     return await db.timers.toArray();
@@ -38,6 +39,6 @@ export const useTimerStore = defineStore('timerStore', () => {
   }
 
   return {
-    getAllTimers, addTimer, deleteTimer, timers
+    getAllTimers, addTimer, deleteTimer, timers, selectedTimerId
   };
 });

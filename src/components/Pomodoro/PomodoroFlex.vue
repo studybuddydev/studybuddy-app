@@ -1,6 +1,6 @@
 <template>
   <div :class="`pomodoro ${mainPomo ? 'pomodoro-main' : ''}`">
-    <div :class="`progress-bar ${alwaysShowTime ? 'always-show-time' : ''}`" @click="showInfoStudy = true">
+    <div :class="`progress-bar ${alwaysShowTime ? 'always-show-time' : ''}`" @click="infoTextStudy = true">
 
       <div :class="`progress ${pomodoro.countdownRunning ? 'timer-animation' : ''}`" v-if="!dailyPomo" :style="{
         backgroundColor: theme.current.value.colors.snake ?? theme.current.value.colors.primary,
@@ -15,20 +15,20 @@
         marginLeft: parsePercentage(b.startPerc),
         width: parsePercentage(b.lengthPerc, true),
         opacity: mainPomo ? (b.startPerc < percentage ? 0.6 : 1) : (b.deepWork === false ? 0.5 : 1)
-      }" @click.stop="showInfoPause = true">
-        <v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-egg-easter" class="icon-apple" />
+      }" @click.stop="infoTextStudy = false">
+        <v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" />
       </div>
 
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
-        @click.stop="showInfoPause = true"
+        @click.stop="infoTextStudy = false"
         :style="{ marginLeft: parsePercentage(b.startPerc + (b.lengthPerc / 2)) }">
-        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ b.lengthTime }} minutes</v-tooltip>
+        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ b.minutes }} {{ $t('study.minutes') }}</v-tooltip>
         <p>{{ b.lengthTime }} </p>
       </div>
 
       <div class="time-indicator time-indicator-study" v-for="s in displayStudy" :key="s.index" v-if="!dailyPomo"
         :style="{ marginLeft: parsePercentage(s.startPerc + (s.lengthPerc / 2)) }">
-        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ s.lengthTime }} minutes</v-tooltip>
+        <v-tooltip activator="parent" location="top" v-if="mainPomo">{{ s.minutes }} {{ $t('study.minutes') }}</v-tooltip>
         <p>{{ s.lengthTime }} </p>
       </div>
 
@@ -38,14 +38,14 @@
       </div>
 
     </div>
-    <v-dialog :width="500"v-model="showInfo" v-if="mainPomo">
+    <v-dialog :width="500" v-model="showInfoSnake" v-if="mainPomo">
       <v-card>
         <v-card-text>
-          {{ showInfoStudy ?  $t('info.snake'): $t('info.snakePause') }}
+          {{ infoTextStudy ? $t('info.snake'): $t('info.snakePause') }}
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn variant="flat" color="primary" @click="showInfo = false">Ok</v-btn>
+          <v-btn variant="flat" color="primary" @click="showInfoSnake = false">Ok</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -61,13 +61,12 @@ import { computed, ref } from 'vue';
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
 
-const showInfoPause = ref(false);
-const showInfoStudy = ref(false);
-const showInfo = computed({
-  get() { return showInfoPause.value || showInfoStudy.value },
-  set(v) { showInfoPause.value = v; showInfoStudy.value = v}
+const _infoTextStudy = ref(true);
+const showInfoSnake = ref(false);
+const infoTextStudy = computed({
+  get() { return _infoTextStudy.value },
+  set(v) { _infoTextStudy.value = v; showInfoSnake.value = true; }
 })
-
 
 const theme = useTheme();
 const props = withDefaults(defineProps<{

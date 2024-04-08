@@ -4,7 +4,7 @@
     <Info class="top-icon info-icon" :text="$t('info.setup')" />
 
     <!-- <v-icon class="top-icon info" icon="mdi-arrow-left" @click="emits('exit-setup')" /> -->
-    <h3 class="title text-primary">Setup Pomodoro</h3>
+    <h3 class="title text-primary">{{ $t('setup.title') }}</h3>
     <PomodoroPresets :top3="true" class="presets" @open-settings-tab="emits('open-settings-tab', $event)" />
     <PomodoroDetails class="details" v-if="timerStatus.pomodoroStatus" :pomo="timerStatus.pomodoroStatus" />
     <div class="dont-show-again">

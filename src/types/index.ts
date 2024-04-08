@@ -85,6 +85,7 @@ export type DisplaySession = {
   startPerc: number;
   lengthPerc: number;
   lengthTime: string;
+  minutes: number;
   done?: boolean;
   index: number;
   small?: boolean;

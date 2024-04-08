@@ -78,7 +78,7 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
                 :zen-style="zenStyle"
                 :hide-time="settings.generalSettings.hideTime" />
               <ZenActions @show-history="showPomoHistory = true" />
-              <PomodoroDetailsEnd class="pomo-details" v-if="pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo"
+            <PomodoroDetailsEnd class="pomo-details" v-if="!(pomodoro.going || pomodoro.countdownRunning) && pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo"
                 @done="pomodoro.createPomodoro()" />
 
                 <Sink class="sink" />

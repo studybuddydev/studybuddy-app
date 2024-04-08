@@ -4,13 +4,14 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import { ref, watch } from 'vue';
 import { PomodoroState, type PomodotoStatus } from '@/types';
 import { usePomodoroStore } from "@/stores/pomodoro";
+import config from '@/config/config';
 
 export const useTimerStatusStore = defineStore('timer-status', () => {
 
   const { user, getAccessTokenSilently } = useAuth0();
   const pomodoro = usePomodoroStore();
 
-  const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT
+  const API_ENDPOINT = config.api.endpoint;
   const LOCALSTORAGE_KEY = 'timer-status'
 
   async function getOptions() {

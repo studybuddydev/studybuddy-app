@@ -50,7 +50,8 @@
       "resetted": "The tutorial has been reset",
       "interface": "Interface",
       "pulsingPause": "Pulsing pause",
-      "showSeconds": "Show seconds"
+      "showSeconds": "Show seconds",
+      "hideSetup": "Hide setup"
     },
     "timer": {
       "timer": "Timer",
@@ -87,7 +88,19 @@
     }
   },
   "zen": {
-    "confirm": "Are you sure you want to end the Pomodoro?"
+    "confirm": "Are you sure you want to end the Pomodoro?",
+    "sink": "Sink",
+    "sinkSaved": "Saved for later",
+    "sinkDone": "Sink is empty!"
+  },
+  "setup":{
+    "title": "Setup Pomodoro",
+    "report": "Report",
+    "details": "Details",
+    "exam":"Exam",
+    "name": "Name",
+    "addTask": "Add Task",
+    "dontShow": "Don't show this again"
   },
   "study": {
     "showTodo": "Show ToDo",
@@ -119,6 +132,7 @@
     "newEvent": "New Event",
     "hour": "Hours",
     "minute": "Minutes",
+    "minutes": "minutes",
     "duration": "Duration [m]",
     "monthly": "Month",
     "weekly": "Week",
@@ -150,7 +164,10 @@
     "pause": "When you are on a break inside a studying session, try not to use your phone, expecially avoid social media. Instead rest your eyes, drink water or go to the restroom. Use this time to allow your brain to rework what you just studied.",
     "timer": "2 different ways to track your time. Free: you decide when it's time for a break. Classic: you decide the intervals in advance and then execute them. Doesn't matter if you overshoot. You can use the classic Pomodoro intervals or create new ones.",
     "theme": "Here you can choose your favorite theme. You can also create one from scratch adding a picture from the web.",
-    "feedback": "If you have any suggestion or you want to report a bug, you can do it here. Thank you!"
+    "feedback": "If you have any suggestion or you want to report a bug, you can do it here. Thank you!",
+    "setup": "Choose the type of timer you want to use, you can create new ones in the settings. If you want, add the exam you are about to study, enter a title and objectives or tasks for this study session. Select whether it will be a moment of deep work (concentration) or shallow work (light work). When you're ready, press play and start studying!",
+    "snake": "The snake represents your study session. The apple represents a break. When you reach it, you can decide if you want to take a break or continue studying. You can pause at any time by pressing the pause button. You can adjust the number and duration of the breaks from the set",
+    "snakePause": "The apple represents a break. When you reach it, you can decide if you want to take a break or continue studying. You can pause at any time by pressing the pause button. You can adjust the number and duration of the breaks from the settings."
 },
   "history":{
     "loginMsg" : "Log in to view your pomodoro history",
