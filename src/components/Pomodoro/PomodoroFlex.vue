@@ -16,7 +16,7 @@
         width: parsePercentage(b.lengthPerc, true),
         opacity: mainPomo ? (b.startPerc < percentage ? 0.6 : 1) : (b.deepWork === false ? 0.5 : 1)
       }" @click.stop="infoTextStudy = false">
-        <v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-egg-easter" class="icon-apple" />
+        <v-icon v-if="!b.small && mainPomo" size="x-small" icon="mdi-food-apple" class="icon-apple" />
       </div>
 
       <div class="time-indicator time-indicator-break" v-for="b in displayBreaks" :key="b.index" v-if="!dailyPomo"
