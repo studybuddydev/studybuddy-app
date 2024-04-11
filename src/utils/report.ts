@@ -38,12 +38,13 @@ export function parsePoints(points: number) {
   return (points * 100).toFixed(1);
 }
 
-export function getPointsColorClass(points: number) {
+export function getPointsColorClass(points: number, deepWork: boolean = true) {
+  const deepWorkClass = deepWork ? '' : ' shallow-work';
   if (points < 0.6) {
-    return 'points bg-error';
+    return 'points bg-error' + deepWorkClass;
   }
   if (points < 0.85) {
-    return 'points bg-warning';
+    return 'points bg-warning' + deepWorkClass;
   }
-  return 'points bg-success';
+  return 'points bg-success' + deepWorkClass;
 }
