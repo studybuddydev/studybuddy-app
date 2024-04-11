@@ -209,6 +209,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     const lastBreak = pomo.breaksDone[pomo.breaksDone.length - 1]; // get last break and set the end 
     lastBreak.end = now;
 
+    if (lastBreak.end - lastBreak.start < 5000) {
+      pomo.breaksDone.pop();
+    }
+
     saveStatus();
   }
   function tick() { 

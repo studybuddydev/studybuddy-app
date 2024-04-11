@@ -16,7 +16,7 @@
         </div>
       </div>
       <p class="lenght">{{ pomodoro.timeFormatted((pomo.endedAt ?? 0) / 1000, timeFormat) }}</p>
-      <p :class="reportUtils.getPointsColorClass(pomo.report?.points ?? 0)">{{
+      <p :class="reportUtils.getPointsColorClass(pomo.report?.points ?? 0, pomo.deepWork)">{{
     reportUtils.parsePoints(pomo.report?.points ?? 0)
   }}%
       </p>
@@ -149,6 +149,9 @@ async function updateTime() {
 </script>
 
 <style scoped lang="scss">
+.shallow-work {
+  opacity: 0.7;
+}
 .pomo-info-open {
   .pomo-flex {
     height: 2rem;
