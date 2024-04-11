@@ -56,43 +56,39 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
       <v-scroll-y-reverse-transition>
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
-          <About class="top-left"
-            :show-title="!pomodoro.created" />
-          <UserBanner class="top-right"
-            v-if="!showPomoHistory"
-            @open-settings-tab="event => openSettingsTab = event"
-            @open-history="showPomoHistory = true" />
+          <div class="zen-header">
+            <About class="top-left" :show-title="!pomodoro.created" />
+            <UserBanner class="top-right" v-if="!showPomoHistory" @open-settings-tab="event => openSettingsTab = event"
+              @open-history="showPomoHistory = true" />
+          </div>
 
           <div class="main-content-wrapper">
             <div class="main-content">
-              <StartPage          v-if="pomodoro.created    && !pomodoro.going && !pomodoro.settingUp"/>
-              <PomodoroSetup v-else-if="pomodoro.created    && !pomodoro.going && pomodoro.settingUp"
-                @exit-setup="pomodoro.exitSetup()"
-                @open-settings-tab="event => openSettingsTab = event" />
-              <FinishPage    v-else-if="pomodoro.terminated && !pomodoro.going"
+
+                <StartPage v-if="pomodoro.created && !pomodoro.going && !pomodoro.settingUp" />
+                <PomodoroSetup v-else-if="pomodoro.created && !pomodoro.going && pomodoro.settingUp"
+                @exit-setup="pomodoro.exitSetup()" @open-settings-tab="event => openSettingsTab = event" />
+              <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going"
                 :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
-                :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)"
-                />
+                :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)" />
 
-              <PomodoroPip v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
-                :zen-style="zenStyle"
-                :hide-time="settings.generalSettings.hideTime" />
+              <PomodoroPip
+                v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
+                :zen-style="zenStyle" :hide-time="settings.generalSettings.hideTime" />
               <ZenActions @show-history="showPomoHistory = true" />
-            <PomodoroDetailsEnd class="pomo-details" v-if="!(pomodoro.going || pomodoro.countdownRunning) && pomodoro.finishedPomoRecord?.pomo" :pomo="pomodoro.finishedPomoRecord.pomo"
-                @done="pomodoro.createPomodoro()" />
+              <PomodoroDetailsEnd class="pomo-details"
+                v-if="!(pomodoro.going || pomodoro.countdownRunning) && pomodoro.finishedPomoRecord?.pomo"
+                :pomo="pomodoro.finishedPomoRecord.pomo" @done="pomodoro.createPomodoro()" />
 
-                <Sink class="sink" />
             </div>
           </div>
+          
+          <Sink class="sink" />
         </div>
       </v-scroll-y-reverse-transition>
     </div>
-    <BottomBar
-      :zen-mode="zenMode"
-      :show-pomo-history="showPomoHistory"
-      @set-zen-mode="zenMode = $event"
-      @set-show-pomo-history="showPomoHistory = $event"
-      @open-settings-tab="openSettingsTab = $event" />
+    <BottomBar :zen-mode="zenMode" :show-pomo-history="showPomoHistory" @set-zen-mode="zenMode = $event"
+      @set-show-pomo-history="showPomoHistory = $event" @open-settings-tab="openSettingsTab = $event" />
   </div>
 </template>
 
@@ -102,6 +98,12 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 @font-face {
   font-family: 'casio';
   src: url('@/assets/fonts/casio-calculator-font.ttf') format('truetype');
+}
+
+.sink {
+  position: absolute;
+  top: 23vh;
+  right: 0;
 }
 
 .zen-screen {
@@ -116,42 +118,45 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
   background-repeat: no-repeat;
   background-position: center;
 
-  .sink {
+  .zen-header {
     position: absolute;
-    top: 23vh;
+    top: 0;
+    left: 0;
     right: 0;
-  }
-
-  .top-left {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-  }
-
-  .top-right {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 4rem;
+    flex-shrink: 0;
+    padding: 0 1rem;
   }
 
   .main-content-wrapper {
-    display: flex;
-    height: 90vh;
-    align-items: baseline;
-    margin-top: 10vh;
-    justify-content: center;
-    overflow: auto;
-  }
-
-  .main-content {
-    gap: 1rem;
-    display: flex;
+    overflow-y: scroll;
+    display: grid;
     align-items: center;
-    flex-direction: column;
-    min-height: 70vh;
-    justify-content: center;
-    margin-bottom: 15vh;
+    width: 100vw;
+    height: calc(100vh - 4.2rem);
+    padding: 0;
+    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    mask-image: linear-gradient(to top, black 99.5%, transparent 100%);
+    margin-top: 4.2rem;
 
+    .main-content {
+      margin-top: 1rem;
+      margin-bottom: 10rem;
+      display: flex;
+      width: 100vw;
+      align-items: center;
+
+      flex-direction: column;
+      gap: 1rem;
+    }
   }
+
+
+
 }
 </style>
