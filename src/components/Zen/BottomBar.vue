@@ -25,6 +25,9 @@
             <v-btn class='btn bg-accent pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.studing">
               <v-icon class="icon" icon="mdi-pause" />
             </v-btn>
+            <v-btn class='btn bg-accent pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.timeToStudy">
+              <v-icon class="icon" icon="mdi-play" />
+            </v-btn>
             <v-btn class='btn bg-accent pomo-btn pomo-box pomo-box-disabled' v-else>
               <v-icon class="icon coffee-cup" icon="mdi-coffee" />
             </v-btn>
