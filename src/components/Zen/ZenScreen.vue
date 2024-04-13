@@ -23,14 +23,14 @@ const zenMode = ref(true);
 const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
 const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
-  if (settings.settings.theme?.backgroundImg) {
+  if (settings.themeSettings?.backgroundImg) {
     if (!pomodoro.onLongPause) {
-      return { backgroundImage: `url(${settings.settings.theme?.backgroundImg})` }
+      return { backgroundImage: `url(${settings.themeSettings?.backgroundImg})` }
     } else {
-      return { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${settings.settings.theme?.backgroundImg})` }
+      return { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${settings.themeSettings?.backgroundImg})` }
     }
-  } else if (settings.settings.theme?.backgroundColor) {
-    return { backgroundColor: settings.settings.theme?.backgroundColor }
+  } else if (settings.themeSettings?.backgroundColor) {
+    return { backgroundColor: settings.themeSettings?.backgroundColor }
   }
   return {};
 });
@@ -43,8 +43,6 @@ const onKeyUp = (e: KeyboardEvent) => {
     }
   }
 };
-
-const volume = ref(50);
 
 onMounted(() => { window.addEventListener('keyup', onKeyUp) });
 onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
@@ -60,7 +58,7 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
       <v-scroll-y-reverse-transition>
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
-          <BackgroundVideo :volume="volume" />
+          <BackgroundVideo :class="settings.themeSettings.showOnlyMusic ? 'hide-video' : ''" />
 
           <div class="zen-header">
             <About class="top-left" :show-title="!pomodoro.created" />
@@ -80,6 +78,7 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
                 v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
                 :zen-style="zenStyle" :hide-time="settings.generalSettings.hideTime" />
               <ZenActions @show-history="showPomoHistory = true" />
+              {{ settings.themeSettings.showOnlyMusic }}
               <PomodoroDetailsEnd class="pomo-details"
                 v-if="!(pomodoro.going || pomodoro.countdownRunning) && pomodoro.finishedPomoRecord?.pomo"
                 :pomo="pomodoro.finishedPomoRecord.pomo" @done="pomodoro.createPomodoro()" />
@@ -92,8 +91,7 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
       </v-scroll-y-reverse-transition>
     </div>
     <BottomBar :zen-mode="zenMode" :show-pomo-history="showPomoHistory" @set-zen-mode="zenMode = $event"
-      @set-show-pomo-history="showPomoHistory = $event" @open-settings-tab="openSettingsTab = $event"
-      @set-volume="volume = $event" />
+      @set-show-pomo-history="showPomoHistory = $event" @open-settings-tab="openSettingsTab = $event" />
   </div>
 </template>
 
@@ -109,6 +107,10 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
   position: absolute;
   top: 23vh;
   right: 0;
+}
+
+.hide-video {
+  display: none;
 }
 
 .zen-screen {

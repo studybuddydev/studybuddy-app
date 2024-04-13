@@ -11,7 +11,6 @@ import { useSettingsStore } from "@/stores/settings";
 import type { YouTubePlayer as YouTubePlayerType } from 'youtube-player/dist/types'
 
 const settings = useSettingsStore();
-const props = defineProps<{ volume: number }>()
 const isThereAVideo = ref(false);
 let player: YouTubePlayerType | null = null;
 
@@ -67,15 +66,13 @@ watch(() => settings.settings.theme?.backgroundVideo, (bgVideo) => {
   }
 })
 
-watch(() => props.volume, (volume) => {
-  if (volume >= 0 && playerMuted) {
-    playerMuted = false;
-    player?.unMute()
-  } else if (volume === 0) {
-    playerMuted = true;
+watch(() => settings.videoVolume, (volume) => player?.setVolume(volume) )
+watch(() => settings.videoMuted, (muted) => {
+  if (muted) {
     player?.mute()
+  } else {
+    player?.unMute()
   }
-  player?.setVolume(volume)
 })
 
 onMounted(() => {

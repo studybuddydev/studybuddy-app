@@ -15,6 +15,7 @@ const defaultSettings: Settings = {
     lang: DEFAULT_LANG,
     hideTime: false,
     soundVolume: 50,
+    videoVolume: 50,
     pulsingPause: true,
     showSeconds: false,
     disableCountdown: false,
@@ -69,9 +70,13 @@ export const useSettingsStore = defineStore('settings', () => {
     save();
   });
 
+  let debounceTimeout: number | undefined = undefined;
   function save() {
-    console.log('Saving settings')
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings.value));
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(async () => {
+      console.log('Saving settings')
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings.value));
+    }, 500)
   }
 
   function updatePalette(newPalette?: string) {
@@ -79,13 +84,28 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   updatePalette();
-  
+
+
+  // volume
+  const videoMuted = ref(true);
+  const videoVolume = computed(() => settings.value.general.videoVolume);
+  function setVideoVolume(volume: number) {
+    settings.value.general.videoVolume = volume;
+    if (volume > 0 && videoMuted.value) 
+      videoMuted.value = false;
+    save();
+  }
+  function toggleVideoMute() {
+    videoMuted.value = !videoMuted.value;
+  }
+
   return {
     settings,
     generalSettings, pomoSettings, themeSettings,
     defaultSettings,
     updateSettings, updatePomodoroSettings,
     updatePalette,
+    videoMuted, videoVolume, setVideoVolume, toggleVideoMute,
     save
   };
 });

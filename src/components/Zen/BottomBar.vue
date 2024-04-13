@@ -1,13 +1,18 @@
 <template>
   <div class="bottom-bar">
     <div class="quick-settings" v-if="zenMode">
-      <v-slider
-        v-model="volume"
-        @update:model-value="emit('setVolume', $event)"
-        hide-details class="slider-volume" :append-icon="volume === 0 ? 'mdi-volume-off' : 'mdi-volume-high'"
-        :min="0" :max="100"
-        @click:append="toggleMute()"
+      <div class="volume-controls" v-if="settings.themeSettings.backgroundVideo">
+        <v-slider
+          :model-value="settings.videoMuted ? 0 : settings.videoVolume"
+          @update:model-value="settings.setVideoVolume($event)"
+          hide-details class="volume-slider"
+          :min="0" :max="100"
         />
+        <v-icon @click="settings.toggleVideoMute()"
+          class="volume-icon"
+          :icon="settings.videoMuted ? 'mdi-volume-off' : 'mdi-volume-high'" />
+
+      </div>
       <v-btn density="comfortable" class="btn-edit btn-edit-main bg-surface" icon="mdi-cog" size="large"
         @click="emit('openSettingsTab', pomodoro.going ? 'theme' : 'pomodoro')">
         <v-icon class="icon" icon="mdi-cog" size="large" />
@@ -83,23 +88,6 @@ const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
 
 const terminatePomoDialog = ref(false);
-let oldVolume = 50;
-const volume = ref(0);
-watch(volume, (_, oldValue) => {
-  oldVolume = oldValue
-  emitVolume();
-});
-function toggleMute() {
-  if (volume.value === 0) {
-    volume.value = oldVolume;
-  } else {
-    volume.value = 0;
-  }
-  emitVolume();
-}
-function emitVolume() {
-  emit('setVolume', volume.value);
-}
 
 const props = defineProps<{
   zenMode: boolean;
@@ -109,7 +97,6 @@ const emit = defineEmits<{
   (e: 'setZenMode', value: boolean): void
   (e: 'setShowPomoHistory', value: boolean): void
   (e: 'openSettingsTab', value: string): void
-  (e: 'setVolume', value: number): void
 }>();
 
 function stopPomodoro() {
@@ -165,12 +152,28 @@ function toggleZenMode() {
     align-self: flex-end;
     margin: 1rem;
 
-    .slider-volume {
-      width: 10rem;
+    .volume-controls {
       margin-right: 1rem;
       border-radius: 1rem;
       background-color: rgb(var(--v-theme-surface));
-      padding: 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 0.4rem;
+      height: 32px;
+      min-width: 0rem;
+      transition: min-width 0.2s ease-in-out;
+
+      .volume-slider {
+        display: none;
+      }
+
+      &:hover {
+        min-width: 10rem;
+        .volume-slider {
+          display: block;
+        }
+      }
     }
     
   }

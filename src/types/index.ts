@@ -157,6 +157,7 @@ export type GeneralSettings = {
   pulsingPause: boolean;
   showSeconds: boolean;
   dayStartEndHours: [number, number];
+  videoVolume: number;
 }
 export type ThemeSettings = {
   palette: string;
@@ -164,6 +165,7 @@ export type ThemeSettings = {
   backgroundColor?: string;
   backgroundImg?: string;
   backgroundVideo?: string;
+  showOnlyMusic?: boolean;
 }
 
 export type Settings = {
@@ -181,6 +183,7 @@ export interface Theme {
   backgroundImg?: string;
   previewImg?: string;
   backgroundVideo?: string;
+  showOnlyMusic?: boolean;
 }
 export interface Timer {
   id?: number;

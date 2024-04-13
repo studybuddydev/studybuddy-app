@@ -53,8 +53,20 @@
           type="color" clearable />
         <v-text-field :label="$t('pause.theme.url')" v-model="settingsStore.settings!.theme!.backgroundImg"
           type="string" clearable />
-          <v-text-field :label="$t('Youtube')" v-model="settingsStore.settings!.theme!.backgroundVideo"
-          type="string" clearable />
+        <v-row>
+          <v-col cols="9">
+            <v-text-field :label="$t('Youtube')" v-model="settingsStore.settings!.theme!.backgroundVideo"
+              type="string" clearable />
+          </v-col>
+          <v-col cols="3">
+            <div>
+              <v-tooltip activator="parent" location="top">Show only music</v-tooltip>
+              <v-switch color="primary" inset hide-details true-icon="mdi-music" false-icon="mdi-video"
+                v-model="settingsStore.settings!.theme!.showOnlyMusic">
+              </v-switch>
+            </div>
+          </v-col>
+        </v-row>
 
       </div>
     </v-window-item>
@@ -91,6 +103,7 @@ function setTheme(newTheme: Theme) {
   settingsStore.settings!.theme!.palette = newTheme.palette!;
   settingsStore.settings!.theme!.backgroundImg = newTheme.backgroundImg;
   settingsStore.settings!.theme!.backgroundVideo = newTheme.backgroundVideo;
+  settingsStore.settings!.theme!.showOnlyMusic = newTheme.showOnlyMusic;
 }
 
 function setPalette(palette: string) {
@@ -136,6 +149,7 @@ function saveTheme() {
     palette: settingsStore.settings!.theme!.palette,
     backgroundImg: settingsStore.settings!.theme!.backgroundImg,
     backgroundVideo: settingsStore.settings!.theme!.backgroundVideo,
+    showOnlyMusic: settingsStore.settings!.theme!.showOnlyMusic,
   };
 
   themeStore.addTheme(newTheme);
