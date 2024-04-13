@@ -128,6 +128,7 @@ function setUpNewTheme() {
 function getPreviewImg(t: Theme) {
   if (t.previewImg) return t.previewImg;
   if (t.backgroundImg) return t.backgroundImg;
+  if (t.showOnlyMusic) return undefined;
   if (t.backgroundVideo) {
     const match = t.backgroundVideo.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
     const id = (match && match[7].length == 11) ? match[7] : false;
