@@ -17,6 +17,7 @@ export const useThemeStore = defineStore('themeStore', () => {
       palette: theme.palette,
       backgroundColor: theme.backgroundColor,
       backgroundImg: theme.backgroundImg,
+      backgroundVideo: theme.backgroundVideo
     }
     const res = await db.themes.add(toAddTheme);
     update();

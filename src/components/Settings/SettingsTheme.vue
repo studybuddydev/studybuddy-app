@@ -11,7 +11,7 @@
           @mouseleave="deleteTheme(undefined)" @click="setTheme(t)"
           :style="{
             border: `2px solid ${primaryColorsMapping[t.palette ?? '']}`,
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${t.previewImg ?? t.backgroundImg})`
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${getPreviewImg(t)})`
           }">
           <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
             <polygon points="0,0 30,0 30,30" :style="{
@@ -53,6 +53,8 @@
           type="color" clearable />
         <v-text-field :label="$t('pause.theme.url')" v-model="settingsStore.settings!.theme!.backgroundImg"
           type="string" clearable />
+          <v-text-field :label="$t('Youtube')" v-model="settingsStore.settings!.theme!.backgroundVideo"
+          type="string" clearable />
 
       </div>
     </v-window-item>
@@ -88,6 +90,7 @@ function setTheme(newTheme: Theme) {
   settingsStore.updatePalette(newTheme.palette!);
   settingsStore.settings!.theme!.palette = newTheme.palette!;
   settingsStore.settings!.theme!.backgroundImg = newTheme.backgroundImg;
+  settingsStore.settings!.theme!.backgroundVideo = newTheme.backgroundVideo;
 }
 
 function setPalette(palette: string) {
@@ -103,6 +106,16 @@ function setUpNewTheme() {
   ogTheme = {
     palette: settingsStore.settings!.theme!.palette,
     backgroundImg: settingsStore.settings!.theme!.backgroundImg,
+  }
+}
+
+function getPreviewImg(t: Theme) {
+  if (t.backgroundVideo) {
+    const match = t.backgroundVideo.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
+    const id = (match && match[7].length == 11) ? match[7] : false;
+    return  `https://img.youtube.com/vi/${id}/0.jpg`;
+  } else {
+    return t.previewImg ?? t.backgroundImg;
   }
 }
 
@@ -122,7 +135,9 @@ function saveTheme() {
     title: newThemeTitle.value,
     palette: settingsStore.settings!.theme!.palette,
     backgroundImg: settingsStore.settings!.theme!.backgroundImg,
+    backgroundVideo: settingsStore.settings!.theme!.backgroundVideo,
   };
+
   themeStore.addTheme(newTheme);
   setTheme(newTheme);
   newThemeTitle.value = undefined;

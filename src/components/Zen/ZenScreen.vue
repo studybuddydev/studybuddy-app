@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
 import PomodoroPip from '@/components/Pomodoro/PomodoroPip.vue';
@@ -14,8 +14,7 @@ import ZenActions from '@/components/Zen/ZenActions.vue'
 import PomodoroDetailsEnd from '@/components/Zen/PomodoroDetailsEnd.vue';
 import PomodoroSetup from '@/components/Pomodoro/PomodoroSetup.vue';
 import Sink from '@/components/Sink/Sink.vue';
-import YouTubePlayer from 'youtube-player'
-import type { YouTubePlayer as YouTubePlayerType } from 'youtube-player/dist/types'
+import BackgroundVideo from '@/components/Video/BackgroundVideo.vue';
 
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
@@ -45,40 +44,11 @@ const onKeyUp = (e: KeyboardEvent) => {
   }
 };
 
-let player: YouTubePlayerType | null = null;
+const volume = ref(50);
 
-onMounted(() => {
-  window.addEventListener('keyup', onKeyUp)
-
-  player = YouTubePlayer('video-player', {
-    videoId: 'Ee_uujKuJMI',
-    host: 'https://www.youtube-nocookie.com',
-    playerVars: {
-      autoplay: 1,
-      playsinline: 1,
-      loop: 1,
-      controls: 0,
-    }
-  });
-
-  player.on('ready', async () => {
-    await player?.mute()
-    await player?.playVideo()
-  });
-});
+onMounted(() => { window.addEventListener('keyup', onKeyUp) });
 onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 
-let playerMuted = true;
-function setVolume(volume: number) {
-  if (volume >= 0 && playerMuted) {
-    playerMuted = false;
-    player?.unMute()
-  } else if (volume === 0) {
-    playerMuted = true;
-    player?.mute()
-  }
-  player?.setVolume(volume)
-}
 </script>
 
 <template>
@@ -90,17 +60,7 @@ function setVolume(volume: number) {
       <v-scroll-y-reverse-transition>
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
-          <div class="video-container">
-            <div id="video-player"></div>
-            <!-- <iframe
-              src="https://www.youtube.com/embed/MtoZ9sMLzCI?si=JVYDo1pcFZRABxFV&controls=0&autoplay=1&playsinline=1&loop=1"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
-            ></iframe> -->
-          </div>
+          <BackgroundVideo :volume="volume" />
 
           <div class="zen-header">
             <About class="top-left" :show-title="!pomodoro.created" />
@@ -116,7 +76,6 @@ function setVolume(volume: number) {
               <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going"
                 :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
                 :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)" />
-
               <PomodoroPip
                 v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
                 :zen-style="zenStyle" :hide-time="settings.generalSettings.hideTime" />
@@ -127,14 +86,14 @@ function setVolume(volume: number) {
 
             </div>
           </div>
-          
+
           <Sink class="sink" />
         </div>
       </v-scroll-y-reverse-transition>
     </div>
     <BottomBar :zen-mode="zenMode" :show-pomo-history="showPomoHistory" @set-zen-mode="zenMode = $event"
       @set-show-pomo-history="showPomoHistory = $event" @open-settings-tab="openSettingsTab = $event"
-      @set-volume="setVolume($event)" />
+      @set-volume="volume = $event" />
   </div>
 </template>
 
@@ -150,39 +109,6 @@ function setVolume(volume: number) {
   position: absolute;
   top: 23vh;
   right: 0;
-}
-
-
-
-.video-container{
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-
-  ::v-deep(iframe) {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100vw;
-    height: 100vh;
-    transform: translate(-50%, -50%);
-  }
-}
-
-@media (min-aspect-ratio: 16/9) {
-  .video-container ::v-deep(iframe) {
-    /* height = 100 * (9 / 16) = 56.25 */
-    height: 56.25vw;
-  }
-}
-    
-@media (max-aspect-ratio: 16/9) {
-  .video-container ::v-deep(iframe) {
-    /* width = 100 / (9 / 16) = 177.777777 */
-    width: 177.78vh;
-  }
 }
 
 .zen-screen {

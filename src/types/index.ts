@@ -163,6 +163,7 @@ export type ThemeSettings = {
   icon: string;
   backgroundColor?: string;
   backgroundImg?: string;
+  backgroundVideo?: string;
 }
 
 export type Settings = {
@@ -179,6 +180,7 @@ export interface Theme {
   backgroundColor?: string;
   backgroundImg?: string;
   previewImg?: string;
+  backgroundVideo?: string;
 }
 export interface Timer {
   id?: number;
