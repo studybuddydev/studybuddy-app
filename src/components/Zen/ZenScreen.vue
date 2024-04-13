@@ -14,6 +14,8 @@ import ZenActions from '@/components/Zen/ZenActions.vue'
 import PomodoroDetailsEnd from '@/components/Zen/PomodoroDetailsEnd.vue';
 import PomodoroSetup from '@/components/Pomodoro/PomodoroSetup.vue';
 import Sink from '@/components/Sink/Sink.vue';
+import YouTubePlayer from 'youtube-player'
+import type { YouTubePlayer as YouTubePlayerType } from 'youtube-player/dist/types'
 
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
@@ -43,8 +45,40 @@ const onKeyUp = (e: KeyboardEvent) => {
   }
 };
 
-onMounted(() => { window.addEventListener('keyup', onKeyUp) });
+let player: YouTubePlayerType | null = null;
+
+onMounted(() => {
+  window.addEventListener('keyup', onKeyUp)
+
+  player = YouTubePlayer('video-player', {
+    videoId: 'Ee_uujKuJMI',
+    host: 'https://www.youtube-nocookie.com',
+    playerVars: {
+      autoplay: 1,
+      playsinline: 1,
+      loop: 1,
+      controls: 0,
+    }
+  });
+
+  player.on('ready', async () => {
+    await player?.mute()
+    await player?.playVideo()
+  });
+});
 onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
+
+let playerMuted = true;
+function setVolume(volume: number) {
+  if (volume >= 0 && playerMuted) {
+    playerMuted = false;
+    player?.unMute()
+  } else if (volume === 0) {
+    playerMuted = true;
+    player?.mute()
+  }
+  player?.setVolume(volume)
+}
 </script>
 
 <template>
@@ -56,6 +90,18 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
       <v-scroll-y-reverse-transition>
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
+          <div class="video-container">
+            <div id="video-player"></div>
+            <!-- <iframe
+              src="https://www.youtube.com/embed/MtoZ9sMLzCI?si=JVYDo1pcFZRABxFV&controls=0&autoplay=1&playsinline=1&loop=1"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe> -->
+          </div>
+
           <div class="zen-header">
             <About class="top-left" :show-title="!pomodoro.created" />
             <UserBanner class="top-right" v-if="!showPomoHistory" @open-settings-tab="event => openSettingsTab = event"
@@ -64,9 +110,8 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 
           <div class="main-content-wrapper">
             <div class="main-content">
-
-                <StartPage v-if="pomodoro.created && !pomodoro.going && !pomodoro.settingUp" />
-                <PomodoroSetup v-else-if="pomodoro.created && !pomodoro.going && pomodoro.settingUp"
+              <StartPage v-if="pomodoro.created && !pomodoro.going && !pomodoro.settingUp" />
+              <PomodoroSetup v-else-if="pomodoro.created && !pomodoro.going && pomodoro.settingUp"
                 @exit-setup="pomodoro.exitSetup()" @open-settings-tab="event => openSettingsTab = event" />
               <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going"
                 :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
@@ -88,7 +133,8 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
       </v-scroll-y-reverse-transition>
     </div>
     <BottomBar :zen-mode="zenMode" :show-pomo-history="showPomoHistory" @set-zen-mode="zenMode = $event"
-      @set-show-pomo-history="showPomoHistory = $event" @open-settings-tab="openSettingsTab = $event" />
+      @set-show-pomo-history="showPomoHistory = $event" @open-settings-tab="openSettingsTab = $event"
+      @set-volume="setVolume($event)" />
   </div>
 </template>
 
@@ -104,6 +150,39 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
   position: absolute;
   top: 23vh;
   right: 0;
+}
+
+
+
+.video-container{
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+
+  ::v-deep(iframe) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100vh;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .video-container ::v-deep(iframe) {
+    /* height = 100 * (9 / 16) = 56.25 */
+    height: 56.25vw;
+  }
+}
+    
+@media (max-aspect-ratio: 16/9) {
+  .video-container ::v-deep(iframe) {
+    /* width = 100 / (9 / 16) = 177.777777 */
+    width: 177.78vh;
+  }
 }
 
 .zen-screen {

@@ -1,11 +1,17 @@
 <template>
   <div class="bottom-bar">
     <div class="quick-settings" v-if="zenMode">
+      <v-slider
+        v-model="volume"
+        @update:model-value="emit('setVolume', $event)"
+        hide-details class="slider-volume" :append-icon="volume === 0 ? 'mdi-volume-off' : 'mdi-volume-high'"
+        :min="0" :max="100"
+        @click:append="toggleMute()"
+        />
       <v-btn density="comfortable" class="btn-edit btn-edit-main bg-surface" icon="mdi-cog" size="large"
         @click="emit('openSettingsTab', pomodoro.going ? 'theme' : 'pomodoro')">
         <v-icon class="icon" icon="mdi-cog" size="large" />
       </v-btn>
-
     </div>
     <div :class="`pull-up-panel blur ${zenMode ? '' : 'pull-up-panel-zenmode'} ${showPomoHistory ? 'no-frost' : ''}`">
       <div class="handle" v-ripple @click="emit('setShowPomoHistory', false)" v-if="showPomoHistory">
@@ -71,11 +77,29 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
 import { useSettingsStore } from "@/stores/settings";
+import { watch } from 'vue';
 
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
 
 const terminatePomoDialog = ref(false);
+let oldVolume = 50;
+const volume = ref(0);
+watch(volume, (_, oldValue) => {
+  oldVolume = oldValue
+  emitVolume();
+});
+function toggleMute() {
+  if (volume.value === 0) {
+    volume.value = oldVolume;
+  } else {
+    volume.value = 0;
+  }
+  emitVolume();
+}
+function emitVolume() {
+  emit('setVolume', volume.value);
+}
 
 const props = defineProps<{
   zenMode: boolean;
@@ -85,6 +109,7 @@ const emit = defineEmits<{
   (e: 'setZenMode', value: boolean): void
   (e: 'setShowPomoHistory', value: boolean): void
   (e: 'openSettingsTab', value: string): void
+  (e: 'setVolume', value: number): void
 }>();
 
 function stopPomodoro() {
@@ -132,9 +157,22 @@ function toggleZenMode() {
   justify-content: flex-end;
 
   .quick-settings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
     pointer-events: auto;
     align-self: flex-end;
     margin: 1rem;
+
+    .slider-volume {
+      width: 10rem;
+      margin-right: 1rem;
+      border-radius: 1rem;
+      background-color: rgb(var(--v-theme-surface));
+      padding: 0 1rem;
+    }
+    
   }
 
 

@@ -18,6 +18,7 @@
     "@intlify/unplugin-vue-i18n": "^3.0.1",
     "@jamescoyle/vue-icon": "^0.1.2",
     "@popperjs/core": "^2.11.8",
+    "@types/youtube-player": "^5.5.11",
     "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.8",
@@ -38,7 +39,8 @@
     "vue-i18n": "^9.10.2",
     "vue-router": "^4.3.0",
     "vuedraggable": "^4.1.0",
-    "vuetify": "^3.5.11"
+    "vuetify": "^3.5.11",
+    "youtube-player": "^5.6.0"
   },
   "devDependencies": {
     "@mdi/font": "^7.4.47",
