@@ -18,7 +18,10 @@
               fill: primaryColorsMapping[t.palette ?? ''],
             }" />
           </svg>
-          <div class="theme-title">{{ t.title }}</div>
+          <div class="theme-title">
+            {{ t.backgroundVideo ? (t.showOnlyMusic ? '♪' : '▶') : ''  }}
+            {{ t.title }}
+          </div>
           <v-icon size="x-small" icon="mdi-delete" @click.stop="deleteTheme(t.id)" class="btn-delete"
             :color="deleteingTheme === t.id ? 'red' : 'white'" />
         </div>
@@ -123,12 +126,12 @@ function setUpNewTheme() {
 }
 
 function getPreviewImg(t: Theme) {
+  if (t.previewImg) return t.previewImg;
+  if (t.backgroundImg) return t.backgroundImg;
   if (t.backgroundVideo) {
     const match = t.backgroundVideo.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
     const id = (match && match[7].length == 11) ? match[7] : false;
-    return  `https://img.youtube.com/vi/${id}/0.jpg`;
-  } else {
-    return t.previewImg ?? t.backgroundImg;
+    return `https://img.youtube.com/vi/${id}/0.jpg`;
   }
 }
 

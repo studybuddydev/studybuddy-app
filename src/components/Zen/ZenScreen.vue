@@ -78,7 +78,6 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
                 v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
                 :zen-style="zenStyle" :hide-time="settings.generalSettings.hideTime" />
               <ZenActions @show-history="showPomoHistory = true" />
-              {{ settings.themeSettings.showOnlyMusic }}
               <PomodoroDetailsEnd class="pomo-details"
                 v-if="!(pomodoro.going || pomodoro.countdownRunning) && pomodoro.finishedPomoRecord?.pomo"
                 :pomo="pomodoro.finishedPomoRecord.pomo" @done="pomodoro.createPomodoro()" />

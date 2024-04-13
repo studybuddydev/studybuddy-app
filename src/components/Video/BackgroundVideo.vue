@@ -36,6 +36,11 @@ function playVideo(id: string) {
   player.on('ready', async () => {
     await player?.mute()
     await player?.playVideo()
+
+    if (!settings.videoMuted || true) {
+      console.log('Unmuting')
+      // player?.unMute()
+    }
   });
 
   isThereAVideo.value = true;
