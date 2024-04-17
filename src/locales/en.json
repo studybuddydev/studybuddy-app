@@ -160,7 +160,7 @@
     "introMessage": "Hey there, you just discovered the planning mode! It's still a work in progress but you can already add your exams and chapters. Click on the first exam on the left column to discover more. Click on the little arrow below to go back to the timer."
   },
   "info": {
-    "welcome": "Hi! You can open the settings to set the time you want to study, or you can press play to start a default session of 2 hours with 3 breaks of 5 minutes each. After you press play, the only thing you have to do is mantain focus until it's time for the first break. Happy studying!",
+    "welcome": "Hi! Press play to start a default session of 2 hours with 3 breaks of 5 minutes each. After you press play, the only thing you have to do is mantain focus until it's time for the first break. Happy studying!",
     "pause": "When you are on a break inside a studying session, try not to use your phone, expecially avoid social media. Instead rest your eyes, drink water or go to the restroom. Use this time to allow your brain to rework what you just studied.",
     "timer": "2 different ways to track your time. Free: you decide when it's time for a break. Classic: you decide the intervals in advance and then execute them. Doesn't matter if you overshoot. You can use the classic Pomodoro intervals or create new ones.",
     "theme": "Here you can choose your favorite theme. You can also create one from scratch adding a picture from the web.",
