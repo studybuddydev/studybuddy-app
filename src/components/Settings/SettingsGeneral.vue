@@ -17,7 +17,7 @@
     <v-row>
       <v-col cols="12">
         <div class="text-h6">{{ $t("pause.timer.volume") }}</div>
-        <v-slider v-model="settingsStore.settings!.general!.soundVolume" :min="0" :max="100" :step="1" thumb-label hide-details
+        <v-slider v-model="settingsStore.settings!.general!.soundVolume" :min="0" :max="100" :step="1" thumb-label hide-details @update:model-value="testSound($event)"
           class="pr-4 primary-thumb" :prepend-icon="volumeIcon(settingsStore.settings!.general!.soundVolume)" color="primary" />
       </v-col>
       <v-col cols="12">
@@ -61,6 +61,14 @@ const volumeIcon = computed(() => ((volume: number) => {
   if (volume < 66) return 'mdi-volume-medium';
   return 'mdi-volume-high';
 }))
+
+async function testSound(volume: number) {
+  console.log('ciao')
+  const audio = new Audio('/sounds/break.wav');
+    if (volume === undefined) volume = 0.5;
+    audio.volume = volume / 100;
+    audio.play();
+}
 
 
 // ----- LANG

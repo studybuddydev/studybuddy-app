@@ -99,7 +99,7 @@ async function updateTask() {
 <style scoped lang="scss">
 .pomo-details-props {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 66% auto;
   grid-template-rows: auto auto;
   width: 100%;
 
@@ -177,7 +177,7 @@ async function updateTask() {
 
 @media (max-width: 850px) {
   .pomo-details-props {
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
     grid-template-rows: auto auto auto;
     width: calc(100vw - 4rem);
 

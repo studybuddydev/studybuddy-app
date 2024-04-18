@@ -211,6 +211,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     if (lastBreak.end - lastBreak.start < 5000) {
       pomo.breaksDone.pop();
+      pauseShortSnack.value = true;
     }
 
     saveStatus();
@@ -429,6 +430,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
   // ---------- Notification ----------
   let oneSoundLimit = false;
+
   async function playNotification(type: ENotification) {
     if (Notification.permission === "granted") {
       let text = '';
@@ -530,6 +532,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   });
   const freeMode = computed(() => timerStatus.pomodoroStatus?.freeMode ?? false);
 
+  const pauseShortSnack = ref(false);
+
   // ---------- RETURN ----------
   return {
     init,
@@ -540,7 +544,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     timeFormatted, timeInTitle,
     startCountdown, countdownRunning, longAwaitPopup,
     parseTime,
-    setup, settingUp, exitSetup
+    setup, settingUp, exitSetup,
+    pauseShortSnack
   }
 
 })
