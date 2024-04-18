@@ -17,7 +17,6 @@
 
       <v-text-field v-model="pomo.name" :label="$t('setup.name')" hide-details dense class="text-box text-boxt-title"
         @update:modelValue="(newName: any) => { updateName(pomo.id, newName) }" />
-
     </div>
 
     <div class="tasks">

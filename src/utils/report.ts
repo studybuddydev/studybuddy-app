@@ -34,12 +34,13 @@ export function getPomoReport(pomo: PomodoroBase | undefined): PomoReport {
     points: Math.max(Math.min(score, 1), 0)
   };
 }
-export function parsePoints(points: number) {
-  return (points * 100).toFixed(1);
+export function parsePoints(points: number | null) {
+  return points === null ? '-' : (points * 100).toFixed(1);
 }
 
-export function getPointsColorClass(points: number, deepWork: boolean = true) {
+export function getPointsColorClass(points: number | null, deepWork: boolean = true) {
   const deepWorkClass = deepWork ? '' : ' shallow-work';
+  if (points === null) return 'points bg-grey' + deepWorkClass;
   if (points < 0.6) {
     return 'points bg-error' + deepWorkClass;
   }
