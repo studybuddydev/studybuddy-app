@@ -102,7 +102,7 @@ async function updateTask() {
   grid-template-columns: 66% auto;
   grid-template-rows: auto auto;
   width: 100%;
-
+  align-items: center;
 
   .title {
     grid-column: 1 / span 2;
