@@ -62,12 +62,18 @@ const volumeIcon = computed(() => ((volume: number) => {
   return 'mdi-volume-high';
 }))
 
+
+let debounceAudio: number | undefined = undefined;
 async function testSound(volume: number) {
   console.log('ciao')
-  const audio = new Audio('/sounds/break.wav');
+  clearTimeout(debounceAudio);
+  debounceAudio = setTimeout(async () => {
+    const audio = new Audio('/sounds/break.wav');
     if (volume === undefined) volume = 0.5;
     audio.volume = volume / 100;
     audio.play();
+  }, 500)
+
 }
 
 
