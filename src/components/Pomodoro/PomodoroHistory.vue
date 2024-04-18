@@ -194,7 +194,7 @@ const hoursList = computed(() => {
             <PomodoroFlex class="pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]"
               :percentage="100" />
             <p class="lenght-header"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
-            <p :class="reportUtils.getPointsColorClass(g.points)">{{ reportUtils.parsePoints(g.points) }}%</p>
+            <p :class="reportUtils.getPointsColorClass(g.points)">{{ reportUtils.parsePoints(g.points) }}</p>
           </div>
 
           <div class="pomo-infos" v-if="openDay === key">

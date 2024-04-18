@@ -35,7 +35,7 @@ export function getPomoReport(pomo: PomodoroBase | undefined): PomoReport {
   };
 }
 export function parsePoints(points: number | null) {
-  return points === null ? '-' : (points * 100).toFixed(1);
+  return points === null ? '-' : `${(points * 100).toFixed(1)}%`;
 }
 
 export function getPointsColorClass(points: number | null, deepWork: boolean = true) {
