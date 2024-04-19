@@ -22,17 +22,18 @@ const settings = useSettingsStore();
 const zenMode = ref(true);
 const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
-const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
+const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string, backgroundVideo?: boolean }>(() => {
+  const backgroundVideo = !!settings.themeSettings?.backgroundVideo;
   if (settings.themeSettings?.backgroundImg) {
     if (!pomodoro.onLongPause) {
-      return { backgroundImage: `url(${settings.themeSettings?.backgroundImg})` }
+      return { backgroundImage: `url(${settings.themeSettings?.backgroundImg})`, backgroundVideo }
     } else {
-      return { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${settings.themeSettings?.backgroundImg})` }
+      return { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${settings.themeSettings?.backgroundImg})`, backgroundVideo }
     }
   } else if (settings.themeSettings?.backgroundColor) {
-    return { backgroundColor: settings.themeSettings?.backgroundColor }
+    return { backgroundColor: settings.themeSettings?.backgroundColor, backgroundVideo }
   }
-  return {};
+  return { backgroundVideo };
 });
 
 const onKeyUp = (e: KeyboardEvent) => {
@@ -50,7 +51,7 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 </script>
 
 <template>
-  <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
+  <div :class="(zenStyle.backgroundImage || zenStyle.backgroundVideo) ? 'img-background' : ''">
     <Settings v-model="openSettingsTab" />
     <LongAwayPopup />
 

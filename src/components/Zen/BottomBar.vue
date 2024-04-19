@@ -2,14 +2,9 @@
   <div class="bottom-bar">
     <div class="quick-settings" v-if="zenMode">
       <div class="volume-controls" v-if="settings.themeSettings.backgroundVideo">
-        <v-slider
-          :model-value="settings.videoMuted ? 0 : settings.videoVolume"
-          @update:model-value="settings.setVideoVolume($event)"
-          hide-details class="volume-slider"
-          :min="0" :max="100"
-        />
-        <v-icon @click="settings.toggleVideoMute()"
-          class="volume-icon"
+        <v-slider :model-value="settings.videoMuted ? 0 : settings.videoVolume"
+          @update:model-value="settings.setVideoVolume($event)" hide-details class="volume-slider" :min="0" :max="100" />
+        <v-icon @click="settings.toggleVideoMute()" class="volume-icon"
           :icon="settings.videoMuted ? 'mdi-volume-off' : 'mdi-volume-high'" />
 
       </div>
@@ -36,7 +31,8 @@
             <v-btn class='btn bg-accent pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.studing">
               <v-icon class="icon" icon="mdi-pause" />
             </v-btn>
-            <v-btn class='btn bg-accent pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.timeToStudy">
+            <v-btn class='btn bg-accent pomo-btn pomo-box' @click="() => pausePomodoro()"
+              v-else-if="pomodoro.timeToStudy">
               <v-icon class="icon" icon="mdi-play" />
             </v-btn>
             <v-btn class='btn bg-accent pomo-btn pomo-box pomo-box-disabled' v-else>
@@ -161,21 +157,33 @@ function toggleZenMode() {
       justify-content: flex-end;
       padding: 0 0.4rem;
       height: 32px;
+
       min-width: 0rem;
       transition: min-width 0.2s ease-in-out;
 
+      ::v-deep(.v-input) {
+        margin: 0;
+        transition: margin 0.2s ease-in-out;
+      }
+
       .volume-slider {
+        transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
         display: none;
       }
 
       &:hover {
         min-width: 10rem;
+
+        ::v-deep(.v-input) {
+          margin: 0 8px;
+        }
+
         .volume-slider {
           display: block;
         }
       }
     }
-    
+
   }
 
 

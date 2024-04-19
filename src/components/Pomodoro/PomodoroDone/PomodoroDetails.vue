@@ -98,7 +98,7 @@ async function updateTask() {
 <style scoped lang="scss">
 .pomo-details-props {
   display: grid;
-  grid-template-columns: 66% auto;
+  grid-template-columns: 2fr 1fr;
   grid-template-rows: auto auto;
   width: 100%;
   align-items: center;
@@ -122,6 +122,7 @@ async function updateTask() {
     flex-direction: column;
     padding: 1rem;
     width: 100%;
+    max-width: 25rem;
     align-self: center;
 
     .input-add-task {
