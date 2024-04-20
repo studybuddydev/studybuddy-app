@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="px-6">
     <v-row>
       <v-col cols="12">
         <v-select :label="$t('pause.general.language')" v-model="$i18n.locale" :items="langs"
