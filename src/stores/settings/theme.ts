@@ -6,7 +6,7 @@ import { useDBStore } from "@/stores/db";
 export const useThemeStore = defineStore('themeStore', () => {
   const db = useDBStore()
   const themes = ref<Theme[] >([]);
-  const themesByCategory = ref<{ [id: string]: Theme[] } >({});
+  const themesByCategory = ref<Theme[][]>([]);
   const categories = ref<string[] >([]);
 
   async function getAllThemes() {
@@ -30,15 +30,19 @@ export const useThemeStore = defineStore('themeStore', () => {
   async function update() {
     themes.value = await getAllThemes();
     categories.value = [ ...new Set(themes.value.map(t => t.category as string).filter(x => x)) ];
-    themesByCategory.value = themes.value.reduce((acc, theme) => {
-      if (theme.category) {
-        if (!acc[theme.category]) {
-          acc[theme.category] = [];
-        }
-        acc[theme.category].push(theme);
+    themesByCategory.value = [ ...categories.value.map(_ => []), [] ];
+    themes.value.forEach(t => {
+      if (t.category) {
+        themesByCategory.value[categories.value.indexOf(t.category)].push(t);
+      } else {
+        themesByCategory.value?.at(-1)?.push(t);
       }
-      return acc;
-    }, {} as { [id: string]: Theme[] });
+    });
+    if ((themesByCategory.value.at(-1)?.length ?? 0) > 0) categories.value.push('No Category');
+
+
+
+
   }
   update();
 

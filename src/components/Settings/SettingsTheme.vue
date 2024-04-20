@@ -1,54 +1,53 @@
 <template>
-  <div class="categories">
-    <v-chip-group selected-class="text-primary" column v-model="selectedCategory">
-      <v-chip v-for="cat in themeStore.categories" :key="cat"> {{ cat }} </v-chip>
-    </v-chip-group>
-  </div>
+  <div class="settings-theme">
 
-  <div class="themes" v-if="selectedCategory !== null">
-    <ThemeTile class="theme-tile" v-for="t in themeStore.themesByCategory[themeStore.categories[selectedCategory]]"
-      :theme="t" :selected="selectedTheme?.title === t.title" :primaryColor="primaryColorsMapping[t.palette ?? '']"
-      @setTheme="setTheme(t)" />
-  </div>
+    <div class="categories">
+      <v-chip 
+        v-for="(cat, i) in themeStore.categories" :key="cat"
+        @click="setCategory(i)"
+        :color="selectedCategory === i ? 'primary' : ''" :variant="selectedCategory === i ? 'flat' : 'tonal'">{{ cat
+        }}</v-chip>
+    </div>
 
-  <div class="text-h6">Customize</div>
-  <v-col cols="12">
-    <v-row>
-      <v-col cols="10">
-        <v-text-field label="Background"
-          v-model="background" :error="!!backgroundUrlError"
-          :prepend-icon="iconBackground"
-          clearable />
-      </v-col>
-      <v-col cols="2">
-        <div>
-          <v-tooltip activator="parent" location="top">Show only music</v-tooltip>
-          <v-switch
-            color="primary"
-            inset hide-details
-            true-icon="mdi-music" false-icon="mdi-video"
-            v-model="settings.themeSettings.showOnlyMusic"
-            :disabled="!settings.themeSettings.backgroundVideo" />
-        </div>
-      </v-col>
-    </v-row>
-    <v-row v-if="settings.themeSettings.backgroundVideo">
+    <div class="themes" v-if="selectedCategory !== null">
+      <div class="arrow" ripple @click="decreasePage()"><v-icon :disabled="themesPage === 0" icon="mdi-chevron-left" /></div>
+      <ThemeTile class="theme-tile" v-for="t in showingThemes" :theme="t"
+        :selected="selectedTheme?.title === t.title" :primaryColor="primaryColorsMapping[t.palette ?? '']"
+        @setTheme="setTheme(t)" />
+      <div class="arrow" v-ripple @click="increasePage()"><v-icon :disabled="themesPage >= Math.floor(themeStore.themesByCategory?.[selectedCategory]?.length! / 3)" icon="mdi-chevron-right" /></div>
+    </div>
+
+    <div class="customize px-6 pt-8">
+
+      <div class="text-h6">Customize</div>
       <v-col cols="12">
-        <VolumeSlider
-          v-model:volume="settings.generalSettings.videoVolume"
-          v-model:mute="settings.generalSettings.videoMute"
-        />
+        <v-row>
+          <v-col cols="10">
+            <v-text-field label="Background" v-model="background" :error="!!backgroundUrlError"
+              :prepend-icon="iconBackground" clearable />
+          </v-col>
+          <v-col cols="2">
+            <div>
+              <v-tooltip activator="parent" location="top">Show only music</v-tooltip>
+              <v-switch color="primary" inset hide-details true-icon="mdi-music" false-icon="mdi-video"
+                v-model="settings.themeSettings.showOnlyMusic" :disabled="!settings.themeSettings.backgroundVideo" />
+            </div>
+          </v-col>
+        </v-row>
+        <v-row v-if="settings.themeSettings.backgroundVideo">
+          <v-col cols="12">
+            <VolumeSlider v-model:volume="settings.generalSettings.videoVolume"
+              v-model:mute="settings.generalSettings.videoMute" />
+          </v-col>
+        </v-row>
+        <v-row v-if="settings.themeSettings.backgroundVideo && settings.themeSettings.showOnlyMusic">
+          <v-col cols="12">
+            <v-text-field label="Background image" v-model="backgroundImg" :error="!!backgroundUrlImgError" clearable />
+          </v-col>
+        </v-row>
       </v-col>
-    </v-row>
-    <v-row v-if="settings.themeSettings.backgroundVideo && settings.themeSettings.showOnlyMusic">
-      <v-col cols="12">
-        <v-text-field
-          label="Background image"
-          v-model="backgroundImg" :error="!!backgroundUrlImgError"
-          clearable />
-      </v-col>
-    </v-row>
-  </v-col>
+    </div>
+  </div>
 </template>
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
@@ -63,8 +62,7 @@ import VolumeSlider from '@/components/common/VolumeSlider.vue'
 const themeStore = useThemeStore();
 const settings = useSettingsStore();
 
-const selectedCategory = ref<number>(0);
-const volume = ref<number>(0);
+
 
 const primaryColorsMapping: { [id: string]: string } = {};
 paletteList.forEach((t) => { primaryColorsMapping[t.value] = t.color; });
@@ -91,7 +89,7 @@ const background = computed({
     } else {
       backgroundUrlError.value = newValue;
     }
-    
+
   }
 })
 const backgroundUrlImgError = ref<string | null>(null);
@@ -109,7 +107,6 @@ const backgroundImg = computed({
     } else {
       backgroundUrlImgError.value = newValue;
     }
-    
   }
 })
 
@@ -122,6 +119,31 @@ const iconBackground = computed(() => {
     return 'mdi-video-off'
   }
 })
+
+const selectedCategory = ref<number>(0);
+function setCategory(catI: number) {
+  selectedCategory.value = catI;
+  themesPage.value = 0;
+}
+const themesPage = ref(0);
+const showingThemes = computed(() =>
+  themeStore.themesByCategory?.[
+    selectedCategory.value
+  ]?.slice(themesPage.value * 3, (themesPage.value + 1) * 3)
+);
+
+function increasePage() {
+  if (themesPage.value < Math.floor(themeStore.themesByCategory?.[selectedCategory.value]?.length! / 3)) {
+    themesPage.value++;
+  }
+}
+function decreasePage() {
+  if (themesPage.value > 0) {
+    themesPage.value--;
+  }
+}
+
+
 
 const selectedTheme = ref<Theme | null>(null);
 function setTheme(newTheme: Theme) {
@@ -149,34 +171,42 @@ function saveTheme() {
 </script>
 
 <style scoped lang="scss">
-.theme-settings {
+.settings-theme {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  align-items: center;
+  justify-content: center;
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  .themes {
+    display: grid;
+    grid-template-columns: 4rem 1fr 1fr 1fr 4rem;
+    gap: 1rem;
+    overflow-x: auto;
+    .arrow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      &:first-child {
+        border-radius: 0 0.5rem 0.5rem 0;
+      }
+      &:last-child {
+        border-radius: 0.5rem 0 0 0.5rem;
+      }
+    }
+
+    .theme-tile {
+      flex-basis: 27%;
+      flex-shrink: 0;
+      height: 100%;
+    }
   }
-}
 
-.themes {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  width: 80%;
-  padding: 0.5rem;
-}
+  .categories {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.5rem;
+    justify-content: center;
+  }
 
-.theme-tile {
-  flex-basis: 27%;
-  flex-shrink: 0;
-  height: 100%;
-}
-
-.advance-panel-closed {
-  border-bottom: 1px solid rgba(var(--v-theme-primary), 0.6);
 }
 </style>
