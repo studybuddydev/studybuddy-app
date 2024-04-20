@@ -5,29 +5,24 @@ import { defineStore } from 'pinia';
 
 function getThemes() {
   return [
-    { title: 'Forest', palette: 'bio' },
-    { title: 'Mountain', palette: 'nord' },
-    { title: 'Rocks', palette: 'gptday' },
-
-    { title: 'Space', palette: 'gptnight' },
-    { title: 'Night', palette: 'dark' },
-    { title: 'Aurora', palette: 'blallo' },
-
-    { title: 'Ghibli', palette: 'verdone' },
-    { title: 'LOFI', palette: 'gptnight' },
-    { title: 'Wave', palette: 'nord' },
-
-    { title: 'Purple', palette: 'purple' },
-    { title: 'Beach', palette: 'pastel' },
-    { title: 'Vaporwave', palette: 'vaporwave' },
-
-    { title: 'Barbie', palette: 'pastel' },
-    { title: 'Oppenheimer', palette: 'gptnight' },
-    { title: 'Dune', palette: 'desert' },
-
-    { title: 'City', palette: 'nord' },
-    { title: 'Fog', palette: 'gptday' },
-    { title: 'Gandalf', palette: 'blallo' }
+    { title: 'Forest',      category: 'Nature', palette: 'bio'       },
+    { title: 'Mountain',    category: 'Nature', palette: 'nord'      },
+    { title: 'Rocks',       category: 'Nature', palette: 'gptday'    },
+    { title: 'Space',       category: 'Nature', palette: 'gptnight'  },
+    { title: 'Night',       category: 'Nature', palette: 'dark'      },
+    { title: 'Aurora',      category: 'Nature', palette: 'blallo'    },
+    { title: 'Ghibli',      category: 'Art',    palette: 'verdone'   },
+    { title: 'LOFI',        category: 'Urban',  palette: 'gptnight'  },
+    { title: 'Wave',        category: 'Art',    palette: 'nord'      },
+    { title: 'Purple',      category: 'Purple', palette: 'purple'    },
+    { title: 'Beach',       category: 'Nature', palette: 'pastel'    },
+    { title: 'Vaporwave',   category: 'Purple', palette: 'vaporwave' },
+    { title: 'Barbie',      category: 'Movies', palette: 'pastel'    },
+    { title: 'Oppenheimer', category: 'Movies', palette: 'gptnight'  },
+    { title: 'Dune',        category: 'Movies', palette: 'desert'    },
+    { title: 'City',        category: 'Urban',  palette: 'nord'      },
+    { title: 'Fog',         category: 'Urban',  palette: 'gptday'    },
+    { title: 'Gandalf',     category: 'Movies', palette: 'blallo'    }
 
   ].map((t) => ({ ...t, previewImg: `/images/themes/${t.title}.webp`, backgroundImg: `https://api.studybuddy.it/images/${t.title}`, og: true }));
 }
@@ -56,6 +51,14 @@ export class StudyBuddyDB extends Dexie {
     this.version(5).stores({
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,backgroundColor,backgroundImg",
+      pomodori: "++id,datetime,tag"
+    }).upgrade(async trans => {
+      trans.table('themes').clear();
+      trans.table('themes').bulkAdd(getThemes());
+    });
+    this.version(6).stores({
+      timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
+      themes: "++id,title,palette,category,backgroundColor,backgroundImg",
       pomodori: "++id,datetime,tag"
     }).upgrade(async trans => {
       trans.table('themes').clear();

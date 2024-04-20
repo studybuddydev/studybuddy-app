@@ -179,6 +179,7 @@ export interface Theme {
   id?: number;
   title?: string;
   palette?: string;
+  category?: string;
   backgroundColor?: string;
   backgroundImg?: string;
   previewImg?: string;

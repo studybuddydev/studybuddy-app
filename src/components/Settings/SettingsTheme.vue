@@ -3,35 +3,48 @@
     <v-window-item :value="1" class="theme-settings">
       <div class="header">
         <div class="text-h6">{{ $t('pause.theme.chooseTheme') }}</div>
-        <v-btn @click="setUpNewTheme()" color="primary" variant="text" prepend-icon="mdi-plus">{{ $t('pause.timer.createNew') }}</v-btn>
+        <v-btn @click="setUpNewTheme()" color="primary" variant="text" prepend-icon="mdi-plus">{{
+    $t('pause.timer.createNew') }}</v-btn>
+      </div>
+      <div class="categories">
+        <v-chip-group selected-class="text-primary" column v-model="selectedCategory">
+          <v-chip v-for="cat in themeStore.categories" :key="cat"> {{ cat }} </v-chip>
+        </v-chip-group>
       </div>
 
-      <div class="themes">
-        <div v-for="t in themeStore.themes" :class="`theme-box ${selectedTheme?.title === t.title ? 'selected' : ''}`"
-          @mouseleave="deleteTheme(undefined)" @click="setTheme(t)"
-          :style="{
-            border: `2px solid ${primaryColorsMapping[t.palette ?? '']}`,
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${getPreviewImg(t)})`
-          }">
-          <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="0,0 30,0 30,30" :style="{
-              fill: primaryColorsMapping[t.palette ?? ''],
-            }" />
-          </svg>
-          <div class="theme-title">
-            {{ t.backgroundVideo ? (t.showOnlyMusic ? '♪' : '▶') : ''  }}
-            {{ t.title }}
-          </div>
-          <v-icon size="x-small" icon="mdi-delete" @click.stop="deleteTheme(t.id)" class="btn-delete"
-            :color="deleteingTheme === t.id ? 'red' : 'white'" />
-        </div>
+      <div class="themes" v-if="selectedCategory !== null">
+        <ThemeTile class="theme-tile" v-for="t in themeStore.themesByCategory[themeStore.categories[selectedCategory]]"
+          :theme="t" :selected="selectedTheme?.title === t.title" :primaryColor="primaryColorsMapping[t.palette ?? '']"
+          @setTheme="setTheme(t)" />
       </div>
+
+      <div class="text-h6">Customize</div>
+      <v-col cols="12">
+        <v-row>
+          <v-col cols="10">
+            <v-text-field label="Background" v-model="settingsStore.settings!.theme!.backgroundVideo" clearable />
+          </v-col>
+          <v-col cols="2">
+            <div>
+              <v-tooltip activator="parent" location="top">Show only music</v-tooltip>
+              <v-switch color="primary" inset hide-details true-icon="mdi-music" false-icon="mdi-video"
+                v-model="settingsStore.settings!.theme!.showOnlyMusic"
+                :disabled="!settingsStore.settings!.theme!.backgroundVideo" />
+            </div>
+          </v-col>
+        </v-row>
+        <v-row v-if="settingsStore.settings!.theme!.showOnlyMusic">
+          <v-col cols="12">
+            <v-text-field label="Background image" v-model="settingsStore.settings!.theme!.backgroundImg" clearable />
+          </v-col>
+        </v-row>
+      </v-col>
 
     </v-window-item>
     <v-window-item :value="2" class="theme-settings">
       <div class="header">
         <v-btn @click="back()" color="primary" variant="text" prepend-icon="mdi-arrow-left">{{ $t('back') }}</v-btn>
-        <v-btn @click="saveTheme()" color="primary">{{$t('save')}}</v-btn>
+        <v-btn @click="saveTheme()" color="primary">{{ $t('save') }}</v-btn>
       </div>
 
       <div class="new-theme-settings">
@@ -43,8 +56,8 @@
             @click="setPalette(t.value)">
             <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
               <polygon points="0,0 30,0 30,30" :style="{
-                fill: t.color,
-              }" />
+    fill: t.color,
+  }" />
             </svg>
             <div class="theme-title">
               <p :style="{ color: t.color }">{{ t.title }}</p>
@@ -58,8 +71,8 @@
           type="string" clearable />
         <v-row>
           <v-col cols="9">
-            <v-text-field :label="$t('Youtube')" v-model="settingsStore.settings!.theme!.backgroundVideo"
-              type="string" clearable />
+            <v-text-field :label="$t('Youtube')" v-model="settingsStore.settings!.theme!.backgroundVideo" type="string"
+              clearable />
           </v-col>
           <v-col cols="3">
             <div>
@@ -82,12 +95,13 @@ import { useSettingsStore } from "@/stores/settings";
 import { paletteList } from '@/config/themes'
 import type { Theme } from '@/types';
 import { useI18n } from 'vue-i18n';
+import ThemeTile from '@/components/common/ThemeTile.vue';
 
 const { t } = useI18n();
 const themeStore = useThemeStore();
 const settingsStore = useSettingsStore();
 
-
+const selectedCategory = ref<number>(0);
 const step = ref(1);
 const emit = defineEmits<{
   (e: 'hideDone', hide: boolean): void
@@ -125,17 +139,6 @@ function setUpNewTheme() {
   }
 }
 
-function getPreviewImg(t: Theme) {
-  if (t.previewImg) return t.previewImg;
-  if (t.backgroundImg) return t.backgroundImg;
-  if (t.showOnlyMusic) return undefined;
-  if (t.backgroundVideo) {
-    const match = t.backgroundVideo.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
-    const id = (match && match[7].length == 11) ? match[7] : false;
-    return `https://img.youtube.com/vi/${id}/0.jpg`;
-  }
-}
-
 function back() {
   step.value = 1;
   newThemeTitle.value = undefined;
@@ -162,20 +165,6 @@ function saveTheme() {
   step.value = 1;
 }
 
-const deleteingTheme = ref<number | null>(null);
-function deleteTheme(id: number | undefined) {
-  if (id === undefined) {
-    deleteingTheme.value = null;
-    return;
-  }
-
-  if (deleteingTheme.value === id) {
-    deleteingTheme.value = null;
-    themeStore.deleteTheme(id);
-  } else {
-    deleteingTheme.value = id;
-  }
-}
 </script>
 
 <style scoped lang="scss">
@@ -193,51 +182,20 @@ function deleteTheme(id: number | undefined) {
 }
 
 .themes {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  place-items: center;
-  margin: 1.5rem 0;
-  cursor: pointer;
-
-  .theme-title {
-    color: white;
-  }
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  width: 80%;
+  padding: 0.5rem;
 }
 
-.theme-box {
-  display: grid;
-  place-items: center;
-  padding: 1rem;
-  width: 100%;
-  height: 4rem;
-  border-radius: 1rem;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  overflow: hidden;
+.theme-tile {
+  flex-basis: 27%;
+  flex-shrink: 0;
+  height: 100%;
+}
 
-  .triangle {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-
-  .btn-delete {
-    display: none;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    opacity: 0.7;
-  }
-
-  &:hover {
-    .btn-delete {
-      display: block;
-      &:hover {
-        opacity: 1;
-      }
-    }
-  }
+.advance-panel-closed {
+  border-bottom: 1px solid rgba(var(--v-theme-primary), 0.6);
 }
 </style>
