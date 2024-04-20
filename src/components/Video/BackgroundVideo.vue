@@ -5,17 +5,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import YouTubePlayer from 'youtube-player'
 import { useSettingsStore } from "@/stores/settings";
 import type { YouTubePlayer as YouTubePlayerType } from 'youtube-player/dist/types'
+import { getYotubeId } from '@/utils/common'
 
 const settings = useSettingsStore();
 const isThereAVideo = ref(false);
 let player: YouTubePlayerType | null = null;
 
 let playerMuted = true;
-let currentVideo: string | false = false;
+let currentVideo: string | null = null;
 
 function playVideo(id: string) {
   if (player) {
@@ -47,7 +48,7 @@ function removePlayer() {
 
   player = null;
   isThereAVideo.value = true;
-  currentVideo = false;
+  currentVideo = null;
 }
 
 watch(() => settings.settings.theme?.backgroundVideo, (bgVideo) => {
@@ -82,11 +83,6 @@ onMounted(() => {
       playVideo(currentVideo);
   }
 })
-
-function getYotubeId(url: string) {
-  const match = url.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
-  return (match && match[7].length == 11) ? match[7] : false;
-}
 
 </script>
 <style lang="scss" scoped>

@@ -22,6 +22,7 @@
 import { ref, computed } from 'vue'
 import type { Theme } from '@/types';
 import { useThemeStore } from "@/stores/settings/theme";
+import { getYotubeId } from '@/utils/common'
 const themeStore = useThemeStore();
 
 const props = defineProps<{
@@ -38,9 +39,8 @@ const previewImage = computed(() => {
   if (props.theme.backgroundImg) return props.theme.backgroundImg;
   if (props.theme.showOnlyMusic) return undefined;
   if (props.theme.backgroundVideo) {
-    const match = props.theme.backgroundVideo.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
-    const id = (match && match[7].length == 11) ? match[7] : false;
-    return `https://img.youtube.com/vi/${id}/0.jpg`;
+    const id = getYotubeId(props.theme.backgroundVideo);
+    return id ? `https://img.youtube.com/vi/${id}/0.jpg` : undefined;
   }
 });
 

@@ -26,7 +26,7 @@
 
           <!-- THEME -->
           <v-window-item value="theme">
-            <SettingsTheme @hide-done="e => hideDone = e" />
+            <SettingsTheme />
           </v-window-item>
 
         </v-window>
