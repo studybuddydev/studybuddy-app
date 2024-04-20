@@ -27,12 +27,20 @@
             color="primary"
             inset hide-details
             true-icon="mdi-music" false-icon="mdi-video"
-            v-model="settingsStore.themeSettings.showOnlyMusic"
-            :disabled="!settingsStore.themeSettings.backgroundVideo" />
+            v-model="settings.themeSettings.showOnlyMusic"
+            :disabled="!settings.themeSettings.backgroundVideo" />
         </div>
       </v-col>
     </v-row>
-    <v-row v-if="settingsStore.themeSettings.backgroundVideo && settingsStore.themeSettings.showOnlyMusic">
+    <v-row v-if="settings.themeSettings.backgroundVideo">
+      <v-col cols="12">
+        <VolumeSlider
+          v-model:volume="settings.generalSettings.videoVolume"
+          v-model:mute="settings.generalSettings.videoMute"
+        />
+      </v-col>
+    </v-row>
+    <v-row v-if="settings.themeSettings.backgroundVideo && settings.themeSettings.showOnlyMusic">
       <v-col cols="12">
         <v-text-field
           label="Background image"
@@ -48,13 +56,15 @@ import { useThemeStore } from "@/stores/settings/theme";
 import { useSettingsStore } from "@/stores/settings";
 import { paletteList } from '@/config/themes'
 import type { Theme } from '@/types';
-import ThemeTile from '@/components/common/ThemeTile.vue';
 import { getYotubeId, isUrl } from '@/utils/common'
+import ThemeTile from '@/components/common/ThemeTile.vue';
+import VolumeSlider from '@/components/common/VolumeSlider.vue'
 
 const themeStore = useThemeStore();
-const settingsStore = useSettingsStore();
+const settings = useSettingsStore();
 
 const selectedCategory = ref<number>(0);
+const volume = ref<number>(0);
 
 const primaryColorsMapping: { [id: string]: string } = {};
 paletteList.forEach((t) => { primaryColorsMapping[t.value] = t.color; });
@@ -62,20 +72,20 @@ paletteList.forEach((t) => { primaryColorsMapping[t.value] = t.color; });
 const backgroundUrlError = ref<string | null>(null);
 const background = computed({
   get() {
-    return settingsStore.themeSettings.backgroundVideo ?? settingsStore.themeSettings.backgroundImg ?? backgroundUrlError.value
+    return settings.themeSettings.backgroundVideo ?? settings.themeSettings.backgroundImg ?? backgroundUrlError.value
   },
   set(newValue) {
     if (!newValue) {
-      settingsStore.themeSettings.backgroundImg = '';
-      settingsStore.themeSettings.backgroundVideo = '';
+      settings.themeSettings.backgroundImg = '';
+      settings.themeSettings.backgroundVideo = '';
       backgroundUrlError.value = null;
       backgroundUrlImgError.value = null;
     } else if (getYotubeId(newValue)) {
-      settingsStore.themeSettings.backgroundVideo = newValue;
+      settings.themeSettings.backgroundVideo = newValue;
       backgroundUrlError.value = null;
     } else if (isUrl(newValue)) {
-      settingsStore.themeSettings.backgroundImg = newValue;
-      settingsStore.themeSettings.backgroundVideo = undefined;
+      settings.themeSettings.backgroundImg = newValue;
+      settings.themeSettings.backgroundVideo = undefined;
       backgroundUrlError.value = null;
       backgroundUrlImgError.value = null;
     } else {
@@ -87,14 +97,14 @@ const background = computed({
 const backgroundUrlImgError = ref<string | null>(null);
 const backgroundImg = computed({
   get() {
-    return settingsStore.themeSettings.backgroundImg ?? backgroundUrlImgError.value
+    return settings.themeSettings.backgroundImg ?? backgroundUrlImgError.value
   },
   set(newValue) {
     if (!newValue) {
-      settingsStore.themeSettings.backgroundImg = '';
+      settings.themeSettings.backgroundImg = '';
       backgroundUrlImgError.value = null;
     } else if (isUrl(newValue)) {
-      settingsStore.themeSettings.backgroundImg = newValue;
+      settings.themeSettings.backgroundImg = newValue;
       backgroundUrlImgError.value = null;
     } else {
       backgroundUrlImgError.value = newValue;
@@ -104,9 +114,9 @@ const backgroundImg = computed({
 })
 
 const iconBackground = computed(() => {
-  if (settingsStore.themeSettings.backgroundVideo) {
+  if (settings.themeSettings.backgroundVideo) {
     return 'mdi-video'
-  } else if (settingsStore.themeSettings.backgroundImg) {
+  } else if (settings.themeSettings.backgroundImg) {
     return 'mdi-image'
   } else {
     return 'mdi-video-off'
@@ -116,20 +126,20 @@ const iconBackground = computed(() => {
 const selectedTheme = ref<Theme | null>(null);
 function setTheme(newTheme: Theme) {
   selectedTheme.value = newTheme;
-  settingsStore.updatePalette(newTheme.palette!);
-  settingsStore.themeSettings.palette = newTheme.palette!;
-  settingsStore.themeSettings.backgroundImg = newTheme.backgroundImg;
-  settingsStore.themeSettings.backgroundVideo = newTheme.backgroundVideo;
-  settingsStore.themeSettings.showOnlyMusic = newTheme.showOnlyMusic;
+  settings.updatePalette(newTheme.palette!);
+  settings.themeSettings.palette = newTheme.palette!;
+  settings.themeSettings.backgroundImg = newTheme.backgroundImg;
+  settings.themeSettings.backgroundVideo = newTheme.backgroundVideo;
+  settings.themeSettings.showOnlyMusic = newTheme.showOnlyMusic;
 }
 
 function saveTheme() {
   const newTheme: Theme = {
     // title: newThemeTitle.value,
-    palette: settingsStore.themeSettings.palette,
-    backgroundImg: settingsStore.themeSettings.backgroundImg,
-    backgroundVideo: settingsStore.themeSettings.backgroundVideo,
-    showOnlyMusic: settingsStore.themeSettings.showOnlyMusic,
+    palette: settings.themeSettings.palette,
+    backgroundImg: settings.themeSettings.backgroundImg,
+    backgroundVideo: settings.themeSettings.backgroundVideo,
+    showOnlyMusic: settings.themeSettings.showOnlyMusic,
   };
 
   themeStore.addTheme(newTheme);

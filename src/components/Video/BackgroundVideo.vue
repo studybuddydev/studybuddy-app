@@ -67,8 +67,11 @@ watch(() => settings.settings.theme?.backgroundVideo, (bgVideo) => {
   }
 })
 
-watch(() => settings.videoVolume, (volume) => player?.setVolume(volume) )
-watch(() => settings.videoMuted, (muted) => {
+settings.generalSettings.videoMute = true;
+watch(() => settings.generalSettings.videoVolume, (volume) => {
+  player?.setVolume(volume) 
+})
+watch(() => settings.generalSettings.videoMute, (muted) => {
   if (muted) {
     player?.mute()
   } else {

@@ -2,10 +2,10 @@
   <div class="bottom-bar">
     <div class="quick-settings" v-if="zenMode">
       <div class="volume-controls" v-if="settings.themeSettings.backgroundVideo">
-        <v-slider :model-value="settings.videoMuted ? 0 : settings.videoVolume"
-          @update:model-value="settings.setVideoVolume($event)" hide-details class="volume-slider" :min="0" :max="100" />
-        <v-icon @click="settings.toggleVideoMute()" class="volume-icon"
-          :icon="settings.videoMuted ? 'mdi-volume-off' : 'mdi-volume-high'" />
+        <v-slider v-model="settings.generalSettings.videoVolume"
+          hide-details class="volume-slider" :min="0" :max="100" />
+        <v-icon @click="settings.generalSettings.videoMute = !settings.generalSettings.videoMute" class="volume-icon"
+          :icon="settings.generalSettings.videoMute ? 'mdi-volume-off' : 'mdi-volume-high'" />
 
       </div>
       <v-btn density="comfortable" class="btn-edit btn-edit-main bg-surface" icon="mdi-cog" size="large"
