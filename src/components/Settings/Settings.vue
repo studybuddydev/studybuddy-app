@@ -11,7 +11,7 @@
         </v-tabs>
       </v-toolbar>
 
-      <v-container class="pt-6 px-6 pb-0">
+      <v-container class="pt-6 px-0 pb-0">
         <v-window v-model="modelTab" :touch="false">
 
           <!-- PROFILE -->
@@ -26,7 +26,7 @@
 
           <!-- THEME -->
           <v-window-item value="theme">
-            <SettingsTheme @hide-done="e => hideDone = e" />
+            <SettingsTheme />
           </v-window-item>
 
         </v-window>

@@ -449,7 +449,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     }
 
     // sound
-    if (!oneSoundLimit) {
+    if (!oneSoundLimit && !settings.generalSettings.soundMute) {
       const audio = new Audio(`/sounds/${type}`);
       let volume = settings.generalSettings.soundVolume;
       if (volume === undefined) volume = 0.5;

@@ -1,243 +1,212 @@
 <template>
-  <v-window v-model="step">
-    <v-window-item :value="1" class="theme-settings">
-      <div class="header">
-        <div class="text-h6">{{ $t('pause.theme.chooseTheme') }}</div>
-        <v-btn @click="setUpNewTheme()" color="primary" variant="text" prepend-icon="mdi-plus">{{ $t('pause.timer.createNew') }}</v-btn>
-      </div>
+  <div class="settings-theme">
 
-      <div class="themes">
-        <div v-for="t in themeStore.themes" :class="`theme-box ${selectedTheme?.title === t.title ? 'selected' : ''}`"
-          @mouseleave="deleteTheme(undefined)" @click="setTheme(t)"
-          :style="{
-            border: `2px solid ${primaryColorsMapping[t.palette ?? '']}`,
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${getPreviewImg(t)})`
-          }">
-          <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="0,0 30,0 30,30" :style="{
-              fill: primaryColorsMapping[t.palette ?? ''],
-            }" />
-          </svg>
-          <div class="theme-title">
-            {{ t.backgroundVideo ? (t.showOnlyMusic ? '♪' : '▶') : ''  }}
-            {{ t.title }}
-          </div>
-          <v-icon size="x-small" icon="mdi-delete" @click.stop="deleteTheme(t.id)" class="btn-delete"
-            :color="deleteingTheme === t.id ? 'red' : 'white'" />
-        </div>
-      </div>
+    <div class="categories">
+      <v-chip 
+        v-for="(cat, i) in themeStore.categories" :key="cat"
+        @click="setCategory(i)"
+        :color="selectedCategory === i ? 'primary' : ''" :variant="selectedCategory === i ? 'flat' : 'tonal'">{{ cat
+        }}</v-chip>
+    </div>
 
-    </v-window-item>
-    <v-window-item :value="2" class="theme-settings">
-      <div class="header">
-        <v-btn @click="back()" color="primary" variant="text" prepend-icon="mdi-arrow-left">{{ $t('back') }}</v-btn>
-        <v-btn @click="saveTheme()" color="primary">{{$t('save')}}</v-btn>
-      </div>
+    <div class="themes" v-if="selectedCategory !== null">
+      <div class="arrow" ripple @click="decreasePage()"><v-icon :disabled="themesPage === 0" icon="mdi-chevron-left" /></div>
+      <ThemeTile class="theme-tile" v-for="t in showingThemes" :theme="t"
+        :selected="selectedTheme?.title === t.title" :primaryColor="primaryColorsMapping[t.palette ?? '']"
+        @setTheme="setTheme(t)" />
+      <div class="arrow" v-ripple @click="increasePage()"><v-icon :disabled="themesPage >= Math.floor(themeStore.themesByCategory?.[selectedCategory]?.length! / 3)" icon="mdi-chevron-right" /></div>
+    </div>
 
-      <div class="new-theme-settings">
+    <div class="customize px-6 pt-8">
 
-        <v-text-field label="Title" v-model="newThemeTitle" />
-
-        <div class="themes">
-          <div v-for="t in paletteList" class="theme-box" :style="{ backgroundColor: t.background }"
-            @click="setPalette(t.value)">
-            <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
-              <polygon points="0,0 30,0 30,30" :style="{
-                fill: t.color,
-              }" />
-            </svg>
-            <div class="theme-title">
-              <p :style="{ color: t.color }">{{ t.title }}</p>
-            </div>
-          </div>
-        </div>
-
-        <v-text-field :label="$t('pause.theme.bgColor')" v-model="settingsStore.settings!.theme!.backgroundColor"
-          type="color" clearable />
-        <v-text-field :label="$t('pause.theme.url')" v-model="settingsStore.settings!.theme!.backgroundImg"
-          type="string" clearable />
+      <div class="text-h6">Customize</div>
+      <v-col cols="12">
         <v-row>
-          <v-col cols="9">
-            <v-text-field :label="$t('Youtube')" v-model="settingsStore.settings!.theme!.backgroundVideo"
-              type="string" clearable />
+          <v-col cols="10">
+            <v-text-field label="Background" v-model="background" :error="!!backgroundUrlError"
+              :prepend-icon="iconBackground" clearable />
           </v-col>
-          <v-col cols="3">
+          <v-col cols="2">
             <div>
               <v-tooltip activator="parent" location="top">Show only music</v-tooltip>
               <v-switch color="primary" inset hide-details true-icon="mdi-music" false-icon="mdi-video"
-                v-model="settingsStore.settings!.theme!.showOnlyMusic">
-              </v-switch>
+                v-model="settings.themeSettings.showOnlyMusic" :disabled="!settings.themeSettings.backgroundVideo" />
             </div>
           </v-col>
         </v-row>
-
-      </div>
-    </v-window-item>
-  </v-window>
+        <v-row v-if="settings.themeSettings.backgroundVideo">
+          <v-col cols="12">
+            <VolumeSlider v-model:volume="settings.generalSettings.videoVolume"
+              v-model:mute="settings.generalSettings.videoMute" />
+          </v-col>
+        </v-row>
+        <v-row v-if="settings.themeSettings.backgroundVideo && settings.themeSettings.showOnlyMusic">
+          <v-col cols="12">
+            <v-text-field label="Background image" v-model="backgroundImg" :error="!!backgroundUrlImgError" clearable />
+          </v-col>
+        </v-row>
+      </v-col>
+    </div>
+  </div>
 </template>
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useThemeStore } from "@/stores/settings/theme";
 import { useSettingsStore } from "@/stores/settings";
 import { paletteList } from '@/config/themes'
 import type { Theme } from '@/types';
-import { useI18n } from 'vue-i18n';
+import { getYotubeId, isUrl } from '@/utils/common'
+import ThemeTile from '@/components/common/ThemeTile.vue';
+import VolumeSlider from '@/components/common/VolumeSlider.vue'
 
-const { t } = useI18n();
 const themeStore = useThemeStore();
-const settingsStore = useSettingsStore();
+const settings = useSettingsStore();
 
 
-const step = ref(1);
-const emit = defineEmits<{
-  (e: 'hideDone', hide: boolean): void
-}>()
-watch(step, (val) => {
-  emit('hideDone', val === 2);
-});
 
 const primaryColorsMapping: { [id: string]: string } = {};
 paletteList.forEach((t) => { primaryColorsMapping[t.value] = t.color; });
 
+const backgroundUrlError = ref<string | null>(null);
+const background = computed({
+  get() {
+    return settings.themeSettings.backgroundVideo ?? settings.themeSettings.backgroundImg ?? backgroundUrlError.value
+  },
+  set(newValue) {
+    if (!newValue) {
+      settings.themeSettings.backgroundImg = '';
+      settings.themeSettings.backgroundVideo = '';
+      backgroundUrlError.value = null;
+      backgroundUrlImgError.value = null;
+    } else if (getYotubeId(newValue)) {
+      settings.themeSettings.backgroundVideo = newValue;
+      backgroundUrlError.value = null;
+    } else if (isUrl(newValue)) {
+      settings.themeSettings.backgroundImg = newValue;
+      settings.themeSettings.backgroundVideo = undefined;
+      backgroundUrlError.value = null;
+      backgroundUrlImgError.value = null;
+    } else {
+      backgroundUrlError.value = newValue;
+    }
+
+  }
+})
+const backgroundUrlImgError = ref<string | null>(null);
+const backgroundImg = computed({
+  get() {
+    return settings.themeSettings.backgroundImg ?? backgroundUrlImgError.value
+  },
+  set(newValue) {
+    if (!newValue) {
+      settings.themeSettings.backgroundImg = '';
+      backgroundUrlImgError.value = null;
+    } else if (isUrl(newValue)) {
+      settings.themeSettings.backgroundImg = newValue;
+      backgroundUrlImgError.value = null;
+    } else {
+      backgroundUrlImgError.value = newValue;
+    }
+  }
+})
+
+const iconBackground = computed(() => {
+  if (settings.themeSettings.backgroundVideo) {
+    return 'mdi-video'
+  } else if (settings.themeSettings.backgroundImg) {
+    return 'mdi-image'
+  } else {
+    return 'mdi-video-off'
+  }
+})
+
+const selectedCategory = ref<number>(0);
+function setCategory(catI: number) {
+  selectedCategory.value = catI;
+  themesPage.value = 0;
+}
+const themesPage = ref(0);
+const showingThemes = computed(() =>
+  themeStore.themesByCategory?.[
+    selectedCategory.value
+  ]?.slice(themesPage.value * 3, (themesPage.value + 1) * 3)
+);
+
+function increasePage() {
+  if (themesPage.value < Math.floor(themeStore.themesByCategory?.[selectedCategory.value]?.length! / 3)) {
+    themesPage.value++;
+  }
+}
+function decreasePage() {
+  if (themesPage.value > 0) {
+    themesPage.value--;
+  }
+}
+
+
+
 const selectedTheme = ref<Theme | null>(null);
 function setTheme(newTheme: Theme) {
   selectedTheme.value = newTheme;
-  settingsStore.updatePalette(newTheme.palette!);
-  settingsStore.settings!.theme!.palette = newTheme.palette!;
-  settingsStore.settings!.theme!.backgroundImg = newTheme.backgroundImg;
-  settingsStore.settings!.theme!.backgroundVideo = newTheme.backgroundVideo;
-  settingsStore.settings!.theme!.showOnlyMusic = newTheme.showOnlyMusic;
-}
-
-function setPalette(palette: string) {
-  settingsStore.settings!.theme!.palette = palette;
-  settingsStore.updatePalette(palette);
-}
-
-const newThemeTitle = ref<string | undefined>(undefined);
-let ogTheme: Theme | null = null;
-function setUpNewTheme() {
-  step.value = 2;
-  newThemeTitle.value = t('pause.theme.newTheme');
-  ogTheme = {
-    palette: settingsStore.settings!.theme!.palette,
-    backgroundImg: settingsStore.settings!.theme!.backgroundImg,
-  }
-}
-
-function getPreviewImg(t: Theme) {
-  if (t.previewImg) return t.previewImg;
-  if (t.backgroundImg) return t.backgroundImg;
-  if (t.showOnlyMusic) return undefined;
-  if (t.backgroundVideo) {
-    const match = t.backgroundVideo.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
-    const id = (match && match[7].length == 11) ? match[7] : false;
-    return `https://img.youtube.com/vi/${id}/0.jpg`;
-  }
-}
-
-function back() {
-  step.value = 1;
-  newThemeTitle.value = undefined;
-  if (ogTheme) {
-    settingsStore.settings!.theme!.palette = ogTheme.palette!;
-    settingsStore.settings!.theme!.backgroundImg = ogTheme.backgroundImg;
-  }
-  ogTheme = null;
-  settingsStore.updatePalette(settingsStore.settings!.theme!.palette);
+  settings.updatePalette(newTheme.palette!);
+  settings.themeSettings.palette = newTheme.palette!;
+  settings.themeSettings.backgroundImg = newTheme.backgroundImg;
+  settings.themeSettings.backgroundVideo = newTheme.backgroundVideo;
+  settings.themeSettings.showOnlyMusic = newTheme.showOnlyMusic;
 }
 
 function saveTheme() {
   const newTheme: Theme = {
-    title: newThemeTitle.value,
-    palette: settingsStore.settings!.theme!.palette,
-    backgroundImg: settingsStore.settings!.theme!.backgroundImg,
-    backgroundVideo: settingsStore.settings!.theme!.backgroundVideo,
-    showOnlyMusic: settingsStore.settings!.theme!.showOnlyMusic,
+    // title: newThemeTitle.value,
+    palette: settings.themeSettings.palette,
+    backgroundImg: settings.themeSettings.backgroundImg,
+    backgroundVideo: settings.themeSettings.backgroundVideo,
+    showOnlyMusic: settings.themeSettings.showOnlyMusic,
   };
 
   themeStore.addTheme(newTheme);
   setTheme(newTheme);
-  newThemeTitle.value = undefined;
-  step.value = 1;
 }
 
-const deleteingTheme = ref<number | null>(null);
-function deleteTheme(id: number | undefined) {
-  if (id === undefined) {
-    deleteingTheme.value = null;
-    return;
-  }
-
-  if (deleteingTheme.value === id) {
-    deleteingTheme.value = null;
-    themeStore.deleteTheme(id);
-  } else {
-    deleteingTheme.value = id;
-  }
-}
 </script>
 
 <style scoped lang="scss">
-.theme-settings {
+.settings-theme {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  align-items: center;
+  justify-content: center;
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-}
-
-.themes {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  place-items: center;
-  margin: 1.5rem 0;
-  cursor: pointer;
-
-  .theme-title {
-    color: white;
-  }
-}
-
-.theme-box {
-  display: grid;
-  place-items: center;
-  padding: 1rem;
-  width: 100%;
-  height: 4rem;
-  border-radius: 1rem;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  overflow: hidden;
-
-  .triangle {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-
-  .btn-delete {
-    display: none;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    opacity: 0.7;
-  }
-
-  &:hover {
-    .btn-delete {
-      display: block;
-      &:hover {
-        opacity: 1;
+  .themes {
+    display: grid;
+    grid-template-columns: 4rem 1fr 1fr 1fr 4rem;
+    gap: 1rem;
+    overflow-x: auto;
+    .arrow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      &:first-child {
+        border-radius: 0 0.5rem 0.5rem 0;
+      }
+      &:last-child {
+        border-radius: 0.5rem 0 0 0.5rem;
       }
     }
+
+    .theme-tile {
+      flex-basis: 27%;
+      flex-shrink: 0;
+      height: 100%;
+    }
   }
+
+  .categories {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.5rem;
+    justify-content: center;
+  }
+
 }
 </style>

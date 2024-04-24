@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="px-6">
     <div v-if="pomodoro.going">
       <v-alert variant="tonal" class="mb-5" type="warning">
         <div class="pomo-running-alert">
