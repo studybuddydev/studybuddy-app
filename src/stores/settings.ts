@@ -50,8 +50,6 @@ export const useSettingsStore = defineStore('settings', () => {
   settings.value.theme = { ...defaultSettings.theme, ...settings.value.theme } as ThemeSettings;
   settings.value.pomodoro = { ...defaultSettings.pomodoro, ...settings.value.pomodoro } as PomodoroSettings;
 
-  settings.value.general.videoMute = true;
-
   if (settings.value.theme.backgroundImg === 'https://images.alphacoders.com/133/1332707.png') {
     settings.value.theme.backgroundImg = DEFAULT_IMG;
   }

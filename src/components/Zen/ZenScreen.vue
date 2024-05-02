@@ -60,7 +60,6 @@ const showSetup = computed(() => pomodoro.created && !pomodoro.going && pomodoro
 const showFinishPage = computed(() => pomodoro.terminated && !pomodoro.going);
 const showPomo = computed(() => (pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing))));
 const showDetailsEnd = computed(() => !(pomodoro.going || pomodoro.countdownRunning) && pomodoro.finishedPomoRecord?.pomo);
-
 </script>
 
 <template>
@@ -72,7 +71,11 @@ const showDetailsEnd = computed(() => !(pomodoro.going || pomodoro.countdownRunn
       <v-scroll-y-reverse-transition>
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
-          <BackgroundVideo :class="(settings.themeSettings.showOnlyMusic || (showStartPage && !forseShowVideo)) ? 'video hide-video' : 'video'" />
+          <BackgroundVideo
+            :class="(settings.themeSettings.showOnlyMusic || (showStartPage && !forseShowVideo))
+              ? 'video hide-video' : 'video'"
+              :shouldUnmute="!(showStartPage && !forseShowVideo)"
+            />
 
           <div class="zen-header">
             <About class="top-left" :show-title="!pomodoro.created" />
