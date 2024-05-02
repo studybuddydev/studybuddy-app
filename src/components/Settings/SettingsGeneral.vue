@@ -30,6 +30,7 @@
         <v-switch :label="$t('pause.general.hideTime')" color="primary" inset v-model="settings.generalSettings.hideTime" hide-details/>
         <v-switch :label="$t('pause.general.hideCountdown')" color="primary" inset v-model="settings.generalSettings.disableCountdown" hide-details/>
         <v-switch :label="$t('pause.general.hideSetup')" color="primary" inset v-model="settings.generalSettings.hideSetup" hide-details/>
+        <v-switch :label="$t('pause.general.startPipped')" color="primary" inset v-model="settings.generalSettings.startPipped" hide-details/>
       </v-col>
     </v-row>
 

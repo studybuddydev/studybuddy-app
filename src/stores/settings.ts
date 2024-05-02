@@ -22,6 +22,7 @@ const defaultSettings: Settings = {
     showSeconds: false,
     disableCountdown: false,
     hideSetup: false,
+    startPipped: false,
     dayStartEndHours: [8, 18],
   },
 
