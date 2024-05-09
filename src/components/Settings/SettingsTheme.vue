@@ -1,30 +1,80 @@
 <template>
-  <div class="settings-theme">
+  <v-window v-model="step">
+    <v-window-item :value="1" class="settings-theme">
 
-    <div class="categories">
-      <v-chip 
-        v-for="(cat, i) in themeStore.categories" :key="cat"
-        @click="setCategory(i)"
-        :color="selectedCategory === i ? 'primary' : ''" :variant="selectedCategory === i ? 'flat' : 'tonal'">{{ cat
-        }}</v-chip>
-    </div>
+      <div class="header px-6 pb-6">
+        <div class="header-title">
+          <p class="text-h6">Choose a theme</p>
+          <Info :text="$t('info.timer')" class="info-settings" />
+        </div>
+        <v-btn @click="step = 2" color="primary" variant="text" prepend-icon="mdi-plus">Save as new</v-btn>
+      </div>
 
-    <div class="themes" v-if="selectedCategory !== null">
-      <div class="arrow" ripple @click="decreasePage()"><v-icon :disabled="themesPage === 0" icon="mdi-chevron-left" /></div>
-      <ThemeTile class="theme-tile" v-for="t in showingThemes" :theme="t"
-        :selected="selectedTheme?.title === t.title" :primaryColor="primaryColorsMapping[t.palette ?? '']"
-        @setTheme="setTheme(t)" />
-      <div class="arrow" v-ripple @click="increasePage()"><v-icon :disabled="themesPage >= Math.floor(themeStore.themesByCategory?.[selectedCategory]?.length! / 3)" icon="mdi-chevron-right" /></div>
-    </div>
+      <div class="categories pb-6">
+        <v-chip v-for="(cat, i) in themeStore.categories" :key="cat" @click="setCategory(i)"
+          :color="selectedCategory === i ? 'primary' : ''" :variant="selectedCategory === i ? 'flat' : 'tonal'">{{ cat
+          }}</v-chip>
+      </div>
 
-    <div class="customize px-6 pt-8">
+      <div class="themes" v-if="selectedCategory !== null">
+        <div class="arrow" ripple @click="decreasePage()"><v-icon :disabled="themesPage === 0"
+            icon="mdi-chevron-left" /></div>
+        <ThemeTile class="theme-tile" v-for="t in showingThemes" :theme="t" :selected="selectedTheme?.title === t.title"
+          :primaryColor="primaryColorsMapping[t.palette ?? '']" @setTheme="setTheme(t)" />
+        <div class="arrow" v-ripple @click="increasePage()"><v-icon
+            :disabled="themesPage >= Math.floor(themeStore.themesByCategory?.[selectedCategory]?.length! / 3)"
+            icon="mdi-chevron-right" /></div>
+      </div>
 
-      <div class="text-h6">Customize</div>
+      <div class="customize px-6 pt-8">
+
+        <div class="text-h6">Customize</div>
+        <v-col cols="12">
+          <v-row>
+            <v-col cols="10">
+              <v-text-field label="Background" v-model="background" :error="!!backgroundUrlError"
+                :prepend-icon="iconBackground" clearable />
+            </v-col>
+            <v-col cols="2">
+              <div>
+                <v-tooltip activator="parent" location="top">Show only music</v-tooltip>
+                <v-switch color="primary" inset hide-details true-icon="mdi-music" false-icon="mdi-video"
+                  v-model="settings.themeSettings.showOnlyMusic" :disabled="!settings.themeSettings.backgroundVideo" />
+              </div>
+            </v-col>
+          </v-row>
+          <v-row v-if="settings.themeSettings.backgroundVideo">
+            <v-col cols="12">
+              <VolumeSlider v-model:volume="settings.generalSettings.videoVolume"
+                v-model:mute="settings.generalSettings.videoMute" />
+            </v-col>
+          </v-row>
+          <v-row v-if="settings.themeSettings.backgroundVideo && settings.themeSettings.showOnlyMusic">
+            <v-col cols="12">
+              <v-text-field label="Background image" v-model="backgroundImg" :error="!!backgroundUrlImgError"
+                clearable />
+            </v-col>
+          </v-row>
+        </v-col>
+      </div>
+    </v-window-item>
+    <v-window-item :value="2" class="settings-theme pa-6">
+      <div class="header pb-6">
+        <v-btn @click="step = 1" color="primary" variant="text" prepend-icon="mdi-arrow-left">{{ $t('back') }}</v-btn>
+        <v-btn @click="saveTheme(); step = 1" color="primary">{{ $t('pause.timer.saveTimer') }}</v-btn>
+      </div>
+
       <v-col cols="12">
         <v-row>
+          <v-col cols="12">
+            <v-text-field label="Title" v-model="newThemeTitle" />
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="10">
-            <v-text-field label="Background" v-model="background" :error="!!backgroundUrlError"
-              :prepend-icon="iconBackground" clearable />
+            <v-text-field label="Background Video" v-model="settings.themeSettings.backgroundVideo"
+              prepend-icon="mdi-video" clearable hide-details
+              :error="!!settings.themeSettings.backgroundVideo && !getYotubeId(settings.themeSettings.backgroundVideo ?? '')" />
           </v-col>
           <v-col cols="2">
             <div>
@@ -34,20 +84,27 @@
             </div>
           </v-col>
         </v-row>
-        <v-row v-if="settings.themeSettings.backgroundVideo">
+        <v-row>
           <v-col cols="12">
-            <VolumeSlider v-model:volume="settings.generalSettings.videoVolume"
-              v-model:mute="settings.generalSettings.videoMute" />
-          </v-col>
-        </v-row>
-        <v-row v-if="settings.themeSettings.backgroundVideo && settings.themeSettings.showOnlyMusic">
-          <v-col cols="12">
-            <v-text-field label="Background image" v-model="backgroundImg" :error="!!backgroundUrlImgError" clearable />
+            <v-text-field label="Background image" v-model="settings.themeSettings.backgroundImg"
+              prepend-icon="mdi-image" clearable hide-details
+              :error="!!settings.themeSettings.backgroundImg && !isUrl(settings.themeSettings.backgroundImg ?? '')" />
           </v-col>
         </v-row>
       </v-col>
-    </div>
-  </div>
+
+      <div class="palette px-6">
+        <div v-for="t in paletteList" class="palette-box" :style="{ backgroundColor: t.background }" @click="setPalette(t.value)">
+          <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0,0 30,0 30,30" :style="{ fill: t.color }" />
+          </svg>
+          <div class="palette-title">
+            <p :style="{ color: t.color }">{{ t.title }}</p>
+          </div>
+        </div>
+      </div>
+    </v-window-item>
+  </v-window>
 </template>
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
@@ -61,8 +118,8 @@ import VolumeSlider from '@/components/common/VolumeSlider.vue'
 
 const themeStore = useThemeStore();
 const settings = useSettingsStore();
-
-
+const step = ref(1);
+const newThemeTitle = ref('');
 
 const primaryColorsMapping: { [id: string]: string } = {};
 paletteList.forEach((t) => { primaryColorsMapping[t.value] = t.color; });
@@ -143,8 +200,6 @@ function decreasePage() {
   }
 }
 
-
-
 const selectedTheme = ref<Theme | null>(null);
 function setTheme(newTheme: Theme) {
   selectedTheme.value = newTheme;
@@ -154,10 +209,9 @@ function setTheme(newTheme: Theme) {
   settings.themeSettings.backgroundVideo = newTheme.backgroundVideo;
   settings.themeSettings.showOnlyMusic = newTheme.showOnlyMusic;
 }
-
 function saveTheme() {
   const newTheme: Theme = {
-    // title: newThemeTitle.value,
+    title: newThemeTitle.value,
     palette: settings.themeSettings.palette,
     backgroundImg: settings.themeSettings.backgroundImg,
     backgroundVideo: settings.themeSettings.backgroundVideo,
@@ -166,6 +220,10 @@ function saveTheme() {
 
   themeStore.addTheme(newTheme);
   setTheme(newTheme);
+}
+function setPalette(palette: string) {
+  settings.updatePalette(palette);
+  settings.themeSettings.palette = palette;
 }
 
 </script>
@@ -176,21 +234,37 @@ function saveTheme() {
   flex-direction: column;
   justify-content: center;
 
+  .header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 0.4em
+    }
+  }
+
   .themes {
     display: grid;
     grid-template-columns: 4rem 1fr 1fr 1fr 4rem;
     gap: 1rem;
     overflow-x: auto;
+
     .arrow {
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
+
       &:first-child {
         border-radius: 0 0.5rem 0.5rem 0;
       }
+
       &:last-child {
         border-radius: 0.5rem 0 0 0.5rem;
+        grid-column-start: 5;
       }
     }
 
@@ -208,5 +282,54 @@ function saveTheme() {
     justify-content: center;
   }
 
+  .palette {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    place-items: center;
+    margin: 1.5rem 0;
+    cursor: pointer;
+
+    .palette-box {
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      width: 100%;
+      height: 4rem;
+      border-radius: 1rem;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+
+      .triangle {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+
+      .btn-delete {
+        display: none;
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        opacity: 0.7;
+      }
+
+      &:hover {
+        .btn-delete {
+          display: block;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    .palette-title {
+      color: white;
+    }
+  }
 }
 </style>
