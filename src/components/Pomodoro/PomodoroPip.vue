@@ -11,7 +11,6 @@
         </div>
       </div>
     </div>
-    
     <div class="pomodoro-circle-component-on-zen-wrapper"
       v-if="!isPipped && (pomodoro.countdownRunning || (pomodoro.going && (!props.hideTime || pomodoro.pauseing)))">
       <PomodoroCircle class="pomodoro-circle-component pomodoro-circle-component-on-zen" :in-pip="false" />
@@ -28,10 +27,13 @@
 import PomodoroCircle from '@/components/Pomodoro/PomodoroCircle.vue';
 import MiniTimer from '@/components/Pomodoro/MiniTimer.vue';
 import Info from '@/components/common/Info.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
+import { useSettingsStore } from "@/stores/settings";
+import { watch } from 'vue';
 
 const pomodoro = usePomodoroStore();
+const settings = useSettingsStore();
 const pipSupported = !!(window as any).documentPictureInPicture;
 const isPipped = ref(false);
 
@@ -39,6 +41,24 @@ const props = defineProps<{
   zenStyle: { backgroundImage?: string, backgroundColor?: string },
   hideTime: boolean,
 }>();
+
+
+onMounted(() => {
+  navigator.userActivation.isActive
+  if (
+    settings.generalSettings.startPipped &&
+    navigator.userActivation.isActive &&
+    !isPipped.value &&
+    !pomodoro.countdownRunning
+  ) { pipIt() }
+});
+watch(() => pomodoro.countdownRunning, (val) => {
+  if (
+    settings.generalSettings.startPipped &&
+    !val &&
+    !isPipped.value
+  ) { pipIt() }
+});
 
 async function pipIt() {
   const player = document.querySelector("#pomocirclepip");

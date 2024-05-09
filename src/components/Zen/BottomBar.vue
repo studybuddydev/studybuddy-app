@@ -1,7 +1,10 @@
 <template>
   <div class="bottom-bar">
     <div class="quick-settings" v-if="zenMode">
-      <div class="volume-controls" v-if="settings.themeSettings.backgroundVideo">
+      <div class="volume-controls"
+        v-if="
+        !(pomodoro.created && !pomodoro.going && !pomodoro.settingUp) &&
+        settings.themeSettings.backgroundVideo">
         <v-slider v-model="settings.generalSettings.videoVolume"
           hide-details class="volume-slider" :min="0" :max="100" />
         <v-icon @click="settings.generalSettings.videoMute = !settings.generalSettings.videoMute" class="volume-icon"

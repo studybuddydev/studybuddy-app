@@ -18,6 +18,10 @@ let player: YouTubePlayerType | null = null;
 let playerMuted = true;
 let currentVideo: string | null = null;
 
+const props = defineProps<{
+  shouldUnmute: boolean
+}>();
+
 function playVideo(id: string) {
   if (player) {
     removePlayer()
@@ -67,7 +71,6 @@ watch(() => settings.settings.theme?.backgroundVideo, (bgVideo) => {
   }
 })
 
-settings.generalSettings.videoMute = true;
 watch(() => settings.generalSettings.videoVolume, (volume) => {
   player?.setVolume(volume) 
 })
@@ -85,7 +88,27 @@ onMounted(() => {
     if (currentVideo)
       playVideo(currentVideo);
   }
+  if (!settings.generalSettings.videoMute) {
+    if (props.shouldUnmute) {
+      if (navigator.userActivation.isActive) {
+        player?.unMute()
+      } else {
+        settings.generalSettings.videoMute = true;
+      }
+    }
+  }
 })
+
+watch(() => props.shouldUnmute, (unMute) => {
+  if (
+    unMute &&
+    navigator.userActivation.isActive &&
+    !settings.generalSettings.videoMute
+  ) {
+    
+    player?.unMute()
+  }
+});
 
 </script>
 <style lang="scss" scoped>
