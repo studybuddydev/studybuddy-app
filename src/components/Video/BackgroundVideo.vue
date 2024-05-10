@@ -15,7 +15,6 @@ const settings = useSettingsStore();
 const isThereAVideo = ref(false);
 let player: YouTubePlayerType | null = null;
 
-let playerMuted = true;
 let currentVideo: string | null = null;
 
 const props = defineProps<{
@@ -39,7 +38,8 @@ function playVideo(id: string) {
   });
 
   player.on('ready', async () => {
-    await player?.mute()
+    if (settings.generalSettings.videoMute) await player?.mute()
+    else await player?.unMute()
     await player?.playVideo()
   });
 

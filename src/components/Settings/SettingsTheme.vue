@@ -15,14 +15,13 @@
           :color="selectedCategory === i ? 'primary' : ''" :variant="selectedCategory === i ? 'flat' : 'tonal'">{{ cat
           }}</v-chip>
       </div>
-
       <div class="themes" v-if="selectedCategory !== null">
         <div class="arrow" v-ripple @click="decreasePage()"><v-icon :disabled="themesPage === 0"
             icon="mdi-chevron-left" /></div>
         <ThemeTile class="theme-tile" v-for="t in showingThemes" :theme="t" :selected="selectedTheme?.title === t.title"
           :primaryColor="primaryColorsMapping[t.palette ?? '']" @setTheme="setTheme(t)" />
         <div class="arrow" v-ripple @click="increasePage()"><v-icon
-            :disabled="themesPage >= Math.floor(themeStore.themesByCategory?.[selectedCategory]?.length! / 3)"
+            :disabled="themeStore.themesByCategory?.[selectedCategory]?.length! <= (themesPage + 1) * 3"
             icon="mdi-chevron-right" /></div>
       </div>
 
@@ -115,6 +114,7 @@ import type { Theme } from '@/types';
 import { getYotubeId, isUrl } from '@/utils/common'
 import ThemeTile from '@/components/common/ThemeTile.vue';
 import VolumeSlider from '@/components/common/VolumeSlider.vue'
+import Info from '@/components/common/Info.vue'
 
 const themeStore = useThemeStore();
 const settings = useSettingsStore();
@@ -190,7 +190,7 @@ const showingThemes = computed(() =>
 );
 
 function increasePage() {
-  if (themesPage.value < Math.floor(themeStore.themesByCategory?.[selectedCategory.value]?.length! / 3)) {
+  if (themeStore.themesByCategory?.[selectedCategory.value]?.length! > (themesPage.value + 1) * 3) {
     themesPage.value++;
   }
 }

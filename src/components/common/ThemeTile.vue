@@ -64,7 +64,7 @@ function deleteTheme(id: number | undefined) {
 .theme-box {
   display: grid;
   place-items: center;
-  padding: 1rem;
+  padding: 1rem 0;
   width: 100%;
   height: 4rem;
   border-radius: 1rem;
