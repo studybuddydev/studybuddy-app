@@ -5,10 +5,12 @@
         v-if="
         !(pomodoro.created && !pomodoro.going && !pomodoro.settingUp) &&
         settings.themeSettings.backgroundVideo">
-        <v-slider v-model="settings.generalSettings.videoVolume"
+        <v-slider v-model="settings.generalSettings.videoVolume" @update:model-value="settings.generalSettings.videoMute = false"
           hide-details class="volume-slider" :min="0" :max="100" />
-        <v-icon @click="settings.generalSettings.videoMute = !settings.generalSettings.videoMute" class="volume-icon"
+        <v-icon @click="settings.generalSettings.videoMute = !settings.generalSettings.videoMute" class="mx-1"
           :icon="settings.generalSettings.videoMute ? 'mdi-volume-off' : 'mdi-volume-high'" />
+        <v-icon @click="settings.themeSettings.showOnlyMusic = !settings.themeSettings.showOnlyMusic" class="mx-1"
+          :icon="settings.themeSettings.showOnlyMusic ? 'mdi-video-off' : 'mdi-video'" />
 
       </div>
       <v-btn density="comfortable" class="btn-edit btn-edit-main bg-surface" icon="mdi-cog" size="large"
