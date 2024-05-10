@@ -31,7 +31,7 @@
         <v-col cols="12">
           <v-row>
             <v-col cols="10">
-              <v-text-field label="Background" v-model="background" :error="!!backgroundUrlError"
+              <v-text-field label="Youtube background" v-model="background" :error="!!backgroundUrlError"
                 :prepend-icon="iconBackground" clearable />
             </v-col>
             <v-col cols="2">
@@ -284,7 +284,7 @@ function setPalette(palette: string) {
 
   .palette {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
     place-items: center;
     margin: 1.5rem 0;
@@ -293,7 +293,7 @@ function setPalette(palette: string) {
     .palette-box {
       display: grid;
       place-items: center;
-      padding: 1rem;
+      padding: 1rem 0;
       width: 100%;
       height: 4rem;
       border-radius: 1rem;
