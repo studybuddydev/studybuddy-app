@@ -24,15 +24,25 @@
           />
       </v-col>
       <v-col cols="12">
-        <div class="text-h6">{{ $t('pause.general.interface') }}</div>
-        <v-switch :label="$t('pause.general.pulsingPause')" color="primary" inset v-model="settings.generalSettings.pulsingPause" hide-details/>
-        <v-switch :label="$t('pause.general.showSeconds')" color="primary" inset v-model="settings.generalSettings.showSeconds" hide-details/>
-        <v-switch :label="$t('pause.general.hideTime')" color="primary" inset v-model="settings.generalSettings.hideTime" hide-details/>
-        <v-switch :label="$t('pause.general.hideCountdown')" color="primary" inset v-model="settings.generalSettings.disableCountdown" hide-details/>
-        <v-switch :label="$t('pause.general.hideSetup')" color="primary" inset v-model="settings.generalSettings.hideSetup" hide-details/>
-        <v-switch :label="$t('pause.general.startPipped')" color="primary" inset v-model="settings.generalSettings.startPipped" hide-details/>
+        <div class="text-h6"></div>
       </v-col>
     </v-row>
+
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-title class="bg-background advance-panel-closed">{{ $t('pause.general.interface') }}</v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <div class="mx-5">
+            <v-switch :label="$t('pause.general.pulsingPause')" color="primary" inset v-model="settings.generalSettings.pulsingPause" hide-details/>
+            <v-switch :label="$t('pause.general.showSeconds')" color="primary" inset v-model="settings.generalSettings.showSeconds" hide-details/>
+            <v-switch :label="$t('pause.general.hideTime')" color="primary" inset v-model="settings.generalSettings.hideTime" hide-details/>
+            <v-switch :label="$t('pause.general.hideCountdown')" color="primary" inset v-model="settings.generalSettings.disableCountdown" hide-details/>
+            <v-switch :label="$t('pause.general.hideSetup')" color="primary" inset v-model="settings.generalSettings.hideSetup" hide-details/>
+            <v-switch :label="$t('pause.general.startPipped')" color="primary" inset v-model="settings.generalSettings.startPipped" hide-details/>
+          </div>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
     <v-row>
       <v-spacer />
@@ -96,3 +106,8 @@ function importData() {
   state.uploadData();
 }
 </script>
+<style scoped lang="scss">
+.advance-panel-closed {
+  border-bottom: 1px solid rgba(var(--v-theme-primary), 0.6);
+}
+</style>

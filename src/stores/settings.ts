@@ -28,7 +28,7 @@ const defaultSettings: Settings = {
 
   pomodoro: {
     freeMode: false,
-    totalLength: 120,
+    totalLength: 115,
     numberOfBreak: 3,
     breaksLength: 15,
   },
