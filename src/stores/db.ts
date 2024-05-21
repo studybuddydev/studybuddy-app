@@ -5,25 +5,25 @@ import { defineStore } from 'pinia';
 
 function getThemes() {
   const themes: Partial<Theme>[] = [
-    { title: 'Forest',      category: 'Nature', palette: 'bio',      backgroundVideo: 'https://www.youtube.com/watch?v=xNN7iTA57jM', showOnlyMusic: true },
-    { title: 'Mountain',    category: 'Nature', palette: 'nord',     },
-    { title: 'Rocks',       category: 'Nature', palette: 'gptday',   },
-    { title: 'Rain',        category: 'Nature', palette: 'gptnight', backgroundVideo: 'https://www.youtube.com/watch?v=mPZkdNFkNps' },
-    { title: 'Space',       category: 'Nature', palette: 'gptnight', },
-    { title: 'Night',       category: 'Nature', palette: 'dark',     },
-    { title: 'Aurora',      category: 'Nature', palette: 'blallo',   },
-    { title: 'Beach',       category: 'Nature', palette: 'pastel',   },
-    { title: 'Ghibli',      category: 'Art',    palette: 'verdone',  backgroundVideo: 'https://www.youtube.com/watch?v=z9Ug-3qhrwY' },
-    { title: 'Wave',        category: 'Art',    palette: 'nord',     },
-    { title: 'Vaporwave',   category: 'Art',    palette: 'vaporwave', backgroundVideo: 'https://www.youtube.com/watch?v=rqJDO3TWnac' },
-    { title: 'Purple',      category: 'Urban',  palette: 'purple',   },
-    { title: 'LOFI',        category: 'Urban',  palette: 'gptnight', backgroundVideo: 'https://www.youtube.com/watch?v=jfKfPfyJRdk' },
-    { title: 'City',        category: 'Urban',  palette: 'nord',     backgroundColor: 'https://www.youtube.com/watch?v=Vg1mpD1BICI', showOnlyMusic: true },
-    { title: 'Fog',         category: 'Urban',  palette: 'gptday',   },
-    { title: 'Barbie',      category: 'Movies', palette: 'pastel',   },
-    { title: 'Oppenheimer', category: 'Movies', palette: 'gptnight', },
-    { title: 'Dune',        category: 'Movies', palette: 'desert',   },
-    { title: 'Gandalf',     category: 'Movies', palette: 'blallo',   }
+    { title: 'Forest',      category: '🌲 Nature', palette: 'bio',      backgroundVideo: 'https://www.youtube.com/watch?v=xNN7iTA57jM', showOnlyMusic: true },
+    { title: 'Mountain',    category: '🌲 Nature', palette: 'nord',     },
+    { title: 'Rocks',       category: '🌲 Nature', palette: 'gptday',   },
+    { title: 'Rain',        category: '🌲 Nature', palette: 'gptnight', backgroundVideo: 'https://www.youtube.com/watch?v=mPZkdNFkNps' },
+    { title: 'Space',       category: '🌲 Nature', palette: 'gptnight', },
+    { title: 'Night',       category: '🌲 Nature', palette: 'dark',     },
+    { title: 'Aurora',      category: '🌲 Nature', palette: 'blallo',   },
+    { title: 'Beach',       category: '🌲 Nature', palette: 'pastel',   },
+    { title: 'Ghibli',      category: '🎨 Art',    palette: 'verdone',  backgroundVideo: 'https://www.youtube.com/watch?v=z9Ug-3qhrwY' },
+    { title: 'Wave',        category: '🎨 Art',    palette: 'nord',     },
+    { title: 'Vaporwave',   category: '🎨 Art',    palette: 'vaporwave',backgroundVideo: 'https://www.youtube.com/watch?v=rqJDO3TWnac' },
+    { title: 'Purple',      category: '🏢 Urban',  palette: 'purple',   },
+    { title: 'LOFI',        category: '🏢 Urban',  palette: 'gptnight', backgroundVideo: 'https://www.youtube.com/watch?v=jfKfPfyJRdk' },
+    { title: 'City',        category: '🏢 Urban',  palette: 'nord',     backgroundColor: 'https://www.youtube.com/watch?v=Vg1mpD1BICI', showOnlyMusic: true },
+    { title: 'Fog',         category: '🏢 Urban',  palette: 'gptday',   },
+    { title: 'Barbie',      category: '🍿 Movies', palette: 'pastel',   },
+    { title: 'Oppenheimer', category: '🍿 Movies', palette: 'gptnight', },
+    { title: 'Dune',        category: '🍿 Movies', palette: 'desert',   },
+    { title: 'Gandalf',     category: '🍿 Movies', palette: 'blallo',   }
   ]
   return themes.map((t) => ({ ...t, previewImg: `/images/themes/${t.title}.webp`, backgroundImg: `https://api.studybuddy.it/images/${t.title}`, og: true }));
 }
