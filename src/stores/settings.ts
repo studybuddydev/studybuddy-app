@@ -5,9 +5,10 @@ import { useTheme } from 'vuetify'
 
 const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
-const DEFAULT_PALETTE = 'gptday';
+const DEFAULT_PALETTE = 'gptnight';
 const DEFAULT_ICONS = 'mdi-icon';
-const DEFAULT_IMG = 'https://api.studybuddy.it/images/Rocks';
+const DEFAULT_IMG = 'https://api.studybuddy.it/images/LOFI';
+const DEFAULT_VIDEO = 'https://www.youtube.com/watch?v=jfKfPfyJRdk';
 
 
 const defaultSettings: Settings = {
@@ -22,7 +23,7 @@ const defaultSettings: Settings = {
     showSeconds: false,
     disableCountdown: false,
     hideSetup: false,
-    startPipped: false,
+    startPipped: true,
     dayStartEndHours: [8, 18],
   },
 
@@ -38,6 +39,8 @@ const defaultSettings: Settings = {
     palette: DEFAULT_PALETTE,
     backgroundColor: undefined,
     backgroundImg: DEFAULT_IMG,
+    backgroundVideo: DEFAULT_VIDEO,
+    showOnlyMusic: false,
   }
 };
 
