@@ -17,7 +17,6 @@
 
       <v-text-field v-model="pomo.name" :label="$t('setup.name')" hide-details dense class="text-box text-boxt-title"
         @update:modelValue="(newName: any) => { updateName(pomo.id, newName) }" />
-
     </div>
 
     <div class="tasks">
@@ -102,7 +101,7 @@ async function updateTask() {
   grid-template-columns: 2fr 1fr;
   grid-template-rows: auto auto;
   width: 100%;
-
+  align-items: center;
 
   .title {
     grid-column: 1 / span 2;
@@ -123,6 +122,7 @@ async function updateTask() {
     flex-direction: column;
     padding: 1rem;
     width: 100%;
+    max-width: 25rem;
     align-self: center;
 
     .input-add-task {
@@ -177,7 +177,7 @@ async function updateTask() {
 
 @media (max-width: 850px) {
   .pomo-details-props {
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
     grid-template-rows: auto auto auto;
     width: calc(100vw - 4rem);
 

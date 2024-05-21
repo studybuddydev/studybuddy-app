@@ -4,32 +4,28 @@ import type { Timer, Theme, PomodoroDBO } from '@/types';
 import { defineStore } from 'pinia';
 
 function getThemes() {
-  return [
-    { title: 'Forest', palette: 'bio' },
-    { title: 'Mountain', palette: 'nord' },
-    { title: 'Rocks', palette: 'gptday' },
-
-    { title: 'Space', palette: 'gptnight' },
-    { title: 'Night', palette: 'dark' },
-    { title: 'Aurora', palette: 'blallo' },
-
-    { title: 'Ghibli', palette: 'verdone' },
-    { title: 'LOFI', palette: 'gptnight' },
-    { title: 'Wave', palette: 'nord' },
-
-    { title: 'Purple', palette: 'purple' },
-    { title: 'Beach', palette: 'pastel' },
-    { title: 'Vaporwave', palette: 'vaporwave' },
-
-    { title: 'Barbie', palette: 'pastel' },
-    { title: 'Oppenheimer', palette: 'gptnight' },
-    { title: 'Dune', palette: 'desert' },
-
-    { title: 'City', palette: 'nord' },
-    { title: 'Fog', palette: 'gptday' },
-    { title: 'Gandalf', palette: 'blallo' }
-
-  ].map((t) => ({ ...t, previewImg: `/images/themes/${t.title}.webp`, backgroundImg: `https://api.studybuddy.it/images/${t.title}`, og: true }));
+  const themes: Partial<Theme>[] = [
+    { title: 'Forest',      category: '🌲 Nature', palette: 'bio',      backgroundVideo: 'https://www.youtube.com/watch?v=xNN7iTA57jM', showOnlyMusic: true },
+    { title: 'Mountain',    category: '🌲 Nature', palette: 'nord',     },
+    { title: 'Rocks',       category: '🌲 Nature', palette: 'gptday',   },
+    { title: 'Rain',        category: '🌲 Nature', palette: 'gptnight', backgroundVideo: 'https://www.youtube.com/watch?v=mPZkdNFkNps' },
+    { title: 'Space',       category: '🌲 Nature', palette: 'gptnight', },
+    { title: 'Night',       category: '🌲 Nature', palette: 'dark',     },
+    { title: 'Aurora',      category: '🌲 Nature', palette: 'blallo',   },
+    { title: 'Beach',       category: '🌲 Nature', palette: 'pastel',   },
+    { title: 'Ghibli',      category: '🎨 Art',    palette: 'verdone',  backgroundVideo: 'https://www.youtube.com/watch?v=z9Ug-3qhrwY' },
+    { title: 'Wave',        category: '🎨 Art',    palette: 'nord',     },
+    { title: 'Vaporwave',   category: '🎨 Art',    palette: 'vaporwave',backgroundVideo: 'https://www.youtube.com/watch?v=rqJDO3TWnac' },
+    { title: 'Purple',      category: '🏢 Urban',  palette: 'purple',   },
+    { title: 'LOFI',        category: '🏢 Urban',  palette: 'gptnight', backgroundVideo: 'https://www.youtube.com/watch?v=jfKfPfyJRdk' },
+    { title: 'City',        category: '🏢 Urban',  palette: 'nord',     backgroundColor: 'https://www.youtube.com/watch?v=Vg1mpD1BICI', showOnlyMusic: true },
+    { title: 'Fog',         category: '🏢 Urban',  palette: 'gptday',   },
+    { title: 'Barbie',      category: '🍿 Movies', palette: 'pastel',   },
+    { title: 'Oppenheimer', category: '🍿 Movies', palette: 'gptnight', },
+    { title: 'Dune',        category: '🍿 Movies', palette: 'desert',   },
+    { title: 'Gandalf',     category: '🍿 Movies', palette: 'blallo',   }
+  ]
+  return themes.map((t) => ({ ...t, previewImg: `/images/themes/${t.title}.webp`, backgroundImg: `https://api.studybuddy.it/images/${t.title}`, og: true }));
 }
 
 function getTimers() {
@@ -58,8 +54,26 @@ export class StudyBuddyDB extends Dexie {
       themes: "++id,title,palette,backgroundColor,backgroundImg",
       pomodori: "++id,datetime,tag"
     }).upgrade(async trans => {
-      trans.table('themes').clear();
-      trans.table('themes').bulkAdd(getThemes());
+      await trans.table('themes').clear();
+      await trans.table('themes').bulkAdd(getThemes());
+    });
+    this.version(6).stores({
+      timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
+      themes: "++id,title,palette,category,backgroundColor,backgroundImg",
+      pomodori: "++id,datetime,tag"
+    }).upgrade(async trans => {
+      await trans.table('themes').clear();
+      await trans.table('themes').bulkAdd(getThemes());
+    });
+    this.version(7).stores({
+      timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
+      themes: "++id,title,palette,category,backgroundColor,backgroundImg,og",
+      pomodori: "++id,datetime,tag"
+    }).upgrade(async trans => {
+      await trans.table('themes').bulkDelete(
+        await trans.table('themes').toArray().then(tt => tt.filter(t => t.og).map(t => t.id))
+      )
+      await trans.table('themes').bulkAdd(getThemes());
     });
     this.on("populate", () => {
       this.timer.bulkAdd(getTimers());

@@ -153,9 +153,13 @@ export type GeneralSettings = {
   hideTime: boolean;
   disableCountdown: boolean;
   hideSetup: boolean;
+  soundMute: boolean;
   soundVolume: number;
+  videoMute: boolean;
+  videoVolume: number;
   pulsingPause: boolean;
   showSeconds: boolean;
+  startPipped: boolean;
   dayStartEndHours: [number, number];
 }
 export type ThemeSettings = {
@@ -163,6 +167,8 @@ export type ThemeSettings = {
   icon: string;
   backgroundColor?: string;
   backgroundImg?: string;
+  backgroundVideo?: string;
+  showOnlyMusic?: boolean;
 }
 
 export type Settings = {
@@ -176,9 +182,12 @@ export interface Theme {
   id?: number;
   title?: string;
   palette?: string;
+  category?: string;
   backgroundColor?: string;
   backgroundImg?: string;
   previewImg?: string;
+  backgroundVideo?: string;
+  showOnlyMusic?: boolean;
 }
 export interface Timer {
   id?: number;

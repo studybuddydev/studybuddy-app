@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="px-6">
     <v-row>
       <v-col cols="12">
         <v-select :label="$t('pause.general.language')" v-model="$i18n.locale" :items="langs"
@@ -17,18 +17,32 @@
     <v-row>
       <v-col cols="12">
         <div class="text-h6">{{ $t("pause.timer.volume") }}</div>
-        <v-slider v-model="settingsStore.settings!.general!.soundVolume" :min="0" :max="100" :step="1" thumb-label hide-details
-          class="pr-4 primary-thumb" :prepend-icon="volumeIcon(settingsStore.settings!.general!.soundVolume)" color="primary" />
+        <VolumeSlider
+          v-model:volume="settings.generalSettings.soundVolume"
+          v-model:mute="settings.generalSettings.soundMute"
+          @test-sound="(vol) => testSound(vol)"
+          />
       </v-col>
       <v-col cols="12">
-        <div class="text-h6">{{ $t('pause.general.interface') }}</div>
-        <v-switch :label="$t('pause.general.pulsingPause')" color="primary" inset v-model="settingsStore.settings!.general!.pulsingPause" hide-details/>
-        <v-switch :label="$t('pause.general.showSeconds')" color="primary" inset v-model="settingsStore.settings!.general!.showSeconds" hide-details/>
-        <v-switch :label="$t('pause.general.hideTime')" color="primary" inset v-model="settingsStore.settings!.general!.hideTime" hide-details/>
-        <v-switch :label="$t('pause.general.hideCountdown')" color="primary" inset v-model="settingsStore.settings!.general!.disableCountdown" hide-details/>
-        <v-switch :label="$t('pause.general.hideSetup')" color="primary" inset v-model="settingsStore.settings!.general!.hideSetup" hide-details/>
+        <div class="text-h6"></div>
       </v-col>
     </v-row>
+
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-title class="bg-background advance-panel-closed">{{ $t('pause.general.interface') }}</v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <div class="mx-5">
+            <v-switch :label="$t('pause.general.pulsingPause')" color="primary" inset v-model="settings.generalSettings.pulsingPause" hide-details/>
+            <v-switch :label="$t('pause.general.showSeconds')" color="primary" inset v-model="settings.generalSettings.showSeconds" hide-details/>
+            <v-switch :label="$t('pause.general.hideTime')" color="primary" inset v-model="settings.generalSettings.hideTime" hide-details/>
+            <v-switch :label="$t('pause.general.hideCountdown')" color="primary" inset v-model="settings.generalSettings.disableCountdown" hide-details/>
+            <v-switch :label="$t('pause.general.hideSetup')" color="primary" inset v-model="settings.generalSettings.hideSetup" hide-details/>
+            <v-switch :label="$t('pause.general.startPipped')" color="primary" inset v-model="settings.generalSettings.startPipped" hide-details/>
+          </div>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
     <v-row>
       <v-spacer />
@@ -44,24 +58,28 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useStateStore } from "@/stores/state";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useSettingsStore } from "@/stores/settings";
 import CountryFlag from 'vue-country-flag-next'
+import VolumeSlider from '@/components/common/VolumeSlider.vue'
 
-const settingsStore = useSettingsStore();
+const settings = useSettingsStore();
 const state = useStateStore();
 const { logout } = useAuth0();
 
 //// ---- Volume
-const volumeIcon = computed(() => ((volume: number) => {
-  if (!volume) return 'mdi-volume-off';
-  if (volume < 33) return 'mdi-volume-low';
-  if (volume < 66) return 'mdi-volume-medium';
-  return 'mdi-volume-high';
-}))
-
+let debounceAudio: number | undefined = undefined;
+async function testSound(volume: number) {
+  clearTimeout(debounceAudio);
+  debounceAudio = setTimeout(async () => {
+    const audio = new Audio('/sounds/break.wav');
+    if (volume === undefined) volume = 0.5;
+    audio.volume = volume / 100;
+    audio.play();
+  }, 500)
+}
 
 // ----- LANG
 // $i18n.availableLocales
@@ -88,3 +106,8 @@ function importData() {
   state.uploadData();
 }
 </script>
+<style scoped lang="scss">
+.advance-panel-closed {
+  border-bottom: 1px solid rgba(var(--v-theme-primary), 0.6);
+}
+</style>

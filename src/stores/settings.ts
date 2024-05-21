@@ -5,9 +5,10 @@ import { useTheme } from 'vuetify'
 
 const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
-const DEFAULT_PALETTE = 'gptday';
+const DEFAULT_PALETTE = 'gptnight';
 const DEFAULT_ICONS = 'mdi-icon';
-const DEFAULT_IMG = 'https://api.studybuddy.it/images/Rocks';
+const DEFAULT_IMG = 'https://api.studybuddy.it/images/LOFI';
+const DEFAULT_VIDEO = 'https://www.youtube.com/watch?v=jfKfPfyJRdk';
 
 
 const defaultSettings: Settings = {
@@ -15,16 +16,20 @@ const defaultSettings: Settings = {
     lang: DEFAULT_LANG,
     hideTime: false,
     soundVolume: 50,
+    soundMute: false,
+    videoVolume: 50,
+    videoMute: false,
     pulsingPause: true,
     showSeconds: false,
     disableCountdown: false,
     hideSetup: false,
+    startPipped: true,
     dayStartEndHours: [8, 18],
   },
 
   pomodoro: {
     freeMode: false,
-    totalLength: 120,
+    totalLength: 115,
     numberOfBreak: 3,
     breaksLength: 15,
   },
@@ -34,6 +39,8 @@ const defaultSettings: Settings = {
     palette: DEFAULT_PALETTE,
     backgroundColor: undefined,
     backgroundImg: DEFAULT_IMG,
+    backgroundVideo: DEFAULT_VIDEO,
+    showOnlyMusic: false,
   }
 };
 
@@ -69,9 +76,13 @@ export const useSettingsStore = defineStore('settings', () => {
     save();
   });
 
+  let debounceTimeout: number | undefined = undefined;
   function save() {
-    console.log('Saving settings')
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings.value));
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(async () => {
+      console.log('Saving settings')
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings.value));
+    }, 500)
   }
 
   function updatePalette(newPalette?: string) {
@@ -79,7 +90,9 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   updatePalette();
-  
+
+
+
   return {
     settings,
     generalSettings, pomoSettings, themeSettings,

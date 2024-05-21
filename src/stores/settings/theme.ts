@@ -6,6 +6,8 @@ import { useDBStore } from "@/stores/db";
 export const useThemeStore = defineStore('themeStore', () => {
   const db = useDBStore()
   const themes = ref<Theme[] >([]);
+  const themesByCategory = ref<Theme[][]>([]);
+  const categories = ref<string[] >([]);
 
   async function getAllThemes() {
     return await db.themes.toArray();
@@ -17,6 +19,8 @@ export const useThemeStore = defineStore('themeStore', () => {
       palette: theme.palette,
       backgroundColor: theme.backgroundColor,
       backgroundImg: theme.backgroundImg,
+      backgroundVideo: theme.backgroundVideo,
+      showOnlyMusic: theme.showOnlyMusic,
     }
     const res = await db.themes.add(toAddTheme);
     update();
@@ -25,6 +29,20 @@ export const useThemeStore = defineStore('themeStore', () => {
 
   async function update() {
     themes.value = await getAllThemes();
+    categories.value = [ ...new Set(themes.value.map(t => t.category as string).filter(x => x)) ];
+    themesByCategory.value = [ ...categories.value.map(_ => []), [] ];
+    themes.value.forEach(t => {
+      if (t.category) {
+        themesByCategory.value[categories.value.indexOf(t.category)].push(t);
+      } else {
+        themesByCategory.value?.at(-1)?.push(t);
+      }
+    });
+    if ((themesByCategory.value.at(-1)?.length ?? 0) > 0) categories.value.push('No Category');
+
+
+
+
   }
   update();
 
@@ -36,6 +54,6 @@ export const useThemeStore = defineStore('themeStore', () => {
   }
 
   return {
-    getAllThemes, addTheme, deleteTheme, themes
+    getAllThemes, addTheme, deleteTheme, themes, categories, themesByCategory
   };
 });

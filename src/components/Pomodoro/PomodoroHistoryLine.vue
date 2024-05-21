@@ -16,9 +16,7 @@
         </div>
       </div>
       <p class="lenght">{{ pomodoro.timeFormatted((pomo.endedAt ?? 0) / 1000, timeFormat) }}</p>
-      <p :class="reportUtils.getPointsColorClass(pomo.report?.points ?? 0, pomo.deepWork)">{{
-    reportUtils.parsePoints(pomo.report?.points ?? 0)
-  }}%
+      <p :class="reportUtils.getPointsColorClass(pomo.report?.points ?? 0, pomo.deepWork)">{{ reportUtils.parsePoints(pomo.report?.points ?? 0) }}
       </p>
     </div>
     <div v-if="openDetails">

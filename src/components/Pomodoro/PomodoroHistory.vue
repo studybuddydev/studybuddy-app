@@ -31,7 +31,7 @@ type DayGroup = {
   date: string,
   dailySummary: DisplaySession[],
   pomos: PomodoroRecord[],
-  points: number,
+  points: number | null,
   totalTime: number,
   maxLength: number
 }
@@ -70,7 +70,7 @@ const dailyPomodoriGroups = computed(() => {
   for (const key in groups) {
     const group = groups[key];
     const deepPomos = group.pomos.filter(p => p.deepWork)
-    group.points = deepPomos.reduce((m, p) => m + (p.report?.points ?? 0), 0) / deepPomos.length;
+    group.points = deepPomos.length ? (deepPomos.reduce((m, p) => m + (p.report?.points ?? 0), 0) / deepPomos.length) : null;
     group.totalTime = group.pomos.reduce((m, p) => m + (p.endedAt ?? 0), 0);
     group.maxLength = group.pomos.reduce((m, p) => Math.max(p.endedAt ?? 0, m), 0);
     group.dailySummary = group.pomos.map((p, i) => {
@@ -194,7 +194,7 @@ const hoursList = computed(() => {
             <PomodoroFlex class="pomo-flex-day" :dailyPomo="true" :displayBreaks="g.dailySummary" :displayStudy="[]"
               :percentage="100" />
             <p class="lenght-header"> {{ pomodoro.timeFormatted((g.totalTime ?? 0) / 1000, timeFormat) }}</p>
-            <p :class="reportUtils.getPointsColorClass(g.points)">{{ reportUtils.parsePoints(g.points) }}%</p>
+            <p :class="reportUtils.getPointsColorClass(g.points)">{{ reportUtils.parsePoints(g.points) }}</p>
           </div>
 
           <div class="pomo-infos" v-if="openDay === key">

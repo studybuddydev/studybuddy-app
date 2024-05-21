@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
 import PomodoroPip from '@/components/Pomodoro/PomodoroPip.vue';
@@ -14,6 +14,7 @@ import ZenActions from '@/components/Zen/ZenActions.vue'
 import PomodoroDetailsEnd from '@/components/Zen/PomodoroDetailsEnd.vue';
 import PomodoroSetup from '@/components/Pomodoro/PomodoroSetup.vue';
 import Sink from '@/components/Sink/Sink.vue';
+import BackgroundVideo from '@/components/Video/BackgroundVideo.vue';
 
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
@@ -21,17 +22,25 @@ const settings = useSettingsStore();
 const zenMode = ref(true);
 const showPomoHistory = ref(false);
 const openSettingsTab = ref<boolean | string>(false);
-const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string }>(() => {
-  if (settings.settings.theme?.backgroundImg) {
+const zenStyle = computed<{ backgroundImage?: string, backgroundColor?: string, backgroundVideo?: boolean }>(() => {
+  const backgroundVideo = !!settings.themeSettings?.backgroundVideo;
+  if (settings.themeSettings?.backgroundImg) {
     if (!pomodoro.onLongPause) {
-      return { backgroundImage: `url(${settings.settings.theme?.backgroundImg})` }
+      return { backgroundImage: `url(${settings.themeSettings?.backgroundImg})`, backgroundVideo }
     } else {
-      return { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${settings.settings.theme?.backgroundImg})` }
+      return { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${settings.themeSettings?.backgroundImg})`, backgroundVideo }
     }
-  } else if (settings.settings.theme?.backgroundColor) {
-    return { backgroundColor: settings.settings.theme?.backgroundColor }
+  } else if (settings.themeSettings?.backgroundColor) {
+    return { backgroundColor: settings.themeSettings?.backgroundColor, backgroundVideo }
   }
-  return {};
+  return { backgroundVideo };
+});
+
+const forseShowVideo = ref(false)
+watch(() => settings.themeSettings.backgroundVideo, (video) => {
+  if (video) {
+    forseShowVideo.value = true;
+  }
 });
 
 const onKeyUp = (e: KeyboardEvent) => {
@@ -45,16 +54,28 @@ const onKeyUp = (e: KeyboardEvent) => {
 
 onMounted(() => { window.addEventListener('keyup', onKeyUp) });
 onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
+
+const showStartPage = computed(() => pomodoro.created && !pomodoro.going && !pomodoro.settingUp);
+const showSetup = computed(() => pomodoro.created && !pomodoro.going && pomodoro.settingUp);
+const showFinishPage = computed(() => pomodoro.terminated && !pomodoro.going);
+const showPomo = computed(() => (pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing))));
+const showDetailsEnd = computed(() => !(pomodoro.going || pomodoro.countdownRunning) && pomodoro.finishedPomoRecord?.pomo);
 </script>
 
 <template>
-  <div :class="zenStyle.backgroundImage ? 'img-background' : ''">
+  <div :class="(zenStyle.backgroundImage || zenStyle.backgroundVideo) ? 'img-background' : ''">
     <Settings v-model="openSettingsTab" />
     <LongAwayPopup />
 
     <div transition="fade-transition">
       <v-scroll-y-reverse-transition>
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
+
+          <BackgroundVideo
+            :class="(settings.themeSettings.showOnlyMusic || (showStartPage && !forseShowVideo))
+              ? 'video hide-video' : 'video'"
+              :shouldUnmute="!(showStartPage && !forseShowVideo)"
+            />
 
           <div class="zen-header">
             <About class="top-left" :show-title="!pomodoro.created" />
@@ -64,25 +85,23 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
 
           <div class="main-content-wrapper">
             <div class="main-content">
-
-                <StartPage v-if="pomodoro.created && !pomodoro.going && !pomodoro.settingUp" />
-                <PomodoroSetup v-else-if="pomodoro.created && !pomodoro.going && pomodoro.settingUp"
+              <StartPage v-if="showStartPage" />
+              <PomodoroSetup v-else-if="showSetup"
                 @exit-setup="pomodoro.exitSetup()" @open-settings-tab="event => openSettingsTab = event" />
-              <FinishPage v-else-if="pomodoro.terminated && !pomodoro.going"
+              <FinishPage v-else-if="showFinishPage"
                 :short-pomo="!!pomodoro.finishedPomoRecord?.shortPomo"
                 :points="(pomodoro.finishedPomoRecord?.pomo?.report?.points ?? 0)" />
-
               <PomodoroPip
-                v-if="(pomodoro.countdownRunning || (pomodoro.going && (!settings.generalSettings.hideTime || pomodoro.pauseing)))"
+                v-if="showPomo"
                 :zen-style="zenStyle" :hide-time="settings.generalSettings.hideTime" />
               <ZenActions @show-history="showPomoHistory = true" />
               <PomodoroDetailsEnd class="pomo-details"
-                v-if="!(pomodoro.going || pomodoro.countdownRunning) && pomodoro.finishedPomoRecord?.pomo"
-                :pomo="pomodoro.finishedPomoRecord.pomo" @done="pomodoro.createPomodoro()" />
+                v-if="showDetailsEnd"
+                :pomo="pomodoro!.finishedPomoRecord!.pomo!" @done="pomodoro.createPomodoro()" />
 
             </div>
           </div>
-          
+
           <Sink class="sink" />
         </div>
       </v-scroll-y-reverse-transition>
@@ -104,6 +123,17 @@ onUnmounted(() => { window.removeEventListener('keyup', onKeyUp) });
   position: absolute;
   top: 23vh;
   right: 0;
+}
+
+.video {
+  visibility: visible;
+  transition: opacity 0.5s linear, visibility 0s;
+  opacity: 1;
+}
+
+.hide-video {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .zen-screen {

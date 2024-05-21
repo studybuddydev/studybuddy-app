@@ -21,7 +21,7 @@ const props = defineProps<{
       <p>{{ $t("pause.pauseNumber") }}</p>
       <p class="report-value">{{ report.nrBreaks }}</p>
       <p class="report-total">{{ $t("pause.score") }}</p>
-      <p class="report-value report-total">{{ reportUtils.parsePoints(report.points) }}%</p>
+      <p class="report-value report-total">{{ reportUtils.parsePoints(report.points) }}</p>
     </div>
   </div>
 </template>

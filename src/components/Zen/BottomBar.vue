@@ -1,11 +1,22 @@
 <template>
   <div class="bottom-bar">
     <div class="quick-settings" v-if="zenMode">
+      <div class="volume-controls"
+        v-if="
+        !(pomodoro.created && !pomodoro.going && !pomodoro.settingUp) &&
+        settings.themeSettings.backgroundVideo">
+        <v-slider v-model="settings.generalSettings.videoVolume" @update:model-value="settings.generalSettings.videoMute = false"
+          hide-details class="volume-slider" :min="0" :max="100" />
+        <v-icon @click="settings.generalSettings.videoMute = !settings.generalSettings.videoMute" class="mx-1"
+          :icon="settings.generalSettings.videoMute ? 'mdi-volume-off' : 'mdi-volume-high'" />
+        <v-icon @click="settings.themeSettings.showOnlyMusic = !settings.themeSettings.showOnlyMusic" class="mx-1"
+          :icon="settings.themeSettings.showOnlyMusic ? 'mdi-video-off' : 'mdi-video'" />
+
+      </div>
       <v-btn density="comfortable" class="btn-edit btn-edit-main bg-surface" icon="mdi-cog" size="large"
         @click="emit('openSettingsTab', pomodoro.going ? 'theme' : 'pomodoro')">
         <v-icon class="icon" icon="mdi-cog" size="large" />
       </v-btn>
-
     </div>
     <div :class="`pull-up-panel blur ${zenMode ? '' : 'pull-up-panel-zenmode'} ${showPomoHistory ? 'no-frost' : ''}`">
       <div class="handle" v-ripple @click="emit('setShowPomoHistory', false)" v-if="showPomoHistory">
@@ -25,7 +36,8 @@
             <v-btn class='btn bg-accent pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.studing">
               <v-icon class="icon" icon="mdi-pause" />
             </v-btn>
-            <v-btn class='btn bg-accent pomo-btn pomo-box' @click="() => pausePomodoro()" v-else-if="pomodoro.timeToStudy">
+            <v-btn class='btn bg-accent pomo-btn pomo-box' @click="() => pausePomodoro()"
+              v-else-if="pomodoro.timeToStudy">
               <v-icon class="icon" icon="mdi-play" />
             </v-btn>
             <v-btn class='btn bg-accent pomo-btn pomo-box pomo-box-disabled' v-else>
@@ -71,6 +83,7 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroHistory from '@/components/Pomodoro/PomodoroHistory.vue';
 import { useSettingsStore } from "@/stores/settings";
+import { watch } from 'vue';
 
 const pomodoro = usePomodoroStore();
 const settings = useSettingsStore();
@@ -132,9 +145,50 @@ function toggleZenMode() {
   justify-content: flex-end;
 
   .quick-settings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
     pointer-events: auto;
     align-self: flex-end;
     margin: 1rem;
+
+    .volume-controls {
+      margin-right: 1rem;
+      border-radius: 1rem;
+      background-color: rgb(var(--v-theme-surface));
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 0.4rem;
+      height: 32px;
+
+      min-width: 0rem;
+      transition: min-width 0.2s ease-in-out;
+
+      ::v-deep(.v-input) {
+        margin: 0;
+        transition: margin 0.2s ease-in-out;
+      }
+
+      .volume-slider {
+        transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+        display: none;
+      }
+
+      &:hover {
+        min-width: 10rem;
+
+        ::v-deep(.v-input) {
+          margin: 0 8px;
+        }
+
+        .volume-slider {
+          display: block;
+        }
+      }
+    }
+
   }
 
 
