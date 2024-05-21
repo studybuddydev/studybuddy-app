@@ -25,14 +25,20 @@
             icon="mdi-chevron-right" /></div>
       </div>
 
-      <div class="customize px-6 pt-8">
+      <div class="customize">
 
         <div class="text-h6">Customize</div>
         <v-col cols="12">
           <v-row>
-            <v-col cols="10">
+            <v-col cols="12">
               <v-text-field label="Youtube background" v-model="background" :error="!!backgroundUrlError"
-                :prepend-icon="iconBackground" clearable />
+                :prepend-icon="iconBackground" clearable hide-details />
+            </v-col>
+          </v-row>
+          <v-row v-if="settings.themeSettings.backgroundVideo">
+            <v-col cols="10" class="volume-slider">
+              <VolumeSlider v-model:volume="settings.generalSettings.videoVolume" hide-details
+                v-model:mute="settings.generalSettings.videoMute" />
             </v-col>
             <v-col cols="2">
               <div>
@@ -42,15 +48,9 @@
               </div>
             </v-col>
           </v-row>
-          <v-row v-if="settings.themeSettings.backgroundVideo">
-            <v-col cols="12">
-              <VolumeSlider v-model:volume="settings.generalSettings.videoVolume"
-                v-model:mute="settings.generalSettings.videoMute" />
-            </v-col>
-          </v-row>
           <v-row v-if="settings.themeSettings.backgroundVideo && settings.themeSettings.showOnlyMusic">
             <v-col cols="12">
-              <v-text-field label="Background image" v-model="backgroundImg" :error="!!backgroundUrlImgError"
+              <v-text-field label="Background image" v-model="backgroundImg" :error="!!backgroundUrlImgError" hide-details
                 clearable />
             </v-col>
           </v-row>
@@ -233,6 +233,14 @@ function setPalette(palette: string) {
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  .customize {
+    padding: 3rem 3rem 2rem;
+    .volume-slider {
+      display: flex;
+      align-items: center;
+    }
+  }
 
   .header {
     display: flex;
