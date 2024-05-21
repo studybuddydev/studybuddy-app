@@ -72,8 +72,8 @@ const showDetailsEnd = computed(() => !(pomodoro.going || pomodoro.countdownRunn
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
           <BackgroundVideo
-            :class="(settings.themeSettings.showOnlyMusic || (showStartPage && !forseShowVideo))
-              ? 'video hide-video' : 'video'"
+            :class="(settings.themeSettings.showOnlyMusic || (showStartPage && !forseShowVideo)) ? 'video hide-video' : 'video'"
+            :hidden="settings.themeSettings.showOnlyMusic || (showStartPage && !forseShowVideo)"
               :shouldUnmute="!(showStartPage && !forseShowVideo)"
             />
 
