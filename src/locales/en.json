@@ -51,7 +51,8 @@
       "interface": "Interface",
       "pulsingPause": "Pulsing pause",
       "showSeconds": "Show seconds",
-      "hideSetup": "Hide setup"
+      "hideSetup": "Hide setup",
+      "startPipped": "Automatic Picture in Picture"
     },
     "timer": {
       "timer": "Timer",
@@ -84,7 +85,11 @@
       "newTheme": "New theme",
       "colors": "Palette",
       "bgColor": "Background Color",
-      "url": "Custom Image URL"
+      "url": "Custom Image URL",
+      "customize": "Customize",
+      "ytBackground": "YouTube video",
+      "onlyMusic": "Music only",
+      "title": "Theme name"
     }
   },
   "zen": {

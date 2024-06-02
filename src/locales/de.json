@@ -51,7 +51,8 @@
         "interface": "Schnittstelle",
         "pulsingPause": "Pochende Pause",
         "showSeconds": "Sekunden anzeigen",
-        "hideSetup": "Einstellungen ausblenden"
+        "hideSetup": "Einstellungen ausblenden",
+        "startPipped": "Bild in Bild automatisch"
       },
       "timer": {
         "timer": "Timer",
@@ -84,7 +85,11 @@
         "newTheme": "Neues Thema",
         "colors": "Palette",
         "bgColor": "Hintergrundfarbe",
-        "url": "Benutzerdefinierte Bild-URL"
+        "url": "Benutzerdefinierte Bild-URL",
+        "customize": "Anpassen",
+        "ytBackground": "YouTube-Video",
+        "onlyMusic": "nur Musik",
+        "title": "Themenname"
       }
     },
     "zen": {

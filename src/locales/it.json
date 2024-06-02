@@ -51,7 +51,8 @@
                      "interface": "Interfaccia",
                      "pulsingPause": "Pausa rimbalzante",
                      "showSeconds": "Mostra secondi",
-                     "hideSetup": "Nascondi setup"
+                     "hideSetup": "Nascondi setup",
+                     "startPipped": "Picture in Picture automatico"
               },
               "timer": {
                      "timer": "Timer",
@@ -84,7 +85,11 @@
                      "newTheme": "Nuovo Tema",
                      "colors": "Palette",
                      "bgColor": "Colore sfondo",
-                     "url": "Url immagine custom"
+                     "url": "Url immagine custom",
+                     "customize": "Personalizza",
+                     "ytBackground": "Video da YouTube",
+                     "onlyMusic": "Solo musica",
+                     "title": "Nome tema"
               }
        },
        "zen":{

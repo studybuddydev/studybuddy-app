@@ -51,7 +51,8 @@
       "interface": "Interface",
       "pulsingPause": "Pause palpitante",
       "showSeconds": "Afficher les secondes",
-      "hideSetup": "Masquer les paramètres"
+      "hideSetup": "Masquer les paramètres",
+      "startPipped": "image dans l'image automatique"
     },
     "timer": {
       "timer": "Minuteur",
@@ -84,7 +85,11 @@
       "newTheme": "Nouveau Thème",
       "colors": "Palette",
       "bgColor": "Couleur de fond",
-      "url": "URL de l'image personnalisée"
+      "url": "URL de l'image personnalisée",
+      "customize": "Personnaliser",
+      "ytBackground": "vidéo Youtube",
+      "onlyMusic": "musique seulement",
+      "title": "Nom du thème"
     }
   },
   "zen": {

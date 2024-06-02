@@ -5,8 +5,8 @@
   "advanced": "Avanzados",
   "yes": "Sì",
   "no": "No",
-  "back": "Indietro",
-  "delete": "Regresar",
+  "back": "Atràs",
+  "delete": "Cancelar",
   "welcomeToSB": "Bienvenido a StudyBuddy",
   "loginMsg": "Hola, estás en la versión de prueba de Studybuddy, ¿te gustaría ayudarnos siendo tester?",
   "doLogin": "¡Inicia sesión ahora!",
@@ -51,7 +51,8 @@
       "interface": "Interfaz",
       "pulsingPause": "Pausa palpitante",
       "showSeconds": "Muestra segundos",
-      "hideSetup": "Ocultar configuración"
+      "hideSetup": "Ocultar configuración",
+      "startPipped": "Imagen en Imagen automàtico"
     },
     "timer": {
       "timer": "Temporizador",
@@ -84,7 +85,11 @@
       "newTheme": "Nuevo Tema",
       "colors": "Paleta",
       "bgColor": "Color de fondo",
-      "url": "URL de imagen personalizada"
+      "url": "URL de imagen personalizada",
+      "customize": "Personalizar",
+      "ytBackground": "Video de YouTube",
+      "onlyMusic": "Solo musica",
+      "title": "Nombre del tema"
     }
   },
   "zen": {

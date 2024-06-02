@@ -4,10 +4,10 @@
 
       <div class="header px-6 pb-6">
         <div class="header-title">
-          <p class="text-h6">Choose a theme</p>
+          <p class="text-h6">{{$t('pause.theme.chooseTheme')}}</p>
           <Info :text="$t('info.timer')" class="info-settings" />
         </div>
-        <v-btn @click="step = 2" color="primary" variant="text" prepend-icon="mdi-plus">Save as new</v-btn>
+        <v-btn @click="step = 2" color="primary" variant="text" prepend-icon="mdi-plus">{{$t('pause.theme.newTheme')}}</v-btn>
       </div>
 
       <div class="categories pb-6">
@@ -27,11 +27,11 @@
 
       <div class="customize">
 
-        <div class="text-h6">Customize</div>
+        <div class="text-h6">{{$t('pause.theme.customize')}}</div>
         <v-col cols="12">
           <v-row>
             <v-col cols="12">
-              <v-text-field label="Youtube background" v-model="background" :error="!!backgroundUrlError"
+              <v-text-field :label="$t('pause.theme.ytBackground')" v-model="background" :error="!!backgroundUrlError"
                 :prepend-icon="iconBackground" clearable hide-details />
             </v-col>
           </v-row>
@@ -42,7 +42,7 @@
             </v-col>
             <v-col cols="2">
               <div>
-                <v-tooltip activator="parent" location="top">Show only music</v-tooltip>
+                <v-tooltip activator="parent" location="top">{{$t('pause.theme.onlyMusic')}}</v-tooltip>
                 <v-switch color="primary" inset hide-details true-icon="mdi-music" false-icon="mdi-video"
                   v-model="settings.themeSettings.showOnlyMusic" :disabled="!settings.themeSettings.backgroundVideo" />
               </div>
@@ -50,7 +50,7 @@
           </v-row>
           <v-row v-if="settings.themeSettings.backgroundVideo && settings.themeSettings.showOnlyMusic">
             <v-col cols="12">
-              <v-text-field label="Background image" v-model="backgroundImg" :error="!!backgroundUrlImgError" hide-details
+              <v-text-field :label="$t('pause.theme.url')" v-model="backgroundImg" :error="!!backgroundUrlImgError" hide-details
                 clearable />
             </v-col>
           </v-row>
@@ -66,18 +66,18 @@
       <v-col cols="12">
         <v-row>
           <v-col cols="12">
-            <v-text-field label="Title" v-model="newThemeTitle" />
+            <v-text-field :label="$t('pause.theme.title')" v-model="newThemeTitle" />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="10">
-            <v-text-field label="Background Video" v-model="settings.themeSettings.backgroundVideo"
+            <v-text-field :label="$t('pause.theme.ytBackground')" v-model="settings.themeSettings.backgroundVideo"
               prepend-icon="mdi-video" clearable hide-details
               :error="!!settings.themeSettings.backgroundVideo && !getYotubeId(settings.themeSettings.backgroundVideo ?? '')" />
           </v-col>
           <v-col cols="2">
             <div>
-              <v-tooltip activator="parent" location="top">Show only music</v-tooltip>
+              <v-tooltip activator="parent" location="top">{{$t('pause.theme.onlyMusic')}}</v-tooltip>
               <v-switch color="primary" inset hide-details true-icon="mdi-music" false-icon="mdi-video"
                 v-model="settings.themeSettings.showOnlyMusic" :disabled="!settings.themeSettings.backgroundVideo" />
             </div>
@@ -85,7 +85,7 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-text-field label="Background image" v-model="settings.themeSettings.backgroundImg"
+            <v-text-field :label="$t('pause.theme.url')" v-model="settings.themeSettings.backgroundImg"
               prepend-icon="mdi-image" clearable hide-details
               :error="!!settings.themeSettings.backgroundImg && !isUrl(settings.themeSettings.backgroundImg ?? '')" />
           </v-col>
