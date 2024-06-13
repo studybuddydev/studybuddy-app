@@ -11,6 +11,8 @@
   "loginMsg": "Hello, you are in the test version of Studybuddy, would you like to help us by becoming a tester?",
   "doLogin": "Log in now!",
   "backHome": "Home",
+  "longAway": "Did you forget a running timer!",
+  "continue": "Do you want to continue it?",
   "pause": {
     "welcome": "Welcome to",
     "study": "Study",

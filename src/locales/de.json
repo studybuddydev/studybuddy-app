@@ -11,6 +11,8 @@
     "loginMsg": "Hallo, du bist in der Testversion von Studybuddy. Möchtest du uns helfen und Tester werden?",
     "doLogin": "Jetzt anmelden!",
     "backHome": "Startseite",
+    "longAway": "Du hast einen aktiven Timer vergessen!",
+    "continue": "Möchten Sie es fortsetzen?",
     "pause": {
       "welcome": "Willkommen bei",
       "study": "Studium",
