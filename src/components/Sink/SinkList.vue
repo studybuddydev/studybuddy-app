@@ -5,7 +5,7 @@
       <v-icon icon="mdi-delete" @click="sink.remove(s)" class="sink-list-item-icon" />
     </div>
     <div v-if="sink.itemsCount === 0" class="no-items">
-      <p class="text-medium-emphasis">{{ $t('sinkDone')}} </p>
+      <p class="text-medium-emphasis">{{ $t('zen.sinkDone')}} </p>
     </div>
   </div>
 
