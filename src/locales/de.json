@@ -11,6 +11,8 @@
     "loginMsg": "Hallo, du bist in der Testversion von Studybuddy. Möchtest du uns helfen und Tester werden?",
     "doLogin": "Jetzt anmelden!",
     "backHome": "Startseite",
+    "longAway": "Du hast einen aktiven Timer vergessen!",
+    "continue": "Möchten Sie es fortsetzen?",
     "pause": {
       "welcome": "Willkommen bei",
       "study": "Studium",
@@ -51,7 +53,8 @@
         "interface": "Schnittstelle",
         "pulsingPause": "Pochende Pause",
         "showSeconds": "Sekunden anzeigen",
-        "hideSetup": "Einstellungen ausblenden"
+        "hideSetup": "Einstellungen ausblenden",
+        "startPipped": "Bild in Bild automatisch"
       },
       "timer": {
         "timer": "Timer",
@@ -84,7 +87,11 @@
         "newTheme": "Neues Thema",
         "colors": "Palette",
         "bgColor": "Hintergrundfarbe",
-        "url": "Benutzerdefinierte Bild-URL"
+        "url": "Benutzerdefinierte Bild-URL",
+        "customize": "Anpassen",
+        "ytBackground": "YouTube-Video",
+        "onlyMusic": "nur Musik",
+        "title": "Themenname"
       }
     },
     "zen": {

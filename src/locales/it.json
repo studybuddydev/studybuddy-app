@@ -11,6 +11,8 @@
        "loginMsg": "Ciao, sei nella versione di test di Studybuddy, vuoi aiutarci diventando tester?",
        "doLogin": "Effettua il login ora!",
        "backHome": "Home",
+       "longAway": "Hai dimenticato un timer attivo!",
+       "continue": "Vuoi continuarlo?",
        "pause": {
               "welcome": "Benvenuto su",
               "study": "Studia",
@@ -51,7 +53,8 @@
                      "interface": "Interfaccia",
                      "pulsingPause": "Pausa rimbalzante",
                      "showSeconds": "Mostra secondi",
-                     "hideSetup": "Nascondi setup"
+                     "hideSetup": "Nascondi setup",
+                     "startPipped": "Picture in Picture automatico"
               },
               "timer": {
                      "timer": "Timer",
@@ -84,7 +87,11 @@
                      "newTheme": "Nuovo Tema",
                      "colors": "Palette",
                      "bgColor": "Colore sfondo",
-                     "url": "Url immagine custom"
+                     "url": "Url immagine custom",
+                     "customize": "Personalizza",
+                     "ytBackground": "Video da YouTube",
+                     "onlyMusic": "Solo musica",
+                     "title": "Nome tema"
               }
        },
        "zen":{

@@ -70,7 +70,7 @@ async function pipIt() {
     return;
   }
 
-  const pipWindow = await (window as any).documentPictureInPicture.requestWindow({ width: 800, height: 360 });
+  const pipWindow = await (window as any).documentPictureInPicture.requestWindow({ width: 300, height: 100 });
 
   [...(document.styleSheets as any)].forEach((styleSheet) => {
     try {
