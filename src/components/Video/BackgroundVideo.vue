@@ -22,6 +22,26 @@ const props = defineProps<{
   hidden: boolean
 }>();
 
+
+onMounted(() => {
+  if (settings.settings.theme?.backgroundVideo) {
+    currentVideo = getYotubeId(settings.settings.theme?.backgroundVideo)
+    if (currentVideo)
+      playVideo(currentVideo);
+  }
+  if (!settings.generalSettings.videoMute) {
+    if (props.shouldUnmute) {
+      if (navigator.userActivation.isActive) {
+        player?.unMute()
+      } else {
+        settings.generalSettings.videoMute = true;
+      }
+    }
+  }
+})
+
+
+// Methods
 function playVideo(id: string) {
   if (player) {
     removePlayer()
@@ -46,15 +66,6 @@ function playVideo(id: string) {
 
   isThereAVideo.value = true;
 }
-
-watch(() => props.hidden, (hidden) => {
-  if (hidden) {
-    removePlayer()
-  } else if (currentVideo) {
-    playVideo(currentVideo)
-  }
-})
-
 function removePlayer() {
   player?.stopVideo()
   player?.destroy()
@@ -64,6 +75,14 @@ function removePlayer() {
   currentVideo = null;
 }
 
+// Watch
+watch(() => props.hidden, (hidden) => {
+  if (hidden) {
+    removePlayer()
+  } else if (currentVideo) {
+    playVideo(currentVideo)
+  }
+})
 watch(() => settings.settings.theme?.backgroundVideo, (bgVideo) => {
   console.log(bgVideo)
   if (bgVideo) {
@@ -80,7 +99,6 @@ watch(() => settings.settings.theme?.backgroundVideo, (bgVideo) => {
     removePlayer()
   }
 })
-
 watch(() => settings.generalSettings.videoVolume, (volume) => {
   player?.setVolume(volume) 
 })
@@ -91,24 +109,6 @@ watch(() => settings.generalSettings.videoMute, (muted) => {
     player?.unMute()
   }
 })
-
-onMounted(() => {
-  if (settings.settings.theme?.backgroundVideo) {
-    currentVideo = getYotubeId(settings.settings.theme?.backgroundVideo)
-    if (currentVideo)
-      playVideo(currentVideo);
-  }
-  if (!settings.generalSettings.videoMute) {
-    if (props.shouldUnmute) {
-      if (navigator.userActivation.isActive) {
-        player?.unMute()
-      } else {
-        settings.generalSettings.videoMute = true;
-      }
-    }
-  }
-})
-
 watch(() => props.shouldUnmute, (unMute) => {
   if (
     unMute &&

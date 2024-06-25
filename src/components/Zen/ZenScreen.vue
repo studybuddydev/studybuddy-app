@@ -73,8 +73,7 @@ const showDetailsEnd = computed(() => !(pomodoro.going || pomodoro.countdownRunn
 
           <BackgroundVideo
             :class="(settings.themeSettings.showOnlyMusic || (showStartPage && !forseShowVideo)) ? 'video hide-video' : 'video'"
-            :hidden="settings.themeSettings.showOnlyMusic || (showStartPage && !forseShowVideo)"
-              :shouldUnmute="!(showStartPage && !forseShowVideo)"
+            :shouldUnmute="!(showStartPage && !forseShowVideo)"
             />
 
           <div class="zen-header">
