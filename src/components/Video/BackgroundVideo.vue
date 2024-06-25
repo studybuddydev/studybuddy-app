@@ -18,8 +18,7 @@ let player: YouTubePlayerType | null = null;
 let currentVideo: string | null = null;
 
 const props = defineProps<{
-  shouldUnmute: boolean,
-  hidden: boolean
+  shouldUnmute: boolean
 }>();
 
 
@@ -76,13 +75,13 @@ function removePlayer() {
 }
 
 // Watch
-watch(() => props.hidden, (hidden) => {
-  if (hidden) {
-    removePlayer()
-  } else if (currentVideo) {
-    playVideo(currentVideo)
-  }
-})
+// watch(() => props.hidden, (hidden) => {
+//   if (hidden) {
+//     removePlayer()
+//   } else if (currentVideo) {
+//     playVideo(currentVideo)
+//   }
+// })
 watch(() => settings.settings.theme?.backgroundVideo, (bgVideo) => {
   console.log(bgVideo)
   if (bgVideo) {
