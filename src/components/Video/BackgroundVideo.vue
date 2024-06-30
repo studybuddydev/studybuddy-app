@@ -83,7 +83,6 @@ function removePlayer() {
 //   }
 // })
 watch(() => settings.settings.theme?.backgroundVideo, (bgVideo) => {
-  console.log(bgVideo)
   if (bgVideo) {
     const id = getYotubeId(bgVideo)
     if (currentVideo !== id) {

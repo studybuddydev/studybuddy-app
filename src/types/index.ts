@@ -175,6 +175,7 @@ export type Settings = {
   pomodoro: PomodoroSettings;
   general: GeneralSettings;
   theme: ThemeSettings;
+  lastUpdate?: number;
 }
 
 // ---- DBs ----
