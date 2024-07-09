@@ -2,10 +2,7 @@
   <!-- header -->
   <v-navigation-drawer permanent :rail="!!exam">
     <template v-slot:prepend>
-      <v-list-item color="black" 
-          
-          to="/" nav
-          >
+      <v-list-item color="black" to="/" nav>
           <template v-slot>
           <div class="title">
             <img src="/images/logo.png" alt="logo" width="47" />
