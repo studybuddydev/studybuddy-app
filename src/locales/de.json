@@ -6,6 +6,8 @@
     "yes": "Ja",
     "no": "Nein",
     "back": "Rückwärts",
+    "next": "Weiter",
+    "search": "Suche",
     "delete": "Löschen",
     "welcomeToSB": "Willkommen bei StudyBuddy",
     "loginMsg": "Hallo, du bist in der Testversion von Studybuddy. Möchtest du uns helfen und Tester werden?",
@@ -13,6 +15,19 @@
     "backHome": "Startseite",
     "longAway": "Du hast einen aktiven Timer vergessen!",
     "continue": "Möchten Sie es fortsetzen?",
+    "welcome": {
+      "welcome": "Willkommen bei StudyBuddy!",
+      "start" : "Start",
+      "skip" : "Überspringen",
+      "continue":  "Fortsetzen",
+      "thanks": "Danke für das Einloggen :)",
+      "username": "Wähle einen Benutzernamen",
+      "tellus": "Erzähl uns etwas über dich",
+      "uni": "Wähle deine Universität",
+      "course": "Wähle deinen Studiengang",
+      "exams": "Füge deine Prüfungen hinzu",
+      "startNow": "Lass uns anfangen!"
+       },
     "pause": {
       "welcome": "Willkommen bei",
       "study": "Studium",

@@ -11,10 +11,10 @@
         <v-window-item :value="1" class="card-window-item">
           <div class="windows-content card-welcome">
             <v-img class="mb-4" width="128px" src="/images/logo.png" contain></v-img>
-            <h3 class="text-h5 font-weight-light mb-2">Welcome to StudyBuddy!</h3>
-            <span class="text-caption text-grey">Thanks for signing up!</span>
+            <h3 class="text-h5 font-weight-light mb-2">{{ $t("welcome.welcome") }}</h3>
+            <span class="text-caption text-grey">{{ $t("welcome.thanks") }}</span>
 
-            <v-text-field label="Choose your username" class="mt-10 username-input" prefix="@"
+            <v-text-field :label= "$t('welcome.username')" class="mt-10 username-input" prefix="@"
               v-model="userInfo.username" :rules="[(v: string) => !!v || 'Username is required']" loading>
               <template v-slot:loader>
                 <v-progress-linear :active="true"
@@ -29,10 +29,10 @@
 
         <v-window-item :value="2" class="card-window-item">
           <div class="windows-content card-uni pa-10">
-            <h3 class="text-h5 font-weight-light my-6">Tell us something!</h3>
-            <v-combobox class="uni-input my-5" label="Choose your university" hide-details clearable
+            <h3 class="text-h5 font-weight-light my-6">{{ $t("welcome.tellus") }}</h3>
+            <v-combobox class="uni-input my-5" :label="$t('welcome.uni')" hide-details clearable
               :items="universities" v-model="userInfo.university" />
-            <v-combobox class="uni-input my-5" label="Choose your corso di study" :disabled="!userInfo.university"
+            <v-combobox class="uni-input my-5" :label="$t('welcome.course')" :disabled="!userInfo.university"
               hide-details clearable :items="studies" v-model="userInfo.studies" />
           </div>
         </v-window-item>
@@ -40,8 +40,8 @@
         <v-window-item :value="3" class="card-window-item card-window-exams">
           <div class="windows-content card-exams pa-10">
             <!-- <v-list :items="exams"></v-list> -->
-            <h3 class="text-h5 font-weight-light my-6">Choose your exams!</h3>
-            <v-text-field label="Search" clearable hide-details prepend-inner-icon="mdi-magnify" class="mb-6 search-bar"
+            <h3 class="text-h5 font-weight-light my-6">{{ $t("welcome.exams") }}</h3>
+            <v-text-field :label="$t('search')" clearable hide-details prepend-inner-icon="mdi-magnify" class="mb-6 search-bar"
               v-model="searchExam" />
 
             <div class="el-dio-porco">
@@ -72,13 +72,13 @@
       <v-spacer />
 
       <v-card-actions class="pa-8">
-        <v-btn v-if="step == 1" size="large" variant="plain" @click="step--">Skip</v-btn>
-        <v-btn v-if="step > 1" size="large" variant="text" @click="step--">Back</v-btn>
+        <v-btn v-if="step == 1" size="large" variant="plain" @click="step--">{{ $t("welcome.skip") }}</v-btn>
+        <v-btn v-if="step > 1" size="large" variant="text" @click="step--">{{ $t("back") }}</v-btn>
         <v-spacer></v-spacer>
         <v-btn v-if="step == 1" size="large" color="primary" variant="flat" @click="step++"
-          :disabled="usernameValidLoading || !usernameValid">Start</v-btn>
-        <v-btn v-if="step == 2" size="large" color="primary" variant="flat" @click="step++">Next</v-btn>
-        <v-btn v-if="step == 3" size="large" color="secondary" variant="flat" @click="step++">Start now!</v-btn>
+          :disabled="usernameValidLoading || !usernameValid">{{ $t("welcome.start") }}</v-btn>
+        <v-btn v-if="step == 2" size="large" color="primary" variant="flat" @click="step++">{{ $t("next") }}</v-btn>
+        <v-btn v-if="step == 3" size="large" color="secondary" variant="flat" @click="step++">{{ $t("welcome.startNow") }}</v-btn>
       </v-card-actions>
     </v-card>
   </div>
