@@ -14,7 +14,7 @@
             <h3 class="text-h5 font-weight-light mb-2">{{ $t("welcome.welcome") }}</h3>
             <span class="text-caption text-grey">{{ $t("welcome.thanks") }}</span>
 
-            <v-text-field :label= "$t('welcome.username')" class="mt-10 username-input" prefix="@"
+            <v-text-field :label="$t('welcome.username')" class="mt-10 username-input" prefix="@"
               v-model="userInfo.username" :rules="[(v: string) => !!v || 'Username is required']" loading>
               <template v-slot:loader>
                 <v-progress-linear :active="true"
@@ -30,8 +30,8 @@
         <v-window-item :value="2" class="card-window-item">
           <div class="windows-content card-uni pa-10">
             <h3 class="text-h5 font-weight-light my-6">{{ $t("welcome.tellus") }}</h3>
-            <v-combobox class="uni-input my-5" :label="$t('welcome.uni')" hide-details clearable
-              :items="universities" v-model="userInfo.university" />
+            <v-combobox class="uni-input my-5" :label="$t('welcome.uni')" hide-details clearable :items="universities"
+              v-model="userInfo.university" />
             <v-combobox class="uni-input my-5" :label="$t('welcome.course')" :disabled="!userInfo.university"
               hide-details clearable :items="studies" v-model="userInfo.studies" />
           </div>
@@ -41,28 +41,33 @@
           <div class="windows-content card-exams pa-10">
             <!-- <v-list :items="exams"></v-list> -->
             <h3 class="text-h5 font-weight-light my-6">{{ $t("welcome.exams") }}</h3>
-            <v-text-field :label="$t('search')" clearable hide-details prepend-inner-icon="mdi-magnify" class="mb-6 search-bar"
-              v-model="searchExam" />
+            <v-text-field :label="$t('search')" clearable hide-details prepend-inner-icon="mdi-magnify"
+              class="mb-6 search-bar" v-model="searchExam" />
 
             <div class="el-dio-porco">
 
               <v-list class="exam-list">
                 <div v-for="(item, i) in filteredExams()" :key="i">
-                  <v-list-item v-if="!item.type" :value="i" color="primary" :active="item.active"
-                    @click="item.active = !item.active" :title="item.title" />
-                  <v-list-subheader v-else-if="item.type == 'subheader'" v-text="item.title"></v-list-subheader>
+                  <v-list-item v-if="!item.type" :value="i" color="primary"
+                    :active="item.active"
+                    @click="item.active = !item.active; addExamToUser(item)" :title="item.title" />
+                  <v-list-subheader v-else-if="item.type == 'subheader'" v-text="item.title" />
                   <v-divider v-else-if="item.type == 'divider'" />
+                </div>
+                <div v-if="searchExam">
+                  <v-divider />
+                  <v-list-subheader>Add a custom exam:</v-list-subheader>
+                  <v-list-item :title="searchExam" @click="addCustomExam(searchExam)" />
                 </div>
               </v-list>
 
-              <v-list class="exam-list">
-                <div v-for="(item, i) in filteredExams()" :key="i">
-                  <v-list-item v-if="!item.type" :value="i" color="primary" :active="item.active"
-                    @click="item.active = !item.active" :title="item.title" />
-                  <v-list-subheader v-else-if="item.type == 'subheader'" v-text="item.title"></v-list-subheader>
-                  <v-divider v-else-if="item.type == 'divider'" />
-                </div>
+              <v-list class="exam-list selected">
+                <v-list-subheader>Your exams</v-list-subheader>
+                <v-list-item v-for="(item, i) in userInfo.exams" :key="i" :value="i" :title="item.name" :subtitle="item.info">
+                  <template v-slot:append><v-btn icon="mdi-close" variant="text" @click="removeExam(i, item.code)" /></template>
+                </v-list-item>
               </v-list>
+
             </div>
           </div>
         </v-window-item>
@@ -78,26 +83,37 @@
         <v-btn v-if="step == 1" size="large" color="primary" variant="flat" @click="step++"
           :disabled="usernameValidLoading || !usernameValid">{{ $t("welcome.start") }}</v-btn>
         <v-btn v-if="step == 2" size="large" color="primary" variant="flat" @click="step++">{{ $t("next") }}</v-btn>
-        <v-btn v-if="step == 3" size="large" color="secondary" variant="flat" @click="step++">{{ $t("welcome.startNow") }}</v-btn>
+        <v-btn v-if="step == 3" size="large" color="secondary" variant="flat" @click="step++">{{ $t("welcome.startNow")
+          }}</v-btn>
       </v-card-actions>
     </v-card>
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useSettingsStore } from "@/stores/settings";
-import { useAuth0 } from "@auth0/auth0-vue";
 
 type UserInfo = {
   username: string;
   university: string | null;
   studies: string | null;
+  exams: { name: string, code: string, info: string }[];
+}
+
+type ListItem = {
+  type?: 'subheader' | 'divider';
+  title?: string;
+  value?: string;
+  active?: boolean;
+  custom?: boolean;
+  info?: string;
 }
 
 const userInfo = ref<UserInfo>({
   username: 'pippo',
   university: null,
-  studies: null
+  studies: null,
+  exams: [],
 })
 const usernameValidLoading = ref(false);
 const usernameValid = ref(true);
@@ -122,38 +138,61 @@ const studies = ref<string[]>([
 ]);
 
 const searchExam = ref('');
-const exams = ref<{
-  type?: 'subheader' | 'divider';
-  title?: string;
-  value?: string;
-  active?: boolean;
-}[]>([
+const exams = ref<ListItem[]>([
   { type: 'subheader', title: 'Year 1' },
-  { title: 'Analisi 1', value: 'analisi-1' },
-  { title: 'Fisica 1', value: 'fisica-1' },
-  { title: 'Informatica 1', value: 'informatica-1' },
+  { title: 'Analisi 1', value: 'analisi-1', info: 'Year X, X CFU' },
+  { title: 'Fisica 1', value: 'fisica-1', info: 'Year X, X CFU' },
+  { title: 'Informatica 1', value: 'informatica-1', info: 'Year X, X CFU' },
   { type: 'divider' },
   { type: 'subheader', title: 'Year 2' },
-  { title: 'Analisi 2', value: 'analisi-2' },
-  { title: 'Fisica 2', value: 'fisica-2' },
-  { title: 'Informatica 2', value: 'informatica-2' },
+  { title: 'Analisi 2', value: 'analisi-2', info: 'Year X, X CFU' },
+  { title: 'Fisica 2', value: 'fisica-2', info: 'Year X, X CFU' },
+  { title: 'Informatica 2', value: 'informatica-2', info: 'Year X, X CFU' },
   { type: 'divider' },
   { type: 'subheader', title: 'Year 3' },
-  { title: 'Analisi 3', value: 'analisi-3' },
-  { title: 'Fisica 3', value: 'fisica-3' },
-  { title: 'Informatica 3', value: 'informatica-3' }
+  { title: 'Analisi 3', value: 'analisi-3', info: 'Year X, X CFU' },
+  { title: 'Fisica 3', value: 'fisica-3', info: 'Year X, X CFU' },
+  { title: 'Informatica 3', value: 'informatica-3', info: 'Year X, X CFU' }
 ])
+const customExams = ref<ListItem[]>([])
+
+const allExams = computed(() => [...customExams.value, ...exams.value]);
+
+function addExamToUser(exam: ListItem) {
+  if (!exam.title || !exam.value) return;
+  const atIndex = userInfo.value.exams.findIndex((e) => e.code === exam.value);
+  if (atIndex >= 0) userInfo.value.exams.splice(atIndex, 1);
+  else userInfo.value.exams.push({ name: exam.title, code: exam.value, info: exam.info ?? '' });
+}
+
+function addCustomExam(name: string) {
+  if (customExams.value.length === 0) {
+    customExams.value.push({ type: 'subheader', title: 'Custom exams' });
+  }
+  const exam = { title: name, value: `custom-${customExams.value.length - 1}`, custom: true, active: true };
+  customExams.value.push(exam);
+  addExamToUser(exam);
+  searchExam.value = '';
+}
 
 function filteredExams() {
-  if (!searchExam.value) return exams.value;
-  return exams.value.filter((e) =>
+  if (!searchExam.value) return allExams.value;
+  return allExams.value.filter((e) =>
     e.type ||
     !e.title ||
     (e.title.toLowerCase().includes(searchExam.value.toLowerCase()))
   );
 }
 
-const { user } = useAuth0();
+function removeExam(i: number, code: string) {
+  userInfo.value.exams.splice(i, 1);
+  customExams.value = customExams.value.filter((e) => e.value !== code);
+  if (customExams.value.length === 1) customExams.value = [];
+
+  const exam = exams.value.find((e) => e.value === code);
+  if (exam) exam.active = false;
+}
+
 const settings = useSettingsStore();
 const step = ref(3);
 
