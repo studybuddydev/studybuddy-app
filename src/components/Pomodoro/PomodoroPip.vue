@@ -19,7 +19,7 @@
       <Info v-if="pomodoro.pauseing" :text="$t('info.pause')" class="info-pause" />
     </div>
 
-    <v-snackbar v-model="pomodoro.pauseShortSnack" :timeout="2000" location="top" rounded="pill" color="warning">Le pause più corte di 5 secondi non vengono visualizzate</v-snackbar>
+    <v-snackbar v-model="pomodoro.pauseShortSnack" :timeout="2000" location="top" rounded="pill" color="warning">{{ $t("shortBreak") }}</v-snackbar>
   </div>
 </template>
 

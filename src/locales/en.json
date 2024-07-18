@@ -15,6 +15,7 @@
   "backHome": "Home",
   "longAway": "Did you forget a running timer!",
   "continue": "Do you want to continue it?",
+  "shortBreak": "Breaks shorter than 5 seconds are not displayed",
   "welcome": {
     "welcome": "Welcome to StudyBuddy!",
     "start" : "Start",

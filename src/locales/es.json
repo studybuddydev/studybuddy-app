@@ -15,6 +15,7 @@
   "backHome": "página de inicio",
   "longAway": "¡Olvidaste un temporizador activo!",
   "continue": "¿Quieres continuar?",
+  "shortBreak": "Los descansos de menos de 5 segundos no se muestran",
   "welcome": {
     "welcome": "¡Bienvenido a StudyBuddy!",
     "start" :  "Comienza",

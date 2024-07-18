@@ -15,6 +15,7 @@
   "backHome": "page d'accueil",
   "longAway": "Vous avez oublié un minuteur actif!",
   "continue": "Voulez-vous le continuer?",
+  "shortBreak": "Les pauses de moins de 5 secondes ne sont pas affichées",
   "welcome": {
     "welcome": "Bienvenue sur StudyBuddy!",
     "start" : "Commencer",

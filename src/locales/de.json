@@ -15,6 +15,7 @@
     "backHome": "Startseite",
     "longAway": "Du hast einen aktiven Timer vergessen!",
     "continue": "Möchten Sie es fortsetzen?",
+    "shortBreak": "Pausen, die kürzer als 5 Sekunden sind, werden nicht angezeigt",
     "welcome": {
       "welcome": "Willkommen bei StudyBuddy!",
       "start" : "Start",

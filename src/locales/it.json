@@ -15,6 +15,7 @@
        "backHome": "Home",
        "longAway": "Hai dimenticato un timer attivo!",
        "continue": "Vuoi continuarlo?",
+       "shortBreak": "Le pause più corte di 5 secondi non vengono mostrate",
        "welcome": {
               "welcome": "Benvenuto/a su StudyBuddy!",
               "start" : "Inizia",
