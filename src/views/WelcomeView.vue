@@ -26,14 +26,16 @@
           </div>
         </v-window-item>
 
-
         <v-window-item :value="2" class="card-window-item">
           <div class="windows-content card-uni pa-10">
             <h3 class="text-h5 font-weight-light my-6">{{ $t("welcome.tellus") }}</h3>
             <v-combobox class="uni-input my-5" :label="$t('welcome.uni')" hide-details clearable :items="universities"
-              v-model="userInfo.university" />
+              item-title="name" data
+              @update:modelValue="(e: DataUniversity) => { userInfo.university = e.id; selectedUni = e }" />
             <v-combobox class="uni-input my-5" :label="$t('welcome.course')" :disabled="!userInfo.university"
-              hide-details clearable :items="studies" v-model="userInfo.studies" />
+              hide-details clearable :items="selectedUni?.courses" item-title="name"
+              @update:modelValue="(e: any) => { userInfo.course = e.code }" />
+
           </div>
         </v-window-item>
 
@@ -48,8 +50,7 @@
 
               <v-list class="exam-list">
                 <div v-for="(item, i) in filteredExams()" :key="i">
-                  <v-list-item v-if="!item.type" :value="i" color="primary"
-                    :active="item.active"
+                  <v-list-item v-if="!item.type" :value="i" color="primary" :active="item.active"
                     @click="item.active = !item.active; addExamToUser(item)" :title="item.title" />
                   <v-list-subheader v-else-if="item.type == 'subheader'" v-text="item.title" />
                   <v-divider v-else-if="item.type == 'divider'" />
@@ -63,8 +64,10 @@
 
               <v-list class="exam-list selected">
                 <v-list-subheader>Your exams</v-list-subheader>
-                <v-list-item v-for="(item, i) in userInfo.exams" :key="i" :value="i" :title="item.name" :subtitle="item.info">
-                  <template v-slot:append><v-btn icon="mdi-close" variant="text" @click="removeExam(i, item.code)" /></template>
+                <v-list-item v-for="(item, i) in selectedExams" :key="i" :value="i" :title="item.name"
+                  :subtitle="item.info">
+                  <template v-slot:append><v-btn icon="mdi-close" variant="text"
+                      @click="removeExam(i, item.code)" /></template>
                 </v-list-item>
               </v-list>
 
@@ -82,8 +85,10 @@
         <v-spacer></v-spacer>
         <v-btn v-if="step == 1" size="large" color="primary" variant="flat" @click="step++"
           :disabled="usernameValidLoading || !usernameValid">{{ $t("welcome.start") }}</v-btn>
-        <v-btn v-if="step == 2" size="large" color="primary" variant="flat" @click="step++">{{ $t("next") }}</v-btn>
-        <v-btn v-if="step == 3" size="large" color="secondary" variant="flat" @click="step++">{{ $t("welcome.startNow")
+        <v-btn v-if="step == 2" size="large" color="primary" variant="flat" :disabled="!userInfo.course"
+          @click="step++; loadExams()">{{ $t("next") }}</v-btn>
+        <v-btn v-if="step == 3" size="large" color="secondary" variant="flat" @click="saveOnboarding()">{{
+          $t("welcome.startNow")
           }}</v-btn>
       </v-card-actions>
     </v-card>
@@ -92,13 +97,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useSettingsStore } from "@/stores/settings";
-
-type UserInfo = {
-  username: string;
-  university: string | null;
-  studies: string | null;
-  exams: { name: string, code: string, info: string }[];
-}
+import { useUsersAPIStore, type UserOnboarding } from "@/stores/api/users";
+import { useDataAPIStore, type DataUniversity, type DataCourse } from "@/stores/api/data";
 
 type ListItem = {
   type?: 'subheader' | 'divider';
@@ -109,60 +109,60 @@ type ListItem = {
   info?: string;
 }
 
-const userInfo = ref<UserInfo>({
+
+const settings = useSettingsStore();
+const usersAPI = useUsersAPIStore();
+const dataAPI = useDataAPIStore();
+
+const step = ref(1);
+
+const userInfo = ref<UserOnboarding>({
   username: 'pippo',
   university: null,
-  studies: null,
+  course: null,
   exams: [],
 })
+const selectedExams = ref<{ name: string, code: string, info: string }[]>([]);
 const usernameValidLoading = ref(false);
 const usernameValid = ref(true);
 
-const universities = ref<string[]>([
-  "Università di Trento",
-  "Università di Bologna",
-  "Università di Padova",
-  "Università di Milano",
-  "Università di Roma",
-  "Università di Napoli",
-  "Università di Firenze",
-  "Università di Torino",
-  "Other"
-]);
+const universities = ref<DataUniversity[]>([]);
+const selectedUni = ref<DataUniversity | null>(null);
 
-const studies = ref<string[]>([
-  "Science informatiche",
-  "Ingegneria informatica",
-  "Data Science",
-  "Other"
-]);
+async function loadUniData() {
+  universities.value = await dataAPI.getUniversities();
+}
+loadUniData();
 
 const searchExam = ref('');
-const exams = ref<ListItem[]>([
-  { type: 'subheader', title: 'Year 1' },
-  { title: 'Analisi 1', value: 'analisi-1', info: 'Year X, X CFU' },
-  { title: 'Fisica 1', value: 'fisica-1', info: 'Year X, X CFU' },
-  { title: 'Informatica 1', value: 'informatica-1', info: 'Year X, X CFU' },
-  { type: 'divider' },
-  { type: 'subheader', title: 'Year 2' },
-  { title: 'Analisi 2', value: 'analisi-2', info: 'Year X, X CFU' },
-  { title: 'Fisica 2', value: 'fisica-2', info: 'Year X, X CFU' },
-  { title: 'Informatica 2', value: 'informatica-2', info: 'Year X, X CFU' },
-  { type: 'divider' },
-  { type: 'subheader', title: 'Year 3' },
-  { title: 'Analisi 3', value: 'analisi-3', info: 'Year X, X CFU' },
-  { title: 'Fisica 3', value: 'fisica-3', info: 'Year X, X CFU' },
-  { title: 'Informatica 3', value: 'informatica-3', info: 'Year X, X CFU' }
-])
+const exams = ref<ListItem[]>([])
 const customExams = ref<ListItem[]>([])
+
+async function loadExams() {
+  if (!userInfo.value.course) return;
+  const course = await dataAPI.getCourse(userInfo.value.course ?? '');
+  const courseExams = course.exams.sort((a, b) => a.year - b.year);
+
+  let currYear = courseExams[0].year;
+  exams.value.push({ type: 'subheader', title: `Year ${currYear}` });
+
+  for (const e of courseExams) {
+    if (e.year !== currYear) {
+      currYear = e.year;
+      exams.value.push({ type: 'divider' });
+      exams.value.push({ type: 'subheader', title: `Year ${currYear}` });
+    }
+    exams.value.push({ title: e.title, value: e.id, info: `Year ${e.year}` });
+  }
+}
 
 const allExams = computed(() => [...customExams.value, ...exams.value]);
 
 function addExamToUser(exam: ListItem) {
   if (!exam.title || !exam.value) return;
-  const atIndex = userInfo.value.exams.findIndex((e) => e.code === exam.value);
-  if (atIndex >= 0) userInfo.value.exams.splice(atIndex, 1);
-  else userInfo.value.exams.push({ name: exam.title, code: exam.value, info: exam.info ?? '' });
+  const atIndex = selectedExams.value.findIndex((e) => e.code === exam.value);
+  if (atIndex >= 0) selectedExams.value.splice(atIndex, 1);
+  else selectedExams.value.push({ name: exam.title, code: exam.value, info: exam.info ?? '' });
 }
 
 function addCustomExam(name: string) {
@@ -185,7 +185,7 @@ function filteredExams() {
 }
 
 function removeExam(i: number, code: string) {
-  userInfo.value.exams.splice(i, 1);
+  selectedExams.value.splice(i, 1);
   customExams.value = customExams.value.filter((e) => e.value !== code);
   if (customExams.value.length === 1) customExams.value = [];
 
@@ -193,21 +193,18 @@ function removeExam(i: number, code: string) {
   if (exam) exam.active = false;
 }
 
-const settings = useSettingsStore();
-const step = ref(3);
 
-watch(() => userInfo.value.username, async (newUser) => {
-  checkUsername();
-});
+watch(() => userInfo.value.username, async (newUser) => checkUsername(newUser));
 
-async function checkUsername() {
+async function checkUsername(username: string) {
   usernameValidLoading.value = true;
-  usernameValid.value = await new Promise((resolve) => {
-    setTimeout(() => {
-      usernameValidLoading.value = false;
-      resolve(Math.random() > 0.5);
-    }, 1000);
-  });
+  usernameValid.value = await usersAPI.checkUsername(username);
+  usernameValidLoading.value = false;
+}
+
+async function saveOnboarding() {
+  userInfo.value.exams = selectedExams.value.map((e) => e.code);
+  await usersAPI.saveOnboarding(userInfo.value);
 }
 </script>
 
