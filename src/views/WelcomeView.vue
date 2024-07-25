@@ -23,6 +23,7 @@
                   :indeterminate="usernameValidLoading && !!userInfo.username"></v-progress-linear>
               </template>
             </v-text-field>
+
           </div>
         </v-window-item>
 
@@ -46,7 +47,7 @@
             <v-text-field :label="$t('search')" clearable hide-details prepend-inner-icon="mdi-magnify"
               class="mb-6 search-bar" v-model="searchExam" />
 
-            <div class="el-dio-porco">
+            <div class="list-wrapper">
 
               <v-list class="exam-list">
                 <div v-for="(item, i) in filteredExams()" :key="i">
@@ -80,7 +81,8 @@
       <v-spacer />
 
       <v-card-actions class="pa-8">
-        <v-btn v-if="step == 1" size="large" variant="plain" @click="step--">{{ $t("welcome.skip") }}</v-btn>
+        <v-btn v-if="step == 1" size="large" variant="plain" @click="saveOnboardingOnSkip()">{{ $t("welcome.skip")
+          }}</v-btn>
         <v-btn v-if="step > 1" size="large" variant="text" @click="step--">{{ $t("back") }}</v-btn>
         <v-spacer></v-spacer>
         <v-btn v-if="step == 1" size="large" color="primary" variant="flat" @click="step++"
@@ -99,6 +101,11 @@ import { computed, ref, watch } from 'vue';
 import { useSettingsStore } from "@/stores/settings";
 import { useUsersAPIStore, type UserOnboarding } from "@/stores/api/users";
 import { useDataAPIStore, type DataUniversity, type DataCourse } from "@/stores/api/data";
+import { debounce } from '../utils/common';
+import { useAuth0 } from "@auth0/auth0-vue";
+
+
+const { user, isLoading } = useAuth0();
 
 type ListItem = {
   type?: 'subheader' | 'divider';
@@ -117,22 +124,27 @@ const dataAPI = useDataAPIStore();
 const step = ref(1);
 
 const userInfo = ref<UserOnboarding>({
-  username: 'pippo',
+  username: '',
   university: null,
   course: null,
   exams: [],
 })
 const selectedExams = ref<{ name: string, code: string, info: string }[]>([]);
-const usernameValidLoading = ref(false);
+const usernameValidLoading = ref(true);
 const usernameValid = ref(true);
 
 const universities = ref<DataUniversity[]>([]);
 const selectedUni = ref<DataUniversity | null>(null);
 
-async function loadUniData() {
+async function loadData() {
+  userInfo.value.username = await usersAPI.generateUsername(user.value?.nickname)
+  usernameValidLoading.value = false;
   universities.value = await dataAPI.getUniversities();
 }
-loadUniData();
+if (isLoading.value)
+  watch(isLoading, (loading) => !loading && loadData());
+else
+  loadData();
 
 const searchExam = ref('');
 const exams = ref<ListItem[]>([])
@@ -196,15 +208,36 @@ function removeExam(i: number, code: string) {
 
 watch(() => userInfo.value.username, async (newUser) => checkUsername(newUser));
 
+function isUsernameValid(username: string) {
+  if (!/^[a-z0-9_]+$/.test(username)) return false;
+  return true;
+}
+
 async function checkUsername(username: string) {
   usernameValidLoading.value = true;
-  usernameValid.value = await usersAPI.checkUsername(username);
-  usernameValidLoading.value = false;
+
+  if (!isUsernameValid(username)
+    || username.length < 3
+    || username.length > 30
+  ) {
+    usernameValid.value = false;
+    usernameValidLoading.value = false;
+    return;
+  }
+
+  debounce('checkUsername', async () => {
+    usernameValid.value = await usersAPI.checkUsername(username);
+    usernameValidLoading.value = false;
+  }, 500);
 }
 
 async function saveOnboarding() {
   userInfo.value.exams = selectedExams.value.map((e) => e.code);
   await usersAPI.saveOnboarding(userInfo.value);
+}
+
+async function saveOnboardingOnSkip() {
+  await usersAPI.saveOnboarding({ username: userInfo.value.username });
 }
 </script>
 
@@ -267,7 +300,7 @@ async function saveOnboarding() {
 
     }
 
-    .el-dio-porco {
+    .list-wrapper {
       overflow: auto;
       display: grid;
       grid-template-columns: 1fr 1fr;

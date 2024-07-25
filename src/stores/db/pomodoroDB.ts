@@ -10,7 +10,7 @@ import { openDB } from 'idb';
 export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   const db = useDBStore();
   const settings = useSettingsStore();
-  
+
   const streak = ref(0);
   const pomodoroRecords = ref<PomodoroRecord[]>([]);
 
@@ -56,7 +56,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     }
     return parsed;
   }
-  async function deletePomodoroRecord(id: number) { 
+  async function deletePomodoroRecord(id: number) {
     pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);
     updateStreak();
     await db.pomodori.delete(id);
@@ -130,7 +130,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     let i = 1
     while (i < days.length) {
       const d1 = days[i - 1];
-      const d2 = days[i]; 
+      const d2 = days[i];
       if (d1 - 1 === d2) {
         newStreak++;
         i++;
