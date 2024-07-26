@@ -151,6 +151,8 @@ const exams = ref<ListItem[]>([])
 const customExams = ref<ListItem[]>([])
 
 async function loadExams() {
+  exams.value = []
+  customExams.value = []
   if (!userInfo.value.course) return;
   const course = await dataAPI.getCourse(userInfo.value.course ?? '');
   const courseExams = course.exams.sort((a, b) => a.year - b.year);
