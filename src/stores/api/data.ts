@@ -6,7 +6,7 @@ export type DataUniversity = {
   id: string;
   name: string;
   uni: string;
-  courses: { name: string, code: string }[]
+  courses: { name: string, code: string, type: string }[]
 }
 export type DataCourse = {
   id: string;

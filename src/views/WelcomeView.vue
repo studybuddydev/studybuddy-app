@@ -31,10 +31,13 @@
           <div class="windows-content card-uni pa-10">
             <h3 class="text-h5 font-weight-light my-6">{{ $t("welcome.tellus") }}</h3>
             <v-combobox class="uni-input my-5" :label="$t('welcome.uni')" hide-details clearable :items="universities"
-              item-title="name" data
+              item-title="name"
               @update:modelValue="(e: DataUniversity) => { userInfo.university = e.id; selectedUni = e }" />
-            <v-combobox class="uni-input my-5" :label="$t('welcome.course')" :disabled="!userInfo.university"
-              hide-details clearable :items="selectedUni?.courses" item-title="name"
+            <v-combobox class="uni-input my-5" :label="$t('welcome.uni')" :disabled="!userInfo.university" 
+              hide-details clearable :items="courseTypes"
+              @update:modelValue="(e: any) => { selectedCourseType = e?.value ?? null }" />
+            <v-combobox class="uni-input my-5" :label="$t('welcome.course')" :disabled="!selectedCourseType"
+              hide-details clearable :items="selectedUni?.courses.filter(c => c.type === selectedCourseType)" item-title="name"
               @update:modelValue="(e: any) => { userInfo.course = e.code }" />
 
           </div>
@@ -133,8 +136,10 @@ const selectedExams = ref<{ name: string, code: string, info: string }[]>([]);
 const usernameValidLoading = ref(true);
 const usernameValid = ref(true);
 
+const courseTypes = [{ value: 'triennale', title: 'Triennale' }, { value: 'magistrale', title: 'Magistrale' }, { value: 'cicloUnico', title: 'Ciclo Unico' }]
 const universities = ref<DataUniversity[]>([]);
 const selectedUni = ref<DataUniversity | null>(null);
+const selectedCourseType = ref<string | null>(null);
 
 async function loadData() {
   userInfo.value.username = await usersAPI.generateUsername(user.value?.nickname)
