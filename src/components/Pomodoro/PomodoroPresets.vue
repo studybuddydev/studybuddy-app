@@ -1,13 +1,11 @@
 <template>
   <div :class="`pomo-presets ${top3 ? 'top3' : ''}`">
-    <div class="arrow" v-ripple @click="decreasePage()" v-if="top3"
-    ><v-icon icon="mdi-chevron-left" :disabled="page === 0"/></div>
-    <PomodoroPresetsTile
-      :timers="timers"
-      :deletable="deletable"
+    <div class="arrow" v-ripple @click="decreasePage()" v-if="top3"><v-icon icon="mdi-chevron-left"
+        :disabled="page === 0" /></div>
+    <PomodoroPresetsTile :timers="timers" :deletable="deletable"
       @open-settings-tab="emit('open-settings-tab', $event)" />
-    <div class="arrow" v-ripple @click="increasePage()" v-if="top3"
-    ><v-icon icon="mdi-chevron-right" :disabled="timerStore.timers?.length! <= (page + 1) * 3" /></div>
+    <div class="arrow" v-ripple @click="increasePage()" v-if="top3"><v-icon icon="mdi-chevron-right"
+        :disabled="timerStore.timers?.length! <= (page + 1) * 3" /></div>
   </div>
 </template>
 
@@ -48,23 +46,36 @@ function decreasePage() {
   overflow-x: auto;
   overflow-y: hidden;
 
+
   &.top3 {
     grid-template-columns: 1.5rem 1fr 1fr 1fr 1.5rem;
   }
+
   .arrow {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 
-      &:first-child {
-        border-radius: 0.5rem;
-      }
-
-      &:last-child {
-        border-radius: 0.5rem;
-        grid-column-start: 5;
-      }
+    &:first-child {
+      border-radius: 0.5rem;
     }
+
+    &:last-child {
+      border-radius: 0.5rem;
+      grid-column-start: 5;
+    }
+  }
+
+  @media screen and (max-width: 850px) {
+    &.top3 {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    .arrow {
+      display: none;
+    }
+
+  }
+
 }
 </style>

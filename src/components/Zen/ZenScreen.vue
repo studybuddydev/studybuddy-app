@@ -173,6 +173,11 @@ const showDetailsEnd = computed(() => !(pomodoro.going || pomodoro.countdownRunn
     mask-image: linear-gradient(to top, black 99.5%, transparent 100%);
     margin-top: 4.2rem;
 
+    @media screen and (max-width: 850px) {
+      align-items: baseline;
+      margin-top: 5rem;
+    }
+
     .main-content {
       margin-top: 1rem;
       margin-bottom: 10rem;
