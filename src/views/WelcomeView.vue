@@ -106,9 +106,10 @@ import { useUsersAPIStore, type UserOnboarding } from "@/stores/api/users";
 import { useDataAPIStore, type DataUniversity, type DataCourse } from "@/stores/api/data";
 import { debounce } from '../utils/common';
 import { useAuth0 } from "@auth0/auth0-vue";
-
+import { useRouter } from 'vue-router'
 
 const { user, isLoading } = useAuth0();
+const router = useRouter()
 
 type ListItem = {
   type?: 'subheader' | 'divider';
@@ -241,10 +242,12 @@ async function checkUsername(username: string) {
 async function saveOnboarding() {
   userInfo.value.exams = selectedExams.value.map((e) => e.code);
   await usersAPI.saveOnboarding(userInfo.value);
+  router.push('/')
 }
 
 async function saveOnboardingOnSkip() {
   await usersAPI.saveOnboarding({ username: userInfo.value.username });
+  router.push('/')
 }
 </script>
 

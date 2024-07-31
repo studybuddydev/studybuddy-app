@@ -26,5 +26,9 @@ export const useUsersAPIStore = defineStore('users-api', () => {
     await axios.post(`${API_ENDPOINT}/onboarding`, userOnboarding, await api.getOptions());
   }
 
-  return { checkUsername, saveOnboarding, generateUsername };
+  async function isOnboarded(): Promise<boolean> {
+    return !!(await axios.get(`${API_ENDPOINT}/onboarding`, await api.getOptions())).data;
+  }
+
+  return { checkUsername, saveOnboarding, generateUsername, isOnboarded };
 })
