@@ -61,7 +61,6 @@
                 </div>
               </div>
               
-              {{ userInfo.course }}
               <v-combobox class="uni-input my-5" :label="$t('welcome.course')"
                   :disabled="!selectedCourseType" hide-details clearable
                   :items="selectedUni?.courses.filter(c => c.type === selectedCourseType)"
