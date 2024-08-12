@@ -38,7 +38,6 @@
                 <div :class="`pa-5 ${userInfo.university !== uni.id ? 'bg-background' : 'bg-primary'}`"
                   v-for="uni in [...universities, { id: '', name: 'Other', courses: [] }]" :key="uni.id" v-ripple
                   @click="selectUni(uni)">
-                  {{ uni.name }}
                 </div>
               </div>
             </div>
