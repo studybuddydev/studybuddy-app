@@ -5,7 +5,6 @@ import axios from 'axios';
 export type DataUniversity = {
   id: string;
   name: string;
-  uni: string;
   courses: { name: string, code: string, type: string }[]
 }
 export type DataCourse = {
@@ -20,7 +19,8 @@ export const useDataAPIStore = defineStore('data-api', () => {
   const API_ENDPOINT = `${api.endpoint}/data`;
 
   async function getUniversities(): Promise<DataUniversity[]> {
-    return (await axios.get(`${API_ENDPOINT}/universities`, await api.getOptions())).data;
+    const x = (await axios.get(`${API_ENDPOINT}/universities`, await api.getOptions())).data;
+    return x
   }
 
   async function getCourse(courseId: string): Promise<DataCourse> {

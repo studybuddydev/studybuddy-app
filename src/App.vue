@@ -1,14 +1,15 @@
 <template>
   <router-view
-    v-if="isAuthenticated"
+    v-if="!isLoading"
   ></router-view>
 </template>
 <script setup lang="ts">
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useUsersAPIStore } from "@/stores/api/users";
 import { useRouter } from 'vue-router'
+import { watch } from 'vue';
 
-const { isAuthenticated } = useAuth0();
+const { isLoading, isAuthenticated } = useAuth0();
 const router = useRouter()
 
 
@@ -18,6 +19,11 @@ async function checkOnboarding() {
     router.push('/welcome')
   }
 }
-checkOnboarding();
+
+watch(isLoading, (newIsLoading) => {
+  if (!newIsLoading && isAuthenticated.value) {
+    checkOnboarding()
+  }
+})
 
 </script>

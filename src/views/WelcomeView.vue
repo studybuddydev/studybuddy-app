@@ -28,31 +28,65 @@
         </v-window-item>
 
         <v-window-item :value="2" class="card-window-item">
+
           <div class="windows-content card-uni pa-10">
             <h3 class="text-h5 font-weight-light my-6">{{ $t("welcome.tellus") }}</h3>
-            <v-combobox class="uni-input my-5" :label="$t('welcome.uni')" hide-details clearable :items="universities"
-              item-title="name"
-              @update:modelValue="(e: DataUniversity) => { userInfo.university = e.id; selectedUni = e }" />
-            <v-combobox class="uni-input my-5" :label="$t('welcome.uni')" :disabled="!userInfo.university" 
-              hide-details clearable :items="courseTypes"
-              @update:modelValue="(e: any) => { selectedCourseType = e?.value ?? null }" />
-            <v-combobox class="uni-input my-5" :label="$t('welcome.course')" :disabled="!selectedCourseType"
-              hide-details clearable :items="selectedUni?.courses.filter(c => c.type === selectedCourseType)" item-title="name"
-              @update:modelValue="(e: any) => { userInfo.course = e.code }" />
 
+            <div class="tile-selector-wrapper">
+              <h4 class="text-h6 font-weight-light mt-2">{{ $t("welcome.uni") }}</h4>
+              <div class="tile-selector">
+                <div :class="`pa-5 ${userInfo.university !== uni.id ? 'bg-background' : 'bg-primary'}`"
+                  v-for="uni in [...universities, { id: '', name: 'Other', courses: [] }]" :key="uni.id" v-ripple
+                  @click="selectUni(uni)">
+                  {{ uni.name }}
+                </div>
+              </div>
+            </div>
+
+            <div v-if="userInfo.university === ''">
+
+              <v-text-field class="uni-input my-5" label="University name" hide-details clearable
+                v-model="userInfo.customUniversity" />
+              <v-text-field class="uni-input my-5" label="Course name" hide-details clearable
+                v-model="userInfo.customCourse" />
+
+            </div>
+
+            <div class="tile-selector-wrapper" v-else-if="userInfo.university">
+              <h4 class="text-h6 font-weight-light mt-2">{{ $t("welcome.course") }}</h4>
+              <div class="tile-selector">
+                <div :class="`pa-5 ${selectedCourseType !== type.value ? 'bg-background' : 'bg-primary'}`"
+                  v-for="type in courseTypes" :key="type.value" v-ripple @click="selectType(type.value)">
+                  {{ type.title }}
+                </div>
+              </div>
+              
+              {{ userInfo.course }}
+              <v-combobox class="uni-input my-5" :label="$t('welcome.course')"
+                  :disabled="!selectedCourseType" hide-details clearable
+                  :items="selectedUni?.courses.filter(c => c.type === selectedCourseType)"
+                  item-title="name" item-value="code" :return-object="false"
+                  v-model="userInfo.course"
+                />
+            </div>
           </div>
         </v-window-item>
 
         <v-window-item :value="3" class="card-window-item card-window-exams">
+
           <div class="windows-content card-exams pa-10">
             <!-- <v-list :items="exams"></v-list> -->
             <h3 class="text-h5 font-weight-light my-6">{{ $t("welcome.exams") }}</h3>
-            <v-text-field :label="$t('search')" clearable hide-details prepend-inner-icon="mdi-magnify"
+            <v-text-field v-if="!isOnlyCustomExams" :label="$t('search')" clearable hide-details prepend-inner-icon="mdi-magnify"
               class="mb-6 search-bar" v-model="searchExam" />
+            <v-text-field v-else label="Add exam" hide-details
+              class="mb-6 search-bar" v-model="searchExam" append-icon="mdi-send"
+              @click:append="addCustomExam(searchExam)"
+              @keydown.enter="addCustomExam(searchExam)" />
 
-            <div class="list-wrapper">
+            <div :class="`list-wrapper ${!isOnlyCustomExams ? 'list-wrapper-double' : 'list-wrapper-single'}`">
 
-              <v-list class="exam-list">
+              <v-list class="exam-list" v-if="!isOnlyCustomExams">
                 <div v-for="(item, i) in filteredExams()" :key="i">
                   <v-list-item v-if="!item.type" :value="i" color="primary" :active="item.active"
                     @click="item.active = !item.active; addExamToUser(item)" :title="item.title" />
@@ -90,7 +124,7 @@
         <v-spacer></v-spacer>
         <v-btn v-if="step == 1" size="large" color="primary" variant="flat" @click="step++"
           :disabled="usernameValidLoading || !usernameValid">{{ $t("welcome.start") }}</v-btn>
-        <v-btn v-if="step == 2" size="large" color="primary" variant="flat" :disabled="!userInfo.course"
+        <v-btn v-if="step == 2" size="large" color="primary" variant="flat" :disabled="!(userInfo.course || userInfo.customUniversity)"
           @click="step++; loadExams()">{{ $t("next") }}</v-btn>
         <v-btn v-if="step == 3" size="large" color="secondary" variant="flat" @click="saveOnboarding()">{{
           $t("welcome.startNow")
@@ -103,45 +137,21 @@
 import { computed, ref, watch } from 'vue';
 import { useSettingsStore } from "@/stores/settings";
 import { useUsersAPIStore, type UserOnboarding } from "@/stores/api/users";
-import { useDataAPIStore, type DataUniversity, type DataCourse } from "@/stores/api/data";
+import { useDataAPIStore, type DataUniversity } from "@/stores/api/data";
 import { debounce } from '../utils/common';
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useRouter } from 'vue-router'
 
 const { user, isLoading } = useAuth0();
 const router = useRouter()
-
-type ListItem = {
-  type?: 'subheader' | 'divider';
-  title?: string;
-  value?: string;
-  active?: boolean;
-  custom?: boolean;
-  info?: string;
-}
-
-
+const step = ref(1);
 const settings = useSettingsStore();
 const usersAPI = useUsersAPIStore();
 const dataAPI = useDataAPIStore();
 
-const step = ref(1);
-
 const userInfo = ref<UserOnboarding>({
   username: '',
-  university: null,
-  course: null,
-  exams: [],
 })
-const selectedExams = ref<{ name: string, code: string, info: string }[]>([]);
-const usernameValidLoading = ref(true);
-const usernameValid = ref(true);
-
-const courseTypes = [{ value: 'triennale', title: 'Triennale' }, { value: 'magistrale', title: 'Magistrale' }, { value: 'cicloUnico', title: 'Ciclo Unico' }]
-const universities = ref<DataUniversity[]>([]);
-const selectedUni = ref<DataUniversity | null>(null);
-const selectedCourseType = ref<string | null>(null);
-
 async function loadData() {
   userInfo.value.username = await usersAPI.generateUsername(user.value?.nickname)
   usernameValidLoading.value = false;
@@ -152,15 +162,84 @@ if (isLoading.value)
 else
   loadData();
 
+// ----- STEP 1
+const usernameValidLoading = ref(true);
+const usernameValid = ref(true);
+watch(() => userInfo.value.username, async (newUser) => checkUsername(newUser));
+function isUsernameValid(username: string) {
+  return !(!/^[a-z0-9_]+$/.test(username));
+}
+async function checkUsername(username: string) {
+  usernameValidLoading.value = true;
+
+  if (!isUsernameValid(username)
+    || username.length < 3
+    || username.length > 30
+  ) {
+    usernameValid.value = false;
+    usernameValidLoading.value = false;
+    return;
+  }
+
+  debounce('checkUsername', async () => {
+    usernameValid.value = await usersAPI.checkUsername(username);
+    usernameValidLoading.value = false;
+  }, 500);
+}
+
+type ListItem = {
+  type?: 'subheader' | 'divider';
+  title?: string;
+  value?: string;
+  active?: boolean;
+  custom?: boolean;
+  info?: string;
+}
+
+// ----- STEP 2
+const universities = ref<DataUniversity[]>([]);
+const selectedUni = ref<DataUniversity | null>(null);
+const courseTypes = [{ value: 'triennale', title: 'Triennale' }, { value: 'magistrale', title: 'Magistrale' }, { value: 'cicloUnico', title: 'Ciclo Unico' }]
+const selectedCourseType = ref<string | null>(null);
+
+function selectUni(uni: DataUniversity) {
+  if (selectedUni.value === uni) {
+    return;
+  }
+  selectedUni.value = uni;
+  userInfo.value.university = uni.id;
+  delete userInfo.value.customUniversity;
+  delete userInfo.value.customCourse;
+  delete userInfo.value.exams;
+  selectedExams.value = [];
+  selectType(null);
+}
+
+function selectType(type: string | null) {
+  if (type && selectedCourseType.value === type) {
+    return;
+  }
+  selectedCourseType.value = type;
+  delete userInfo.value.course;
+  delete userInfo.value.exams;
+  selectedExams.value = [];
+}
+
+// ----- STEP 3
+const selectedExams = ref<{ name: string, code: string, info: string }[]>([]);
 const searchExam = ref('');
 const exams = ref<ListItem[]>([])
 const customExams = ref<ListItem[]>([])
+const allExams = computed(() => [...customExams.value, ...exams.value]);
+const isOnlyCustomExams = computed(() => !userInfo.value.course || exams.value.length === 0);
 
 async function loadExams() {
   exams.value = []
   customExams.value = []
   if (!userInfo.value.course) return;
+  console.log(userInfo.value.course)
   const course = await dataAPI.getCourse(userInfo.value.course ?? '');
+  console.log(course)
   const courseExams = course.exams.sort((a, b) => a.year - b.year);
 
   let currYear = courseExams[0].year;
@@ -175,8 +254,6 @@ async function loadExams() {
     exams.value.push({ title: e.title, value: e.id, info: `Year ${e.year}` });
   }
 }
-
-const allExams = computed(() => [...customExams.value, ...exams.value]);
 
 function addExamToUser(exam: ListItem) {
   if (!exam.title || !exam.value) return;
@@ -211,32 +288,6 @@ function removeExam(i: number, code: string) {
 
   const exam = exams.value.find((e) => e.value === code);
   if (exam) exam.active = false;
-}
-
-
-watch(() => userInfo.value.username, async (newUser) => checkUsername(newUser));
-
-function isUsernameValid(username: string) {
-  if (!/^[a-z0-9_]+$/.test(username)) return false;
-  return true;
-}
-
-async function checkUsername(username: string) {
-  usernameValidLoading.value = true;
-
-  if (!isUsernameValid(username)
-    || username.length < 3
-    || username.length > 30
-  ) {
-    usernameValid.value = false;
-    usernameValidLoading.value = false;
-    return;
-  }
-
-  debounce('checkUsername', async () => {
-    usernameValid.value = await usersAPI.checkUsername(username);
-    usernameValidLoading.value = false;
-  }, 500);
 }
 
 async function saveOnboarding() {
@@ -281,6 +332,23 @@ async function saveOnboardingOnSkip() {
 
   .card-window-item {
     height: 100%;
+
+    .tile-selector-wrapper {
+
+      .tile-selector {
+        display: flex;
+        gap: 1rem;
+        margin: 1rem;
+
+        >div {
+          border-radius: 1rem;
+          cursor: pointer;
+          border: 1px solid rgb(var(--v-theme-primary));
+          text-align: center;
+          width: 8rem;
+        }
+      }
+    }
   }
 }
 
@@ -314,6 +382,10 @@ async function saveOnboardingOnSkip() {
       overflow: auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
+
+      &.list-wrapper-single {
+        grid-template-columns: 1fr;
+      }
     }
   }
 }

@@ -5,7 +5,9 @@ import axios from 'axios';
 export type UserOnboarding = {
   username: string;
   university?: string | null;
+  customUniversity?: string | null;
   course?: string | null;
+  customCourse?: string | null;
   exams?: string[];
 }
 
