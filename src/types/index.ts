@@ -208,6 +208,13 @@ export interface PomodoroDBO extends PomodoroBase {
   tasks?: PomodoroTask[];
 }
 
+export interface ExamDBO extends PomodoroBase {
+  id?: number;
+  lastupdate: Date;
+  examId: string;
+  examName: string;
+  exam: any;
+}
 
 export type State = {
   data: {

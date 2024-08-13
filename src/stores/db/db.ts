@@ -1,6 +1,6 @@
 
 import Dexie, { type Table } from 'dexie';
-import type { Timer, Theme, PomodoroDBO } from '@/types';
+import type { Timer, Theme, PomodoroDBO, ExamDBO } from '@/types';
 import { defineStore } from 'pinia';
 
 function getThemes() {
@@ -40,7 +40,7 @@ export class StudyBuddyDB extends Dexie {
   public timer!: Table<Timer, number>;
   public themes!: Table<Theme, number>;
   public pomodori!: Table<PomodoroDBO, number>;
-  public exams!: Table<PomodoroDBO, number>;
+  public exams!: Table<ExamDBO, number>;
 
   public constructor() {
 
@@ -80,7 +80,7 @@ export class StudyBuddyDB extends Dexie {
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,category,backgroundColor,backgroundImg,og",
       pomodori: "++id,datetime,tag",
-      exams: "++id,datetime,examId"
+      exams: "++id,lastupdate,examId,examName"
     }).upgrade
     this.on("populate", () => {
       this.timer.bulkAdd(getTimers());
