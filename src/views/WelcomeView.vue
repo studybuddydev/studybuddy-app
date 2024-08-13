@@ -38,6 +38,7 @@
                 <div :class="`pa-5 ${userInfo.university !== uni.id ? 'bg-background' : 'bg-primary'}`"
                   v-for="uni in [...universities, { id: '', name: 'Other', courses: [] }]" :key="uni.id" v-ripple
                   @click="selectUni(uni)">
+                  {{ uni.name }}
                 </div>
               </div>
             </div>
@@ -338,12 +339,15 @@ async function saveOnboardingOnSkip() {
         gap: 1rem;
         margin: 1rem;
 
-        >div {
+        > div {
           border-radius: 1rem;
           cursor: pointer;
           border: 1px solid rgb(var(--v-theme-primary));
           text-align: center;
           width: 8rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       }
     }
