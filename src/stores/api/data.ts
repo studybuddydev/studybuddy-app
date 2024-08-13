@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useAPIStore } from './api';
+import { useAPIBaseStore } from './api-base';
 import axios from 'axios';
 
 export type DataUniversity = {
@@ -15,7 +15,7 @@ export type DataCourse = {
 }
 
 export const useDataAPIStore = defineStore('data-api', () => {
-  const api = useAPIStore();
+  const api = useAPIBaseStore();
   const API_ENDPOINT = `${api.endpoint}/data`;
 
   async function getUniversities(): Promise<DataUniversity[]> {

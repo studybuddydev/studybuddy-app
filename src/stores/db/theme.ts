@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { Theme } from '@/types';
 import { ref } from 'vue';
-import { useDBStore } from "@/stores/db";
+import { useDBStore } from "./db";
 
 export const useThemeStore = defineStore('themeStore', () => {
   const db = useDBStore()

@@ -5,7 +5,7 @@
 </template>
 <script setup lang="ts">
 import { useAuth0 } from "@auth0/auth0-vue";
-import { useUsersAPIStore } from "@/stores/api/users";
+import { useAPIStore } from "@/stores/api";
 import { useRouter } from 'vue-router'
 import { watch } from 'vue';
 
@@ -14,7 +14,7 @@ const router = useRouter()
 
 
 async function checkOnboarding() {
-  const isOnboarded = await useUsersAPIStore().isOnboarded();
+  const isOnboarded = await useAPIStore().users.isOnboarded();
   if (!isOnboarded) {
     router.push('/welcome')
   }

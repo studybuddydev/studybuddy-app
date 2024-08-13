@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
 import type { DisplaySession, PomodoroRecord } from '@/types';
-import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
+import { usePomodoroDBStore } from "@/stores/db/pomodoro";
 import PomodoroFlex from '@/components/Pomodoro/PomodoroFlex.vue';
 import PomodoroHistoryLine from '@/components/Pomodoro/PomodoroHistoryLine.vue';
 import { useAuth0 } from "@auth0/auth0-vue";

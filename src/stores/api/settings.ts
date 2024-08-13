@@ -1,12 +1,12 @@
 
 import { defineStore } from 'pinia'
-import { useAPIStore } from './api';
+import { useAPIBaseStore } from './api-base';
 import axios from 'axios';
 import type { Settings } from '@/types';
 import * as common from '@/utils/common';
 
 export const useSettingsAPIStore = defineStore('settings-api', () => {
-  const api = useAPIStore();
+  const api = useAPIBaseStore();
 
   async function getSettings() {
     return (await axios.get(`${api.endpoint}/settings`, await api.getOptions())).data as Settings;

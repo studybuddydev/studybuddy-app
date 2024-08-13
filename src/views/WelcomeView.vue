@@ -135,8 +135,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useSettingsStore } from "@/stores/settings";
-import { useUsersAPIStore, type UserOnboarding } from "@/stores/api/users";
-import { useDataAPIStore, type DataUniversity } from "@/stores/api/data";
+import { useAPIStore,type UserOnboarding, type DataUniversity } from "@/stores/api";
 import { debounce } from '../utils/common';
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useRouter } from 'vue-router'
@@ -145,16 +144,15 @@ const { user, isLoading } = useAuth0();
 const router = useRouter()
 const step = ref(1);
 const settings = useSettingsStore();
-const usersAPI = useUsersAPIStore();
-const dataAPI = useDataAPIStore();
+const api = useAPIStore();
 
 const userInfo = ref<UserOnboarding>({
   username: '',
 })
 async function loadData() {
-  userInfo.value.username = await usersAPI.generateUsername(user.value?.nickname)
+  userInfo.value.username = await api.users.generateUsername(user.value?.nickname)
   usernameValidLoading.value = false;
-  universities.value = await dataAPI.getUniversities();
+  universities.value = await api.data.getUniversities();
 }
 if (isLoading.value)
   watch(isLoading, (loading) => !loading && loadData());
@@ -181,7 +179,7 @@ async function checkUsername(username: string) {
   }
 
   debounce('checkUsername', async () => {
-    usernameValid.value = await usersAPI.checkUsername(username);
+    usernameValid.value = await api.users.checkUsername(username);
     usernameValidLoading.value = false;
   }, 500);
 }
@@ -237,7 +235,7 @@ async function loadExams() {
   customExams.value = []
   if (!userInfo.value.course) return;
   console.log(userInfo.value.course)
-  const course = await dataAPI.getCourse(userInfo.value.course ?? '');
+  const course = await api.data.getCourse(userInfo.value.course ?? '');
   console.log(course)
   const courseExams = course.exams.sort((a, b) => a.year - b.year);
 
@@ -291,12 +289,12 @@ function removeExam(i: number, code: string) {
 
 async function saveOnboarding() {
   userInfo.value.exams = selectedExams.value.map((e) => e.code);
-  await usersAPI.saveOnboarding(userInfo.value);
+  await api.users.saveOnboarding(userInfo.value);
   router.push('/')
 }
 
 async function saveOnboardingOnSkip() {
-  await usersAPI.saveOnboarding({ username: userInfo.value.username });
+  await api.users.saveOnboarding({ username: userInfo.value.username });
   router.push('/')
 }
 </script>

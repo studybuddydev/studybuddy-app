@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useTimerStore } from "@/stores/settings/timer";
+import { useTimerStore } from "@/stores/db/timer";
 import { useSettingsStore } from "@/stores/settings";
 import type { Timer } from '@/types';
 const settingsStore = useSettingsStore();

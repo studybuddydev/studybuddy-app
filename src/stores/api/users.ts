@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useAPIStore } from './api';
+import { useAPIBaseStore } from './api-base';
 import axios from 'axios';
 
 export type UserOnboarding = {
@@ -12,7 +12,7 @@ export type UserOnboarding = {
 }
 
 export const useUsersAPIStore = defineStore('users-api', () => {
-  const api = useAPIStore();
+  const api = useAPIBaseStore();
   const API_ENDPOINT = `${api.endpoint}/users`;
 
   async function generateUsername(nickname?: string): Promise<string> {

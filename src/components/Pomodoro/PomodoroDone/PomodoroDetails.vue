@@ -49,25 +49,25 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
+import { usePomodoroDBStore } from "@/stores/db/pomodoro";
 import type { PomodoroBase, PomodoroTask } from '@/types';
-import { useTimerStatusStore } from "@/stores/api/timerStatus";
+import { useAPIStore } from "@/stores/api";
 
 const props = defineProps<{ pomo: PomodoroBase }>();
 const pomoDB = usePomodoroDBStore();
-const timerStatus = useTimerStatusStore();
+const api = useAPIStore();
 
 async function updateDeepWork(pomoId: number | undefined, deep: boolean) {
   if (pomoId) await pomoDB.updateDeepWork(pomoId, deep);
-  else timerStatus.saveStatus()
+  else api.timerStatus.saveStatus()
 }
 async function updateName(pomoId: number | undefined, name: string) {
   if (pomoId) await pomoDB.updateName(pomoId, name);
-  else timerStatus.saveStatus()
+  else api.timerStatus.saveStatus()
 }
 async function updateRating(pomoId: number | undefined, rating: number) {
   if (pomoId) await pomoDB.updateRating(pomoId, rating);
-  else timerStatus.saveStatus()
+  else api.timerStatus.saveStatus()
 }
 async function deleteTag() {
   props.pomo.tag = undefined

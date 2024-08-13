@@ -107,7 +107,7 @@
 </template>
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { useThemeStore } from "@/stores/settings/theme";
+import { useThemeStore } from "@/stores/db/theme";
 import { useSettingsStore } from "@/stores/settings";
 import { paletteList } from '@/config/themes'
 import type { Theme } from '@/types';

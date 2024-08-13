@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useAuth0 } from "@auth0/auth0-vue";
 import config from '@/config/config';
 
-export const useAPIStore = defineStore('api', () => {
+export const useAPIBaseStore = defineStore('api-base', () => {
 
   const endpoint = config.api.endpoint;
   

@@ -40,6 +40,7 @@ export class StudyBuddyDB extends Dexie {
   public timer!: Table<Timer, number>;
   public themes!: Table<Theme, number>;
   public pomodori!: Table<PomodoroDBO, number>;
+  public exams!: Table<PomodoroDBO, number>;
 
   public constructor() {
 
@@ -75,6 +76,12 @@ export class StudyBuddyDB extends Dexie {
       )
       await trans.table('themes').bulkAdd(getThemes());
     });
+    this.version(8).stores({
+      timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
+      themes: "++id,title,palette,category,backgroundColor,backgroundImg,og",
+      pomodori: "++id,datetime,tag",
+      exams: "++id,datetime,examId"
+    }).upgrade
     this.on("populate", () => {
       this.timer.bulkAdd(getTimers());
       this.themes.bulkAdd(getThemes());
@@ -115,6 +122,7 @@ export const useDBStore = defineStore('dbStore', () => {
   const themes = studyBuddyDB.themes;
   const timers = studyBuddyDB.timer;
   const pomodori = studyBuddyDB.pomodori;
+  const exams = studyBuddyDB.exams;
 
-  return { themes, timers, pomodori };
+  return { themes, timers, pomodori, exams };
 });

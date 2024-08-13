@@ -1,11 +1,10 @@
 import { defineStore } from 'pinia'
-import { useDBStore } from "@/stores/db";
+import { useDBStore } from "./db";
 import type { PomodoroDBO, PomodoroRecord, PomodoroTask, PomodotoStatus } from '@/types';
 import * as timeUtils from '@/utils/time';
 import * as reportUtils from '@/utils/report';
 import { useSettingsStore } from "@/stores/settings";
 import { ref } from 'vue';
-import { openDB } from 'idb';
 
 export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   const db = useDBStore();
@@ -142,51 +141,6 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     }
     streak.value = newStreak;
   }
-
-  (async () => {
-
-    // migrate to new db -- remove after a while
-    if ((await window.indexedDB.databases()).map(db => db.name).includes('sb-db')) {
-      console.log('migrating db');
-
-      const _db = await openDB('sb-db', 2, {
-        upgrade(db) {
-          if (!db.objectStoreNames.contains('pomodori')) {
-            const pomodori = db.createObjectStore('pomodori', { keyPath: 'id', autoIncrement: true });
-            pomodori.createIndex('datetime', 'datetime', { unique: false });
-
-          }
-        }
-      });
-
-      const pomos = await _db.getAllFromIndex('pomodori', 'datetime',
-        IDBKeyRange.lowerBound(new Date(Date.now() - (30 * 24 * 60 * 60 * 1000)))
-      )
-      pomos.forEach(async (p: any) => {
-        const newP: PomodoroDBO = {
-          end: p.end,
-          endedAt: p.endedAt,
-          breaksDone: p.breaksDone.map((b: any) => ({ start: b.start, end: b.end })),
-          freeMode: p.freeMode,
-          datetime: p.datetime,
-          deepWork: true
-        }
-        await db.pomodori.add(newP);
-      });
-      // delete old db
-      const oldDb = await openDB('sb-db', 2);
-      if (oldDb) {
-        oldDb.close();
-        indexedDB.deleteDatabase('sb-db');
-      }
-      console.log('migration done');
-    }
-
-
-    await updatePomodoroRecords();
-  })();
-
-
 
   return {
     pomodoroRecords, tags, tagColors, streak, updatePomodoro, parsePomodorDbo,

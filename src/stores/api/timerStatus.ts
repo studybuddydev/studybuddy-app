@@ -4,14 +4,14 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import { ref, watch } from 'vue';
 import { PomodoroState, type PomodotoStatus } from '@/types';
 import { usePomodoroStore } from "@/stores/pomodoro";
-import { useAPIStore } from './api';
+import { useAPIBaseStore } from './api-base';
 import * as common from '@/utils/common';
 
 export const useTimerStatusStore = defineStore('timer-status', () => {
 
   const { user } = useAuth0();
   const pomodoro = usePomodoroStore();
-  const api = useAPIStore();
+  const api = useAPIBaseStore();
 
   const LOCALSTORAGE_KEY = 'timer-status'
   const pomodoroStatus = ref<PomodotoStatus | null>(

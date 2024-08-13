@@ -5,7 +5,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
+import { usePomodoroDBStore } from "@/stores/db/pomodoro";
 const pomoDB = usePomodoroDBStore();
 </script>
 <style scoped lang="scss">

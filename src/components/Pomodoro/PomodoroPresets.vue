@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useTimerStore } from "@/stores/settings/timer";
+import { useTimerStore } from "@/stores/db/timer";
 import PomodoroPresetsTile from './PomodoroPresetsTile.vue';
 
 const timerStore = useTimerStore();

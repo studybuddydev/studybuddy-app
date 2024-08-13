@@ -21,7 +21,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import type { Theme } from '@/types';
-import { useThemeStore } from "@/stores/settings/theme";
+import { useThemeStore } from "@/stores/db/theme";
 import { getYotubeId } from '@/utils/common'
 const themeStore = useThemeStore();
 
