@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import type { PomodoroSettings, Settings, ThemeSettings, GeneralSettings } from '@/types'
 import { useTheme } from 'vuetify'
 import * as common from '@/utils/common';
-import { useSettingsAPIStore } from './api/settings';
+import { useSettingsAPIStore } from './api';
 
 const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
