@@ -31,7 +31,6 @@
 
           <div class="windows-content card-uni pa-10">
             <h3 class="text-h5 font-weight-light my-6">{{ $t("welcome.tellus") }}</h3>
-
             <div class="tile-selector-wrapper">
               <h4 class="text-h6 font-weight-light mt-2">{{ $t("welcome.uni") }}</h4>
               <div class="tile-selector">
@@ -63,8 +62,8 @@
               
               <v-combobox class="uni-input my-5" :label="$t('welcome.course')"
                   :disabled="!selectedCourseType" hide-details clearable
-                  :items="selectedUni?.courses.filter(c => c.type === selectedCourseType)"
-                  item-title="name" item-value="code" :return-object="false"
+                  :items="selectedUniCourses?.filter(c => c.type === selectedCourseType)"
+                  item-title="name" item-value="id" :return-object="false"
                   v-model="userInfo.course"
                 />
             </div>
@@ -135,10 +134,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useSettingsStore } from "@/stores/settings";
-import { useDataAPIStore, useUsersAPIStore, type UserOnboarding, type DataUniversity } from "@/stores/api";
+import { useDataAPIStore, useUsersAPIStore, type UserOnboarding } from "@/stores/api";
 import { debounce } from '../utils/common';
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useRouter } from 'vue-router'
+import * as DBO from '@/types/dbo';
 
 const { user, isLoading } = useAuth0();
 const router = useRouter()
@@ -195,12 +195,13 @@ type ListItem = {
 }
 
 // ----- STEP 2
-const universities = ref<DataUniversity[]>([]);
-const selectedUni = ref<DataUniversity | null>(null);
+const universities = ref<DBO.DataUniversityLiteDBO[]>([]);
+const selectedUni = ref<DBO.DataUniversityLiteDBO | null>(null);
+const selectedUniCourses = ref<DBO.DataCourseLiteDBO[]>([]);
 const courseTypes = [{ value: 'triennale', title: 'Triennale' }, { value: 'magistrale', title: 'Magistrale' }, { value: 'cicloUnico', title: 'Ciclo Unico' }]
 const selectedCourseType = ref<string | null>(null);
 
-function selectUni(uni: DataUniversity) {
+async function selectUni(uni: DBO.DataUniversityLiteDBO) {
   if (selectedUni.value === uni) {
     return;
   }
@@ -211,6 +212,14 @@ function selectUni(uni: DataUniversity) {
   delete userInfo.value.exams;
   selectedExams.value = [];
   selectType(null);
+
+  if (!uni.id) {
+    selectedUniCourses.value = [];
+    return;
+  }
+  apiData.getCoursesByUniversity(uni.id).then((courses) => {
+    selectedUniCourses.value = courses;
+  });
 }
 
 function selectType(type: string | null) {
@@ -235,10 +244,7 @@ async function loadExams() {
   exams.value = []
   customExams.value = []
   if (!userInfo.value.course) return;
-  console.log(userInfo.value.course)
-  const course = await apiData.getCourse(userInfo.value.course ?? '');
-  console.log(course)
-  const courseExams = course.exams.sort((a, b) => a.year - b.year);
+  const courseExams = (await apiData.getCourseExams(userInfo.value.course ?? '')).sort((a, b) => +(a.year ?? 0) - +(b.year ?? 0));
 
   let currYear = courseExams[0].year;
   exams.value.push({ type: 'subheader', title: `Year ${currYear}` });
@@ -249,7 +255,7 @@ async function loadExams() {
       exams.value.push({ type: 'divider' });
       exams.value.push({ type: 'subheader', title: `Year ${currYear}` });
     }
-    exams.value.push({ title: e.title, value: e.id, info: `Year ${e.year}` });
+    exams.value.push({ title: e.name, value: e.id, info: `Year ${e.year}` });
   }
 }
 
