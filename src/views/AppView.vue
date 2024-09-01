@@ -43,7 +43,6 @@ import { usePomodoroStore } from "@/stores/pomodoro";
 // import { useExamsStore } from "@/stores/db/exams";
 
 // const delme = useExamsStore();
-// console.log(delme.examNames);
 
 const pomodoro = usePomodoroStore();
 const { loginWithRedirect, isLoading, isAuthenticated } = useAuth0();

@@ -142,6 +142,8 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     streak.value = newStreak;
   }
 
+  updatePomodoroRecords();
+
   return {
     pomodoroRecords, tags, tagColors, streak, updatePomodoro, parsePomodorDbo,
     addPomodoroToRecords,
