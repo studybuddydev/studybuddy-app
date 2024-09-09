@@ -51,7 +51,7 @@
 import { ref } from 'vue';
 import { usePomodoroDBStore } from "@/stores/db/pomodoro";
 import type { PomodoroBase, PomodoroTask } from '@/types';
-import { useTimerStatusStore } from "@/stores/api";
+import { useTimerStatusStore } from "@/stores/api/timerStatus";
 
 const props = defineProps<{ pomo: PomodoroBase }>();
 const pomoDB = usePomodoroDBStore();

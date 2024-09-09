@@ -134,7 +134,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useSettingsStore } from "@/stores/settings";
-import { useDataAPIStore, useUsersAPIStore, type UserOnboarding } from "@/stores/api";
+import { useAPIStore } from "@/stores/api";
 import { debounce } from '../utils/common';
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useRouter } from 'vue-router'
@@ -144,16 +144,15 @@ const { user, isLoading } = useAuth0();
 const router = useRouter()
 const step = ref(1);
 const settings = useSettingsStore();
-const apiData = useDataAPIStore();
-const apiUsers = useUsersAPIStore();
+const api = useAPIStore().api;
 
-const userInfo = ref<UserOnboarding>({
+const userInfo = ref<DBO.UserOnboarding>({
   username: '',
 })
 async function loadData() {
-  userInfo.value.username = await apiUsers.generateUsername(user.value?.nickname)
+  userInfo.value.username = await api.users.generateUsername(user.value?.nickname)
   usernameValidLoading.value = false;
-  universities.value = await apiData.getUniversities();
+  universities.value = await api.data.getUniversities();
 }
 if (isLoading.value)
   watch(isLoading, (loading) => !loading && loadData());
@@ -180,7 +179,7 @@ async function checkUsername(username: string) {
   }
 
   debounce('checkUsername', async () => {
-    usernameValid.value = await apiUsers.checkUsername(username);
+    usernameValid.value = await api.users.checkUsername(username);
     usernameValidLoading.value = false;
   }, 500);
 }
@@ -217,7 +216,7 @@ async function selectUni(uni: DBO.DataUniversityLiteDBO) {
     selectedUniCourses.value = [];
     return;
   }
-  apiData.getCoursesByUniversity(uni.id).then((courses) => {
+  api.data.getCoursesByUniversity(uni.id).then((courses) => {
     selectedUniCourses.value = courses;
   });
 }
@@ -244,7 +243,7 @@ async function loadExams() {
   exams.value = []
   customExams.value = []
   if (!userInfo.value.course) return;
-  const courseExams = (await apiData.getCourseExams(userInfo.value.course ?? '')).sort((a, b) => +(a.year ?? 0) - +(b.year ?? 0));
+  const courseExams = (await api.data.getCourseExams(userInfo.value.course ?? '')).sort((a, b) => +(a.year ?? 0) - +(b.year ?? 0));
 
   let currYear = courseExams[0].year;
   exams.value.push({ type: 'subheader', title: `Year ${currYear}` });
@@ -296,12 +295,12 @@ function removeExam(i: number, code: string) {
 
 async function saveOnboarding() {
   userInfo.value.exams = selectedExams.value.map((e) => e.code);
-  await apiUsers.saveOnboarding(userInfo.value);
+  await api.users.saveOnboarding(userInfo.value);
   router.push('/')
 }
 
 async function saveOnboardingOnSkip() {
-  await apiUsers.saveOnboarding({ username: userInfo.value.username });
+  await api.users.saveOnboarding({ username: userInfo.value.username });
   router.push('/')
 }
 </script>

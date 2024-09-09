@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import type { PomodoroSettings, Settings, ThemeSettings, GeneralSettings } from '@/types'
 import { useTheme } from 'vuetify'
 import * as common from '@/utils/common';
-import { useSettingsAPIStore } from './api';
+import { useAPIStore } from './api';
 
 const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
@@ -49,7 +49,7 @@ const defaultSettings: Settings = {
 export const useSettingsStore = defineStore('settings', () => {
 
   const theme = useTheme();
-  const settingsAPI = useSettingsAPIStore();
+  const api = useAPIStore().api;
 
   const settings = ref<Settings>(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}'));
 
@@ -90,7 +90,7 @@ export const useSettingsStore = defineStore('settings', () => {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(s));
     }, 500);
 
-    if (!skipRemote) settingsAPI.upsertSettings(s);
+    if (!skipRemote) api.settings.upsertSettings(s);
   }
 
   function updatePalette(newPalette?: string) {
@@ -100,7 +100,7 @@ export const useSettingsStore = defineStore('settings', () => {
 
   async function getSettingsAPI() {
     const lastUpdate = settings.value.lastUpdate ?? 0;
-    const newSettings = await settingsAPI.getSettingsIfNew(lastUpdate);
+    const newSettings = await api.settings.getSettingsIfNew(lastUpdate);
     if (newSettings) {
       updateSettingsValue(newSettings);
       save(true);

@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import PomodoroDetails from '../Pomodoro/PomodoroDone/PomodoroDetails.vue';
-import { useTimerStatusStore } from "@/stores/api";
+import { useTimerStatusStore } from "@/stores/api/timerStatus";
 import Info from '@/components/common/Info.vue';
 import PomodoroPresets from '@/components/Pomodoro/PomodoroPresets.vue';
 import { useSettingsStore } from "@/stores/settings";

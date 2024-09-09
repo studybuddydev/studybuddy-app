@@ -1,18 +1,15 @@
-import { defineStore } from 'pinia'
-import { useAPIBaseStore } from './api-base';
 import axios from 'axios';
 import type { ExamDBO } from '@/types';
 
-export const useExamsAPIStore = defineStore('exams-api', () => {
-  const api = useAPIBaseStore();
-  const API_ENDPOINT = `${api.endpoint}/exams`;
+export function getExamsAPI(endpoint: string, getOptions: () => Promise<{ headers: { Authorization: string; }; }>) {
+  const API_ENDPOINT = `${endpoint}/exams`;
 
   async function getExams(): Promise<string> {
-    return (await axios.get(`${API_ENDPOINT}`, await api.getOptions())).data;
+    return (await axios.get(API_ENDPOINT, await getOptions())).data;
   }
 
   async function getExamUpdates(fromDate: Date): Promise<ExamDBO[]> {
-    return (await axios.get(`${API_ENDPOINT}/updates/${fromDate.toISOString()}`, await api.getOptions())).data
+    return (await axios.get(`${API_ENDPOINT}/updates/${fromDate.toISOString()}`, await getOptions())).data
   }
-  return { getExams, getExamUpdates };
-})
+  return { getExams, getExamUpdates }
+}

@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 import { useDBStore, EntitiesEnum } from "./db";
-import { useExamsAPIStore } from '@/stores/api'
+import { useAPIStore } from '@/stores/api'
 import { ref } from 'vue';
 import type { ExamDBO } from '@/types';
 
 export const useExamsStore = defineStore('exams', () => {
   const db = useDBStore();
-  const examsAPI = useExamsAPIStore();
+  const api = useAPIStore().api;
 
   const examNames = ref<string[]>([]);
 
@@ -29,12 +29,9 @@ export const useExamsStore = defineStore('exams', () => {
   }
 
   async function updateLocalDB() {
-    // await db.studyBuddyDB.transaction('rw', db.studyBuddyDB.exams, async () => {
-    //   await db.exams.update(5, { userId: 'pd' });
-    // });
     const lastUpdated = await db.getLastUpdated(EntitiesEnum.exams);
     const newUpdatedDate = new Date();
-    const newExams = await examsAPI.getExamUpdates(lastUpdated);
+    const newExams = await api.exams.getExamUpdates(lastUpdated);
     for (const exam of newExams) {
       await upsertExam(exam);
     }

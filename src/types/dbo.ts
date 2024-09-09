@@ -120,3 +120,25 @@ export type ExamDBO = {
   icon?: string;
 }
 export type ExamLiteDBO = Partial<ExamDBO>;
+
+export type UserOnboarding = {
+  username: string;
+  university?: string | null;
+  customUniversity?: string | null;
+  course?: string | null;
+  customCourse?: string | null;
+  exams?: string[];
+}
+
+export type PomodoroDBO = {
+  _id: string;
+  lastUpdated: Date;
+  datetime: Date;
+  breaksDone: { start: number; end: number; }[]
+  end: number;
+  endedAt: number;
+  name?: string;
+  examTag?: string;
+  freeMode?: boolean;
+  deepWork?: boolean;
+}
