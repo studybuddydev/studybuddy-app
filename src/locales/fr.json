@@ -41,9 +41,9 @@
     "youare": "Tu es en",
     "break": "PAUSE",
     "for": "depuis",
-    "pomoDone": "Tu as terminé un Pomodoro",
+    "pomoDone": "Vous avez terminé la session d'étude",
     "pomoDoneShort":"test terminé",
-    "pomoDoneBad": "Tu as terminé un Pomodoro",
+    "pomoDoneBad": "Vous avez terminé la session d'étude",
     "goodjob": "Excellent travail!",
     "goodjobShort": "Ok, vous l'avez essayé. Retournez à la page d'accueil pour vraiment commencer à étudier.",
     "goodjobBad": "Bon travail, mais vous pouvez faire mieux!",
@@ -111,13 +111,13 @@
     }
   },
   "zen": {
-    "confirm": "Veux-tu vraiment terminer le Pomodoro?",
+    "confirm": "Voulez-vous vraiment mettre fin à votre session d’étude?",
     "sink": "Mémorandum",
     "sinkSaved": "enregistré pour plus tard",
     "sinkDone": "L'évier est vide!"
   },
   "setup":{
-    "title": "Paramètres de Pomodoro",
+    "title": "Paramètres de minuteur",
     "report": "Rapport",
     "details": "Détails",
     "exam":"Examen",
@@ -193,9 +193,9 @@
     "snakePause": "La pomme représente une pause. Lorsque vous l'atteignez, vous pouvez décider de faire une pause ou de continuer à étudier. Vous pouvez faire une pause à tout moment en appuyant sur le bouton pause. Vous pouvez régler le nombre et la durée des pauses de les paramètres."
   },
   "history":{
-    "loginMsg" : "Connectez-vous pour voir l'historique de vos pomodoro",
+    "loginMsg" : "Connectez-vous pour consulter l'historique de vos sessions d'étude",
     "sliderTitle" : "Plage horaire",
-    "noHistory": "Vous n'avez pas encore effectué un pomodoro de   5 minutes ou plus",
+    "noHistory": "Vous n'avez pas encore eu de séance d'étude de 5 minutes ou plus",
     "startNow": "Commencez maintenant"
   }
 }

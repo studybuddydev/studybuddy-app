@@ -41,9 +41,9 @@
     "youare": "Estás en",
     "break": "DESCANSO",
     "for": "desde",
-    "pomoDone": "Has completado un Pomodoro",
+    "pomoDone": "Has completado la sesión de estudio",
     "pomoDoneShort": "Prueba completada",
-    "pomoDoneBad": "Has completado un Pomodoro",
+    "pomoDoneBad": "Has completado la sesión de estudio",
     "goodjob": "¡Excelente!",
     "goodjobShort": "Vale, hiciste una prueba. ¿Listo para estudiar de verdad?",
     "goodjobBad": "¡Buen trabajo, pero puedes hacerlo mejor!",
@@ -111,13 +111,13 @@
     }
   },
   "zen": {
-    "confirm": "¿Realmente quieres terminar el Pomodoro?",
+    "confirm": "¿Realmente quieres terminar la sesión de estudio?",
     "sink": "Pozo",
     "sinkSaved": "Pozo guardado",
     "sinkDone": "¡El pozo esta vacio!"
   },
   "setup":{
-    "title": "Configuración de Pomo",
+    "title": "Configuración de temporizador",
     "report": "Informes",
     "details": "Detalles",
     "exam": "Examen",
@@ -193,9 +193,9 @@
     "snakePause": "La manzana representa una pausa. Cuando lo alcances podrás decidir si tomar un descanso o seguir estudiando. Puede pausar en cualquier momento presionando el botón de pausa. Puede ajustar el número y la duración de las pausas desde la configuración."
   },
   "history":{
-    "loginMsg" : "Inicia sesión para ver el historial de tus pomodoros",
+    "loginMsg" : "Inicia sesión para ver el historial de tus sesiones de estudio",
     "sliderTitle" : "Rango de horas",
-    "noHistory": "Aún no has completado un pomodoro de al menos 5 minutos",
+    "noHistory": "Aún no has completado una sesión de estudio de al menos 5 minutos",
     "startNow": "Comienza ahora"
   }
 }

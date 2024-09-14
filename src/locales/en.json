@@ -41,9 +41,9 @@
     "youare": "You have been on",
     "break": "BREAK",
     "for": "for",
-    "pomoDone": "You have completed a Pomodoro",
+    "pomoDone": "You have completed your study session",
     "pomoDoneShort": "Test completed",
-    "pomoDoneBad": "You have completed a Pomodoro",
+    "pomoDoneBad": "You have completed your study session",
     "goodjob": "Great Job!",
     "goodjobShort": "Ok, that was a test. Go back to the home page to start studying for real.",
     "goodjobBad": "Good job, but you can do better next time!",
@@ -111,13 +111,13 @@
     }
   },
   "zen": {
-    "confirm": "Are you sure you want to end the Pomodoro?",
+    "confirm": "Are you sure you want to end the session?",
     "sink": "Sink",
     "sinkSaved": "Saved for later",
     "sinkDone": "Sink is empty!"
   },
   "setup":{
-    "title": "Setup Pomodoro",
+    "title": "Timer setup",
     "report": "Report",
     "details": "Details",
     "exam":"Exam",
@@ -193,9 +193,9 @@
     "snakePause": "The apple represents a break. When you reach it, you can decide if you want to take a break or continue studying. You can pause at any time by pressing the pause button. You can adjust the number and duration of the breaks from the settings."
 },
   "history":{
-    "loginMsg" : "Log in to view your pomodoro history",
+    "loginMsg" : "Log in to view your study sessions history",
     "sliderTitle" : "Set hour range",
-    "noHistory": "You have not yet completed a pomodoro of at least 5 minutes",
+    "noHistory": "You have not yet completed a study session of at least 5 minutes",
     "startNow": "Start now"
   }
 }
