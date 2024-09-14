@@ -201,11 +201,14 @@ export interface Timer {
 
 export interface PomodoroDBO extends PomodoroBase {
   id?: number;
+  _id?: string;
   datetime: Date;
+  lastUpdated?: Date;
   tag?: string;
   rating?: number;
   deepWork: boolean;
   tasks?: PomodoroTask[];
+  remoteUpdated: number;
 }
 
 export interface ExamDBO {

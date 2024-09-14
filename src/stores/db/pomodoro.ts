@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { useDBStore } from "./db";
+import { useAPIStore } from "../api";
 import type { PomodoroDBO, PomodoroRecord, PomodoroTask, PomodotoStatus } from '@/types';
 import * as timeUtils from '@/utils/time';
 import * as reportUtils from '@/utils/report';
@@ -9,6 +10,8 @@ import { ref } from 'vue';
 export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   const db = useDBStore();
   const settings = useSettingsStore();
+  const api = useAPIStore().api;
+
 
   const streak = ref(0);
   const pomodoroRecords = ref<PomodoroRecord[]>([]);
@@ -43,16 +46,22 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
       name: pomo.name,
       tasks: pomo.tasks?.map(t => ({ task: t.task, done: t.done })),
       rating: pomo.rating,
-      tag: pomo.tag
+      tag: pomo.tag,
+      remoteUpdated: 0,
     }
 
     const parsed = parsePomodorDbo(p);
     const first = await db.pomodori.where('datetime').equals(dt).first();
     if (!(first)) {
-      parsed.id = await db.pomodori.add(p);
+      const id = await db.pomodori.add(p);
+      console.log('added', id);
+      parsed.id = id;
+      p.id = id;
       pomodoroRecords.value.unshift(parsed);
       updateStreak();
     }
+
+    postRemotePomodoro(p);
     return parsed;
   }
   async function deletePomodoroRecord(id: number) {
@@ -64,8 +73,30 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   async function updatePomodoro(id: number, updatePomo: (p: PomodoroDBO) => PomodoroDBO) {
     const pomo = await db.pomodori.get(id);
     if (pomo) {
+      pomo.remoteUpdated = 0;
       await db.pomodori.put(updatePomo(pomo), id);
+      if (pomo.remoteUpdated === 0) {
+        updateRemotePomodoro(pomo);
+      }
     }
+  }
+
+  // -- REMOTE --
+  async function postRemotePomodoro(pomodoro: PomodoroDBO) {
+    console.log('postRemotePomodoro', pomodoro);
+    if (!pomodoro.id) return;
+    const _id = await api.pomodori.postPomodoro(pomodoro);
+    await updatePomodoro(pomodoro.id, p => { p._id = _id; p.remoteUpdated = 1; return p; });
+  }
+  async function updateRemotePomodoro(pomodoro: PomodoroDBO) {
+    console.log('updateRemotePomodoro', pomodoro);
+    if (!pomodoro.id) return;
+    if (!pomodoro._id) {
+      await postRemotePomodoro(pomodoro);
+      return;
+    }
+    await api.pomodori.updatePomodoro(pomodoro);
+    await updatePomodoro(pomodoro.id, p => { p.remoteUpdated = 1; return p; });
   }
 
   // --- TAGS ---

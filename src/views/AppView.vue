@@ -40,6 +40,7 @@ import ZenScreen from '@/components/Zen/ZenScreen.vue';
 import { ref, onMounted, onUnmounted, watch,computed } from 'vue';
 import { useAuth0 } from "@auth0/auth0-vue";
 import { usePomodoroStore } from "@/stores/pomodoro";
+import { useSyncDBStore } from "@/stores/db/sync-db";
 // import { useExamsStore } from "@/stores/db/exams";
 
 // const delme = useExamsStore();
@@ -59,6 +60,10 @@ onUnmounted(() => {
 });
 
 watch(computed(() => pomodoro.timeInTitle), (val) => { document.title = val });
+
+if (isAuthenticated.value) {
+  useSyncDBStore().sync();
+}
 
 </script>
 
