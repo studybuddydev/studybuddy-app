@@ -101,6 +101,7 @@
       "theme": "Theme",
       "chooseTheme": "Choose theme",
       "newTheme": "New theme",
+      "saveTheme": "Save theme",  
       "colors": "Palette",
       "bgColor": "Background Color",
       "url": "Custom Image URL",
