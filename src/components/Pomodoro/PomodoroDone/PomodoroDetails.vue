@@ -19,7 +19,7 @@
         @update:modelValue="(newName: any) => { updateName(pomo.id, newName) }" />
     </div>
 
-    <div class="tasks">
+    <div class="tasks" v-show="false">
       <v-text-field v-on:keyup.enter="() => addTask()" append-inner-icon="mdi-send" density="compact" :label="$t('setup.addTask')"
         class="input-add-task" variant="solo" hide-details single-line v-model="task"
         @click:append-inner="() => addTask()" />
@@ -36,7 +36,7 @@
       <v-rating v-if="pomo.id" v-model="pomo.rating" length="3" size="x-large" color="accent" clearable
         @update:modelValue="(newRating: any) => { updateRating(pomo.id, newRating) }" />
 
-      <div>
+      <div v-show="false">
         <v-tooltip activator="parent" location="top">{{ pomo.deepWork ? 'Deep Work' : 'Shallow Work' }}</v-tooltip>
         <v-switch color="primary" inset hide-details v-model="pomo.deepWork"
           @update:modelValue="(deep: any) => updateDeepWork(pomo.id, deep)" true-icon="mdi-brain" false-icon="mdi-duck">
