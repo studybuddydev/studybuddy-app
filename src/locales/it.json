@@ -6,13 +6,29 @@
        "yes": "Sì",
        "no": "No",
        "back": "Indietro",
+       "next": "Avanti",
        "delete": "Elimina",
+       "search": "Cerca",
        "welcomeToSB": "Benvenuto su StudyBuddy",
        "loginMsg": "Ciao, sei nella versione di test di Studybuddy, vuoi aiutarci diventando tester?",
        "doLogin": "Effettua il login ora!",
        "backHome": "Home",
        "longAway": "Hai dimenticato un timer attivo!",
        "continue": "Vuoi continuarlo?",
+       "shortBreak": "Le pause più corte di 5 secondi non vengono mostrate",
+       "welcome": {
+              "welcome": "Benvenuto/a su StudyBuddy!",
+              "start" : "Inizia",
+              "skip" : "Salta",
+              "continue": "Continua",
+              "thanks": "Grazie per il login :)",
+              "username": "Scegli un nome utente",
+              "tellus": "Raccontaci qualcosa su di te",
+              "uni": "Scegli la tua università",
+              "course": "Scegli il tuo corso di laurea",
+              "exams": "Aggiungi i tuoi esami",
+              "startNow": "Cominciamo!"
+       },
        "pause": {
               "welcome": "Benvenuto su",
               "study": "Studia",
@@ -25,9 +41,9 @@
               "youare": "Sei in",
               "break": "PAUSA",
               "for": "da",
-              "pomoDone": "Hai fatto un Pomodoro",
+              "pomoDone": "Hai terminato la sessione di studio",
               "pomoDoneShort": "test completato",
-              "pomoDoneBad": "Hai fatto un Pomodoro",
+              "pomoDoneBad": "Hai terminato la sessione di studio",
               "goodjob": "Ottimo Lavoro!",
               "goodjobShort": "Ok, hai fatto una prova. Torna alla home per cominciare a studiare davvero.",
               "goodjobBad": "Buon lavoro, ma puoi fare di meglio!",
@@ -85,6 +101,7 @@
                      "theme": "Tema",
                      "chooseTheme": "Scegli un tema",
                      "newTheme": "Nuovo Tema",
+                     "saveTheme": "Salva Tema",
                      "colors": "Palette",
                      "bgColor": "Colore sfondo",
                      "url": "Url immagine custom",
@@ -95,13 +112,13 @@
               }
        },
        "zen":{
-              "confirm": "Vuoi davvero terminare il pomodoro?",
+              "confirm": "Vuoi davvero terminare la sessione di studio?",
               "sink": "Promemoria",
               "sinkSaved": "Salvato per dopo",
               "sinkDone": "Il lavandino è vuoto!"
        },
        "setup":{
-              "title": "Setup Pomodoro",
+              "title": "Setup Timer",
               "report": "Report",
               "details": "Dettagli",
               "exam":"Esame",
@@ -177,9 +194,9 @@
               "snakePause": "La mela rappresenta una pausa. Quando la raggiungi, puoi decidere se fare una pausa o continuare a studiare. Puoi fare pausa in qualsiasi momento premendo il tasto pausa. Puoi regolare il numero e la durata delle pause dalle impostazioni."
        },
        "history":{
-              "loginMsg" : "Effettua il login per visualizzare la cronologia dei tuoi pomodori",
+              "loginMsg" : "Effettua il login per visualizzare la cronologia delle tue sessioni di studio",
               "sliderTitle" : "Intervallo orario",
-              "noHistory": "Non hai ancora fatto un pomodoro di almeno 5 minuti",
+              "noHistory": "Non hai ancora fatto una sessione di studio di almeno 5 minuti",
               "startNow": "Inizia ora!"
        }
 }

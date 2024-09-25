@@ -49,7 +49,7 @@
 
 <script lang="ts" setup>
 import { usePomodoroStore } from "@/stores/pomodoro";
-import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
+import { usePomodoroDBStore } from "@/stores/db/pomodoro";
 import type { PomodoroRecord } from '@/types';
 import { ref, computed } from 'vue';
 import * as reportUtils from '@/utils/report';

@@ -1,16 +1,18 @@
 import { defineStore } from 'pinia'
-import { useDBStore } from "@/stores/db";
+import { useDBStore } from "./db";
+import { useAPIStore } from "../api";
 import type { PomodoroDBO, PomodoroRecord, PomodoroTask, PomodotoStatus } from '@/types';
 import * as timeUtils from '@/utils/time';
 import * as reportUtils from '@/utils/report';
 import { useSettingsStore } from "@/stores/settings";
 import { ref } from 'vue';
-import { openDB } from 'idb';
 
 export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   const db = useDBStore();
   const settings = useSettingsStore();
-  
+  const api = useAPIStore().api;
+
+
   const streak = ref(0);
   const pomodoroRecords = ref<PomodoroRecord[]>([]);
 
@@ -44,19 +46,25 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
       name: pomo.name,
       tasks: pomo.tasks?.map(t => ({ task: t.task, done: t.done })),
       rating: pomo.rating,
-      tag: pomo.tag
+      tag: pomo.tag,
+      remoteUpdated: 0,
     }
 
     const parsed = parsePomodorDbo(p);
     const first = await db.pomodori.where('datetime').equals(dt).first();
     if (!(first)) {
-      parsed.id = await db.pomodori.add(p);
+      const id = await db.pomodori.add(p);
+      console.log('added', id);
+      parsed.id = id;
+      p.id = id;
       pomodoroRecords.value.unshift(parsed);
       updateStreak();
     }
+
+    postRemotePomodoro(p);
     return parsed;
   }
-  async function deletePomodoroRecord(id: number) { 
+  async function deletePomodoroRecord(id: number) {
     pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);
     updateStreak();
     await db.pomodori.delete(id);
@@ -65,8 +73,30 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   async function updatePomodoro(id: number, updatePomo: (p: PomodoroDBO) => PomodoroDBO) {
     const pomo = await db.pomodori.get(id);
     if (pomo) {
+      pomo.remoteUpdated = 0;
       await db.pomodori.put(updatePomo(pomo), id);
+      if (pomo.remoteUpdated === 0) {
+        updateRemotePomodoro(pomo);
+      }
     }
+  }
+
+  // -- REMOTE --
+  async function postRemotePomodoro(pomodoro: PomodoroDBO) {
+    console.log('postRemotePomodoro', pomodoro);
+    if (!pomodoro.id) return;
+    const _id = await api.pomodori.postPomodoro(pomodoro);
+    await updatePomodoro(pomodoro.id, p => { p._id = _id; p.remoteUpdated = 1; return p; });
+  }
+  async function updateRemotePomodoro(pomodoro: PomodoroDBO) {
+    console.log('updateRemotePomodoro', pomodoro);
+    if (!pomodoro.id) return;
+    if (!pomodoro._id) {
+      await postRemotePomodoro(pomodoro);
+      return;
+    }
+    await api.pomodori.updatePomodoro(pomodoro);
+    await updatePomodoro(pomodoro.id, p => { p.remoteUpdated = 1; return p; });
   }
 
   // --- TAGS ---
@@ -130,7 +160,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     let i = 1
     while (i < days.length) {
       const d1 = days[i - 1];
-      const d2 = days[i]; 
+      const d2 = days[i];
       if (d1 - 1 === d2) {
         newStreak++;
         i++;
@@ -143,50 +173,7 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     streak.value = newStreak;
   }
 
-  (async () => {
-
-    // migrate to new db -- remove after a while
-    if ((await window.indexedDB.databases()).map(db => db.name).includes('sb-db')) {
-      console.log('migrating db');
-
-      const _db = await openDB('sb-db', 2, {
-        upgrade(db) {
-          if (!db.objectStoreNames.contains('pomodori')) {
-            const pomodori = db.createObjectStore('pomodori', { keyPath: 'id', autoIncrement: true });
-            pomodori.createIndex('datetime', 'datetime', { unique: false });
-
-          }
-        }
-      });
-
-      const pomos = await _db.getAllFromIndex('pomodori', 'datetime',
-        IDBKeyRange.lowerBound(new Date(Date.now() - (30 * 24 * 60 * 60 * 1000)))
-      )
-      pomos.forEach(async (p: any) => {
-        const newP: PomodoroDBO = {
-          end: p.end,
-          endedAt: p.endedAt,
-          breaksDone: p.breaksDone.map((b: any) => ({ start: b.start, end: b.end })),
-          freeMode: p.freeMode,
-          datetime: p.datetime,
-          deepWork: true
-        }
-        await db.pomodori.add(newP);
-      });
-      // delete old db
-      const oldDb = await openDB('sb-db', 2);
-      if (oldDb) {
-        oldDb.close();
-        indexedDB.deleteDatabase('sb-db');
-      }
-      console.log('migration done');
-    }
-
-
-    await updatePomodoroRecords();
-  })();
-
-
+  updatePomodoroRecords();
 
   return {
     pomodoroRecords, tags, tagColors, streak, updatePomodoro, parsePomodorDbo,

@@ -2,8 +2,9 @@ import { defineStore } from 'pinia'
 import { type Break, PomodoroState, type PomodotoStatus, type DisplaySession, type PomodoroRecord, type PomodoroDBO } from '@/types';
 import { useSettingsStore } from "@/stores/settings";
 import { computed, ref, watch } from 'vue';
-import { usePomodoroDBStore } from "@/stores/db/pomodoroDB";
+import { usePomodoroDBStore } from "@/stores/db/pomodoro";
 import { useTimerStatusStore } from "@/stores/api/timerStatus";
+
 import * as timeUtils from '@/utils/time';
 import config from '@/config/config';
 

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { Timer } from '@/types';
 import { ref } from 'vue';
-import { useDBStore } from "@/stores/db";
+import { useDBStore } from "./db";
 
 export const useTimerStore = defineStore('timerStore', () => {
 

@@ -1,6 +1,6 @@
 
 import Dexie, { type Table } from 'dexie';
-import type { Timer, Theme, PomodoroDBO } from '@/types';
+import type { Timer, Theme, PomodoroDBO, ExamDBO, UpdatesDBO } from '@/types';
 import { defineStore } from 'pinia';
 
 function getThemes() {
@@ -40,6 +40,8 @@ export class StudyBuddyDB extends Dexie {
   public timer!: Table<Timer, number>;
   public themes!: Table<Theme, number>;
   public pomodori!: Table<PomodoroDBO, number>;
+  public exams!: Table<ExamDBO, number>;
+  public updates!: Table<UpdatesDBO, number>;
 
   public constructor() {
 
@@ -75,6 +77,15 @@ export class StudyBuddyDB extends Dexie {
       )
       await trans.table('themes').bulkAdd(getThemes());
     });
+    this.version(11).stores({
+      updates: "++id,entityName,lastUpdate",
+      timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
+      themes: "++id,title,palette,category,backgroundColor,backgroundImg,og",
+      pomodori: "++id,datetime,tag,remoteUpdated",
+      exams: "++id,_id,examId,examName"
+    }).upgrade(async trans => {
+      await trans.table('pomodori').toCollection().modify({ remoteUpdated: 0 });
+    });
     this.on("populate", () => {
       this.timer.bulkAdd(getTimers());
       this.themes.bulkAdd(getThemes());
@@ -109,12 +120,42 @@ export class StudyBuddyDB extends Dexie {
 //   }
 // }
 
+export enum EntitiesEnum {
+  themes = 'themes',
+  timers = 'timers',
+  pomodori = 'pomodori',
+  exams = 'exams'
+}
+
 export const useDBStore = defineStore('dbStore', () => {
   const studyBuddyDB = new StudyBuddyDB();
 
   const themes = studyBuddyDB.themes;
   const timers = studyBuddyDB.timer;
   const pomodori = studyBuddyDB.pomodori;
+  const exams = studyBuddyDB.exams;
 
-  return { themes, timers, pomodori };
+
+  async function getLastUpdatedDBO(entity: EntitiesEnum) {
+    return await studyBuddyDB.updates.where('entityName').equals(entity).first();
+  }
+
+  async function getLastUpdated(entity: EntitiesEnum): Promise<Date> {
+    return (await getLastUpdatedDBO(entity))?.lastUpdate ?? new Date('1970-01-01');
+  }
+
+  async function setLastUpdated(entity: EntitiesEnum, lastUpdate: Date) {
+    const existing = await getLastUpdatedDBO(entity);
+    if (existing) {
+      await studyBuddyDB.updates.update(existing.id!, { lastUpdate });
+    } else {
+      await studyBuddyDB.updates.add({ entityName: entity, lastUpdate });
+    }
+  }
+
+  return {
+      studyBuddyDB,
+      themes, timers, pomodori, exams,
+      getLastUpdated, setLastUpdated
+    };
 });

@@ -60,7 +60,7 @@
     <v-window-item :value="2" class="settings-theme pa-6">
       <div class="header pb-6">
         <v-btn @click="step = 1" color="primary" variant="text" prepend-icon="mdi-arrow-left">{{ $t('back') }}</v-btn>
-        <v-btn @click="saveTheme(); step = 1" color="primary">{{ $t('pause.timer.saveTimer') }}</v-btn>
+        <v-btn @click="saveTheme(); step = 1" color="primary">{{ $t('pause.theme.saveTheme') }}</v-btn>
       </div>
 
       <v-col cols="12">
@@ -107,7 +107,7 @@
 </template>
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { useThemeStore } from "@/stores/settings/theme";
+import { useThemeStore } from "@/stores/db/theme";
 import { useSettingsStore } from "@/stores/settings";
 import { paletteList } from '@/config/themes'
 import type { Theme } from '@/types';

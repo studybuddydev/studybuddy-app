@@ -6,6 +6,8 @@
     "yes": "Ja",
     "no": "Nein",
     "back": "Rückwärts",
+    "next": "Weiter",
+    "search": "Suche",
     "delete": "Löschen",
     "welcomeToSB": "Willkommen bei StudyBuddy",
     "loginMsg": "Hallo, du bist in der Testversion von Studybuddy. Möchtest du uns helfen und Tester werden?",
@@ -13,6 +15,20 @@
     "backHome": "Startseite",
     "longAway": "Du hast einen aktiven Timer vergessen!",
     "continue": "Möchten Sie es fortsetzen?",
+    "shortBreak": "Pausen, die kürzer als 5 Sekunden sind, werden nicht angezeigt",
+    "welcome": {
+      "welcome": "Willkommen bei StudyBuddy!",
+      "start" : "Start",
+      "skip" : "Überspringen",
+      "continue":  "Fortsetzen",
+      "thanks": "Danke für das Einloggen :)",
+      "username": "Wähle einen Benutzernamen",
+      "tellus": "Erzähl uns etwas über dich",
+      "uni": "Wähle deine Universität",
+      "course": "Wähle deinen Studiengang",
+      "exams": "Füge deine Prüfungen hinzu",
+      "startNow": "Lass uns anfangen!"
+       },
     "pause": {
       "welcome": "Willkommen bei",
       "study": "Studium",
@@ -25,9 +41,9 @@
       "youare": "Du bist in",
       "break": "PAUSE",
       "for": "seit",
-      "pomoDone": "Du hast einen Pomodoro abgeschlossen",
+      "pomoDone": "Sie haben die Lernsitzung abgeschlossen",
       "pomoDoneShort": "Test abgeschlossen",
-      "pomoDoneBad": "Du hast einen Pomodoro abgeschlossen",
+      "pomoDoneBad": "Sie haben die Lernsitzung abgeschlossen",
       "goodjob": "Gute Arbeit!",
       "goodjobShort": "Ok, du hast es versucht. Gehen Sie zurück zur Startseite, um wirklich mit dem Lernen zu beginnen.",
       "goodjobBad": "Gute Arbeit, aber man kann es besser machen!",
@@ -85,6 +101,7 @@
         "theme": "Thema",
         "chooseTheme": "Wähle ein Thema",
         "newTheme": "Neues Thema",
+        "saveTheme": "Thema speichern",
         "colors": "Palette",
         "bgColor": "Hintergrundfarbe",
         "url": "Benutzerdefinierte Bild-URL",
@@ -95,7 +112,7 @@
       }
     },
     "zen": {
-      "confirm": "Möchtest du wirklich den Pomodoro beenden?",
+      "confirm": "Möchten Sie Ihre Lerneinheit wirklich beenden?",
       "sink": "Waschbecken",
       "sinkSaved": "Für später aufgehoben",
       "sinkDone": "Waschbecken ist leer!"
@@ -177,9 +194,9 @@
       "snakePause":  "Der Apfel stellt eine Pause dar. Wenn Sie ihn erreichen, können Sie entscheiden, ob Sie eine Pause machen oder mit dem Lernen fortfahren möchten. Sie können jederzeit pausieren, indem Sie die Pause-Taste drücken. Die Anzahl und Dauer der Pausen können Sie von anpassen Einstellungen."
     },
     "history":{
-      "loginMsg" : "Melden Sie sich an, um Ihre Pomodoro-Historie anzuzeigen",
+      "loginMsg" : "Melden Sie sich an, um den Verlauf Ihrer Lernsitzungen anzuzeigen",
       "sliderTitle" : "Stundenbereich",
-      "noHistory": "Sie haben noch keinen Pomodoro von mindestens 5 Minuten abgeschlossen",
+      "noHistory": "Sie haben noch keine Lerneinheit von mindestens 5 Minuten abgeschlossen",
       "startNow": "Jetzt starten"
   }
 }

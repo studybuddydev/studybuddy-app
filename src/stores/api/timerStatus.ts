@@ -4,22 +4,16 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import { ref, watch } from 'vue';
 import { PomodoroState, type PomodotoStatus } from '@/types';
 import { usePomodoroStore } from "@/stores/pomodoro";
-import config from '@/config/config';
+import { useAPIStore } from './index';
+import * as common from '@/utils/common';
 
 export const useTimerStatusStore = defineStore('timer-status', () => {
 
-  const { user, getAccessTokenSilently } = useAuth0();
+  const { user } = useAuth0();
   const pomodoro = usePomodoroStore();
+  const api = useAPIStore();
 
-  const API_ENDPOINT = config.api.endpoint;
   const LOCALSTORAGE_KEY = 'timer-status'
-
-  async function getOptions() {
-    return {
-      headers: { Authorization: `Bearer ${await getAccessTokenSilently()}` }
-    }
-  }
-
   const pomodoroStatus = ref<PomodotoStatus | null>(
     getStatusLocalStorage()
   );
@@ -60,27 +54,24 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
   }
 
   async function getStatusAPI() {
-    const status = await axios.get(`${API_ENDPOINT}/status`, await getOptions());
+    const status = await axios.get(`${api.endpoint}/status`, await api.getOptions());
     if (status.data.timestamp > (pomodoroStatus.value?.timestamp ?? 0)) {
       pomodoroStatus.value = status.data;
       pomodoro.init();
     }
   }
 
-  let debounceTimeout: number | undefined = undefined;
   async function setStatusAPI(status: PomodotoStatus) {
-    clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(async () => {
-      status.timestamp = Date.now();
-      await axios.post(`${API_ENDPOINT}/status`, status, await getOptions());
-    }, 500)
+    common.debounce('status-api',
+      async () => {
+        status.timestamp = Date.now();
+        await axios.post(`${api.endpoint}/status`, status, await api.getOptions());
+      }, 500)
   }
 
   async function deleteStatusAPI() {
-    await axios.delete(`${API_ENDPOINT}/status`, await getOptions());
+    await axios.delete(`${api.endpoint}/status`, await api.getOptions());
   }
-
-
 
   return {
     pomodoroStatus, saveStatus, createStatus

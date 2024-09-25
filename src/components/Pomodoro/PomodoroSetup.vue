@@ -6,8 +6,8 @@
     <!-- <v-icon class="top-icon info" icon="mdi-arrow-left" @click="emits('exit-setup')" /> -->
     <h3 class="title text-primary">{{ $t('setup.title') }}</h3>
     <PomodoroPresets :top3="true" class="presets" @open-settings-tab="emits('open-settings-tab', $event)" />
-    <PomodoroDetails class="details" v-if="timerStatus.pomodoroStatus" :pomo="timerStatus.pomodoroStatus" />
-    <div class="dont-show-again">
+    <PomodoroDetails class="details hidden-small" v-if="timerStatus.pomodoroStatus" :pomo="timerStatus.pomodoroStatus" />
+    <div class="dont-show-again hidden-small">
       <v-checkbox class="shrink dont-show-check" :label="$t('setup.dontShow')" hide-details
         v-model="settingsStore.settings!.general!.hideSetup" />
     </div>
@@ -30,6 +30,12 @@ const emits = defineEmits<{
 </script>
 
 <style scoped lang="scss">
+.hidden-small {
+  @media screen and (max-width: 550px) {
+    display: none !important;
+  }
+}
+
 .setup {
   border-radius: 1rem;
   padding: 1rem;
@@ -37,7 +43,7 @@ const emits = defineEmits<{
   width: 500px;
 
   @media (max-width: 550px) {
-    width: calc(100vw - 1rem)
+    width: calc(100vw - 2rem)
   }
 
   .details {

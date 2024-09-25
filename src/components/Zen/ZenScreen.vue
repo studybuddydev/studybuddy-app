@@ -73,8 +73,7 @@ const showDetailsEnd = computed(() => !(pomodoro.going || pomodoro.countdownRunn
 
           <BackgroundVideo
             :class="(settings.themeSettings.showOnlyMusic || (showStartPage && !forseShowVideo)) ? 'video hide-video' : 'video'"
-            :hidden="settings.themeSettings.showOnlyMusic || (showStartPage && !forseShowVideo)"
-              :shouldUnmute="!(showStartPage && !forseShowVideo)"
+            :shouldUnmute="!(showStartPage && !forseShowVideo)"
             />
 
           <div class="zen-header">
@@ -173,6 +172,11 @@ const showDetailsEnd = computed(() => !(pomodoro.going || pomodoro.countdownRunn
     -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
     mask-image: linear-gradient(to top, black 99.5%, transparent 100%);
     margin-top: 4.2rem;
+
+    @media screen and (max-width: 850px) {
+      align-items: baseline;
+      margin-top: 5rem;
+    }
 
     .main-content {
       margin-top: 1rem;

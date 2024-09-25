@@ -2,13 +2,15 @@ import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import type { PomodoroSettings, Settings, ThemeSettings, GeneralSettings } from '@/types'
 import { useTheme } from 'vuetify'
+import * as common from '@/utils/common';
+import { useAPIStore } from './api';
 
 const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
-const DEFAULT_PALETTE = 'gptnight';
+const DEFAULT_PALETTE = 'bio';
 const DEFAULT_ICONS = 'mdi-icon';
-const DEFAULT_IMG = 'https://api.studybuddy.it/images/LOFI';
-const DEFAULT_VIDEO = 'https://www.youtube.com/watch?v=jfKfPfyJRdk';
+const DEFAULT_IMG = 'https://api.studybuddy.it/images/autumn';
+const DEFAULT_VIDEO = undefined;
 
 
 const defaultSettings: Settings = {
@@ -47,11 +49,17 @@ const defaultSettings: Settings = {
 export const useSettingsStore = defineStore('settings', () => {
 
   const theme = useTheme();
+  const api = useAPIStore().api;
 
   const settings = ref<Settings>(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}'));
-  settings.value.general = { ...defaultSettings.general, ...settings.value.general } as GeneralSettings;
-  settings.value.theme = { ...defaultSettings.theme, ...settings.value.theme } as ThemeSettings;
-  settings.value.pomodoro = { ...defaultSettings.pomodoro, ...settings.value.pomodoro } as PomodoroSettings;
+
+  function updateSettingsValue(newSettings: Settings) {
+    settings.value.general = { ...defaultSettings.general, ...newSettings.general } as GeneralSettings;
+    settings.value.theme = { ...defaultSettings.theme, ...newSettings.theme } as ThemeSettings;
+    settings.value.pomodoro = { ...defaultSettings.pomodoro, ...newSettings.pomodoro } as PomodoroSettings;
+  }
+  updateSettingsValue(settings.value);
+
 
   if (settings.value.theme.backgroundImg === 'https://images.alphacoders.com/133/1332707.png') {
     settings.value.theme.backgroundImg = DEFAULT_IMG;
@@ -76,20 +84,29 @@ export const useSettingsStore = defineStore('settings', () => {
     save();
   });
 
-  let debounceTimeout: number | undefined = undefined;
-  function save() {
-    clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(async () => {
-      console.log('Saving settings')
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings.value));
-    }, 500)
+  function save(skipRemote: boolean = false) {
+    const s = { ...settings.value, lastUpdate: new Date().getTime() }
+    common.debounce('settings-save', () => {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(s));
+    }, 500);
+
+    if (!skipRemote) api.settings.upsertSettings(s);
   }
 
   function updatePalette(newPalette?: string) {
     theme.global.name.value = newPalette ?? themeSettings.value.palette ?? DEFAULT_PALETTE;
   }
-
   updatePalette();
+
+  async function getSettingsAPI() {
+    const lastUpdate = settings.value.lastUpdate ?? 0;
+    const newSettings = await api.settings.getSettingsIfNew(lastUpdate);
+    if (newSettings) {
+      updateSettingsValue(newSettings);
+      save(true);
+    }
+  }
+  getSettingsAPI();
 
 
 

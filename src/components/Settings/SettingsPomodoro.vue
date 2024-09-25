@@ -119,7 +119,7 @@ import { computed, ref, watch } from 'vue'
 import Info from '@/components/common/Info.vue'
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useSettingsStore } from "@/stores/settings";
-import { useTimerStore } from "@/stores/settings/timer";
+import { useTimerStore } from "@/stores/db/timer";
 import type { Timer } from '@/types';
 import PomodoroPresets from '@/components/Pomodoro/PomodoroPresets.vue';
 

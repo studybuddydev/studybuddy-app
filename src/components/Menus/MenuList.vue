@@ -1,31 +1,22 @@
 <template>
   <v-list nav density="compact" class="menu-list">
-    <draggable item-key="name" :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" >
-      <template #item="{element}">
-        <v-list-item link :to="`/${baseUrl}/${element.name}`"
-          class="rounded-lg my-2 " :variant="element.tutorial ? 'outlined' : 'text'"
-          @click="rail()"
-          :prepend-icon="element.icon" :value="element.name"
-          :color="element.color ?? props.color">
+    <draggable item-key="name" :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)">
+      <template #item="{ element }">
+        <v-list-item link :to="`/${baseUrl}/${element.name}`" class="rounded-lg my-2 "
+          :variant="element.tutorial ? 'outlined' : 'text'" @click="rail()" :prepend-icon="element.icon"
+          :value="element.name" :color="element.color ?? props.color">
           <v-list-item-title :class="areExams ? 'text-uppercase exam-title' : ''">
-            {{element.name}}
+            {{ element.name }}
           </v-list-item-title>
           <template v-slot:append>
-            <v-btn
-              icon="mdi-dots-vertical"
-              variant="text"
-              v-bind="props"
-              @click="editElement(element)"
-            ></v-btn>
+            <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props" @click="editElement(element)"></v-btn>
           </template>
         </v-list-item>
       </template>
     </draggable>
 
-    <v-list-item
-      @click="addElement()"
-      :class="`bg-${props.color}`"
-      prepend-icon="mdi-plus" :title="$t('study.add',{ 'element' :props.elementsName })"  />
+    <v-list-item @click="addElement()" :class="`bg-${props.color}`" prepend-icon="mdi-plus"
+      :title="$t('study.add', { 'element': props.elementsName })" />
 
   </v-list>
 
@@ -39,32 +30,23 @@
       </v-toolbar>
       <v-card-text>
         <v-container>
-          
+
           <v-row>
             <!-- Exam name -->
             <v-col cols="12">
-              <v-text-field
-                required autofocus
-                v-model="newElementDialog.element.name"
-                :label="$t('study.name',{ 'element': props.elementsName})"
-                :error-messages="state.checkValidExamName(newElementDialog.element.name, newElementDialog.original) ? '' : $t('study.invalidName', {element: props.elementsName})" />
+              <v-text-field required autofocus v-model="newElementDialog.element.name"
+                :label="$t('study.name', { 'element': props.elementsName })"
+                :error-messages="state.checkValidExamName(newElementDialog.element.name, newElementDialog.original) ? '' : $t('study.invalidName', { element: props.elementsName })" />
             </v-col>
             <!--Deadline-->
             <v-col cols="12" v-if="props.elementsName === $t('study.exam')">
-              <v-text-field
-                v-model="newElementDialog.element.deadline"
-                :label="$t('study.examDate')"
-                type="date"
-              />
+              <v-text-field v-model="newElementDialog.element.deadline" :label="$t('study.examDate')" type="date" />
             </v-col>
-            
+
             <!--  Icon-->
             <v-col cols="12" v-if="props.chooseIcon">
-              <v-select :label="$t('study.icon')"
-                :items="mdiIconsList" item-title="title" item-value="icon"
-                v-model="newElementDialog.element.icon"
-                :prepend-icon="newElementDialog.element.icon"
-              >
+              <v-select :label="$t('study.icon')" :items="mdiIconsList" item-title="title" item-value="icon"
+                v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
                 <template v-slot:item="{ props: item }">
                   <v-list-item v-bind="(item as any)" :prepend-icon="(item.value as any)" :title="item.title" />
                 </template>
@@ -80,7 +62,8 @@
 
         </v-container>
         <v-card-actions>
-          <v-btn icon="mdi-delete" variant="tonal" v-if="!!newElementDialog.original" @click="removeElement(newElementDialog.original)" color="error"></v-btn>
+          <v-btn icon="mdi-delete" variant="tonal" v-if="!!newElementDialog.original"
+            @click="removeElement(newElementDialog.original)" color="error"></v-btn>
           <v-spacer></v-spacer>
           <v-btn @click="closeEditDialog()">{{ $t('cancel') }}</v-btn>
           <v-btn @click="saveElement()" color="primary">{{ $t('save') }}</v-btn>
@@ -125,7 +108,7 @@ const newElementDialog = ref({
 });
 
 function addElement() {
-  newElementDialog.value.element =  { ...defaultElement };
+  newElementDialog.value.element = { ...defaultElement };
   newElementDialog.value.original = undefined;
   newElementDialog.value.open = true;
   if (newElementDialog.value.element?.icon)
@@ -153,7 +136,7 @@ function saveElement() {
       emit('update:modelValue', props.modelValue.map((e: Exam | Chapter) => e.name === newElementDialog.value.original?.name ? newElementDialog.value.element : e))
     }
     closeEditDialog();
-    router.push({ path: `/${props.baseUrl}/${newElementDialog.value.element.name}`})
+    router.push({ path: `/${props.baseUrl}/${newElementDialog.value.element.name}` })
   }
 }
 

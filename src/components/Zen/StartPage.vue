@@ -55,6 +55,9 @@ h3 {
       display: flex;
       flex-direction: column;
     }
+    .minecraft-sentence {
+      display: none;
+    }
   }
 
   .minecraft-sentence {

@@ -175,6 +175,7 @@ export type Settings = {
   pomodoro: PomodoroSettings;
   general: GeneralSettings;
   theme: ThemeSettings;
+  lastUpdate?: number;
 }
 
 // ---- DBs ----
@@ -200,13 +201,29 @@ export interface Timer {
 
 export interface PomodoroDBO extends PomodoroBase {
   id?: number;
+  _id?: string;
   datetime: Date;
+  lastUpdated?: Date;
   tag?: string;
   rating?: number;
   deepWork: boolean;
   tasks?: PomodoroTask[];
+  remoteUpdated: number;
 }
 
+export interface ExamDBO {
+  id?: number;
+  _id: string;
+  examId: string;
+  examName: string;
+  exam: any;
+}
+
+export interface UpdatesDBO {
+  id?: number;
+  entityName: string;
+  lastUpdate: Date;
+}
 
 export type State = {
   data: {
