@@ -1,6 +1,6 @@
 export default {
   api: {
-    endpoint: import.meta.env.VITE_API_ENDPOINT ?? 'https://api.studybuddy.it'
+    endpoint:  'https://api.studybuddy.it' 
   },
   timer: {
     speedMultiplier: +(import.meta.env.VITE_TIMER_SPEED_MULTIPLIER ?? 1),
