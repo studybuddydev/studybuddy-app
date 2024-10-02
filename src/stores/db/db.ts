@@ -86,6 +86,13 @@ export class StudyBuddyDB extends Dexie {
     }).upgrade(async trans => {
       await trans.table('pomodori').toCollection().modify({ remoteUpdated: 0 });
     });
+    this.version(12).stores({
+      updates: "++id,entityName,lastUpdate",
+      timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
+      themes: "++id,title,palette,category,backgroundColor,backgroundImg,og",
+      pomodori: "++id,datetime,tag,remoteUpdated",
+      exams: "++id,_id,dataExamId,name"
+    })
     this.on("populate", () => {
       this.timer.bulkAdd(getTimers());
       this.themes.bulkAdd(getThemes());

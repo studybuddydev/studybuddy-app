@@ -214,9 +214,11 @@ export interface PomodoroDBO extends PomodoroBase {
 export interface ExamDBO {
   id?: number;
   _id: string;
-  examId: string;
-  examName: string;
+  dataExamId: string;
+  name: string;
   exam: any;
+  color: string;
+  icon: string;
 }
 
 export interface UpdatesDBO {
