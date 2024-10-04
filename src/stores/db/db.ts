@@ -1,10 +1,11 @@
 
-import Dexie, { type Table } from 'dexie';
+import Dexie, { type Table, type Transaction } from 'dexie';
 import type { Timer, Theme, PomodoroDBO, ExamDBO, UpdatesDBO } from '@/types';
 import { defineStore } from 'pinia';
 
 function getThemes() {
   const themes: Partial<Theme>[] = [
+    { title: 'Autumn',      category: '🌲 Nature', palette: 'bio',      },
     { title: 'Forest',      category: '🌲 Nature', palette: 'bio',      backgroundVideo: 'https://www.youtube.com/watch?v=xNN7iTA57jM', showOnlyMusic: true },
     { title: 'Mountain',    category: '🌲 Nature', palette: 'nord',     },
     { title: 'Rocks',       category: '🌲 Nature', palette: 'gptday',   },
@@ -43,9 +44,23 @@ export class StudyBuddyDB extends Dexie {
   public exams!: Table<ExamDBO, number>;
   public updates!: Table<UpdatesDBO, number>;
 
-  public constructor() {
 
+
+  public constructor() {
     super("StudyBuddyDB");
+
+    let themeRefreshed: boolean = false;
+
+    const refreshThemes = async function (trans: Transaction) {
+      await trans.table('themes').bulkDelete(
+        await trans.table('themes').toArray().then(tt => tt.filter(t => t.og).map(t => t.id))
+      )
+      await trans.table('themes').bulkAdd(getThemes());
+      themeRefreshed = true;
+    }
+
+
+
     this.version(3).stores({
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,backgroundColor,backgroundImg",
@@ -55,28 +70,17 @@ export class StudyBuddyDB extends Dexie {
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,backgroundColor,backgroundImg",
       pomodori: "++id,datetime,tag"
-    }).upgrade(async trans => {
-      await trans.table('themes').clear();
-      await trans.table('themes').bulkAdd(getThemes());
-    });
+    }).upgrade(async trans => { await refreshThemes(trans) });
     this.version(6).stores({
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,category,backgroundColor,backgroundImg",
       pomodori: "++id,datetime,tag"
-    }).upgrade(async trans => {
-      await trans.table('themes').clear();
-      await trans.table('themes').bulkAdd(getThemes());
-    });
+    }).upgrade(async trans => { await refreshThemes(trans) });
     this.version(7).stores({
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
       themes: "++id,title,palette,category,backgroundColor,backgroundImg,og",
       pomodori: "++id,datetime,tag"
-    }).upgrade(async trans => {
-      await trans.table('themes').bulkDelete(
-        await trans.table('themes').toArray().then(tt => tt.filter(t => t.og).map(t => t.id))
-      )
-      await trans.table('themes').bulkAdd(getThemes());
-    });
+    }).upgrade(async trans => { await refreshThemes(trans) });
     this.version(11).stores({
       updates: "++id,entityName,lastUpdate",
       timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
@@ -86,6 +90,13 @@ export class StudyBuddyDB extends Dexie {
     }).upgrade(async trans => {
       await trans.table('pomodori').toCollection().modify({ remoteUpdated: 0 });
     });
+    this.version(13).stores({
+      updates: "++id,entityName,lastUpdate",
+      timer: "++id,title,studyLength,breakLength,repetitions,freeMode",
+      themes: "++id,title,palette,category,backgroundColor,backgroundImg,og",
+      pomodori: "++id,datetime,tag,remoteUpdated",
+      exams: "++id,_id,dataExamId,name"
+    }).upgrade(async trans => { await refreshThemes(trans) });
     this.on("populate", () => {
       this.timer.bulkAdd(getTimers());
       this.themes.bulkAdd(getThemes());

@@ -2,14 +2,14 @@
   <div class="pomo-details-props">
     <div class="title">
       <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="deleteTag()"
-        :color="pomo.tag ? pomoDB.tagColors[pomo.tag] : undefined">{{ pomo.tag }}</v-chip>
-      <v-combobox v-else class="text-box text-boxt-tag" :label="$t('setup.exam')" hide-details :items="pomoDB.tags" v-model="pomo.tag"
-        @update:modelValue="(newTag: any) => { newTag && addTag(newTag) }">
+        :color="examDB.examsMapping[pomo.tag].color">{{ examDB.examsMapping[pomo.tag].name }}</v-chip>
+      <v-combobox v-else class="text-box text-boxt-tag" :label="$t('setup.exam')" hide-details :items="examDB.exams"
+        v-model="pomo.tag" item-title="name" item-value="_id" @update:modelValue="(e: ExamDBO) => { e && addExam(e) }">
         <template v-slot:selection="data"><v-chip :key="data.item.title">{{ data.item.title }}</v-chip></template>
         <template #item="{ props, item }">
           <v-list-item v-bind="props">
             <template #prepend>
-              <v-icon :color="pomoDB.tagColors[item.value]">mdi-circle</v-icon>
+              <v-icon :color="examDB.examsMapping[item.value].color" :icon="examDB.examsMapping[item.value].icon ?? 'mdi-circle'" />
             </template>
           </v-list-item>
         </template>
@@ -20,8 +20,8 @@
     </div>
 
     <div class="tasks" v-show="false">
-      <v-text-field v-on:keyup.enter="() => addTask()" append-inner-icon="mdi-send" density="compact" :label="$t('setup.addTask')"
-        class="input-add-task" variant="solo" hide-details single-line v-model="task"
+      <v-text-field v-on:keyup.enter="() => addTask()" append-inner-icon="mdi-send" density="compact"
+        :label="$t('setup.addTask')" class="input-add-task" variant="solo" hide-details single-line v-model="task"
         @click:append-inner="() => addTask()" />
       <div class="task-list" v-if="pomo.tasks?.length ?? 0 > 0">
         <div class="task" v-for="t in (pomo.tasks ?? [])" @click="t.done = !t.done; updateTask()" v-ripple>
@@ -50,11 +50,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { usePomodoroDBStore } from "@/stores/db/pomodoro";
-import type { PomodoroBase, PomodoroTask } from '@/types';
+import { useExamsStore } from "@/stores/db/exams";
+import type { PomodoroBase, PomodoroTask, ExamDBO } from '@/types';
 import { useTimerStatusStore } from "@/stores/api/timerStatus";
 
 const props = defineProps<{ pomo: PomodoroBase }>();
 const pomoDB = usePomodoroDBStore();
+const examDB = useExamsStore();
 const timerStatus = useTimerStatusStore();
 
 async function updateDeepWork(pomoId: number | undefined, deep: boolean) {
@@ -73,9 +75,10 @@ async function deleteTag() {
   props.pomo.tag = undefined
   if (props.pomo.id) pomoDB.updateTag(props.pomo.id, undefined)
 }
-function addTag(tag: string) {
-  props.pomo.tag = tag
-  if (props.pomo.id) pomoDB.updateTag(props.pomo.id, tag)
+function addExam(e: ExamDBO) {
+  console.log(e)
+  props.pomo.tag = e._id
+  if (props.pomo.id) pomoDB.updateTag(props.pomo.id, e._id)
 }
 
 const task = ref('');
@@ -98,15 +101,15 @@ async function updateTask() {
 <style scoped lang="scss">
 .pomo-details-props {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-rows: auto auto;
-  width: 100%;
+  grid-template-columns: 100%;
+  grid-template-rows: auto auto auto;
+  width: calc(100vw - 4rem);
   align-items: center;
 
   .title {
-    grid-column: 1 / span 2;
+    grid-column: 1;
+    grid-template-columns: auto;
     display: grid;
-    grid-template-columns: auto 1fr;
     gap: 1rem;
     margin: 1rem;
     align-items: center;
@@ -124,6 +127,7 @@ async function updateTask() {
     width: 100%;
     max-width: 25rem;
     align-self: center;
+    min-width: unset;
 
     .input-add-task {
       min-width: 10rem;
@@ -175,20 +179,4 @@ async function updateTask() {
   }
 }
 
-@media (max-width: 850px) {
-  .pomo-details-props {
-    grid-template-columns: 100%;
-    grid-template-rows: auto auto auto;
-    width: calc(100vw - 4rem);
-
-    .tasks {
-      min-width: unset;
-    }
-
-    .title {
-      grid-column: 1;
-      grid-template-columns: auto;
-    }
-  }
-}
 </style>

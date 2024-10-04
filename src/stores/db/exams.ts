@@ -8,10 +8,14 @@ export const useExamsStore = defineStore('exams', () => {
   const db = useDBStore();
   const api = useAPIStore().api;
 
-  const examNames = ref<string[]>([]);
+  const exams = ref<ExamDBO[]>([]);
+  const examsMapping = ref<{ [id: string]: ExamDBO }>({})
 
   async function load() {
-    examNames.value = (await db.exams.orderBy('_id').keys()) as string[];
+    exams.value = await db.exams.toArray()
+    for (const e of exams.value) {
+      examsMapping.value[e._id] = e
+    }
   }
 
   async function getExam(examId: string) {
@@ -45,5 +49,5 @@ export const useExamsStore = defineStore('exams', () => {
   }
   init();
 
-  return { examNames, getExam };
+  return { exams, examsMapping, getExam };
 })

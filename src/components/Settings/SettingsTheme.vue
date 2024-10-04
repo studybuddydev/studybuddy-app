@@ -16,11 +16,11 @@
           }}</v-chip>
       </div>
       <div class="themes" v-if="selectedCategory !== null">
-        <div class="arrow" v-ripple @click="decreasePage()"><v-icon :disabled="themesPage === 0"
+        <div :class="`arrow ${themesPage === 0 ? 'hidden' : ''}`" v-ripple @click="decreasePage()"><v-icon :disabled="themesPage === 0"
             icon="mdi-chevron-left" /></div>
         <ThemeTile class="theme-tile" v-for="t in showingThemes" :theme="t" :selected="selectedTheme?.title === t.title"
           :primaryColor="primaryColorsMapping[t.palette ?? '']" @setTheme="setTheme(t)" />
-        <div class="arrow" v-ripple @click="increasePage()"><v-icon
+        <div :class="`arrow ${themeStore.themesByCategory?.[selectedCategory]?.length! <= (themesPage + 1) * 3 ? 'hidden' : ''}`" v-ripple @click="increasePage()"><v-icon
             :disabled="themeStore.themesByCategory?.[selectedCategory]?.length! <= (themesPage + 1) * 3"
             icon="mdi-chevron-right" /></div>
       </div>
@@ -273,6 +273,10 @@ function setPalette(palette: string) {
       &:last-child {
         border-radius: 0.5rem 0 0 0.5rem;
         grid-column-start: 5;
+      }
+
+      &.hidden {
+        opacity: 0;
       }
     }
 
