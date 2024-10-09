@@ -25,7 +25,6 @@ export const useExamsStore = defineStore('exams', () => {
 
 
   async function upsertExam(exam: ExamDBO) {
-    console.log('upserting exam', exam);
     const exists = await db.exams.where('_id').equals(exam._id).first();
     // to undestand why update does not work
     if (exists) await db.exams.delete(exists.id!);
@@ -40,14 +39,13 @@ export const useExamsStore = defineStore('exams', () => {
       await upsertExam(exam);
     }
     await db.setLastUpdated(EntitiesEnum.exams, newUpdatedDate);
-
+    await load();
   }
 
   async function init() {
-    await load();
     await updateLocalDB();
   }
   init();
 
-  return { exams, examsMapping, getExam };
+  return { exams, examsMapping, getExam, updateLocalDB };
 })

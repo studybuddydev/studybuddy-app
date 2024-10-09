@@ -76,7 +76,6 @@ async function deleteTag() {
   if (props.pomo.id) pomoDB.updateTag(props.pomo.id, undefined)
 }
 function addExam(e: ExamDBO) {
-  console.log(e)
   props.pomo.tag = e._id
   if (props.pomo.id) pomoDB.updateTag(props.pomo.id, e._id)
 }

@@ -54,7 +54,6 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     const first = await db.pomodori.where('datetime').equals(dt).first();
     if (!(first)) {
       const id = await db.pomodori.add(p);
-      console.log('added', id);
       parsed.id = id;
       p.id = id;
       pomodoroRecords.value.unshift(parsed);
@@ -65,9 +64,12 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     return parsed;
   }
   async function deletePomodoroRecord(id: number) {
+    const _id = pomodoroRecords.value.find(p => p.id === id)?._id;
     pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);
     updateStreak();
     await db.pomodori.delete(id);
+    if (_id)
+    await deleteRemotePomodoro(_id)
   }
 
   async function updatePomodoro(id: number, updatePomo: (p: PomodoroDBO) => PomodoroDBO) {
@@ -83,13 +85,11 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
 
   // -- REMOTE --
   async function postRemotePomodoro(pomodoro: PomodoroDBO) {
-    console.log('postRemotePomodoro', pomodoro);
     if (!pomodoro.id) return;
     const _id = await api.pomodori.postPomodoro(pomodoro);
     await updatePomodoro(pomodoro.id, p => { p._id = _id; p.remoteUpdated = 1; return p; });
   }
   async function updateRemotePomodoro(pomodoro: PomodoroDBO) {
-    console.log('updateRemotePomodoro', pomodoro);
     if (!pomodoro.id) return;
     if (!pomodoro._id) {
       await postRemotePomodoro(pomodoro);
@@ -97,6 +97,9 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     }
     await api.pomodori.updatePomodoro(pomodoro);
     await updatePomodoro(pomodoro.id, p => { p.remoteUpdated = 1; return p; });
+  }
+  async function deleteRemotePomodoro(id: string) {
+    await api.pomodori.deletePomodoro(id);
   }
 
   // --- TAGS ---

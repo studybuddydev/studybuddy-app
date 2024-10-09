@@ -1,12 +1,13 @@
 <template>
   <div class="streak">
-    <p class="streak-nr font-casio">{{ pomoDB.streak }}</p>
-    <v-icon icon="mdi-fire" :color="pomoDB.streak > 0 ? 'accent' : '#AAA'" size="large" />
+    <p class="streak-nr font-casio">{{ streak }}</p>
+    <v-icon icon="mdi-fire" color="accent" size="large" />
   </div>
 </template>
 <script lang="ts" setup>
-import { usePomodoroDBStore } from "@/stores/db/pomodoro";
-const pomoDB = usePomodoroDBStore();
+const props = defineProps<{
+  streak: number
+}>();
 </script>
 <style scoped lang="scss">
 .streak {
