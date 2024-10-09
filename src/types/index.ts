@@ -113,6 +113,7 @@ export type PomodoroBase = {
   rating?: number;
   report?: PomoReport;
   id?: number;
+  _id?: string;
   name?: string;
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="user-banner-wrapper" v-if="!isLoading">
-    <div class="streak-wrapper blur" @click="emit('openHistory')">
-      <PomodoroStreak />
+    <div class="streak-wrapper blur" @click="emit('openHistory')" v-if="pomoDB.streak > 0">
+      <PomodoroStreak :streak="pomoDB.streak" />
     </div>
     <div class="user-banner blur"
       @click="!isAuthenticated ? loginWithRedirect() : emit('openSettingsTab', 'general')">
@@ -24,12 +24,14 @@
 <script lang="ts" setup>
 import { useAuth0 } from "@auth0/auth0-vue";
 import { onMounted, onUnmounted, ref } from 'vue';
+import { usePomodoroDBStore } from "@/stores/db/pomodoro";
 import PomodoroStreak from '../Pomodoro/PomodoroStreak.vue'
 const emit = defineEmits<{
   (e: 'openSettingsTab', value: string): void
   (e: 'openHistory'): void
 }>();
 
+const pomoDB = usePomodoroDBStore();
 const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 const offline = ref(!navigator.onLine);
 const setOffline = () => offline.value = !navigator.onLine;

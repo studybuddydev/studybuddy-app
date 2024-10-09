@@ -154,7 +154,7 @@ const hoursList = computed(() => {
 
 <template>
   <div :class="`pomo-history ${open ? '' : 'hide-pomo-history'}`">
-    <PomodoroStreak v-if="isAuthenticated" class="streak" />
+    <PomodoroStreak v-if="isAuthenticated" class="streak" :streak="pomoDB.streak" />
 
     <div v-if="!isAuthenticated" class="no-history">
       <p class="text-center text-medium-emphasis"> {{ $t('history.loginMsg') }}</p>
