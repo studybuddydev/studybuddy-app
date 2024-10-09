@@ -65,9 +65,12 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     return parsed;
   }
   async function deletePomodoroRecord(id: number) {
+    const _id = pomodoroRecords.value.find(p => p.id === id)?._id;
     pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);
     updateStreak();
     await db.pomodori.delete(id);
+    if (_id)
+    await deleteRemotePomodoro(_id)
   }
 
   async function updatePomodoro(id: number, updatePomo: (p: PomodoroDBO) => PomodoroDBO) {
@@ -97,6 +100,9 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     }
     await api.pomodori.updatePomodoro(pomodoro);
     await updatePomodoro(pomodoro.id, p => { p.remoteUpdated = 1; return p; });
+  }
+  async function deleteRemotePomodoro(id: string) {
+    await api.pomodori.deletePomodoro(id);
   }
 
   // --- TAGS ---
