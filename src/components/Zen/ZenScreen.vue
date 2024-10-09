@@ -69,6 +69,7 @@ const showDetailsEnd = computed(() => !(pomodoro.going || pomodoro.countdownRunn
 
     <div transition="fade-transition">
       <v-scroll-y-reverse-transition>
+        
         <div class="zen-screen" v-if="zenMode" :style="zenStyle">
 
           <BackgroundVideo

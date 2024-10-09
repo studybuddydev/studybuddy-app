@@ -4,10 +4,11 @@
 
       <div class="header px-6 pb-6">
         <div class="header-title">
-          <p class="text-h6">{{$t('pause.theme.chooseTheme')}}</p>
+          <p class="text-h6">{{ $t('pause.theme.chooseTheme') }}</p>
           <Info :text="$t('info.timer')" class="info-settings" />
         </div>
-        <v-btn @click="step = 2" color="primary" variant="text" prepend-icon="mdi-plus">{{$t('pause.theme.newTheme')}}</v-btn>
+        <v-btn @click="step = 2" color="primary" variant="text"
+          prepend-icon="mdi-plus">{{ $t('pause.theme.newTheme') }}</v-btn>
       </div>
 
       <div class="categories pb-6">
@@ -16,18 +17,20 @@
           }}</v-chip>
       </div>
       <div class="themes" v-if="selectedCategory !== null">
-        <div :class="`arrow ${themesPage === 0 ? 'hidden' : ''}`" v-ripple @click="decreasePage()"><v-icon :disabled="themesPage === 0"
-            icon="mdi-chevron-left" /></div>
+        <div :class="`arrow ${themesPage === 0 ? 'hidden' : ''}`" v-ripple @click="decreasePage()"><v-icon
+            :disabled="themesPage === 0" icon="mdi-chevron-left" /></div>
         <ThemeTile class="theme-tile" v-for="t in showingThemes" :theme="t" :selected="selectedTheme?.title === t.title"
           :primaryColor="primaryColorsMapping[t.palette ?? '']" @setTheme="setTheme(t)" />
-        <div :class="`arrow ${themeStore.themesByCategory?.[selectedCategory]?.length! <= (themesPage + 1) * 3 ? 'hidden' : ''}`" v-ripple @click="increasePage()"><v-icon
+        <div
+          :class="`arrow ${themeStore.themesByCategory?.[selectedCategory]?.length! <= (themesPage + 1) * 3 ? 'hidden' : ''}`"
+          v-ripple @click="increasePage()"><v-icon
             :disabled="themeStore.themesByCategory?.[selectedCategory]?.length! <= (themesPage + 1) * 3"
             icon="mdi-chevron-right" /></div>
       </div>
 
-      <div class="customize">
+      <div class="customize" v-if="isAuthenticated">
 
-        <div class="text-h6">{{$t('pause.theme.customize')}}</div>
+        <div class="text-h6">{{ $t('pause.theme.customize') }}</div>
         <v-col cols="12">
           <v-row>
             <v-col cols="12">
@@ -42,7 +45,7 @@
             </v-col>
             <v-col cols="2">
               <div>
-                <v-tooltip activator="parent" location="top">{{$t('pause.theme.onlyMusic')}}</v-tooltip>
+                <v-tooltip activator="parent" location="top">{{ $t('pause.theme.onlyMusic') }}</v-tooltip>
                 <v-switch color="primary" inset hide-details true-icon="mdi-music" false-icon="mdi-video"
                   v-model="settings.themeSettings.showOnlyMusic" :disabled="!settings.themeSettings.backgroundVideo" />
               </div>
@@ -50,8 +53,8 @@
           </v-row>
           <v-row v-if="settings.themeSettings.backgroundVideo && settings.themeSettings.showOnlyMusic">
             <v-col cols="12">
-              <v-text-field :label="$t('pause.theme.url')" v-model="backgroundImg" :error="!!backgroundUrlImgError" hide-details
-                clearable />
+              <v-text-field :label="$t('pause.theme.url')" v-model="backgroundImg" :error="!!backgroundUrlImgError"
+                hide-details clearable />
             </v-col>
           </v-row>
         </v-col>
@@ -63,45 +66,49 @@
         <v-btn @click="saveTheme(); step = 1" color="primary">{{ $t('pause.theme.saveTheme') }}</v-btn>
       </div>
 
-      <v-col cols="12">
-        <v-row>
-          <v-col cols="12">
-            <v-text-field :label="$t('pause.theme.title')" v-model="newThemeTitle" />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="10">
-            <v-text-field :label="$t('pause.theme.ytBackground')" v-model="settings.themeSettings.backgroundVideo"
-              prepend-icon="mdi-video" clearable hide-details
-              :error="!!settings.themeSettings.backgroundVideo && !getYotubeId(settings.themeSettings.backgroundVideo ?? '')" />
-          </v-col>
-          <v-col cols="2">
-            <div>
-              <v-tooltip activator="parent" location="top">{{$t('pause.theme.onlyMusic')}}</v-tooltip>
-              <v-switch color="primary" inset hide-details true-icon="mdi-music" false-icon="mdi-video"
-                v-model="settings.themeSettings.showOnlyMusic" :disabled="!settings.themeSettings.backgroundVideo" />
-            </div>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
-            <v-text-field :label="$t('pause.theme.url')" v-model="settings.themeSettings.backgroundImg"
-              prepend-icon="mdi-image" clearable hide-details
-              :error="!!settings.themeSettings.backgroundImg && !isUrl(settings.themeSettings.backgroundImg ?? '')" />
-          </v-col>
-        </v-row>
-      </v-col>
+      <RequireLogin>
 
-      <div class="palette px-6">
-        <div v-for="t in paletteList" class="palette-box" :style="{ backgroundColor: t.background }" @click="setPalette(t.value)">
-          <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="0,0 30,0 30,30" :style="{ fill: t.color }" />
-          </svg>
-          <div class="palette-title">
-            <p :style="{ color: t.color }">{{ t.title }}</p>
+        <v-col cols="12">
+          <v-row>
+            <v-col cols="12">
+              <v-text-field :label="$t('pause.theme.title')" v-model="newThemeTitle" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="10">
+              <v-text-field :label="$t('pause.theme.ytBackground')" v-model="settings.themeSettings.backgroundVideo"
+                prepend-icon="mdi-video" clearable hide-details
+                :error="!!settings.themeSettings.backgroundVideo && !getYotubeId(settings.themeSettings.backgroundVideo ?? '')" />
+            </v-col>
+            <v-col cols="2">
+              <div>
+                <v-tooltip activator="parent" location="top">{{ $t('pause.theme.onlyMusic') }}</v-tooltip>
+                <v-switch color="primary" inset hide-details true-icon="mdi-music" false-icon="mdi-video"
+                  v-model="settings.themeSettings.showOnlyMusic" :disabled="!settings.themeSettings.backgroundVideo" />
+              </div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field :label="$t('pause.theme.url')" v-model="settings.themeSettings.backgroundImg"
+                prepend-icon="mdi-image" clearable hide-details
+                :error="!!settings.themeSettings.backgroundImg && !isUrl(settings.themeSettings.backgroundImg ?? '')" />
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <div class="palette px-6">
+          <div v-for="t in paletteList" class="palette-box" :style="{ backgroundColor: t.background }"
+            @click="setPalette(t.value)">
+            <svg class="triangle" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="0,0 30,0 30,30" :style="{ fill: t.color }" />
+            </svg>
+            <div class="palette-title">
+              <p :style="{ color: t.color }">{{ t.title }}</p>
+            </div>
           </div>
         </div>
-      </div>
+      </RequireLogin>
     </v-window-item>
   </v-window>
 </template>
@@ -115,6 +122,9 @@ import { getYotubeId, isUrl } from '@/utils/common'
 import ThemeTile from '@/components/common/ThemeTile.vue';
 import VolumeSlider from '@/components/common/VolumeSlider.vue'
 import Info from '@/components/common/Info.vue'
+import RequireLogin from '@/components/common/RequireLogin.vue';
+import { useAuth0 } from "@auth0/auth0-vue";
+const { isAuthenticated } = useAuth0();
 
 const themeStore = useThemeStore();
 const settings = useSettingsStore();
@@ -236,6 +246,7 @@ function setPalette(palette: string) {
 
   .customize {
     padding: 3rem 3rem 2rem;
+
     .volume-slider {
       display: flex;
       align-items: center;

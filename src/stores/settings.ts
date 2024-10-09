@@ -9,7 +9,7 @@ const LOCAL_STORAGE_KEY = 'settings';
 const DEFAULT_LANG = 'it';
 const DEFAULT_PALETTE = 'bio';
 const DEFAULT_ICONS = 'mdi-icon';
-const DEFAULT_IMG = 'https://api.studybuddy.it/images/Autumn';
+const DEFAULT_IMG = 'https://api.studybuddy.it/images/autumn';
 const DEFAULT_VIDEO = undefined;
 
 

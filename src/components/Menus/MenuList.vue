@@ -22,6 +22,8 @@
 
   <!-- add exam/chapter dialog-->
   <v-dialog v-model="newElementDialog.open" width="500">
+
+
     <v-card v-on:keyup.enter="saveElement()">
       <v-toolbar dark :color="props.color">
         <v-btn icon dark @click="newElementDialog.open = false"> <v-icon>mdi-close</v-icon> </v-btn>
@@ -29,45 +31,46 @@
         <v-spacer></v-spacer>
       </v-toolbar>
       <v-card-text>
-        <v-container>
+        <RequireLogin>
+          <v-container>
+            <v-row>
+              <!-- Exam name -->
+              <v-col cols="12">
+                <v-text-field required autofocus v-model="newElementDialog.element.name"
+                  :label="$t('study.name', { 'element': props.elementsName })"
+                  :error-messages="state.checkValidExamName(newElementDialog.element.name, newElementDialog.original) ? '' : $t('study.invalidName', { element: props.elementsName })" />
+              </v-col>
+              <!--Deadline-->
+              <v-col cols="12" v-if="props.elementsName === $t('study.exam')">
+                <v-text-field v-model="newElementDialog.element.deadline" :label="$t('study.examDate')" type="date" />
+              </v-col>
 
-          <v-row>
-            <!-- Exam name -->
-            <v-col cols="12">
-              <v-text-field required autofocus v-model="newElementDialog.element.name"
-                :label="$t('study.name', { 'element': props.elementsName })"
-                :error-messages="state.checkValidExamName(newElementDialog.element.name, newElementDialog.original) ? '' : $t('study.invalidName', { element: props.elementsName })" />
-            </v-col>
-            <!--Deadline-->
-            <v-col cols="12" v-if="props.elementsName === $t('study.exam')">
-              <v-text-field v-model="newElementDialog.element.deadline" :label="$t('study.examDate')" type="date" />
-            </v-col>
+              <!--  Icon-->
+              <v-col cols="12" v-if="props.chooseIcon">
+                <v-select :label="$t('study.icon')" :items="mdiIconsList" item-title="title" item-value="icon"
+                  v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
+                  <template v-slot:item="{ props: item }">
+                    <v-list-item v-bind="(item as any)" :prepend-icon="(item.value as any)" :title="item.title" />
+                  </template>
+                </v-select>
+              </v-col>
+            </v-row>
+            <!-- Color -->
+            <v-row>
+              <v-col cols="12" v-if="props.chooseColor">
+                <ColorPicker v-model="newElementDialog.element.color" />
+              </v-col>
+            </v-row>
 
-            <!--  Icon-->
-            <v-col cols="12" v-if="props.chooseIcon">
-              <v-select :label="$t('study.icon')" :items="mdiIconsList" item-title="title" item-value="icon"
-                v-model="newElementDialog.element.icon" :prepend-icon="newElementDialog.element.icon">
-                <template v-slot:item="{ props: item }">
-                  <v-list-item v-bind="(item as any)" :prepend-icon="(item.value as any)" :title="item.title" />
-                </template>
-              </v-select>
-            </v-col>
-          </v-row>
-          <!-- Color -->
-          <v-row>
-            <v-col cols="12" v-if="props.chooseColor">
-              <ColorPicker v-model="newElementDialog.element.color" />
-            </v-col>
-          </v-row>
-
-        </v-container>
-        <v-card-actions>
-          <v-btn icon="mdi-delete" variant="tonal" v-if="!!newElementDialog.original"
-            @click="removeElement(newElementDialog.original)" color="error"></v-btn>
-          <v-spacer></v-spacer>
-          <v-btn @click="closeEditDialog()">{{ $t('cancel') }}</v-btn>
-          <v-btn @click="saveElement()" color="primary">{{ $t('save') }}</v-btn>
-        </v-card-actions>
+          </v-container>
+          <v-card-actions>
+            <v-btn icon="mdi-delete" variant="tonal" v-if="!!newElementDialog.original"
+              @click="removeElement(newElementDialog.original)" color="error"></v-btn>
+            <v-spacer></v-spacer>
+            <v-btn @click="closeEditDialog()">{{ $t('cancel') }}</v-btn>
+            <v-btn @click="saveElement()" color="primary">{{ $t('save') }}</v-btn>
+          </v-card-actions>
+        </RequireLogin>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -80,6 +83,7 @@ import ColorPicker from '../Inputs/ColorPicker.vue';
 import type { Chapter, Exam } from '@/types';
 import { useStateStore } from "@/stores/state";
 import router from '@/router';
+import RequireLogin from '@/components/common/RequireLogin.vue';
 const state = useStateStore();
 
 const props = withDefaults(defineProps<{
