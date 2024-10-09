@@ -40,14 +40,13 @@ export const useExamsStore = defineStore('exams', () => {
       await upsertExam(exam);
     }
     await db.setLastUpdated(EntitiesEnum.exams, newUpdatedDate);
-
+    await load();
   }
 
   async function init() {
-    await load();
     await updateLocalDB();
   }
   init();
 
-  return { exams, examsMapping, getExam };
+  return { exams, examsMapping, getExam, updateLocalDB };
 })

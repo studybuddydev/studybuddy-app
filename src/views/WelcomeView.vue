@@ -139,6 +139,7 @@ import { debounce } from '../utils/common';
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useRouter } from 'vue-router'
 import * as DBO from '@/types/dbo';
+import { useExamsStore } from '@/stores/db/exams';
 
 const { user, isLoading } = useAuth0();
 const router = useRouter()
@@ -296,6 +297,7 @@ function removeExam(i: number, code: string) {
 async function saveOnboarding() {
   userInfo.value.exams = selectedExams.value.map((e) => e.code);
   await api.users.saveOnboarding(userInfo.value);
+  await useExamsStore().updateLocalDB();
   router.push('/')
 }
 
