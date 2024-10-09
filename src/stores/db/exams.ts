@@ -25,7 +25,6 @@ export const useExamsStore = defineStore('exams', () => {
 
 
   async function upsertExam(exam: ExamDBO) {
-    console.log('upserting exam', exam);
     const exists = await db.exams.where('_id').equals(exam._id).first();
     // to undestand why update does not work
     if (exists) await db.exams.delete(exists.id!);

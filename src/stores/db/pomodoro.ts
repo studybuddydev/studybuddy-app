@@ -54,7 +54,6 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
     const first = await db.pomodori.where('datetime').equals(dt).first();
     if (!(first)) {
       const id = await db.pomodori.add(p);
-      console.log('added', id);
       parsed.id = id;
       p.id = id;
       pomodoroRecords.value.unshift(parsed);
@@ -86,13 +85,11 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
 
   // -- REMOTE --
   async function postRemotePomodoro(pomodoro: PomodoroDBO) {
-    console.log('postRemotePomodoro', pomodoro);
     if (!pomodoro.id) return;
     const _id = await api.pomodori.postPomodoro(pomodoro);
     await updatePomodoro(pomodoro.id, p => { p._id = _id; p.remoteUpdated = 1; return p; });
   }
   async function updateRemotePomodoro(pomodoro: PomodoroDBO) {
-    console.log('updateRemotePomodoro', pomodoro);
     if (!pomodoro.id) return;
     if (!pomodoro._id) {
       await postRemotePomodoro(pomodoro);

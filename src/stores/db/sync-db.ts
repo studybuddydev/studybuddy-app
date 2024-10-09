@@ -46,7 +46,6 @@ export const useSyncDBStore = defineStore('sync-db', () => {
       } else {
         await api.pomodori.postPomodoro(pomodoro);
       }
-      console.log('updated', pomodoro);
       pomodoro.remoteUpdated = 1;
       await db.pomodori.put(pomodoro, pomodoro.id);
     }
@@ -56,7 +55,6 @@ export const useSyncDBStore = defineStore('sync-db', () => {
     const lastUpdated = await db.getLastUpdated(EntitiesEnum.pomodori);
     const newUpdatedDate = new Date();
     const newPomodori = await api.pomodori.getPomodoriUpdates(lastUpdated);
-    console.log(newPomodori);
     for (const pomodoro of newPomodori) {
       if (pomodoro.id) {
         await db.pomodori.put(pomodoro, pomodoro.id);
