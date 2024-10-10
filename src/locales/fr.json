@@ -194,7 +194,7 @@
     "snakePause": "La pomme représente une pause. Lorsque vous l'atteignez, vous pouvez décider de faire une pause ou de continuer à étudier. Vous pouvez faire une pause à tout moment en appuyant sur le bouton pause. Vous pouvez régler le nombre et la durée des pauses de les paramètres."
   },
   "history":{
-    "loginMsg" : "Connectez-vous pour consulter l'historique de vos sessions d'étude",
+    "loginMsg" : "Connectez-vous pour consulter l'historique de vos sessions d'étude et pour une expérience personnalisée",
     "sliderTitle" : "Plage horaire",
     "noHistory": "Vous n'avez pas encore eu de séance d'étude de 5 minutes ou plus",
     "startNow": "Commencez maintenant"

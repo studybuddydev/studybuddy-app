@@ -194,7 +194,7 @@
               "snakePause": "La mela rappresenta una pausa. Quando la raggiungi, puoi decidere se fare una pausa o continuare a studiare. Puoi fare pausa in qualsiasi momento premendo il tasto pausa. Puoi regolare il numero e la durata delle pause dalle impostazioni."
        },
        "history":{
-              "loginMsg" : "Effettua il login per visualizzare la cronologia delle tue sessioni di studio",
+              "loginMsg" : "Effettua il login per tenere traccia dei tuoi progressi e personalizzare l'esperienza",
               "sliderTitle" : "Intervallo orario",
               "noHistory": "Non hai ancora fatto una sessione di studio di almeno 5 minuti",
               "startNow": "Inizia ora!"

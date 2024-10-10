@@ -194,7 +194,7 @@
     "snakePause": "La manzana representa una pausa. Cuando lo alcances podrás decidir si tomar un descanso o seguir estudiando. Puede pausar en cualquier momento presionando el botón de pausa. Puede ajustar el número y la duración de las pausas desde la configuración."
   },
   "history":{
-    "loginMsg" : "Inicia sesión para ver el historial de tus sesiones de estudio",
+    "loginMsg" : "Inicia sesión para ver el historial de tus sesiones de estudio y para una experiencia personalizada",
     "sliderTitle" : "Rango de horas",
     "noHistory": "Aún no has completado una sesión de estudio de al menos 5 minutos",
     "startNow": "Comienza ahora"
