@@ -194,7 +194,7 @@
     "snakePause": "The apple represents a break. When you reach it, you can decide if you want to take a break or continue studying. You can pause at any time by pressing the pause button. You can adjust the number and duration of the breaks from the settings."
 },
   "history":{
-    "loginMsg" : "Log in to view your study sessions history",
+    "loginMsg" : "Log in to track your progress and for a customized experience",
     "sliderTitle" : "Set hour range",
     "noHistory": "You have not yet completed a study session of at least 5 minutes",
     "startNow": "Start now"
