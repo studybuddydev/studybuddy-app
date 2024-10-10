@@ -128,6 +128,7 @@ export type UserOnboarding = {
   course?: string | null;
   customCourse?: string | null;
   exams?: string[];
+  customExams?: string[];
 }
 
 export type PomodoroDBO = {

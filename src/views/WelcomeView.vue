@@ -233,7 +233,7 @@ function selectType(type: string | null) {
 }
 
 // ----- STEP 3
-const selectedExams = ref<{ name: string, code: string, info: string }[]>([]);
+const selectedExams = ref<{ name: string, code: string, info: string, custom: boolean }[]>([]);
 const searchExam = ref('');
 const exams = ref<ListItem[]>([])
 const customExams = ref<ListItem[]>([])
@@ -263,7 +263,7 @@ function addExamToUser(exam: ListItem) {
   if (!exam.title || !exam.value) return;
   const atIndex = selectedExams.value.findIndex((e) => e.code === exam.value);
   if (atIndex >= 0) selectedExams.value.splice(atIndex, 1);
-  else selectedExams.value.push({ name: exam.title, code: exam.value, info: exam.info ?? '' });
+  else selectedExams.value.push({ name: exam.title, code: exam.value, info: exam.info ?? '', custom: !!exam.custom });
 }
 
 function addCustomExam(name: string) {
@@ -295,7 +295,8 @@ function removeExam(i: number, code: string) {
 }
 
 async function saveOnboarding() {
-  userInfo.value.exams = selectedExams.value.map((e) => e.code);
+  userInfo.value.exams = selectedExams.value.filter(e => !e.custom).map(e => e.code);
+  userInfo.value.customExams = selectedExams.value.filter(e => e.custom).map(e => e.name);
   await api.users.saveOnboarding(userInfo.value);
   await useExamsStore().updateLocalDB();
   router.push('/')
