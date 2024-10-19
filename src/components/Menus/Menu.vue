@@ -72,13 +72,11 @@ import MenuList from '@/components/Menus/MenuList.vue';
 import { useRoute } from 'vue-router'
 import { ref, computed } from "vue";
 import { useStateStore } from "@/stores/state";
-import { useSettingsStore } from "@/stores/settings";
 import type { Chapter, Exam } from '@/types';
 import Settings from '@/components/Settings/Settings.vue';
 
 const route = useRoute()
 const state = useStateStore();
-const settings = useSettingsStore();
 const openUserSettings = ref(false);
 
 const exam = computed(() => route.params.exam ? state.getExam(route.params.exam as string) : undefined);

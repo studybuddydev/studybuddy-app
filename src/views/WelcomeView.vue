@@ -140,7 +140,9 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import { useRouter } from 'vue-router'
 import * as DBO from '@/types/dbo';
 import { useExamsStore } from '@/stores/db/exams';
+import { useStateStore } from "@/stores/state";
 
+const state = useStateStore();
 const { user, isLoading } = useAuth0();
 const router = useRouter()
 const step = ref(1);
@@ -297,8 +299,19 @@ function removeExam(i: number, code: string) {
 async function saveOnboarding() {
   userInfo.value.exams = selectedExams.value.filter(e => !e.custom).map(e => e.code);
   userInfo.value.customExams = selectedExams.value.filter(e => e.custom).map(e => e.name);
-  await api.users.saveOnboarding(userInfo.value);
-  await useExamsStore().updateLocalDB();
+  const savingState = api.users.saveOnboarding(userInfo.value);
+  const updatingDB = useExamsStore().updateLocalDB();
+
+  selectedExams.value.map(e => e.name).forEach(async (exam) => {
+    state.addExam({
+      name: exam,
+      icon: 'mdi-book',
+    });
+  });
+
+  await savingState;
+  await updatingDB;
+
   router.push('/')
 }
 
