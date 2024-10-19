@@ -18,11 +18,15 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
     getStatusLocalStorage()
   );
 
-  watch(user, () => {
-    if(user.value?.email) {
-      getStatusAPI()
-    }
-  })
+  if (user.value?.sub) {
+    getStatusAPI()
+  } else {
+    watch(user, () => {
+      if(user.value?.email) {
+        getStatusAPI()
+      }
+    })
+  }
 
   async function createStatus(status: PomodotoStatus) {
     pomodoroStatus.value = { ...status };
@@ -55,6 +59,7 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
 
   async function getStatusAPI() {
     const status = await axios.get(`${api.endpoint}/status`, await api.getOptions());
+    console.log('The new statys us', status.data)
     if (status.data.timestamp > (pomodoroStatus.value?.timestamp ?? 0)) {
       pomodoroStatus.value = status.data;
       pomodoro.init();
