@@ -6,12 +6,25 @@ import { PomodoroState, type PomodotoStatus } from '@/types';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useAPIStore } from './index';
 import * as common from '@/utils/common';
+// import { io } from 'socket.io-client';
 
 export const useTimerStatusStore = defineStore('timer-status', () => {
 
   const { user } = useAuth0();
   const pomodoro = usePomodoroStore();
   const api = useAPIStore();
+
+  // const socket = io('ws://192.168.153.56:3000/status', {
+  //   auth: { token: 'valid-token' }
+  // });
+  // socket.on('connect', () => {
+  //   console.log('Connected to WebSocket server');
+  // });
+
+  // socket.emit('identity', 'ciaone', (response: string) => {
+  //   console.log('Identity response:', response);
+  // });
+
 
   const LOCALSTORAGE_KEY = 'timer-status'
   const pomodoroStatus = ref<PomodotoStatus | null>(
@@ -59,7 +72,6 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
 
   async function getStatusAPI() {
     const status = await axios.get(`${api.endpoint}/status`, await api.getOptions());
-    console.log('The new statys us', status.data)
     if (status.data.timestamp > (pomodoroStatus.value?.timestamp ?? 0)) {
       pomodoroStatus.value = status.data;
       pomodoro.init();

@@ -1,7 +1,6 @@
 <template>
   <div class="pomo-details-props">
     <div class="title" v-if="examDB.exams.length > 0">
-
       <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="deleteTag()"
         :color="examDB.examsMapping[pomo.tag].color">{{ examDB.examsMapping[pomo.tag].name }}</v-chip>
       <v-combobox v-else variant="outlined" class="text-box text-boxt-tag" :label="$t('setup.exam')" hide-details :items="examDB.exams"
@@ -67,15 +66,15 @@ const pomoDB = usePomodoroDBStore();
 const examDB = useExamsStore();
 const timerStatus = useTimerStatusStore();
 
-async function updateDeepWork(pomoId: number | undefined, deep: boolean) {
+async function updateDeepWork(pomoId: string, deep: boolean) {
   if (pomoId) await pomoDB.updateDeepWork(pomoId, deep);
   else timerStatus.saveStatus()
 }
-async function updateName(pomoId: number | undefined, name: string) {
+async function updateName(pomoId: string, name: string) {
   if (pomoId) await pomoDB.updateName(pomoId, name);
   else timerStatus.saveStatus()
 }
-async function updateRating(pomoId: number | undefined, rating: number) {
+async function updateRating(pomoId: string, rating: number) {
   if (pomoId) await pomoDB.updateRating(pomoId, rating);
   else timerStatus.saveStatus()
 }

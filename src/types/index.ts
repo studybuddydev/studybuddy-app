@@ -112,8 +112,7 @@ export type PomodoroBase = {
   tag?: string;
   rating?: number;
   report?: PomoReport;
-  id?: number;
-  _id?: string;
+  id: string;
   name?: string;
 }
 
@@ -201,8 +200,7 @@ export interface Timer {
 }
 
 export interface PomodoroDBO extends PomodoroBase {
-  id?: number;
-  _id?: string;
+  id: string;
   datetime: Date;
   lastUpdated?: Date;
   tag?: string;
