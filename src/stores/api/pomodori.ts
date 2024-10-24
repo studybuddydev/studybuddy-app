@@ -25,7 +25,7 @@ export function getPomodoriAPI(endpoint: string, getOptions: () => Promise<{ hea
   }
 
   async function updatePomodoro(pomodoro: PomodoroDBO): Promise<void> {
-    await axios.put(`${API_ENDPOINT}/${pomodoro._id}`, pomodoro, await getOptions());
+    await axios.put(`${API_ENDPOINT}/${pomodoro.id}`, pomodoro, await getOptions());
   }
 
   async function deletePomodoro(pomoId: string): Promise<void> {

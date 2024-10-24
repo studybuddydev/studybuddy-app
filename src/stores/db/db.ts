@@ -42,7 +42,7 @@ function getTimers() {
 export class StudyBuddyDB extends Dexie {
   public timer!: Table<Timer, number>;
   public themes!: Table<Theme, number>;
-  public pomodori!: Table<PomodoroDBO, number>;
+  public pomodori!: Table<PomodoroDBO, string>;
   public exams!: Table<ExamDBO, number>;
   public updates!: Table<UpdatesDBO, number>;
 

@@ -140,7 +140,9 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import { useRouter } from 'vue-router'
 import * as DBO from '@/types/dbo';
 import { useExamsStore } from '@/stores/db/exams';
+import { useStateStore } from "@/stores/state";
 
+const state = useStateStore();
 const { user, isLoading } = useAuth0();
 const router = useRouter()
 const step = ref(1);
@@ -233,7 +235,7 @@ function selectType(type: string | null) {
 }
 
 // ----- STEP 3
-const selectedExams = ref<{ name: string, code: string, info: string }[]>([]);
+const selectedExams = ref<{ name: string, code: string, info: string, custom: boolean }[]>([]);
 const searchExam = ref('');
 const exams = ref<ListItem[]>([])
 const customExams = ref<ListItem[]>([])
@@ -263,7 +265,7 @@ function addExamToUser(exam: ListItem) {
   if (!exam.title || !exam.value) return;
   const atIndex = selectedExams.value.findIndex((e) => e.code === exam.value);
   if (atIndex >= 0) selectedExams.value.splice(atIndex, 1);
-  else selectedExams.value.push({ name: exam.title, code: exam.value, info: exam.info ?? '' });
+  else selectedExams.value.push({ name: exam.title, code: exam.value, info: exam.info ?? '', custom: !!exam.custom });
 }
 
 function addCustomExam(name: string) {
@@ -295,9 +297,21 @@ function removeExam(i: number, code: string) {
 }
 
 async function saveOnboarding() {
-  userInfo.value.exams = selectedExams.value.map((e) => e.code);
-  await api.users.saveOnboarding(userInfo.value);
-  await useExamsStore().updateLocalDB();
+  userInfo.value.exams = selectedExams.value.filter(e => !e.custom).map(e => e.code);
+  userInfo.value.customExams = selectedExams.value.filter(e => e.custom).map(e => e.name);
+  const savingState = api.users.saveOnboarding(userInfo.value);
+  const updatingDB = useExamsStore().updateLocalDB();
+
+  selectedExams.value.map(e => e.name).forEach(async (exam) => {
+    state.addExam({
+      name: exam,
+      icon: 'mdi-book',
+    });
+  });
+
+  await savingState;
+  await updatingDB;
+
   router.push('/')
 }
 

@@ -6,6 +6,7 @@ import { PomodoroState, type PomodotoStatus } from '@/types';
 import { usePomodoroStore } from "@/stores/pomodoro";
 import { useAPIStore } from './index';
 import * as common from '@/utils/common';
+// import { io, Socket } from 'socket.io-client';
 
 export const useTimerStatusStore = defineStore('timer-status', () => {
 
@@ -13,16 +14,42 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
   const pomodoro = usePomodoroStore();
   const api = useAPIStore();
 
+  // let socket: Socket;
+
+  // async function loadSocket() {
+  //   socket = io('ws://192.168.153.56:3000/status', {
+  //     auth: { token: await api.getToken() }
+  //   });
+  //   socket.on('connect', () => {
+  //     console.log('Connected to WebSocket server');
+  //   });
+
+  //   setInterval(() => {
+  //     console.log('sending ciaone')
+  //     socket.emit('identity', 'ciaone', (response: string) => {
+  //       console.log('Identity response:', response);
+  //     });
+  //   }, 1000);
+  // }
+  // loadSocket();
+
+
+
+
   const LOCALSTORAGE_KEY = 'timer-status'
   const pomodoroStatus = ref<PomodotoStatus | null>(
     getStatusLocalStorage()
   );
 
-  watch(user, () => {
-    if(user.value?.email) {
-      getStatusAPI()
-    }
-  })
+  if (user.value?.sub) {
+    getStatusAPI()
+  } else {
+    watch(user, () => {
+      if (user.value?.email) {
+        getStatusAPI()
+      }
+    })
+  }
 
   async function createStatus(status: PomodotoStatus) {
     pomodoroStatus.value = { ...status };
@@ -45,7 +72,7 @@ export const useTimerStatusStore = defineStore('timer-status', () => {
 
   function getStatusLocalStorage(): PomodotoStatus | null {
     const status = localStorage.getItem(LOCALSTORAGE_KEY)
-    return status ? JSON.parse(status) as PomodotoStatus : null 
+    return status ? JSON.parse(status) as PomodotoStatus : null
   }
 
   async function setStatusLocalStorage(status: PomodotoStatus) {

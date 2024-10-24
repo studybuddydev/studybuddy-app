@@ -6,6 +6,7 @@ import * as timeUtils from '@/utils/time';
 import * as reportUtils from '@/utils/report';
 import { useSettingsStore } from "@/stores/settings";
 import { ref } from 'vue';
+import { v4 as uuidv4 } from 'uuid';
 
 export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   const db = useDBStore();
@@ -48,31 +49,27 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
       rating: pomo.rating,
       tag: pomo.tag,
       remoteUpdated: 0,
+      id: uuidv4(),
     }
 
     const parsed = parsePomodorDbo(p);
     const first = await db.pomodori.where('datetime').equals(dt).first();
-    if (!(first)) {
-      const id = await db.pomodori.add(p);
-      parsed.id = id;
-      p.id = id;
+    if (!first) {
+      await db.pomodori.add(p);
       pomodoroRecords.value.unshift(parsed);
       updateStreak();
+      postRemotePomodoro(p);
     }
-
-    postRemotePomodoro(p);
     return parsed;
   }
-  async function deletePomodoroRecord(id: number) {
-    const _id = pomodoroRecords.value.find(p => p.id === id)?._id;
+  async function deletePomodoroRecord(id: string) {
     pomodoroRecords.value = pomodoroRecords.value.filter(p => p.id !== id);
     updateStreak();
     await db.pomodori.delete(id);
-    if (_id)
-    await deleteRemotePomodoro(_id)
+    await deleteRemotePomodoro(id)
   }
 
-  async function updatePomodoro(id: number, updatePomo: (p: PomodoroDBO) => PomodoroDBO) {
+  async function updatePomodoro(id: string, updatePomo: (p: PomodoroDBO) => PomodoroDBO) {
     const pomo = await db.pomodori.get(id);
     if (pomo) {
       pomo.remoteUpdated = 0;
@@ -86,15 +83,11 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
   // -- REMOTE --
   async function postRemotePomodoro(pomodoro: PomodoroDBO) {
     if (!pomodoro.id) return;
-    const _id = await api.pomodori.postPomodoro(pomodoro);
-    await updatePomodoro(pomodoro.id, p => { p._id = _id; p.remoteUpdated = 1; return p; });
+    await api.pomodori.postPomodoro(pomodoro);
+    await updatePomodoro(pomodoro.id, p => { p.remoteUpdated = 1; return p; });
   }
   async function updateRemotePomodoro(pomodoro: PomodoroDBO) {
     if (!pomodoro.id) return;
-    if (!pomodoro._id) {
-      await postRemotePomodoro(pomodoro);
-      return;
-    }
     await api.pomodori.updatePomodoro(pomodoro);
     await updatePomodoro(pomodoro.id, p => { p.remoteUpdated = 1; return p; });
   }
@@ -121,24 +114,24 @@ export const usePomodoroDBStore = defineStore('pomoDBStore', () => {
       return acc;
     }, {} as { [id: string]: string; });
   }
-  async function updateTag(id: number, tag: string | undefined) {
+  async function updateTag(id: string, tag: string | undefined) {
     await updatePomodoro(id, p => { p.tag = tag; return p; });
     await updateTags();
   }
   updateTags();
 
-  async function updateRating(id: number, rating: number) {
+  async function updateRating(id: string, rating: number) {
     await updatePomodoro(id, p => { p.rating = rating; return p; });
   }
-  async function updateDeepWork(id: number, deepWork: boolean) {
+  async function updateDeepWork(id: string, deepWork: boolean) {
     await updatePomodoro(id, p => { p.deepWork = deepWork; return p; });
   }
-  async function updateName(id: number, name: string) {
+  async function updateName(id: string, name: string) {
     await updatePomodoro(id, p => { p.name = name; return p; });
   }
 
   // --- TASKS ---
-  async function updateTasks(id: number, tasks?: PomodoroTask[]) {
+  async function updateTasks(id: string, tasks?: PomodoroTask[]) {
     await updatePomodoro(id, p => { p.tasks = tasks?.map(t => ({ task: t.task, done: t.done })); return p; });
   }
 

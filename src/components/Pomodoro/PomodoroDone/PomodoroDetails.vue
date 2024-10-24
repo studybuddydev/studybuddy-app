@@ -1,22 +1,29 @@
 <template>
   <div class="pomo-details-props">
-    <div class="title">
+    <div class="title" v-if="examDB.exams.length > 0">
       <v-chip v-if="pomo.tag" variant="flat" closable size="large" @click:close="deleteTag()"
         :color="examDB.examsMapping[pomo.tag].color">{{ examDB.examsMapping[pomo.tag].name }}</v-chip>
-      <v-combobox v-else class="text-box text-boxt-tag" :label="$t('setup.exam')" hide-details :items="examDB.exams"
+      <v-combobox v-else variant="outlined" class="text-box text-boxt-tag" :label="$t('setup.exam')" hide-details :items="examDB.exams"
         v-model="pomo.tag" item-title="name" item-value="_id" @update:modelValue="(e: ExamDBO) => { e && addExam(e) }">
         <template v-slot:selection="data"><v-chip :key="data.item.title">{{ data.item.title }}</v-chip></template>
         <template #item="{ props, item }">
           <v-list-item v-bind="props">
             <template #prepend>
-              <v-icon :color="examDB.examsMapping[item.value].color" :icon="examDB.examsMapping[item.value].icon ?? 'mdi-circle'" />
+              <v-icon :color="examDB.examsMapping[item.value].color"
+                :icon="examDB.examsMapping[item.value].icon ?? 'mdi-circle'" />
             </template>
           </v-list-item>
         </template>
       </v-combobox>
 
-      <v-text-field v-model="pomo.name" :label="$t('setup.name')" hide-details dense class="text-box text-boxt-title"
+      <v-text-field v-model="pomo.name" :label="$t('setup.name')" hide-details dense variant="outlined" class="text-box text-boxt-title"
         @update:modelValue="(newName: any) => { updateName(pomo.id, newName) }" />
+    </div>
+    <div class="title" v-else>
+      <div class="exams">
+        <p>Non hai nessun esame da collegare ai pomi</p>
+        <a class="text-primary" href="/#/welcome">Completa ora l'onboarding</a>
+      </div>
     </div>
 
     <div class="tasks" v-show="false">
@@ -59,15 +66,15 @@ const pomoDB = usePomodoroDBStore();
 const examDB = useExamsStore();
 const timerStatus = useTimerStatusStore();
 
-async function updateDeepWork(pomoId: number | undefined, deep: boolean) {
+async function updateDeepWork(pomoId: string, deep: boolean) {
   if (pomoId) await pomoDB.updateDeepWork(pomoId, deep);
   else timerStatus.saveStatus()
 }
-async function updateName(pomoId: number | undefined, name: string) {
+async function updateName(pomoId: string, name: string) {
   if (pomoId) await pomoDB.updateName(pomoId, name);
   else timerStatus.saveStatus()
 }
-async function updateRating(pomoId: number | undefined, rating: number) {
+async function updateRating(pomoId: string, rating: number) {
   if (pomoId) await pomoDB.updateRating(pomoId, rating);
   else timerStatus.saveStatus()
 }
@@ -110,11 +117,17 @@ async function updateTask() {
     grid-template-columns: auto;
     display: grid;
     gap: 1rem;
-    margin: 1rem;
+    margin: 1rem 3.5rem;
     align-items: center;
 
     .text-boxt-tag {
       min-width: 8rem;
+    }
+
+    .exams {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
     }
 
   }
@@ -177,5 +190,4 @@ async function updateTask() {
     justify-items: center;
   }
 }
-
 </style>
