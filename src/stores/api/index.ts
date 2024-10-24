@@ -18,6 +18,10 @@ export const useAPIStore = defineStore('api', () => {
     }
   }
 
+  async function getToken() {
+    return await getAccessTokenSilently();
+  }
+
   const data = getDataAPI(endpoint, getOptions);
   const exams = getExamsAPI(endpoint, getOptions);
   const settings = getSettingsAPI(endpoint, getOptions);
@@ -26,5 +30,5 @@ export const useAPIStore = defineStore('api', () => {
 
   const api = { data, exams, settings, users, pomodori };
 
-  return { getOptions, endpoint, api }
+  return { getOptions, getToken, endpoint, api }
 })
