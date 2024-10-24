@@ -217,6 +217,8 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     saveStatus();
   }
+
+  
   function tick() { 
     interaction();
     const pomo = timerStatus.pomodoroStatus
